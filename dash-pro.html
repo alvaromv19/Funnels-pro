@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agency Command Center 🦁</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            /* --- COLOR PALETTE (Cyberpunk Corporate) --- */
+            --bg-body: #050b14;
+            --bg-panel: rgba(17, 24, 39, 0.75);
+            --bg-sidebar: #0b1121;
+            --glass-border: rgba(255, 255, 255, 0.08);
+
+            --neon-primary: #3b82f6;   /* Azul */
+            --neon-success: #00CC96;   /* Verde (Tu color de marca) */
+            --neon-danger: #ef4444;    /* Rojo */
+            --neon-warning: #f59e0b;   /* Naranja */
+            --neon-purple: #8b5cf6;    /* Violeta */
+
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+
+            --sidebar-width: 280px;
+            --sidebar-width-collapsed: 80px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--bg-body);
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(59, 130, 246, 0.1), transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(0, 204, 150, 0.08), transparent 40%);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* --- LAYOUT --- */
+        .wrapper { display: flex; width: 100%; transition: var(--transition); }
+        
+        /* SIDEBAR */
+        .sidebar {
+            width: var(--sidebar-width); height: 100vh; background: var(--bg-sidebar);
+            border-right: 1px solid var(--glass-border); position: fixed; z-index: 1000;
+            padding: 25px; overflow-y: auto; display: flex; flex-direction: column;
+            transition: width var(--transition);
+        }
+        
+        .main-content {
+            margin-left: var(--sidebar-width); width: calc(100% - var(--sidebar-width));
+            padding: 40px; transition: margin-left var(--transition), width var(--transition);
+        }
+
+        /* Collapsed State */
+        body.collapsed .sidebar { width: var(--sidebar-width-collapsed); padding: 25px 10px; }
+        body.collapsed .sidebar .hide-on-collapse { display: none; opacity: 0; }
+        body.collapsed .sidebar .logo-area { justify-content: center; }
+        body.collapsed .main-content { margin-left: var(--sidebar-width-collapsed); width: calc(100% - var(--sidebar-width-collapsed)); }
+
+        /* --- COMPONENTS --- */
+        .glass-panel {
+            background: var(--bg-panel); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 20px; padding: 30px; margin-bottom: 25px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2); position: relative; overflow: hidden;
+        }
+        .glass-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5 { color: white; font-weight: 800; letter-spacing: -0.5px; }
+        .metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); font-weight: 700; margin-bottom: 5px; display: block; }
+        .metric-value { font-size: 2.2rem; font-weight: 900; color: white; line-height: 1; }
+        .metric-delta { font-size: 0.85rem; font-weight: 500; margin-top: 5px; display: block; }
+        .text-success-neon { color: var(--neon-success) !important; }
+        .text-danger-neon { color: var(--neon-danger) !important; }
+
+        /* Inputs */
+        select, input {
+            background: rgba(255, 255, 255, 0.03) !important; border: 1px solid var(--glass-border) !important;
+            color: white !important; border-radius: 10px !important; padding: 12px !important; font-size: 0.9rem;
+        }
+        select:focus, input:focus { border-color: var(--neon-success) !important; outline: none; box-shadow: 0 0 10px rgba(0, 204, 150, 0.2) !important; }
+
+        /* Buttons */
+        .btn-glow {
+            background: linear-gradient(135deg, #00b09b, #96c93d); /* Gradiente Creamos Negocios style */
+            background: var(--neon-success);
+            color: #050b14; border: none; padding: 12px; border-radius: 10px; font-weight: 800; width: 100%;
+            text-transform: uppercase; letter-spacing: 1px; transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 204, 150, 0.3);
+        }
+        .btn-glow:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0, 204, 150, 0.5); color: black;}
+        
+        .btn-toggle { background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer; }
+
+        /* TABS NAVIGATION */
+        .nav-tabs-custom {
+            display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid var(--glass-border); padding-bottom: 15px;
+            overflow-x: auto;
+        }
+        .tab-btn {
+            background: transparent; border: none; color: var(--text-muted); padding: 10px 20px; font-size: 0.95rem; font-weight: 600;
+            border-radius: 8px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+        }
+        .tab-btn:hover { color: white; background: rgba(255,255,255,0.05); }
+        .tab-btn.active { background: rgba(0, 204, 150, 0.15); color: var(--neon-success); border: 1px solid rgba(0, 204, 150, 0.2); }
+
+        /* TABLES */
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
+        .table-custom th { text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; }
+        .table-custom td { background: rgba(255, 255, 255, 0.02); padding: 15px; border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .table-custom tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; border-left: 1px solid rgba(255,255,255,0.02); }
+        .table-custom tr td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-right: 1px solid rgba(255,255,255,0.02); }
+
+        /* LOADER */
+        #loader {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body);
+            z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .loader-logo { font-size: 3rem; font-weight: 900; background: -webkit-linear-gradient(45deg, var(--neon-success), #fff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { opacity: 0.5; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } 100% { opacity: 0.5; transform: scale(0.95); } }
+
+        /* Animaciones */
+        .fade-in { animation: fadeIn 0.5s ease forwards; opacity: 0; transform: translateY(10px); }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        .d-none { display: none !important; }
+    </style>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+</head>
+
+<body>
+
+    <div id="loader">
+        <div class="loader-logo">CN</div>
+        <p class="text-muted mt-3" style="letter-spacing: 2px; font-size: 0.8rem;">CONECTANDO SISTEMAS...</p>
+    </div>
+
+    <div class="wrapper d-none" id="main-app">
+        
+        <nav class="sidebar">
+            <div class="d-flex justify-content-between align-items-center mb-5 logo-area">
+                <div class="d-flex align-items-center hide-on-collapse">
+                    <div style="width: 36px; height: 36px; background: var(--neon-success); border-radius: 8px; display:flex; align-items:center; justify-content:center; margin-right: 12px; box-shadow: 0 0 15px var(--neon-success); color: black; font-weight: 900;">
+                        🦁
+                    </div>
+                    <div>
+                        <span style="font-weight: 800; letter-spacing: 0.5px; font-size: 1.1rem; display: block; line-height: 1;">AGENCY</span>
+                        <span style="font-size: 0.65rem; color: var(--text-muted); letter-spacing: 1px;">COMMAND CENTER</span>
+                    </div>
+                </div>
+                <button class="btn-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            </div>
+
+            <div class="hide-on-collapse">
+                <label class="metric-label">Panel de Control</label>
+                <button class="btn-outline w-100 mb-4" style="background: rgba(255,255,255,0.05); border:1px solid var(--glass-border); color:white; padding:10px; border-radius:8px;" onclick="location.reload()">
+                    <i class="fas fa-sync-alt me-2"></i> Actualizar Datos
+                </button>
+
+                <label class="metric-label">Filtros</label>
+                <select id="filtroTiempo" class="form-select mb-3">
+                    <option value="mes_actual">📅 Este Mes</option>
+                    <option value="mes_anterior">⏮️ Mes Anterior</option>
+                    <option value="hoy">🔥 Hoy</option>
+                    <option value="ayer">⏪ Ayer</option>
+                    <option value="semana">📆 Esta Semana</option>
+                    <option value="30dias">🗓️ Últimos 30 días</option>
+                    <option value="historico">💾 Todo el Histórico</option>
+                </select>
+
+                <select id="filtroCloser" class="form-select mb-4">
+                    <option value="Todos">👤 Todos los Closers</option>
+                </select>
+
+                <hr style="border-color: var(--glass-border); margin: 25px 0;">
+
+                <label class="metric-label">Metas ($)</label>
+                <div class="mb-2">
+                    <input type="number" id="metaFact" class="form-control" value="30000" placeholder="Meta Fact.">
+                </div>
+                <div class="mb-4">
+                    <input type="number" id="metaAds" class="form-control" value="5000" placeholder="Budget Ads">
+                </div>
+                <button class="btn-glow" onclick="updateDashboard()">
+                    APLICAR METAS
+                </button>
+                
+                <div class="mt-auto pt-5 text-center text-muted" style="font-size: 0.7rem; opacity: 0.6;">
+                    CREAMOS NEGOCIOS<br>System v2.1
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="d-flex justify-content-between align-items-end mb-5 fade-in" style="animation-delay: 0.1s;">
+                <div>
+                    <h1 class="display-6 mb-1">Dashboard Creamos Negocios</h1>
+                    <p class="text-muted mb-0 font-monospace" id="rangoFechasTexto" style="font-size: 0.9rem;">Cargando rango...</p>
+                </div>
+                <div class="text-end">
+                    <span class="badge" style="background: rgba(0, 204, 150, 0.1); color: var(--neon-success); border: 1px solid rgba(0, 204, 150, 0.2); padding: 8px 16px; border-radius: 50px; font-weight: 600;">
+                        <i class="fas fa-circle me-2 fa-beat-fade" style="font-size: 8px;"></i> LIVE DATA
+                    </span>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-5 fade-in" style="animation-delay: 0.2s;">
+                <div class="col-md-3">
+                    <div class="glass-panel h-100 d-flex flex-column justify-content-center p-4 mb-0">
+                        <span class="metric-label">FACTURACIÓN</span>
+                        <div class="metric-value" id="kpi-facturacion">$0</div>
+                        <span class="metric-delta" id="delta-facturacion">--% Meta</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-panel h-100 d-flex flex-column justify-content-center p-4 mb-0">
+                        <span class="metric-label">AD SPEND</span>
+                        <div class="metric-value text-danger-neon" id="kpi-ads">$0</div>
+                        <span class="metric-delta text-muted" id="delta-ads">Restante: $0</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-panel h-100 d-flex flex-column justify-content-center p-4 mb-0">
+                        <span class="metric-label">PROFIT LÍQUIDO</span>
+                        <div class="metric-value text-success-neon" id="kpi-profit">$0</div>
+                        <span class="metric-delta text-muted">Neto Real</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-panel h-100 d-flex flex-column justify-content-center p-4 mb-0">
+                        <span class="metric-label">ROAS</span>
+                        <div class="metric-value" id="kpi-roas">0.00x</div>
+                        <span class="metric-delta text-muted" id="delta-roas">-- vs KPI</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="nav-tabs-custom fade-in" style="animation-delay: 0.3s;">
+                <button class="tab-btn active" onclick="switchTab('tab-ceo')">👔 Visión CEO</button>
+                <button class="tab-btn" onclick="switchTab('tab-funnel')">🌪️ Embudo y Tráfico</button>
+                <button class="tab-btn" onclick="switchTab('tab-closer')">📞 Performance Closer</button>
+                <button class="tab-btn" onclick="switchTab('tab-campana')">📢 Campañas</button>
+                <button class="tab-btn" onclick="switchTab('tab-math')">🧮 Matemática Éxito</button>
+            </div>
+
+            <div id="tab-ceo" class="tab-content fade-in" style="animation-delay: 0.4s;">
+                <div class="glass-panel">
+                    <h5 class="mb-4">📊 Actividad Diaria & Proyecciones</h5>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="p-3" style="background: rgba(255,255,255,0.03); border-radius: 12px;">
+                                <small class="text-muted text-uppercase fw-bold">Falta para Meta</small>
+                                <h3 class="text-white mb-0" id="ceo-falta">$0</h3>
+                                <div class="progress mt-2" style="height: 6px; background: rgba(255,255,255,0.1);">
+                                    <div class="progress-bar" id="ceo-progress" style="width: 0%; background: var(--neon-success);"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3" style="background: rgba(255,255,255,0.03); border-radius: 12px;">
+                                <small class="text-muted text-uppercase fw-bold">Proyección Cierre</small>
+                                <h3 class="text-white mb-0" id="ceo-proyeccion">$0</h3>
+                                <small class="text-muted">Run Rate (30 días)</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-3" style="background: rgba(255,255,255,0.03); border-radius: 12px;">
+                                <small class="text-muted text-uppercase fw-bold">Inversión Diaria</small>
+                                <h3 class="text-white mb-0" id="ceo-diario">$0</h3>
+                                <small class="text-muted" id="ceo-sugerido">Sugerida: $0/día</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="chart-activity" style="height: 400px;"></div>
+                </div>
+            </div>
+
+            <div id="tab-funnel" class="tab-content d-none fade-in">
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="glass-panel h-100">
+                            <h5 class="mb-4">🌪️ Conversión de Tráfico</h5>
+                            <div id="chart-funnel" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="glass-panel h-100">
+                            <h5 class="mb-4">📉 Costos Unitarios</h5>
+                            <div class="mb-4">
+                                <span class="metric-label">CPL (Cost Per Lead)</span>
+                                <div class="h2 text-white" id="kpi-cpl">$0.00</div>
+                            </div>
+                            <div class="mb-4">
+                                <span class="metric-label">CPQL (Qualified)</span>
+                                <div class="h2 text-white" id="kpi-cpql">$0.00</div>
+                            </div>
+                            <div>
+                                <span class="metric-label">CPA (Acquisition)</span>
+                                <div class="h2 text-white" id="kpi-cpa">$0.00</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-panel mt-4">
+                    <h5 class="mb-4">📊 Volumen vs Calidad</h5>
+                    <div id="chart-quality" style="height: 350px;"></div>
+                </div>
+            </div>
+
+            <div id="tab-closer" class="tab-content d-none fade-in">
+                <div class="glass-panel">
+                    <h5 class="mb-4">🏆 Leaderboard de Ventas</h5>
+                    <div class="table-responsive">
+                        <table class="table-custom" id="table-closers">
+                            <thead>
+                                <tr>
+                                    <th>Closer</th>
+                                    <th>Facturado</th>
+                                    <th>Ventas</th>
+                                    <th>Agendas</th>
+                                    <th>Show Rate</th>
+                                    <th>Close Rate</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-campana" class="tab-content d-none fade-in">
+                <div class="glass-panel">
+                    <h5 class="mb-4">📢 Rendimiento por Origen</h5>
+                    <div id="chart-campaigns" style="height: 400px;"></div>
+                </div>
+            </div>
+
+            <div id="tab-math" class="tab-content d-none fade-in">
+                <div class="glass-panel">
+                    <h5 class="mb-4">🧮 La Calculadora de Metas</h5>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="p-4 rounded-4 text-center" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
+                                <h6 class="text-danger-neon">🔴 PESIMISTA</h6>
+                                <h2 class="text-white mb-0" id="math-pessimistic">$0</h2>
+                                <small class="text-muted">85% del Run Rate</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4 rounded-4 text-center" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);">
+                                <h6 class="text-warning">🟡 REALISTA</h6>
+                                <h2 class="text-white mb-0" id="math-realistic">$0</h2>
+                                <small class="text-muted">Proyección Actual</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="p-4 rounded-4 text-center" style="background: rgba(0, 204, 150, 0.1); border: 1px solid rgba(0, 204, 150, 0.2);">
+                                <h6 class="text-success-neon">🟢 OPTIMISTA</h6>
+                                <h2 class="text-white mb-0" id="math-optimistic">$0</h2>
+                                <small class="text-muted">115% del Run Rate</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="text-center text-muted mt-5 fade-in" style="opacity: 0.5; font-size: 0.8rem;">
+                Agency Creamos Negocios • By Alvaro MV
+            </footer>
+
+        </main>
+    </div>
+
+    <script>
+        // CONFIG
+        const URL_BUDGET_DIC = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQGOLgPTDLie5gEbkViCbpebWfN9S_eb2h2GGlpWLjmfVgzfnwR_ncVTs4IqmKgmAFfxZTQHJlMBrIi/pub?output=csv";
+        const URL_BUDGET_2026 = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?output=csv";
+        const URL_LEADS_ALL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=0&single=true&output=csv";
+        const URL_LEADS_QUAL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv";
+        const URL_VENTAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv";
+
+        // STATE
+        let rawData = { budget: [], leadsAll: [], leadsQual: [], ventas: [] };
+        let filtered = {};
+
+        // --- UTILS ---
+        const fmtMoney = v => "$" + v.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+        const parseMoney = v => parseFloat((v || "0").toString().replace(/[$,]/g, '')) || 0;
+        
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('d-none'));
+            document.getElementById(tabId).classList.remove('d-none');
+            
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Trigger chart resize
+            window.dispatchEvent(new Event('resize'));
+        }
+
+        function toggleSidebar() {
+            document.body.classList.toggle('collapsed');
+            setTimeout(() => window.dispatchEvent(new Event('resize')), 350);
+        }
+
+        // --- DATA PROCESSING ---
+        async function init() {
+            const ts = Date.now();
+            try {
+                const [resB1, resB2, resLA, resLQ, resV] = await Promise.all([
+                    fetch(URL_BUDGET_DIC + "&t=" + ts).then(r => r.text()),
+                    fetch(URL_BUDGET_2026 + "&t=" + ts).then(r => r.text()),
+                    fetch(URL_LEADS_ALL + "&t=" + ts).then(r => r.text()),
+                    fetch(URL_LEADS_QUAL + "&t=" + ts).then(r => r.text()),
+                    fetch(URL_VENTAS + "&t=" + ts).then(r => r.text())
+                ]);
+
+                // 1. Budget Merging
+                const b1 = Papa.parse(resB1, {header:true, skipEmptyLines:true}).data;
+                const b2 = Papa.parse(resB2, {header:true, skipEmptyLines:true}).data;
+                
+                // Normalizar columnas Budget
+                let budgetClean = [];
+                // Process Dic (b1)
+                b1.forEach(r => {
+                    let date = moment(r['Fecha'], "DD/MM/YYYY");
+                    if(date.isValid()) budgetClean.push({
+                        fecha: date,
+                        gasto: parseMoney(r['Gasto']),
+                        clics: parseMoney(r['Clics'] || 0),
+                        visitas: parseMoney(r['Visitas'] || 0)
+                    });
+                });
+                // Process 2026 (b2) - Checks headers 'Day', 'Amount spent'
+                b2.forEach(r => {
+                    // Try parsing date YYYY-MM-DD which is common in FB exports
+                    let date = moment(r['Day']); 
+                    if(!date.isValid()) date = moment(r['Day'], "DD/MM/YYYY"); // Fallback
+                    
+                    if(date.isValid()) budgetClean.push({
+                        fecha: date,
+                        gasto: parseMoney(r['Amount spent'] || r['Gasto']),
+                        clics: parseMoney(r['Link clicks'] || r['Clics']),
+                        visitas: parseMoney(r['Landing page views'] || r['Visitas'])
+                    });
+                });
+                rawData.budget = budgetClean.sort((a,b) => a.fecha - b.fecha);
+
+                // 2. Leads (Normalizar fecha)
+                const processLeads = (csv) => {
+                    return Papa.parse(csv, {header:true, skipEmptyLines:true}).data
+                        .map(r => {
+                            let d = moment(r['Fecha Creación'] || r['Fecha'], "DD/MM/YYYY");
+                            return d.isValid() ? { fecha: d, ...r } : null;
+                        }).filter(x => x);
+                };
+                rawData.leadsAll = processLeads(resLA);
+                rawData.leadsQual = processLeads(resLQ);
+
+                // 3. Ventas
+                rawData.ventas = Papa.parse(resV, {header:true, skipEmptyLines:true}).data
+                    .map(r => {
+                        let d = moment(r['Fecha'], "DD/MM/YYYY");
+                        if(!d.isValid()) return null;
+                        
+                        let res = (r['Resultado'] || "").toLowerCase();
+                        let estado = "Otro";
+                        if(res.includes("venta")) estado = "✅ Venta";
+                        else if(res.includes("no show")) estado = "❌ No Show";
+                        else if(res.includes("descalificado")) estado = "🚫 Descalificado";
+                        else if(res.includes("seguimiento")) estado = "👀 Seguimiento";
+                        else if(res.includes("re-agendado")) estado = "📅 Re-Agendado";
+
+                        let asistio = 1;
+                        if(res.includes("no show") || res.includes("re-agendado")) asistio = 0;
+
+                        return {
+                            fecha: d,
+                            monto: parseMoney(r['Monto ($)']),
+                            closer: (r['Closer'] || "Sin Asignar").trim(),
+                            fuente: r['Origen Campaña'] || r['Fuente'] || "Desc",
+                            estadoSimple: estado,
+                            asistio: asistio
+                        };
+                    }).filter(x => x);
+
+                populateClosers();
+                updateDashboard();
+
+                // Remove Loader
+                document.getElementById('loader').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('loader').classList.add('d-none');
+                    document.getElementById('main-app').classList.remove('d-none');
+                }, 500);
+
+            } catch (e) {
+                console.error(e);
+                alert("Error cargando datos. Revisa la consola.");
+            }
+        }
+
+        function populateClosers() {
+            const closers = [...new Set(rawData.ventas.map(v => v.closer))].sort();
+            const sel = document.getElementById('filtroCloser');
+            closers.forEach(c => {
+                if(c) {
+                    let opt = document.createElement('option'); opt.value = c; opt.innerText = c;
+                    sel.appendChild(opt);
+                }
+            });
+        }
+
+        function getDates(filter) {
+            const hoy = moment();
+            let ini, fin;
+            switch(filter) {
+                case 'hoy': ini = moment(); fin = moment(); break;
+                case 'ayer': ini = moment().subtract(1,'d'); fin = moment().subtract(1,'d'); break;
+                case 'semana': ini = moment().startOf('isoWeek'); fin = moment(); break;
+                case 'mes_actual': ini = moment().startOf('month'); fin = moment(); break;
+                case 'mes_anterior': ini = moment().subtract(1,'month').startOf('month'); fin = moment().subtract(1,'month').endOf('month'); break;
+                case '30dias': ini = moment().subtract(30,'d'); fin = moment(); break;
+                default: ini = moment().startOf('month'); fin = moment();
+            }
+            return { ini, fin };
+        }
+
+        // --- CORE UPDATE LOGIC ---
+        function updateDashboard() {
+            const filterTime = document.getElementById('filtroTiempo').value;
+            const filterCloser = document.getElementById('filtroCloser').value;
+            const metaFact = parseFloat(document.getElementById('metaFact').value) || 30000;
+            const metaAds = parseFloat(document.getElementById('metaAds').value) || 5000;
+
+            const { ini, fin } = getDates(filterTime);
+            document.getElementById('rangoFechasTexto').innerText = `${ini.format("D MMM")} - ${fin.format("D MMM, YYYY")}`;
+
+            // Filter Arrays
+            const checkDate = (d) => d.isSameOrAfter(ini, 'day') && d.isSameOrBefore(fin, 'day');
+            
+            filtered.budget = rawData.budget.filter(x => checkDate(x.fecha));
+            filtered.leadsAll = rawData.leadsAll.filter(x => checkDate(x.fecha));
+            filtered.leadsQual = rawData.leadsQual.filter(x => checkDate(x.fecha));
+            
+            filtered.ventas = rawData.ventas.filter(x => checkDate(x.fecha));
+            if(filterCloser !== "Todos") {
+                filtered.ventas = filtered.ventas.filter(x => x.closer === filterCloser);
+                // Si hay filtro de closer, no contamos budget ni leads (regla de negocio del python)
+                filtered.budget = []; 
+            }
+
+            // Calculations
+            const facturacion = filtered.ventas.reduce((sum, v) => sum + v.monto, 0);
+            const gastoAds = (filterCloser === "Todos") ? filtered.budget.reduce((sum, b) => sum + b.gasto, 0) : 0;
+            const profit = facturacion - gastoAds;
+            const roas = gastoAds > 0 ? facturacion / gastoAds : 0;
+
+            const leadsTotal = filtered.leadsAll.length;
+            const leadsQual = filtered.leadsQual.length;
+            const agendas = filtered.ventas.length;
+            const ventas = filtered.ventas.filter(v => v.estadoSimple === "✅ Venta").length;
+            
+            // --- UPDATE DOM ---
+            
+            // Top KPIs
+            document.getElementById('kpi-facturacion').innerText = fmtMoney(facturacion);
+            document.getElementById('delta-facturacion').innerText = `${((facturacion/metaFact)*100).toFixed(1)}% Meta`;
+            
+            document.getElementById('kpi-ads').innerText = fmtMoney(gastoAds);
+            document.getElementById('delta-ads').innerText = `Restante: ${fmtMoney(metaAds - gastoAds)}`;
+            
+            document.getElementById('kpi-profit').innerText = fmtMoney(profit);
+            
+            document.getElementById('kpi-roas').innerHTML = `${roas.toFixed(2)}x`;
+            const roasColor = roas >= 3 ? 'text-success-neon' : 'text-danger-neon';
+            document.getElementById('delta-roas').innerHTML = `<span class="${roasColor}">${(roas-3).toFixed(1)} vs KPI</span>`;
+
+            // Tab CEO
+            document.getElementById('ceo-falta').innerText = fmtMoney(Math.max(metaFact - facturacion, 0));
+            document.getElementById('ceo-progress').style.width = Math.min((facturacion/metaFact)*100, 100) + "%";
+            
+            const daysInMonth = 30; // Simplificado
+            const dayOfMonth = moment().date();
+            const runRate = (dayOfMonth > 0) ? (facturacion / dayOfMonth) * daysInMonth : 0;
+            document.getElementById('ceo-proyeccion').innerText = fmtMoney(runRate);
+
+            const daysRange = fin.diff(ini, 'days') + 1;
+            const dailySpend = daysRange > 0 ? gastoAds / daysRange : 0;
+            const remainingDays = Math.max(daysInMonth - dayOfMonth, 0);
+            const suggestedSpend = remainingDays > 0 ? Math.max(metaAds - gastoAds, 0) / remainingDays : 0;
+            document.getElementById('ceo-diario').innerText = fmtMoney(dailySpend) + "/día";
+            document.getElementById('ceo-sugerido').innerText = `Sugerido: ${fmtMoney(suggestedSpend)}/día`;
+
+            // Tab Funnel Costs
+            document.getElementById('kpi-cpl').innerText = fmtMoney(leadsTotal > 0 ? gastoAds / leadsTotal : 0);
+            document.getElementById('kpi-cpql').innerText = fmtMoney(leadsQual > 0 ? gastoAds / leadsQual : 0);
+            document.getElementById('kpi-cpa').innerText = fmtMoney(ventas > 0 ? gastoAds / ventas : 0);
+
+            // Tab Math
+            document.getElementById('math-pessimistic').innerText = fmtMoney(runRate * 0.85);
+            document.getElementById('math-realistic').innerText = fmtMoney(runRate);
+            document.getElementById('math-optimistic').innerText = fmtMoney(runRate * 1.15);
+
+            // --- RENDER CHARTS ---
+            renderActivityChart(filtered.ventas, filtered.leadsAll);
+            renderFunnelChart(filtered.budget, leadsTotal, leadsQual, agendas, ventas);
+            renderQualityChart(filtered.leadsAll, filtered.leadsQual);
+            renderCampaigns(filtered.ventas);
+            renderClosers(filtered.ventas);
+        }
+
+        // --- CHARTS (PLOTLY) ---
+
+        function renderActivityChart(ventas, leads) {
+            // Agrupar por día
+            let dataMap = {};
+            // Llenar con Leads
+            leads.forEach(l => {
+                let d = l.fecha.format("YYYY-MM-DD");
+                if(!dataMap[d]) dataMap[d] = { fact: 0, leads: 0 };
+                dataMap[d].leads++;
+            });
+            // Llenar con Facturación
+            ventas.forEach(v => {
+                let d = v.fecha.format("YYYY-MM-DD");
+                if(!dataMap[d]) dataMap[d] = { fact: 0, leads: 0 };
+                dataMap[d].fact += v.monto;
+            });
+
+            let dates = Object.keys(dataMap).sort();
+            // Fill Gaps logic
+            let fullDates = [];
+            if(dates.length > 0) {
+                let curr = moment(dates[0]);
+                let end = moment(dates[dates.length-1]);
+                while(curr <= end) {
+                    fullDates.push(curr.format("YYYY-MM-DD"));
+                    curr.add(1, 'd');
+                }
+            }
+
+            let yFact = fullDates.map(d => dataMap[d] ? dataMap[d].fact : 0);
+            let yLeads = fullDates.map(d => dataMap[d] ? dataMap[d].leads : 0);
+
+            let trace1 = {
+                x: fullDates, y: yLeads, name: 'Leads', type: 'scatter', mode: 'lines',
+                line: { color: '#3b82f6', width: 2, shape: 'spline' }, fill: 'tozeroy', fillcolor: 'rgba(59, 130, 246, 0.1)',
+                yaxis: 'y2'
+            };
+            let trace2 = {
+                x: fullDates, y: yFact, name: 'Facturación', type: 'scatter', mode: 'lines+markers',
+                line: { color: '#00CC96', width: 3, shape: 'spline' }, 
+                marker: { color: '#0b1121', line: {color:'#00CC96', width:2}, size: 6 }
+            };
+
+            Plotly.newPlot('chart-activity', [trace1, trace2], {
+                paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { family: 'Inter', color: '#94a3b8' },
+                margin: { t: 30, l: 40, r: 40, b: 30 },
+                legend: { orientation: 'h', y: 1.1, x:0.5, xanchor:'center' },
+                xaxis: { showgrid: false, tickformat: '%d %b' },
+                yaxis: { showgrid: true, gridcolor: 'rgba(255,255,255,0.05)', zeroline: false, title: 'Facturación ($)' },
+                yaxis2: { overlaying: 'y', side: 'right', showgrid: false, title: 'Leads (#)', zeroline: false },
+                hovermode: 'x unified'
+            }, { responsive: true, displayModeBar: false });
+        }
+
+        function renderFunnelChart(budget, leads, qual, agendas, ventas) {
+            let clics = budget.reduce((s,b) => s + b.clics, 0);
+            let visitas = budget.reduce((s,b) => s + b.visitas, 0);
+            
+            let xVals = [clics, visitas, leads, qual, agendas, ventas];
+            let yVals = ["Clics", "Visitas", "Leads Totales", "Calificados", "Agendas", "Ventas"];
+            let colors = ["#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#00CC96"];
+
+            Plotly.newPlot('chart-funnel', [{
+                type: 'bar', x: xVals, y: yVals, orientation: 'h',
+                text: xVals, textposition: 'auto',
+                marker: { color: colors, line: {width:0} }
+            }], {
+                paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { family: 'Inter', color: '#fff' },
+                margin: { t: 0, l: 100, r: 20, b: 20 },
+                xaxis: { showgrid: false, showticklabels: false },
+                yaxis: { automargin: true }
+            }, { responsive: true, displayModeBar: false });
+        }
+
+        function renderQualityChart(all, qual) {
+            // Similar logic to activity chart but comparing volumes
+            let map = {};
+            all.forEach(l => {
+                let d = l.fecha.format("YYYY-MM-DD");
+                if(!map[d]) map[d] = {all:0, qual:0};
+                map[d].all++;
+            });
+            qual.forEach(l => {
+                let d = l.fecha.format("YYYY-MM-DD");
+                if(!map[d]) map[d] = {all:0, qual:0};
+                map[d].qual++;
+            });
+            
+            let dates = Object.keys(map).sort();
+            let yAll = dates.map(d => map[d].all);
+            let yQual = dates.map(d => map[d].qual);
+
+            Plotly.newPlot('chart-quality', [
+                { x: dates, y: yAll, name: 'Total Leads', type: 'scatter', line: {color:'#475569', width:2, shape:'spline'} },
+                { x: dates, y: yQual, name: 'Calificados', type: 'scatter', line: {color:'#00CC96', width:3, shape:'spline'}, fill:'tonexty' }
+            ], {
+                paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { family: 'Inter', color: '#94a3b8' },
+                margin: { t: 20, l: 30, r: 10, b: 30 },
+                legend: { orientation: 'h', y: 1.1 },
+                xaxis: { showgrid: false, tickformat: '%d %b' },
+                yaxis: { showgrid: true, gridcolor: 'rgba(255,255,255,0.05)' },
+                hovermode: 'x unified'
+            }, { responsive: true, displayModeBar: false });
+        }
+
+        function renderClosers(ventas) {
+            let rank = {};
+            ventas.forEach(v => {
+                let c = v.closer;
+                if(!rank[c]) rank[c] = {fact:0, ventas:0, agendas:0, shows:0};
+                rank[c].fact += v.monto;
+                rank[c].agendas++;
+                rank[c].shows += v.asistio;
+                if(v.estadoSimple === "✅ Venta") rank[c].ventas++;
+            });
+
+            let tbody = document.querySelector("#table-closers tbody");
+            tbody.innerHTML = "";
+            
+            Object.keys(rank).sort((a,b) => rank[b].fact - rank[a].fact).forEach(k => {
+                let r = rank[k];
+                let showRate = r.agendas > 0 ? (r.shows/r.agendas)*100 : 0;
+                let closeRate = r.shows > 0 ? (r.ventas/r.shows)*100 : 0;
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="text-white fw-bold">${k}</td>
+                        <td class="text-success-neon">${fmtMoney(r.fact)}</td>
+                        <td>${r.ventas}</td>
+                        <td>${r.agendas}</td>
+                        <td>
+                            <div class="d-flex align-items-center"><small class="me-2">${showRate.toFixed(0)}%</small>
+                            <div class="progress w-100" style="height:4px; background:rgba(255,255,255,0.1)"><div class="progress-bar bg-primary" style="width:${showRate}%"></div></div></div>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center"><small class="me-2">${closeRate.toFixed(0)}%</small>
+                            <div class="progress w-100" style="height:4px; background:rgba(255,255,255,0.1)"><div class="progress-bar bg-success" style="width:${closeRate}%"></div></div></div>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderCampaigns(ventas) {
+            let camp = {};
+            ventas.forEach(v => {
+                let src = v.fuente;
+                if(!camp[src]) camp[src] = 0;
+                camp[src] += v.monto;
+            });
+            
+            let sorted = Object.keys(camp).sort((a,b) => camp[b] - camp[a]).slice(0, 8); // Top 8
+            
+            Plotly.newPlot('chart-campaigns', [{
+                x: sorted.map(k => camp[k]),
+                y: sorted,
+                type: 'bar', orientation: 'h',
+                marker: { color: sorted.map((_,i) => i===0 ? '#00CC96' : '#334155') },
+                text: sorted.map(k => fmtMoney(camp[k])), textposition: 'auto'
+            }], {
+                paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { family: 'Inter', color: '#fff' },
+                margin: { t: 0, l: 150, r: 20, b: 20 },
+                yaxis: { autorange: 'reversed' },
+                xaxis: { showgrid: false }
+            }, { responsive: true, displayModeBar: false });
+        }
+
+        // Init
+        document.getElementById('filtroTiempo').addEventListener('change', updateDashboard);
+        document.getElementById('filtroCloser').addEventListener('change', updateDashboard);
+        init();
+
+    </script>
+</body>
+</html>
