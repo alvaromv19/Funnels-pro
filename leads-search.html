@@ -12,6 +12,7 @@
 
     <style>
         :root {
+            /* COLORES */
             --bg-body: #050b14;
             --bg-panel: rgba(17, 24, 39, 0.85);
             --glass-border: rgba(255, 255, 255, 0.08);
@@ -19,7 +20,7 @@
             --neon-blue: #3b82f6;
             --neon-red: #ef4444;
             --text-main: #f8fafc;
-            --text-muted: #cbd5e1; /* Color aclarado para legibilidad */
+            --text-muted: #ffffff;
         }
 
         body {
@@ -31,6 +32,7 @@
             padding: 40px 20px;
         }
 
+        /* --- COMPONENTES UI --- */
         .glass-panel {
             background: var(--bg-panel); backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px;
@@ -38,8 +40,8 @@
         }
 
         h1, h2, h3 { color: white; font-weight: 800; letter-spacing: -0.5px; }
-        
-        /* SEARCH */
+
+        /* SEARCH INPUT */
         .search-container { position: relative; margin-bottom: 40px; }
         .search-input {
             background: rgba(0, 0, 0, 0.3); border: 2px solid var(--glass-border);
@@ -47,6 +49,7 @@
             border-radius: 12px; width: 100%; transition: 0.3s; font-family: monospace;
         }
         .search-input:focus { border-color: var(--neon-green); outline: none; box-shadow: 0 0 20px rgba(10, 255, 0, 0.2); }
+        
         .search-btn {
             position: absolute; right: 10px; top: 10px; bottom: 10px;
             background: var(--neon-green); color: black; border: none;
@@ -54,7 +57,7 @@
         }
         .search-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon-green); }
 
-        /* TIMELINE */
+        /* TIMELINE CARDS */
         .timeline-card {
             background: rgba(255, 255, 255, 0.03); border-left: 4px solid var(--neon-blue);
             padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0;
@@ -69,7 +72,7 @@
         .data-label { color: var(--text-muted); font-weight: 600; margin-right: 8px; }
         .data-val { color: white; }
 
-        /* PROFILE */
+        /* PROFILE HEAD */
         .profile-header { text-align: center; margin-bottom: 40px; display: none; animation: fadeIn 0.5s ease; }
         .profile-name { font-size: 2.5rem; color: var(--neon-green); text-shadow: 0 0 20px rgba(10,255,0,0.3); margin-bottom: 5px; }
         .whatsapp-btn {
@@ -98,12 +101,8 @@
         .table-custom tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
         .table-custom tr td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
 
-        /* FILTRO */
-        .filter-select {
-            background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white;
-            padding: 8px 15px; border-radius: 8px; margin-bottom: 20px; float: right;
-        }
-
+        /* UTILS */
+        .filter-select { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; padding: 8px 15px; border-radius: 8px; margin-bottom: 20px; float: right; }
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column;}
         .spinner { width: 50px; height: 50px; border: 4px solid rgba(10, 255, 0, 0.2); border-top: 4px solid var(--neon-green); border-radius: 50%; animation: spin 1s infinite linear; }
         @keyframes spin { to { transform: rotate(360deg); } }
@@ -119,7 +118,7 @@
 
     <div id="loader">
         <div class="spinner"></div>
-        <p style="margin-top: 20px; letter-spacing: 2px; color: var(--text-muted);">CONECTANDO BASE DE DATOS...</p>
+        <p style="margin-top: 20px; letter-spacing: 2px; color: var(--text-muted);">CARGANDO BASE DE DATOS...</p>
     </div>
 
     <div class="container" style="max-width: 1000px; margin: 0 auto;">
@@ -141,18 +140,15 @@
             </div>
 
             <div id="resultsArea" class="d-none fade-in">
-                
                 <div class="profile-header" style="display: block;">
                     <div class="profile-name" id="leadName">Nombre Cliente</div>
                     <div id="leadPhoneContainer"></div>
                 </div>
-
                 <div class="glass-panel">
                     <div id="card-volumen"></div>
                     <div id="card-qual"></div>
                     <div id="card-res"></div>
                 </div>
-
             </div>
             
             <div id="noResults" class="text-center d-none text-muted mt-5">
@@ -193,56 +189,85 @@
     </div>
 
     <script>
+        // =================================================================
+        // 1. CONFIGURACIÓN Y ESTADO
+        // =================================================================
+        
+        // URLs de Google Sheets (CSV)
         const URL_VOLUMEN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=0&single=true&output=csv";
         const URL_QUAL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv";
         const URL_RES = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv";
 
+        // Estado Global de Datos
         let db = { vol: [], qual: [], res: [] };
-        let currentSort = { col: 'total', dir: 'desc' }; // Estado del ordenamiento
+        let currentSort = { col: 'total', dir: 'desc' }; // Orden default: Mayor facturación primero
+
+        // =================================================================
+        // 2. UTILIDADES GENERALES
+        // =================================================================
+        
         const fmtMoney = v => "$" + v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
         
+        // Cambio de Pestañas
         function switchTab(tabId) {
             document.getElementById('tab-search').classList.add('d-none');
             document.getElementById('tab-ranking').classList.add('d-none');
             document.getElementById(tabId).classList.remove('d-none');
+            
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
         }
 
-        // --- LÓGICA DE LIMPIEZA DE TELÉFONO ---
+        // Lógica de limpieza de teléfonos (Elimina errores de GSheet y formatea para WA)
         function extractPhone(row) {
             let rawPhone = row['Phone'] || row['Telefono'] || row['Móvil'] || row['Celular'];
+            // Fallback: Busca por posición (índice 3 / Col D) si no hay header claro
             if (!rawPhone) {
                 let values = Object.values(row);
                 if (values[3] && String(values[3]).length > 6) rawPhone = values[3];
             }
             if (!rawPhone) return null;
+            
             let str = String(rawPhone).trim();
-            if (str.includes("#ERROR")) return null; 
-            let linkPhone = str.replace(/\D/g, ''); 
+            if (str.includes("#ERROR")) return null; // Ignora errores de hoja
+            
+            let linkPhone = str.replace(/\D/g, ''); // Solo números para link
             let displayPhone = str;
-            if (displayPhone.startsWith("'")) displayPhone = displayPhone.substring(1);
+            if (displayPhone.startsWith("'")) displayPhone = displayPhone.substring(1); // Quita apóstrofe
+            
             return { link: linkPhone, display: displayPhone };
         }
 
+        // =================================================================
+        // 3. CARGA DE DATOS (INIT)
+        // =================================================================
+        
         async function init() {
             const ts = Date.now();
             try {
                 const fetchOpts = { cache: "no-store" };
+                
+                // Carga paralela de las 3 hojas
                 const [rVol, rQual, rRes] = await Promise.all([
                     fetch(URL_VOLUMEN + "&t=" + ts, fetchOpts).then(r => r.text()),
                     fetch(URL_QUAL + "&t=" + ts, fetchOpts).then(r => r.text()),
                     fetch(URL_RES + "&t=" + ts, fetchOpts).then(r => r.text())
                 ]);
 
+                // Función auxiliar para parsear CSV y limpiar claves
                 const parseData = (csv) => {
                     return Papa.parse(csv, {header: true, skipEmptyLines: true}).data.map(row => {
                         let clean = {};
                         Object.keys(row).forEach(k => clean[k.trim()] = row[k]);
+                        
+                        // Normaliza email para búsqueda
                         const emailKey = Object.keys(clean).find(k => k.toLowerCase().includes("email"));
                         if (emailKey) clean._email_norm = String(clean[emailKey]).trim().toLowerCase();
+                        
+                        // Extrae teléfono limpio preventivamente
                         const phoneKey = Object.keys(clean).find(k => k.toLowerCase().includes("phone") || k.toLowerCase().includes("telefono"));
-                        if(phoneKey) clean._phone_clean = extractPhone({[phoneKey]: clean[phoneKey]}); // Fix temporal
+                        if(phoneKey) clean._phone_clean = extractPhone({[phoneKey]: clean[phoneKey]}); 
+                        
                         return clean;
                     });
                 };
@@ -250,22 +275,26 @@
                 db.vol = parseData(rVol);
                 db.qual = parseData(rQual);
                 
-                // Resultados (con fix desplazamiento y parseo de fecha)
+                // Procesamiento especial para hoja Resultados (Corrige desplazamiento de columnas)
                 const pRes = Papa.parse(rRes, {header: false, skipEmptyLines: true});
                 const hRes = pRes.data[0].map(h => h.trim());
+                
                 db.res = pRes.data.slice(1).map(row => {
                     let vals = row;
+                    // Detecta si la fila está desplazada (columna 0 vacía)
                     if(!row[0] || row[0].trim() === "") {
                         let shifted = row.slice(8);
                         while(shifted.length < hRes.length) shifted.push("");
                         vals = shifted;
                     }
+                    // Reconstruye objeto con headers correctos
                     let obj = {};
                     hRes.forEach((h, i) => obj[h] = vals[i]);
+                    
                     const ek = Object.keys(obj).find(k => k.toLowerCase().includes("email"));
                     if(ek) obj._email_norm = String(obj[ek]).trim().toLowerCase();
                     
-                    // Parsear fecha para filtros (DD/MM/YYYY)
+                    // Crea objeto fecha para filtros
                     if(obj['Fecha']) obj._date_obj = moment(obj['Fecha'], "DD/MM/YYYY");
                     
                     return obj;
@@ -276,11 +305,14 @@
 
             } catch (e) {
                 console.error(e);
-                alert("Error de conexión con Sheets.");
+                alert("Error de conexión con Sheets. Revisa la consola.");
             }
         }
 
-        // --- BÚSQUEDA ---
+        // =================================================================
+        // 4. LÓGICA DEL BUSCADOR (TAB 1)
+        // =================================================================
+        
         function buscarLead() {
             const query = document.getElementById('emailInput').value.trim().toLowerCase();
             if(!query) return;
@@ -288,6 +320,7 @@
             const resArea = document.getElementById('resultsArea');
             const noRes = document.getElementById('noResults');
             
+            // Busca coincidencias en las 3 bases
             const matchVol = db.vol.find(r => r._email_norm === query);
             const matchQual = db.qual.find(r => r._email_norm === query);
             const matchesRes = db.res.filter(r => r._email_norm === query);
@@ -301,6 +334,7 @@
             noRes.classList.add('d-none');
             resArea.classList.remove('d-none');
 
+            // --- A. RENDERIZAR PERFIL ---
             let name = "Cliente Desconocido";
             if(matchesRes.length > 0 && matchesRes[0]['Lead Name']) name = matchesRes[0]['Lead Name'];
             else if(matchVol && matchVol['Nombre']) name = matchVol['Nombre'];
@@ -317,7 +351,9 @@
             }
             document.getElementById('leadPhoneContainer').innerHTML = phoneHtml;
 
-            // Cards Logic (Simplificada para brevedad, igual que antes)
+            // --- B. RENDERIZAR CARDS TIMELINE ---
+            
+            // 1. Volumen
             const divVol = document.getElementById('card-volumen');
             if(matchVol) {
                 divVol.innerHTML = `
@@ -329,6 +365,7 @@
                     </div>`;
             } else divVol.innerHTML = `<div class="timeline-header">1️⃣ INGRESO</div><div class="timeline-card" style="opacity:0.5">No encontrado en Volumen.</div>`;
 
+            // 2. Calificados
             const divQual = document.getElementById('card-qual');
             if(matchQual) {
                 divQual.innerHTML = `
@@ -339,6 +376,7 @@
                     </div>`;
             } else divQual.innerHTML = `<div class="timeline-header">2️⃣ CALIFICACIÓN</div><div class="timeline-card card-fail">No calificado.</div>`;
 
+            // 3. Cierre (Resultados)
             const divRes = document.getElementById('card-res');
             divRes.innerHTML = `<div class="timeline-header">3️⃣ CIERRE</div>`;
             if(matchesRes.length > 0) {
@@ -347,7 +385,9 @@
                     let css = "timeline-card"; let ico = "📞";
                     if(st.includes("venta")) { css += " card-success"; ico = "💰"; }
                     else if(st.includes("no show") || st.includes("descalificado")) { css += " card-fail"; ico = "❌"; }
+                    
                     let m = parseFloat((r['Monto ($)']||"0").replace(/[$,]/g,'')) || 0;
+                    
                     divRes.innerHTML += `
                         <div class="${css}">
                             <div class="d-flex justify-content-between mb-2">
@@ -362,34 +402,37 @@
             } else divRes.innerHTML += `<div class="p-3 text-muted border border-secondary rounded">Sin registro de llamada.</div>`;
         }
 
-        // --- SORTING ---
+        // =================================================================
+        // 5. LÓGICA DEL RANKING (TAB 2)
+        // =================================================================
+
         function sortRanking(colName) {
             // Alternar dirección si es la misma columna
             if(currentSort.col === colName) {
                 currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
             } else {
                 currentSort.col = colName;
-                currentSort.dir = 'desc'; // Default desc para montos/fechas
+                currentSort.dir = 'desc'; // Por defecto descendente
             }
             renderRanking();
         }
 
-        // --- RANKING ---
         function renderRanking() {
             const filter = document.getElementById('rankingTimeFilter').value;
             const now = moment();
             let cutoff = null;
 
+            // Definir fecha de corte según filtro
             if(filter === 'month') cutoff = now.startOf('month');
             else if(filter === 'year') cutoff = now.startOf('year');
             else if(filter === 'week') cutoff = now.startOf('isoWeek');
 
-            // 1. Filtrar y Agrupar
+            // 1. Filtrar y Agrupar por Cliente
             let map = {};
             db.res.forEach(r => {
                 let st = (r['Resultado']||"").toLowerCase();
                 if(st.includes("venta")) {
-                    // Filtro de fecha
+                    // Aplicar Filtro de Tiempo
                     if(cutoff && (!r._date_obj || r._date_obj.isBefore(cutoff))) return;
 
                     let email = r._email_norm;
@@ -398,7 +441,8 @@
                     
                     if(!map[email]) map[email] = { name: r['Lead Name']||"Desc.", total: 0, dateObj: r._date_obj, dateStr: r['Fecha']||"" };
                     map[email].total += m;
-                    // Guardar fecha más reciente
+                    
+                    // Mantener fecha más reciente
                     if(r._date_obj && (!map[email].dateObj || r._date_obj.isAfter(map[email].dateObj))) {
                         map[email].dateObj = r._date_obj;
                         map[email].dateStr = r['Fecha'];
@@ -409,7 +453,7 @@
             // 2. Convertir a Array
             let list = Object.keys(map).map(e => ({ email: e, ...map[e] }));
 
-            // 3. Ordenar
+            // 3. Ordenar según columna clickeada
             list.sort((a,b) => {
                 let valA, valB;
                 switch(currentSort.col) {
@@ -423,7 +467,7 @@
                 return 0;
             });
 
-            // 4. Render
+            // 4. Renderizar en DOM
             const tb = document.querySelector("#rankingTable tbody");
             tb.innerHTML = "";
             list.forEach((c, i) => {
@@ -438,8 +482,12 @@
             });
         }
 
+        // Listener para tecla Enter en buscador
         document.getElementById('emailInput').addEventListener('keypress', e => { if(e.key==='Enter') buscarLead(); });
+        
+        // Iniciar App
         init();
+
     </script>
 </body>
 </html>
