@@ -1,30 +1,33 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agency Command Center 🚀</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         :root {
+            /* --- PALETA DE COLORES --- */
             --bg-body: #050b14;
             --bg-panel: rgba(17, 24, 39, 0.7);
             --bg-sidebar: #0b1121;
             --glass-border: rgba(255, 255, 255, 0.05);
-            
+
             --neon-blue: #3b82f6;
             --neon-purple: #8b5cf6;
             --neon-green: #10b981;
             --neon-red: #ef4444;
             --neon-orange: #f59e0b;
-            
+
             --text-main: #f1f5f9;
             --text-muted: #64748b;
-            
+
+            /* --- DIMENSIONES --- */
             --sidebar-width: 280px;
             --sidebar-width-collapsed: 80px;
             --transition-speed: 0.4s;
@@ -32,8 +35,8 @@
 
         body {
             background-color: var(--bg-body);
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15), transparent 40%), 
+            background-image:
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15), transparent 40%),
                 radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.1), transparent 40%),
                 radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.05), transparent 40%);
             color: var(--text-main);
@@ -43,21 +46,27 @@
         }
 
         /* --- LAYOUT & TRANSITIONS --- */
-        .wrapper { display: flex; width: 100%; transition: all var(--transition-speed) ease; }
-        
-        /* SIDEBAR */
+        .wrapper {
+            display: flex;
+            width: 100%;
+            transition: all var(--transition-speed) ease;
+        }
+
+        /* SIDEBAR ESTILOS */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
             background: var(--bg-sidebar);
             border-right: 1px solid var(--glass-border);
             position: fixed;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             z-index: 1000;
             padding: 20px;
             overflow-y: auto;
             transition: width var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex; flex-direction: column;
+            display: flex;
+            flex-direction: column;
         }
 
         .main-content {
@@ -67,13 +76,27 @@
             transition: margin-left var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1), width var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* COLLAPSED STATE */
-        body.collapsed .sidebar { width: var(--sidebar-width-collapsed); padding: 20px 10px; }
-        body.collapsed .sidebar .hide-on-collapse { display: none !important; opacity: 0; }
-        body.collapsed .sidebar .sidebar-header { justify-content: center; }
-        body.collapsed .main-content { margin-left: var(--sidebar-width-collapsed); width: calc(100% - var(--sidebar-width-collapsed)); }
-        
-        /* --- GLASS COMPONENTS --- */
+        /* ESTADO CONTRAÍDO (COLLAPSED) */
+        body.collapsed .sidebar {
+            width: var(--sidebar-width-collapsed);
+            padding: 20px 10px;
+        }
+
+        body.collapsed .sidebar .hide-on-collapse {
+            display: none !important;
+            opacity: 0;
+        }
+
+        body.collapsed .sidebar .sidebar-header {
+            justify-content: center;
+        }
+
+        body.collapsed .main-content {
+            margin-left: var(--sidebar-width-collapsed);
+            width: calc(100% - var(--sidebar-width-collapsed));
+        }
+
+        /* --- PANELES DE CRISTAL (GLASSMORPHISM) --- */
         .glass-panel {
             background: var(--bg-panel);
             backdrop-filter: blur(20px);
@@ -86,27 +109,49 @@
             position: relative;
             overflow: hidden;
         }
-        
-        /* Gradient Top Line for Panels */
+
+        /* Línea superior degradada en paneles */
         .glass-panel::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
         }
 
-        /* --- TYPOGRAPHY & ELEMENTS --- */
-        h1, h2, h3, h4, h5 { color: white; font-weight: 800; letter-spacing: -0.02em; }
-        .text-muted { color: var(--text-muted) !important; }
-        
-        .metric-label { 
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; 
-            color: var(--text-muted); font-weight: 700; margin-bottom: 8px; display: block;
-        }
-        .metric-value { 
-            font-size: 2.5rem; font-weight: 900; color: white; line-height: 1; 
-            background: -webkit-linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text;
+        /* --- TIPOGRAFÍA Y ELEMENTOS --- */
+        h1, h2, h3, h4, h5 {
+            color: white;
+            font-weight: 800;
+            letter-spacing: -0.02em;
         }
 
-        /* Inputs & Selects */
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+
+        .metric-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+            background: -webkit-linear-gradient(90deg, #fff, #94a3b8);
+            -webkit-background-clip: text;
+        }
+
+        /* INPUTS Y SELECTS */
         select, input {
             background: rgba(255, 255, 255, 0.03) !important;
             border: 1px solid var(--glass-border) !important;
@@ -116,84 +161,164 @@
             font-size: 0.9rem;
             transition: all 0.3s;
         }
+
         select:focus, input:focus {
             border-color: var(--neon-blue) !important;
             box-shadow: 0 0 15px rgba(59, 130, 246, 0.3) !important;
             outline: none;
-            background: rgba(255,255,255,0.05) !important;
+            background: rgba(255, 255, 255, 0.05) !important;
         }
 
-        /* Buttons */
+        /* BOTONES */
         .btn-toggle {
-            background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer;
-            margin-bottom: 20px; transition: 0.3s;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: 0.3s;
         }
-        .btn-toggle:hover { color: var(--neon-blue); transform: scale(1.1); }
+
+        .btn-toggle:hover {
+            color: var(--neon-blue);
+            transform: scale(1.1);
+        }
 
         .btn-glow {
             background: linear-gradient(135deg, var(--neon-blue), #2563eb);
-            border: none; color: white; padding: 14px; border-radius: 12px; font-weight: 700;
-            width: 100%; letter-spacing: 0.5px; position: relative; overflow: hidden;
+            border: none;
+            color: white;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            width: 100%;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
             box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
             transition: all 0.3s;
         }
+
         .btn-glow:hover {
-            transform: translateY(-2px); box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
         }
 
         .btn-outline {
-            background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
-            color: var(--text-muted); width: 100%; padding: 10px; border-radius: 10px;
-            font-size: 0.9rem; transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            width: 100%;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            transition: all 0.2s;
         }
+
         .btn-outline:hover {
-            border-color: var(--text-main); color: white; background: rgba(255,255,255,0.05);
+            border-color: var(--text-main);
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        /* Table */
-        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        /* TABLA PERSONALIZADA */
+        .table-custom {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
         .table-custom th {
-            text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem;
-            text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--glass-border);
+            text-align: left;
+            padding: 15px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--glass-border);
         }
+
         .table-custom td {
-            background: rgba(255, 255, 255, 0.02); padding: 20px 15px; font-weight: 500;
-            border-top: 1px solid rgba(255,255,255,0.02);
-            border-bottom: 1px solid rgba(255,255,255,0.02);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 20px 15px;
+            font-weight: 500;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
         }
-        .table-custom tr td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; border-left: 1px solid rgba(255,255,255,0.02); }
-        .table-custom tr td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-right: 1px solid rgba(255,255,255,0.02); }
-        .table-custom tr:hover td { background: rgba(255, 255, 255, 0.06); transform: translateY(-2px); transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
-        /* Loader */
+        .table-custom tr td:first-child {
+            border-top-left-radius: 12px;
+            border-bottom-left-radius: 12px;
+            border-left: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .table-custom tr td:last-child {
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+            border-right: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .table-custom tr:hover td {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* LOADER (ANIMACIÓN DE CARGA) */
         #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-body); z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-body);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
-        .loader-ring {
-            width: 60px; height: 60px; border: 4px solid rgba(59, 130, 246, 0.2);
-            border-top: 4px solid var(--neon-blue); border-radius: 50%;
-            animation: spin 1s linear infinite; margin-bottom: 20px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Scrollbar */
+        .loader-ring {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(59, 130, 246, 0.2);
+            border-top: 4px solid var(--neon-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* SCROLLBAR */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg-body); }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-        /* Animation Classes */
-        .fade-up { animation: fadeUp 0.6s ease forwards; opacity: 0; transform: translateY(20px); }
-        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        /* ANIMACIONES DE ENTRADA */
+        .fade-up {
+            animation: fadeUp 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
 
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 </head>
+
 <body>
 
     <div id="loader">
@@ -202,7 +327,7 @@
     </div>
 
     <div class="wrapper d-none" id="main-app">
-        
+
         <nav class="sidebar">
             <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
                 <div class="d-flex align-items-center hide-on-collapse">
@@ -219,7 +344,7 @@
                 <button class="btn-outline mb-4" onclick="location.reload()">
                     <i class="fas fa-sync-alt me-2"></i> Refrescar Data
                 </button>
-                
+
                 <label class="metric-label">Filtros de Tiempo</label>
                 <select id="filtroTiempo" class="form-select mb-4">
                     <option value="mes_actual">📅 Este Mes</option>
@@ -256,7 +381,7 @@
         </nav>
 
         <main class="main-content">
-            
+
             <div class="d-flex justify-content-between align-items-end mb-5 fade-up" style="animation-delay: 0.1s;">
                 <div>
                     <h1 class="display-5 mb-1">Command Center</h1>
@@ -391,28 +516,33 @@
     </div>
 
     <script>
-        // CONFIG
+        // --- A. CONFIGURACIÓN DE URLS (EDITAR AQUÍ LOS LINKS) ---
         const URL_VENTAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv";
         const URL_GASTOS_DIC = "https://docs.google.com/spreadsheets/d/e/2PACX-1vGOLgPTDLie5gEbkViCbpebWfN9S_eb2h2GGlpWLjmfVgzfnwR_ncVTs4IqmKgmAFfxZTQHJlMBrIi/pub?gid=0&single=true&output=csv";
         const URL_GASTOS_ANUAL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?output=csv";
 
-        // SIDEBAR TOGGLE
+        // --- B. VARIABLES DE ESTADO ---
+        let rawDataVentas = [], rawDataGastos = [], filteredVentas = [], filteredGastos = [];
+
+        // --- C. FUNCIONES DE INTERFAZ (UI) ---
+        
+        // Colapsar Sidebar
         function toggleSidebar() {
             document.body.classList.toggle('collapsed');
-            // Trigger Plotly resize after transition
+            // Redimensionar gráficos de Plotly al cambiar el ancho
             setTimeout(() => {
                 window.dispatchEvent(new Event('resize'));
             }, 450);
         }
 
-        // ANIMATE NUMBERS
-        function animateValue(obj, start, end, duration, isMoney=false, isPercent=false) {
+        // Animación de números
+        function animateValue(obj, start, end, duration, isMoney = false, isPercent = false) {
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 let currentVal = Math.floor(progress * (end - start) + start);
-                
+
                 if (isMoney) obj.innerHTML = fmtMoney(currentVal);
                 else if (isPercent) obj.innerHTML = (progress * (end - start) + start).toFixed(1) + "%";
                 else obj.innerHTML = currentVal.toLocaleString();
@@ -427,12 +557,10 @@
             window.requestAnimationFrame(step);
         }
 
-        // INIT & DATA
-        let rawDataVentas = [], rawDataGastos = [], filteredVentas = [], filteredGastos = [];
-
+        // --- D. INICIALIZACIÓN Y CARGA DE DATOS ---
         async function init() {
             try {
-                const ts = Date.now();
+                const ts = Date.now(); // Cache busting para obligar actualización
                 const [resVentas, resG1, resG2] = await Promise.all([
                     fetch(URL_VENTAS + "&t=" + ts).then(r => r.text()),
                     fetch(URL_GASTOS_DIC + "&t=" + ts).then(r => r.text()),
@@ -444,7 +572,7 @@
                 populateClosers();
                 updateDashboard();
 
-                // Loader Exit
+                // Ocultar Loader
                 const loader = document.getElementById('loader');
                 loader.style.opacity = '0';
                 loader.style.transition = 'opacity 0.5s ease';
@@ -459,11 +587,14 @@
             }
         }
 
+        // --- E. PROCESAMIENTO DE DATOS ---
+
         function processVentas(csvText) {
             const results = Papa.parse(csvText, { header: true, skipEmptyLines: true });
             let data = results.data;
             const keys = results.meta.fields;
 
+            // Reparación de filas desplazadas (Bug GHL)
             data = data.map(row => {
                 const primerCol = row[keys[0]];
                 if (!primerCol || primerCol.trim() === "") {
@@ -478,10 +609,10 @@
 
             rawDataVentas = data.map(row => {
                 let fecha = moment(row['Fecha'], "DD/MM/YYYY");
-                if (!fecha.isValid()) fecha = moment(row['Fecha']); 
+                if (!fecha.isValid()) fecha = moment(row['Fecha']);
                 let monto = parseFloat((row['Monto ($)'] || "0").toString().replace(/[$,]/g, '')) || 0;
                 let res = (row['Resultado'] || "Pendiente").toLowerCase();
-                
+
                 let estadoSimple = "Otro/Pendiente";
                 if (res.includes("venta")) estadoSimple = "✅ Venta";
                 else if (res.includes("no show")) estadoSimple = "❌ No Show";
@@ -493,9 +624,12 @@
                 if (res.includes("venta") || res.includes("seguimiento") || res.includes("descalificado") || (res.includes("asistió") && !res.includes("no show"))) esAsistencia = true;
 
                 return {
-                    fecha: fecha, monto: monto, closer: (row['Closer'] || "Sin Asignar").trim(),
+                    fecha: fecha,
+                    monto: monto,
+                    closer: (row['Closer'] || "Sin Asignar").trim(),
                     email: (row['Email'] || row['Lead Name'] || Math.random()).toString().trim().toLowerCase(),
-                    estadoSimple: estadoSimple, esAsistencia: esAsistencia
+                    estadoSimple: estadoSimple,
+                    esAsistencia: esAsistencia
                 };
             }).filter(r => r.fecha.isValid());
         }
@@ -504,36 +638,41 @@
             const p1 = Papa.parse(csv1, { header: true, skipEmptyLines: true }).data;
             const p2 = Papa.parse(csv2, { header: false, skipEmptyLines: true }).data;
             let allGastos = [];
-            
+
             p1.forEach(r => {
                 let f = moment(r['Fecha'], "DD/MM/YYYY");
                 let g = parseFloat((r['Gasto'] || "0").toString().replace(/[$,]/g, '')) || 0;
-                if(f.isValid()) allGastos.push({ fecha: f, gasto: g });
+                if (f.isValid()) allGastos.push({ fecha: f, gasto: g });
             });
             p2.forEach(r => {
-                if(r[0] === 'Fecha') return;
-                let f = moment(r[0]); if (!f.isValid()) f = moment(r[0], "DD/MM/YYYY");
+                if (r[0] === 'Fecha') return;
+                let f = moment(r[0]);
+                if (!f.isValid()) f = moment(r[0], "DD/MM/YYYY");
                 let g = parseFloat((r[1] || "0").toString().replace(/[$,]/g, '')) || 0;
-                if(f.isValid()) allGastos.push({ fecha: f, gasto: g });
+                if (f.isValid()) allGastos.push({ fecha: f, gasto: g });
             });
-            rawDataGastos = allGastos.sort((a,b) => a.fecha - b.fecha);
+            rawDataGastos = allGastos.sort((a, b) => a.fecha - b.fecha);
         }
 
+        // Llenar select de Closers
         function populateClosers() {
             const closers = [...new Set(rawDataVentas.map(v => v.closer))].sort();
             const sel = document.getElementById('filtroCloser');
             closers.forEach(c => {
-                if(c) {
-                    let opt = document.createElement('option'); opt.value = c; opt.innerText = c;
+                if (c) {
+                    let opt = document.createElement('option');
+                    opt.value = c;
+                    opt.innerText = c;
                     sel.appendChild(opt);
                 }
             });
         }
 
+        // Obtener rango de fechas según filtro
         function getDates(filterVal) {
             const hoy = moment();
             let inicio, fin;
-            switch(filterVal) {
+            switch (filterVal) {
                 case 'hoy': inicio = moment(); fin = moment(); break;
                 case 'ayer': inicio = moment().subtract(1, 'days'); fin = moment().subtract(1, 'days'); break;
                 case 'semana': inicio = moment().startOf('isoWeek'); fin = moment(); break;
@@ -546,6 +685,7 @@
             return { inicio, fin };
         }
 
+        // --- F. ACTUALIZACIÓN DEL DASHBOARD (CÁLCULOS) ---
         function updateDashboard() {
             const filtroTiempo = document.getElementById('filtroTiempo').value;
             const filtroCloser = document.getElementById('filtroCloser').value;
@@ -555,28 +695,29 @@
             const { inicio, fin } = getDates(filtroTiempo);
             document.getElementById('rangoFechasTexto').innerText = `DATA RANGE: ${inicio.format("MMM DD").toUpperCase()} - ${fin.format("MMM DD").toUpperCase()}`;
 
+            // Filtrado
             filteredVentas = rawDataVentas.filter(v => v.fecha.isSameOrAfter(inicio, 'day') && v.fecha.isSameOrBefore(fin, 'day'));
             if (filtroCloser !== "Todos") filteredVentas = filteredVentas.filter(v => v.closer === filtroCloser);
             filteredGastos = rawDataGastos.filter(g => g.fecha.isSameOrAfter(inicio, 'day') && g.fecha.isSameOrBefore(fin, 'day'));
-            
+
             let totalGasto = (filtroCloser === "Todos") ? filteredGastos.reduce((sum, g) => sum + g.gasto, 0) : 0;
             let totalFacturacion = filteredVentas.reduce((sum, v) => sum + v.monto, 0);
 
-            // KPIs
+            // Cálculos de KPIs
             const uniqueEmails = [...new Set(filteredVentas.map(v => v.email))];
             const asistenciasSet = new Set(filteredVentas.filter(v => v.esAsistencia).map(v => v.email));
             const ventasSet = new Set(filteredVentas.filter(v => v.estadoSimple === "✅ Venta").map(v => v.email));
-            
+
             const profit = totalFacturacion - totalGasto;
             const roas = totalGasto > 0 ? (totalFacturacion / totalGasto) : 0;
-            
-            // Animations
+
+            // Renderizar Números
             animateValue(document.getElementById('kpi-facturacion'), 0, totalFacturacion, 1000, true);
             animateValue(document.getElementById('kpi-profit'), 0, profit, 1000, true);
             document.getElementById('kpi-roas').innerHTML = `${roas.toFixed(2)}x`;
             animateValue(document.getElementById('kpi-ventas'), 0, ventasSet.size, 1000);
             animateValue(document.getElementById('kpi-ads'), 0, totalGasto, 1000, true);
-            
+
             animateValue(document.getElementById('kpi-leads'), 0, uniqueEmails.length, 800);
             animateValue(document.getElementById('kpi-asistencias'), 0, asistenciasSet.size, 800);
             const tasaAsist = uniqueEmails.length > 0 ? (asistenciasSet.size / uniqueEmails.length * 100) : 0;
@@ -584,20 +725,24 @@
             animateValue(document.getElementById('kpi-tasa-asistencia'), 0, tasaAsist, 800, false, true);
             animateValue(document.getElementById('kpi-tasa-cierre'), 0, tasaCierre, 800, false, true);
 
+            // Llamar a renderizadores visuales
             renderProjections(filtroTiempo, totalFacturacion, metaFact, presAds, totalGasto);
             renderCharts(filteredVentas, filteredGastos, filtroCloser);
             renderTable(filteredVentas);
         }
 
+        // --- G. RENDERIZADORES DE GRÁFICOS Y TABLAS ---
+
+        // Renderizar Proyecciones
         function renderProjections(filtro, fact, meta, presAds, gasto) {
             const div = document.getElementById('proyeccionesContainer');
-            if(filtro !== "mes_actual") { div.innerHTML=""; return; }
-            
+            if (filtro !== "mes_actual") { div.innerHTML = ""; return; }
+
             const hoy = moment();
             const diasMes = hoy.daysInMonth();
             const diaHoy = hoy.date();
             const restante = diasMes - diaHoy;
-            
+
             const proy = (diaHoy > 0) ? (fact / diaHoy) * diasMes : 0;
             const budgetRest = Math.max(presAds - gasto, 0);
             const pace = restante > 0 ? budgetRest / restante : 0;
@@ -632,16 +777,17 @@
             `;
         }
 
+        // Renderizar Gráficos (Plotly)
         function renderCharts(ventas, gastos, closerSel) {
-            // CHART 1: LEADS BEHAVIOR (SPLINE AREA)
+            // GRÁFICO 1: FLUJO LEADS
             let statusData = {};
             ventas.forEach(v => {
                 let d = v.fecha.format("YYYY-MM-DD");
-                if(!statusData[d]) statusData[d] = {};
-                if(!statusData[d][v.estadoSimple]) statusData[d][v.estadoSimple] = 0;
+                if (!statusData[d]) statusData[d] = {};
+                if (!statusData[d][v.estadoSimple]) statusData[d][v.estadoSimple] = 0;
                 statusData[d][v.estadoSimple]++;
             });
-            
+
             let sortedDates = Object.keys(statusData).sort();
             let datasets = [];
             const colors = {
@@ -651,11 +797,12 @@
 
             Object.keys(colors).forEach(status => {
                 let y = sortedDates.map(d => statusData[d][status] || 0);
-                // "Pro" Style: Scatter with fill (Stacked Area)
                 datasets.push({
-                    x: sortedDates, y: y, name: status, 
-                    mode: 'none', // No lines on top, just fill
-                    stackgroup: 'one', // Enable stacking
+                    x: sortedDates,
+                    y: y,
+                    name: status,
+                    mode: 'none',
+                    stackgroup: 'one',
                     fillcolor: colors[status],
                     type: 'scatter',
                     hoverinfo: 'x+y+name'
@@ -663,69 +810,79 @@
             });
 
             Plotly.newPlot('chart-daily-status', datasets, {
-                paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-                font: {family: 'Inter', color: '#64748b'},
-                margin: {t:10, l:30, r:10, b:30},
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { family: 'Inter', color: '#64748b' },
+                margin: { t: 10, l: 30, r: 10, b: 30 },
                 showlegend: true,
-                legend: {orientation: 'h', y: 1.1, x: 0},
-                xaxis: {gridcolor: 'rgba(255,255,255,0.05)', showgrid: false},
-                yaxis: {gridcolor: 'rgba(255,255,255,0.05)', showgrid: true}
-            }, {responsive: true, displayModeBar: false});
+                legend: { orientation: 'h', y: 1.1, x: 0 },
+                xaxis: { gridcolor: 'rgba(255,255,255,0.05)', showgrid: false },
+                yaxis: { gridcolor: 'rgba(255,255,255,0.05)', showgrid: true }
+            }, { responsive: true, displayModeBar: false });
 
-            // CHART 2: FINANCE (GRADIENT LINES)
+            // GRÁFICO 2: FINANZAS
             let finData = {};
             ventas.forEach(v => {
                 let d = v.fecha.format("YYYY-MM-DD");
-                if(!finData[d]) finData[d] = {fact: 0, ads: 0};
+                if (!finData[d]) finData[d] = { fact: 0, ads: 0 };
                 finData[d].fact += v.monto;
             });
-            if(closerSel === "Todos") {
+            if (closerSel === "Todos") {
                 gastos.forEach(g => {
                     let d = g.fecha.format("YYYY-MM-DD");
-                    if(!finData[d]) finData[d] = {fact: 0, ads: 0};
+                    if (!finData[d]) finData[d] = { fact: 0, ads: 0 };
                     finData[d].ads += g.gasto;
                 });
             }
 
             let datesF = Object.keys(finData).sort();
             let traceFact = {
-                x: datesF, y: datesF.map(d => finData[d].fact),
-                name: 'Facturación', mode: 'lines',
-                line: {color: '#10b981', width: 3, shape: 'spline'},
-                fill: 'tozeroy', fillcolor: 'rgba(16, 185, 129, 0.1)'
+                x: datesF,
+                y: datesF.map(d => finData[d].fact),
+                name: 'Facturación',
+                mode: 'lines',
+                line: { color: '#10b981', width: 3, shape: 'spline' },
+                fill: 'tozeroy',
+                fillcolor: 'rgba(16, 185, 129, 0.1)'
             };
             let traceAds = {
-                x: datesF, y: datesF.map(d => finData[d].ads),
-                name: 'Ads', mode: 'lines',
-                line: {color: '#ef4444', width: 2, shape: 'spline'},
-                fill: 'tozeroy', fillcolor: 'rgba(239, 68, 68, 0.05)'
+                x: datesF,
+                y: datesF.map(d => finData[d].ads),
+                name: 'Ads',
+                mode: 'lines',
+                line: { color: '#ef4444', width: 2, shape: 'spline' },
+                fill: 'tozeroy',
+                fillcolor: 'rgba(239, 68, 68, 0.05)'
             };
 
             Plotly.newPlot('chart-finance', [traceFact, traceAds], {
-                paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-                font: {family: 'Inter', color: '#64748b'},
-                margin: {t:10, l:40, r:10, b:30},
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { family: 'Inter', color: '#64748b' },
+                margin: { t: 10, l: 40, r: 10, b: 30 },
                 hovermode: 'x unified',
-                legend: {orientation: 'h', y: 1.1},
-                xaxis: {showgrid: false}, yaxis: {gridcolor: 'rgba(255,255,255,0.05)'}
-            }, {responsive: true, displayModeBar: false});
+                legend: { orientation: 'h', y: 1.1 },
+                xaxis: { showgrid: false },
+                yaxis: { gridcolor: 'rgba(255,255,255,0.05)' }
+            }, { responsive: true, displayModeBar: false });
         }
 
+        // Renderizar Tabla
         function renderTable(ventas) {
             let ranking = {};
             ventas.forEach(v => {
                 let c = v.closer;
-                if(!ranking[c]) ranking[c] = {fact: 0, asist: new Set(), ventas: new Set()};
+                if (!ranking[c]) ranking[c] = { fact: 0, asist: new Set(), ventas: new Set() };
                 ranking[c].fact += v.monto;
-                if(v.esAsistencia) ranking[c].asist.add(v.email);
-                if(v.estadoSimple === "✅ Venta") ranking[c].ventas.add(v.email);
+                if (v.esAsistencia) ranking[c].asist.add(v.email);
+                if (v.estadoSimple === "✅ Venta") ranking[c].ventas.add(v.email);
             });
 
             let rows = Object.keys(ranking).map(k => {
                 let r = ranking[k];
                 let pct = r.asist.size > 0 ? (r.ventas.size / r.asist.size * 100) : 0;
                 return { name: k, fact: r.fact, asist: r.asist.size, ventas: r.ventas.size, pct };
-            }).sort((a,b) => b.fact - a.fact);
+            }).sort((a, b) => b.fact - a.fact);
 
             let tbody = document.querySelector("#tabla-ranking tbody");
             tbody.innerHTML = "";
@@ -750,13 +907,16 @@
             });
         }
 
-        const fmtMoney = (val) => "$" + val.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-        
-        // Event Listeners
+        const fmtMoney = (val) => "$" + val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+        // --- H. EVENT LISTENERS (ESCUCHA DE EVENTOS) ---
         document.getElementById('filtroTiempo').addEventListener('change', updateDashboard);
         document.getElementById('filtroCloser').addEventListener('change', updateDashboard);
+        
+        // Iniciar App
         init();
 
     </script>
 </body>
+
 </html>
