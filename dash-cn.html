@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agency Dashboard 🚀</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0e1117; color: #ffffff; font-family: sans-serif; }
+        .card { background-color: #262730; border: none; margin-bottom: 20px; color: white; }
+        .sidebar { background-color: #262730; min-height: 100vh; padding: 20px; border-right: 1px solid #444; }
+        h1, h2, h3, h4 { color: #fafafa; }
+        .metric-value { font-size: 2rem; font-weight: bold; }
+        .metric-delta { font-size: 0.9rem; }
+        .metric-delta.positive { color: #00CC96; }
+        .metric-delta.negative { color: #EF553B; }
+        hr { border-color: #555; }
+        select, input { background-color: #0e1117 !important; color: white !important; border: 1px solid #555 !important; }
+        /* Loader */
+        #loader { position: fixed; top:0; left:0; width:100%; height:100%; background: #0e1117; display:flex; align-items:center; justify-content:center; z-index:9999; }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="text-center">
+            <h1>🚀 Cargando Dashboard...</h1>
+            <p>Conectando con Google Sheets y procesando datos...</p>
+        </div>
+    </div>
+
+    <div class="container-fluid d-none" id="main-app">
+        <div class="row">
+            <div class="col-md-2 sidebar">
+                <h4>🎛️ Panel de Control</h4>
+                <button class="btn btn-outline-light w-100 mb-3" onclick="location.reload()">🔄 Actualizar Datos</button>
+                <hr>
+                
+                <label class="form-label">📅 Período:</label>
+                <select id="filtroTiempo" class="form-select mb-3">
+                    <option value="mes_actual">Este Mes</option>
+                    <option value="mes_anterior">Mes Anterior</option>
+                    <option value="hoy">Hoy</option>
+                    <option value="ayer">Ayer</option>
+                    <option value="semana">Esta Semana</option>
+                    <option value="30dias">Últimos 30 días</option>
+                    <option value="historico">Todo el Histórico</option>
+                </select>
+
+                <label class="form-label">👤 Closer:</label>
+                <select id="filtroCloser" class="form-select mb-3">
+                    <option value="Todos">Todos</option>
+                </select>
+
+                <hr>
+                <h5>🎯 Objetivos</h5>
+                <label>Meta Facturación ($)</label>
+                <input type="number" id="metaFact" class="form-control mb-2" value="30000">
+                <label>Presupuesto Ads ($)</label>
+                <input type="number" id="metaAds" class="form-control mb-3" value="3500">
+                <button class="btn btn-primary w-100" onclick="updateDashboard()">Aplicar Objetivos</button>
+            </div>
+
+            <div class="col-md-10 p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h2>🚀 Creamos Negocios</h2>
+                        <span class="text-muted" id="rangoFechasTexto">Cargando fechas...</span>
+                    </div>
+                </div>
+
+                <div class="card p-3 mb-4">
+                    <h4>🎯 Proyecciones del Mes</h4>
+                    <div class="row text-center" id="proyeccionesContainer">
+                        </div>
+                </div>
+
+                <h3>💰 Estado Financiero</h3>
+                <div class="row mb-4">
+                    <div class="col"><div class="card p-3"><small>Facturación</small><div class="metric-value" id="kpi-facturacion">$0</div></div></div>
+                    <div class="col"><div class="card p-3"><small>Profit</small><div class="metric-value" id="kpi-profit">$0</div></div></div>
+                    <div class="col"><div class="card p-3"><small>ROAS (Meta 3.5)</small><div class="metric-value" id="kpi-roas">0.00x</div></div></div>
+                    <div class="col"><div class="card p-3"><small>Ventas Cerradas</small><div class="metric-value" id="kpi-ventas">0</div></div></div>
+                    <div class="col"><div class="card p-3"><small>Inversión Ads</small><div class="metric-value" id="kpi-ads">$0</div></div></div>
+                </div>
+
+                <h3>📞 Eficiencia Comercial</h3>
+                <div class="row mb-4">
+                    <div class="col"><div class="card p-3"><small>Leads Únicos</small><div id="kpi-leads" class="h4">0</div></div></div>
+                    <div class="col"><div class="card p-3"><small>Asistencias</small><div id="kpi-asistencias" class="h4">0</div></div></div>
+                    <div class="col"><div class="card p-3"><small>Tasa Asistencia</small><div id="kpi-tasa-asistencia" class="h4">0%</div></div></div>
+                    <div class="col"><div class="card p-3"><small>Tasa Cierre</small><div id="kpi-tasa-cierre" class="h4">0%</div></div></div>
+                </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card p-2">
+                            <div id="chart-daily-status" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card p-2">
+                            <div id="chart-finance" style="height: 400px;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>🏆 Ranking Closers</h3>
+                <div class="card p-3">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover" id="tabla-ranking">
+                            <thead>
+                                <tr>
+                                    <th>Closer</th>
+                                    <th>Facturado ($)</th>
+                                    <th>Asistencias</th>
+                                    <th>Ventas</th>
+                                    <th>% Cierre</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URLs de tus Google Sheets
+        const URL_VENTAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv";
+        const URL_GASTOS_DIC = "https://docs.google.com/spreadsheets/d/e/2PACX-1vGOLgPTDLie5gEbkViCbpebWfN9S_eb2h2GGlpWLjmfVgzfnwR_ncVTs4IqmKgmAFfxZTQHJlMBrIi/pub?gid=0&single=true&output=csv";
+        const URL_GASTOS_ANUAL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?output=csv";
+
+        let rawDataVentas = [];
+        let rawDataGastos = [];
+        let filteredVentas = [];
+        let filteredGastos = [];
+
+        // --- 1. CARGA DE DATOS (Versión Anti-Caché) ---
+async function init() {
+    try {
+        // Agregamos un timestamp único (&t=...) para obligar a descargar datos frescos siempre
+        const timestamp = Date.now();
+        
+        const [resVentas, resG1, resG2] = await Promise.all([
+            fetch(URL_VENTAS + "&t=" + timestamp).then(r => r.text()),
+            fetch(URL_GASTOS_DIC + "&t=" + timestamp).then(r => r.text()),
+            fetch(URL_GASTOS_ANUAL + "&t=" + timestamp).then(r => r.text())
+        ]);
+
+        processVentas(resVentas);
+        processGastos(resG1, resG2);
+        
+        populateClosers();
+        updateDashboard();
+
+        document.getElementById('loader').classList.add('d-none');
+        document.getElementById('main-app').classList.remove('d-none');
+
+    } catch (error) {
+        console.error(error);
+        alert("Error cargando datos. Revisa la consola o tu conexión.");
+    }
+}
+
+        // --- 2. PROCESAMIENTO VENTAS (Con Reparación GHL) ---
+        function processVentas(csvText) {
+            // Parsear CSV
+            const results = Papa.parse(csvText, { header: true, skipEmptyLines: true });
+            let data = results.data;
+
+            // Lógica de reparación (reparar_desplazamiento)
+            // En Python: si col[0] está vacía, movemos todo 8 posiciones a la izquierda.
+            // Nota: PapaParse devuelve objetos {Columna: Valor}, así que trabajamos con keys.
+            const keys = results.meta.fields; // Nombres de columnas
+
+            data = data.map(row => {
+                const primerCol = row[keys[0]];
+                // Si la primera columna es nula o vacía, intentamos reparar
+                if (!primerCol || primerCol.trim() === "") {
+                    // Convertimos a array de valores
+                    let values = keys.map(k => row[k]);
+                    // Shift a la izquierda (eliminar primeros 8, agregar 8 vacíos al final)
+                    // Ajuste: Tu código Python hace roll -8. Simulamos eso.
+                    let fixedValues = values.slice(8).concat(new Array(8).fill(""));
+                    
+                    // Reconstruir objeto
+                    let newRow = {};
+                    keys.forEach((k, i) => newRow[k] = fixedValues[i]);
+                    return newRow;
+                }
+                return row;
+            });
+
+            // Limpieza y Tipos
+            rawDataVentas = data.map(row => {
+                // Fechas (Day First)
+                let fecha = moment(row['Fecha'], "DD/MM/YYYY");
+                if (!fecha.isValid()) fecha = moment(row['Fecha']); // Intento fallback
+
+                // Monto
+                let montoStr = row['Monto ($)'] || "0";
+                let monto = parseFloat(montoStr.toString().replace(/[$,]/g, '')) || 0;
+
+                // Resultado / Estado
+                let resultado = (row['Resultado'] || "Pendiente").toLowerCase();
+                let estadoSimple = "Otro/Pendiente";
+                if (resultado.includes("venta")) estadoSimple = "✅ Venta";
+                else if (resultado.includes("no show")) estadoSimple = "❌ No Show";
+                else if (resultado.includes("descalificado")) estadoSimple = "🚫 Descalificado";
+                else if (resultado.includes("seguimiento")) estadoSimple = "👀 Seguimiento";
+                else if (resultado.includes("re-agendado") || resultado.includes("reagendado")) estadoSimple = "📅 Re-Agendado";
+
+                // Es Asistencia
+                let esAsistencia = false;
+                if (resultado.includes("venta") || resultado.includes("seguimiento") || 
+                    resultado.includes("descalificado") || (resultado.includes("asistió") && !resultado.includes("no show"))) {
+                    esAsistencia = true;
+                }
+
+                return {
+                    fecha: fecha,
+                    monto: monto,
+                    closer: (row['Closer'] || "Sin Asignar").trim(),
+                    email: (row['Email'] || row['Lead Name'] || Math.random().toString()).trim().toLowerCase(),
+                    estadoSimple: estadoSimple,
+                    esAsistencia: esAsistencia,
+                    resultadoOriginal: resultado
+                };
+            }).filter(r => r.fecha.isValid()); // Eliminar fechas inválidas
+        }
+
+        // --- 3. PROCESAMIENTO GASTOS ---
+        function processGastos(csv1, csv2) {
+            // Unir ambos CSVs
+            const p1 = Papa.parse(csv1, { header: true, skipEmptyLines: true }).data;
+            const p2 = Papa.parse(csv2, { header: false, skipEmptyLines: true }).data; // El anual suele no tener header o ser distinto, asumimos orden
+
+            let allGastos = [];
+
+            // G1
+            p1.forEach(r => {
+                let f = moment(r['Fecha'], "DD/MM/YYYY");
+                let g = parseFloat((r['Gasto'] || "0").toString().replace(/[$,]/g, '')) || 0;
+                if(f.isValid()) allGastos.push({ fecha: f, gasto: g });
+            });
+
+            // G2 (Asumiendo col 0 fecha, col 1 gasto según tu código Python)
+            // Saltamos la fila 0 si es header (contiene texto 'Fecha')
+            p2.forEach(r => {
+                if(r[0] === 'Fecha') return;
+                let f = moment(r[0]); // El formato puede variar, moment suele ser inteligente
+                if (!f.isValid()) f = moment(r[0], "DD/MM/YYYY");
+                let g = parseFloat((r[1] || "0").toString().replace(/[$,]/g, '')) || 0;
+                if(f.isValid()) allGastos.push({ fecha: f, gasto: g });
+            });
+
+            rawDataGastos = allGastos.sort((a,b) => a.fecha - b.fecha);
+        }
+
+        // --- 4. FILTROS Y SIDEBAR ---
+        function populateClosers() {
+            const closers = [...new Set(rawDataVentas.map(v => v.closer))].sort();
+            const sel = document.getElementById('filtroCloser');
+            closers.forEach(c => {
+                if(c) {
+                    let opt = document.createElement('option');
+                    opt.value = c;
+                    opt.innerText = c;
+                    sel.appendChild(opt);
+                }
+            });
+        }
+
+        function getDatesFromFilter(filterVal) {
+            const hoy = moment();
+            let inicio, fin;
+
+            switch(filterVal) {
+                case 'hoy': inicio = moment(); fin = moment(); break;
+                case 'ayer': inicio = moment().subtract(1, 'days'); fin = moment().subtract(1, 'days'); break;
+                case 'semana': inicio = moment().startOf('isoWeek'); fin = moment(); break; // Lunes a Hoy
+                case 'mes_actual': inicio = moment().startOf('month'); fin = moment(); break;
+                case 'mes_anterior': 
+                    inicio = moment().subtract(1, 'month').startOf('month'); 
+                    fin = moment().subtract(1, 'month').endOf('month'); 
+                    break;
+                case '30dias': inicio = moment().subtract(30, 'days'); fin = moment(); break;
+                case 'historico': inicio = moment('2000-01-01'); fin = moment(); break;
+                default: inicio = moment().startOf('month'); fin = moment();
+            }
+            return { inicio, fin };
+        }
+
+        // --- 5. ACTUALIZAR DASHBOARD ---
+        function updateDashboard() {
+            const filtroTiempo = document.getElementById('filtroTiempo').value;
+            const filtroCloser = document.getElementById('filtroCloser').value;
+            const metaFact = parseFloat(document.getElementById('metaFact').value) || 0;
+            const presAds = parseFloat(document.getElementById('metaAds').value) || 0;
+
+            const { inicio, fin } = getDatesFromFilter(filtroTiempo);
+
+            // Texto rango
+            document.getElementById('rangoFechasTexto').innerText = `📅 ${inicio.format("DD/MM/YYYY")} al ${fin.format("DD/MM/YYYY")}`;
+
+            // Filtrar Data
+            filteredVentas = rawDataVentas.filter(v => 
+                v.fecha.isSameOrAfter(inicio, 'day') && v.fecha.isSameOrBefore(fin, 'day')
+            );
+
+            if (filtroCloser !== "Todos") {
+                filteredVentas = filteredVentas.filter(v => v.closer === filtroCloser);
+            }
+
+            filteredGastos = rawDataGastos.filter(g => 
+                g.fecha.isSameOrAfter(inicio, 'day') && g.fecha.isSameOrBefore(fin, 'day')
+            );
+            
+            // Si hay filtro de closer, el gasto es 0 (según tu lógica Python)
+            let totalGasto = (filtroCloser === "Todos") ? filteredGastos.reduce((sum, g) => sum + g.gasto, 0) : 0;
+            let totalFacturacion = filteredVentas.reduce((sum, v) => sum + v.monto, 0);
+
+            // --- CÁLCULOS PRINCIPALES ---
+            const uniqueEmails = [...new Set(filteredVentas.map(v => v.email))];
+            const leadsUnicos = uniqueEmails.length;
+            
+            // Asistencias únicas
+            const asistenciasSet = new Set(filteredVentas.filter(v => v.esAsistencia).map(v => v.email));
+            const totalAsistencias = asistenciasSet.size;
+
+            // Ventas cerradas únicas
+            const ventasSet = new Set(filteredVentas.filter(v => v.estadoSimple === "✅ Venta").map(v => v.email));
+            const ventasCerradas = ventasSet.size;
+
+            const profit = totalFacturacion - totalGasto;
+            const roas = totalGasto > 0 ? (totalFacturacion / totalGasto) : 0;
+            const tasaAsist = leadsUnicos > 0 ? (totalAsistencias / leadsUnicos * 100) : 0;
+            const tasaCierre = totalAsistencias > 0 ? (ventasCerradas / totalAsistencias * 100) : 0;
+
+            // --- RENDERIZAR DOM ---
+            document.getElementById('kpi-facturacion').innerText = fmtMoney(totalFacturacion);
+            document.getElementById('kpi-profit').innerText = fmtMoney(profit);
+            document.getElementById('kpi-roas').innerHTML = `${roas.toFixed(2)}x <span class="metric-delta ${roas >= 3.5 ? 'positive' : 'negative'}">(${roas >= 3.5 ? 'Buena' : 'Baja'})</span>`;
+            document.getElementById('kpi-ventas').innerText = ventasCerradas;
+            document.getElementById('kpi-ads').innerText = fmtMoney(totalGasto);
+
+            document.getElementById('kpi-leads').innerText = leadsUnicos;
+            document.getElementById('kpi-asistencias').innerText = totalAsistencias;
+            document.getElementById('kpi-tasa-asistencia').innerText = tasaAsist.toFixed(1) + "%";
+            document.getElementById('kpi-tasa-cierre').innerText = tasaCierre.toFixed(1) + "%";
+
+            // --- PROYECCIONES (Si es mes actual) ---
+            renderProjections(filtroTiempo, totalFacturacion, metaFact, presAds, totalGasto);
+
+            // --- GRÁFICOS ---
+            renderCharts(filteredVentas, filteredGastos, filtroCloser);
+
+            // --- TABLA ---
+            renderTable(filteredVentas);
+        }
+
+        function renderProjections(filtroTiempo, facturacion, metaFact, presAds, gastoTotal) {
+            const container = document.getElementById('proyeccionesContainer');
+            container.innerHTML = ""; // Limpiar
+
+            if (filtroTiempo !== "mes_actual") {
+                container.innerHTML = "<p class='text-muted'>Las proyecciones solo están activas para el filtro 'Este Mes'.</p>";
+                return;
+            }
+
+            const hoy = moment();
+            const diasEnMes = hoy.daysInMonth();
+            const diaHoy = hoy.date();
+            const diasRestantes = diasEnMes - diaHoy;
+
+            const progreso = (facturacion / metaFact) * 100;
+            const faltante = Math.max(metaFact - facturacion, 0);
+            const proyeccion = (diaHoy > 0) ? (facturacion / diaHoy) * diasEnMes : 0;
+            
+            const budgetRestante = Math.max(presAds - gastoTotal, 0);
+            const gastoIdeal = (diasRestantes > 0) ? budgetRestante / diasRestantes : 0;
+            
+            // HTML Template string
+            container.innerHTML = `
+                <div class="col-md-4">
+                    <h5>Meta Facturación</h5>
+                    <h3>${fmtMoney(metaFact)}</h3>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: ${Math.min(progreso, 100)}%"></div>
+                    </div>
+                    <small>Progreso: ${progreso.toFixed(1)}%</small>
+                </div>
+                <div class="col-md-4">
+                    <h5>Falta para Meta</h5>
+                    <h3 class="text-warning">${fmtMoney(faltante)}</h3>
+                    <small>Proyección Cierre: ${fmtMoney(proyeccion)}</small>
+                </div>
+                <div class="col-md-4">
+                    <h5>Budget Diario Disp.</h5>
+                    <h3 class="text-info">${fmtMoney(gastoIdeal)}/día</h3>
+                    <small>Restante Total: ${fmtMoney(budgetRestante)}</small>
+                </div>
+            `;
+        }
+
+        function renderCharts(ventas, gastos, closerSel) {
+            // 1. Chart Status Diario (Barra apilada)
+            // Agrupar por fecha y status
+            let statusData = {};
+            ventas.forEach(v => {
+                let dateStr = v.fecha.format("YYYY-MM-DD");
+                if(!statusData[dateStr]) statusData[dateStr] = {};
+                if(!statusData[dateStr][v.estadoSimple]) statusData[dateStr][v.estadoSimple] = 0;
+                statusData[dateStr][v.estadoSimple]++;
+            });
+
+            let fechasSorted = Object.keys(statusData).sort();
+            let traces = [];
+            const colores = {
+                "✅ Venta": "#00CC96", "❌ No Show": "#EF553B",
+                "🚫 Descalificado": "#FFA15A", "👀 Seguimiento": "#636EFA",
+                "📅 Re-Agendado": "#AB63FA", "Otro/Pendiente": "#d3d3d3"
+            };
+
+            Object.keys(colores).forEach(status => {
+                let yVals = fechasSorted.map(f => statusData[f][status] || 0);
+                traces.push({
+                    x: fechasSorted, y: yVals, name: status, type: 'bar', marker: {color: colores[status]}
+                });
+            });
+
+            Plotly.newPlot('chart-daily-status', traces, {
+                barmode: 'stack',
+                title: 'Evolución Diaria de Leads',
+                paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+                font: {color: '#fff'},
+                legend: {orientation: 'h', y: -0.2}
+            }, {responsive: true});
+
+            // 2. Chart Finanzas (Lineas)
+            // Agrupar Facturación
+            let finData = {};
+            ventas.forEach(v => {
+                let dateStr = v.fecha.format("YYYY-MM-DD");
+                if(!finData[dateStr]) finData[dateStr] = {fact: 0, ads: 0};
+                finData[dateStr].fact += v.monto;
+            });
+            // Agrupar Gastos
+            if(closerSel === "Todos") {
+                gastos.forEach(g => {
+                    let dateStr = g.fecha.format("YYYY-MM-DD");
+                    if(!finData[dateStr]) finData[dateStr] = {fact: 0, ads: 0};
+                    finData[dateStr].ads += g.gasto;
+                });
+            }
+
+            let fechasFin = Object.keys(finData).sort();
+            let traceFact = {
+                x: fechasFin,
+                y: fechasFin.map(f => finData[f].fact),
+                name: 'Facturación', mode: 'lines+markers', line: {color: '#00CC96'}
+            };
+            let traceAds = {
+                x: fechasFin,
+                y: fechasFin.map(f => finData[f].ads),
+                name: 'Gasto Ads', mode: 'lines+markers', line: {color: '#EF553B'}
+            };
+
+            Plotly.newPlot('chart-finance', [traceFact, traceAds], {
+                title: 'Ingresos vs Gasto',
+                paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+                font: {color: '#fff'},
+                legend: {orientation: 'h', y: -0.2},
+                hovermode: 'x unified'
+            }, {responsive: true});
+        }
+
+        function renderTable(ventas) {
+            // Agrupar por closer
+            let ranking = {};
+            ventas.forEach(v => {
+                let c = v.closer;
+                if(!ranking[c]) ranking[c] = {fact: 0, asistenciasSet: new Set(), ventasSet: new Set()};
+                
+                ranking[c].fact += v.monto;
+                if(v.esAsistencia) ranking[c].asistenciasSet.add(v.email);
+                if(v.estadoSimple === "✅ Venta") ranking[c].ventasSet.add(v.email);
+            });
+
+            let tbody = document.querySelector("#tabla-ranking tbody");
+            tbody.innerHTML = "";
+
+            // Convertir a array y ordenar
+            let rows = Object.keys(ranking).map(key => {
+                let r = ranking[key];
+                let nAsist = r.asistenciasSet.size;
+                let nVentas = r.ventasSet.size;
+                let pct = nAsist > 0 ? (nVentas / nAsist * 100) : 0;
+                return { name: key, ...r, nAsist, nVentas, pct };
+            }).sort((a,b) => b.fact - a.fact);
+
+            rows.forEach(r => {
+                let tr = `<tr>
+                    <td>${r.name}</td>
+                    <td>${fmtMoney(r.fact)}</td>
+                    <td>${r.nAsist}</td>
+                    <td>${r.nVentas}</td>
+                    <td>${r.pct.toFixed(1)}%</td>
+                </tr>`;
+                tbody.innerHTML += tr;
+            });
+        }
+
+        // Utils
+        const fmtMoney = (val) => "$" + val.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
+
+        // Event Listeners
+        document.getElementById('filtroTiempo').addEventListener('change', updateDashboard);
+        document.getElementById('filtroCloser').addEventListener('change', updateDashboard);
+
+        // Iniciar
+        init();
+
+    </script>
+</body>
+</html>
