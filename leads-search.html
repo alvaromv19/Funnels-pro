@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lead Detective 🕵️‍♂️</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-body: #050b14;
+            --bg-panel: rgba(17, 24, 39, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --neon-green: #0aff00; /* Color Hacker Style solicitado */
+            --neon-blue: #3b82f6;
+            --neon-red: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            background-image: radial-gradient(circle at 50% -20%, rgba(10, 255, 0, 0.05), transparent 60%);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        /* --- COMPONENTS --- */
+        .glass-panel {
+            background: var(--bg-panel); backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); margin-bottom: 30px;
+        }
+
+        h1, h2, h3 { color: white; font-weight: 800; letter-spacing: -0.5px; }
+        
+        /* INPUT DE BÚSQUEDA */
+        .search-container { position: relative; margin-bottom: 40px; }
+        .search-input {
+            background: rgba(0, 0, 0, 0.3); border: 2px solid var(--glass-border);
+            color: var(--neon-green); font-size: 1.2rem; padding: 20px 25px;
+            border-radius: 12px; width: 100%; transition: 0.3s; font-family: monospace;
+        }
+        .search-input:focus {
+            border-color: var(--neon-green); outline: none;
+            box-shadow: 0 0 20px rgba(10, 255, 0, 0.2);
+        }
+        .search-btn {
+            position: absolute; right: 10px; top: 10px; bottom: 10px;
+            background: var(--neon-green); color: black; border: none;
+            padding: 0 30px; border-radius: 8px; font-weight: 800; cursor: pointer;
+            transition: 0.2s;
+        }
+        .search-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon-green); }
+
+        /* TIMELINE CARDS */
+        .timeline-card {
+            background: rgba(255, 255, 255, 0.03); border-left: 4px solid var(--neon-blue);
+            padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0;
+            position: relative; overflow: hidden; transition: transform 0.2s;
+        }
+        .timeline-card:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.05); }
+        
+        .card-success { border-left-color: var(--neon-green); background: linear-gradient(90deg, rgba(10,255,0,0.05), transparent); }
+        .card-fail { border-left-color: var(--neon-red); background: linear-gradient(90deg, rgba(239,68,68,0.05), transparent); }
+
+        .timeline-header { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; display: block; }
+        .data-row { margin-bottom: 8px; font-size: 0.95rem; }
+        .data-label { color: var(--text-muted); font-weight: 600; margin-right: 8px; }
+        .data-val { color: white; }
+
+        /* PROFILE SECTION */
+        .profile-header { text-align: center; margin-bottom: 40px; display: none; animation: fadeIn 0.5s ease; }
+        .profile-name { font-size: 2.5rem; color: var(--neon-green); text-shadow: 0 0 20px rgba(10,255,0,0.3); margin-bottom: 5px; }
+        .whatsapp-btn {
+            background: rgba(37, 211, 102, 0.1); border: 1px solid #25D366; color: #25D366;
+            padding: 8px 20px; border-radius: 50px; text-decoration: none; font-weight: 600;
+            display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; margin-top: 10px;
+        }
+        .whatsapp-btn:hover { background: #25D366; color: black; box-shadow: 0 0 15px #25D366; }
+
+        /* TABS */
+        .nav-tabs-custom { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .tab-btn {
+            background: transparent; border: 1px solid var(--glass-border); color: var(--text-muted);
+            padding: 10px 30px; border-radius: 30px; cursor: pointer; transition: 0.3s;
+        }
+        .tab-btn.active { border-color: var(--neon-green); color: var(--neon-green); background: rgba(10,255,0,0.05); }
+
+        /* TABLE */
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        .table-custom th { text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; }
+        .table-custom td { background: rgba(255, 255, 255, 0.02); padding: 15px; border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .table-custom tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
+        .table-custom tr td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+
+        /* LOADER & UTILS */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column;}
+        .spinner { width: 50px; height: 50px; border: 4px solid rgba(10, 255, 0, 0.2); border-top: 4px solid var(--neon-green); border-radius: 50%; animation: spin 1s infinite linear; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .d-none { display: none !important; }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+</head>
+
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; letter-spacing: 2px; color: var(--text-muted);">CARGANDO BASE DE DATOS...</p>
+    </div>
+
+    <div class="container" style="max-width: 1000px; margin: 0 auto;">
+        
+        <div class="text-center mb-5">
+            <h1>🕵️ DETECTIVE DE LEADS</h1>
+            <p class="text-muted">Busca el historial completo de cualquier prospecto</p>
+        </div>
+
+        <div class="nav-tabs-custom">
+            <button class="tab-btn active" onclick="switchTab('tab-search')">🔍 Buscador</button>
+            <button class="tab-btn" onclick="switchTab('tab-ranking')">🏆 Top Clientes (LTV)</button>
+        </div>
+
+        <div id="tab-search">
+            <div class="search-container">
+                <input type="text" id="emailInput" class="search-input" placeholder="Ingresa el correo (ej: cliente@gmail.com)...">
+                <button class="search-btn" onclick="buscarLead()">BUSCAR</button>
+            </div>
+
+            <div id="resultsArea" class="d-none fade-in">
+                
+                <div class="profile-header" style="display: block;">
+                    <div class="profile-name" id="leadName">Nombre Cliente</div>
+                    <div id="leadPhoneContainer">
+                        </div>
+                </div>
+
+                <div class="glass-panel">
+                    <div id="card-volumen"></div>
+                    
+                    <div id="card-qual"></div>
+
+                    <div id="card-res"></div>
+                </div>
+
+            </div>
+            
+            <div id="noResults" class="text-center d-none text-muted mt-5">
+                <i class="fas fa-search fa-3x mb-3" style="opacity: 0.3;"></i><br>
+                No se encontraron datos para este correo.
+            </div>
+        </div>
+
+        <div id="tab-ranking" class="d-none fade-in">
+            <div class="glass-panel">
+                <h3 class="mb-4 text-center">🏆 Ranking de Clientes (Facturación Total)</h3>
+                <div class="table-responsive">
+                    <table class="table-custom" id="rankingTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Cliente</th>
+                                <th>Email</th>
+                                <th>Total Facturado</th>
+                                <th>Última Compra</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // CONFIGURACIÓN DE URLS
+        const URL_VOLUMEN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=0&single=true&output=csv";
+        const URL_QUAL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv";
+        const URL_RES = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv";
+
+        // DATA STATE
+        let db = { vol: [], qual: [], res: [] };
+
+        // --- UTILS ---
+        const fmtMoney = v => "$" + v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+        
+        function switchTab(tabId) {
+            document.getElementById('tab-search').classList.add('d-none');
+            document.getElementById('tab-ranking').classList.add('d-none');
+            document.getElementById(tabId).classList.remove('d-none');
+            
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // --- FETCH DATA ---
+        async function init() {
+            const ts = Date.now();
+            try {
+                const [rVol, rQual, rRes] = await Promise.all([
+                    fetch(URL_VOLUMEN + "&t=" + ts).then(r => r.text()),
+                    fetch(URL_QUAL + "&t=" + ts).then(r => r.text()),
+                    fetch(URL_RES + "&t=" + ts).then(r => r.text())
+                ]);
+
+                // Parsear y limpiar claves (trim + lower email)
+                const parseAndClean = (csv) => {
+                    const parsed = Papa.parse(csv, {header: true, skipEmptyLines: true});
+                    return parsed.data.map(row => {
+                        // Normalizar keys del objeto (quitar espacios extra en headers si los hay)
+                        let cleanRow = {};
+                        Object.keys(row).forEach(k => cleanRow[k.trim()] = row[k]);
+                        
+                        // Normalizar Email para búsquedas
+                        // Buscamos columna que contenga "email"
+                        const emailKey = Object.keys(cleanRow).find(k => k.toLowerCase().includes("email"));
+                        if (emailKey) cleanRow._email_norm = String(cleanRow[emailKey]).trim().toLowerCase();
+                        
+                        return cleanRow;
+                    });
+                };
+
+                db.vol = parseAndClean(rVol);
+                db.qual = parseAndClean(rQual);
+                
+                // Reparación especial para Resultados (Desplazamiento GHL)
+                const parsedRes = Papa.parse(rRes, {header: false, skipEmptyLines: true}); // Sin header para manipular indices
+                const headersRes = parsedRes.data[0].map(h => h.trim());
+                
+                db.res = parsedRes.data.slice(1).map(row => {
+                    // Lógica de reparación: Si col 0 vacía, shift -8 (aprox)
+                    let finalRowArray = row;
+                    if(!row[0] || row[0].trim() === "") {
+                        // Simulamos el np.roll -8 de python cortando el array
+                        let shifted = row.slice(8);
+                        // Rellenamos el final con vacíos para igualar longitud
+                        while(shifted.length < headersRes.length) shifted.push("");
+                        finalRowArray = shifted;
+                    }
+                    
+                    // Convertir a objeto
+                    let obj = {};
+                    headersRes.forEach((h, i) => obj[h] = finalRowArray[i]);
+                    
+                    // Normalizar Email
+                    const emailKey = Object.keys(obj).find(k => k.toLowerCase().includes("email"));
+                    if(emailKey) obj._email_norm = String(obj[emailKey]).trim().toLowerCase();
+                    
+                    return obj;
+                });
+
+                renderRanking();
+                
+                document.getElementById('loader').classList.add('d-none');
+
+            } catch (e) {
+                console.error(e);
+                alert("Error cargando datos. Revisa la consola.");
+            }
+        }
+
+        // --- BÚSQUEDA ---
+        function buscarLead() {
+            const query = document.getElementById('emailInput').value.trim().toLowerCase();
+            if(!query) return;
+
+            const resArea = document.getElementById('resultsArea');
+            const noRes = document.getElementById('noResults');
+            
+            // Buscar en bases
+            const matchVol = db.vol.find(r => r._email_norm === query);
+            const matchQual = db.qual.find(r => r._email_norm === query);
+            const matchesRes = db.res.filter(r => r._email_norm === query);
+
+            if(!matchVol && !matchQual && matchesRes.length === 0) {
+                resArea.classList.add('d-none');
+                noRes.classList.remove('d-none');
+                return;
+            }
+
+            noRes.classList.add('d-none');
+            resArea.classList.remove('d-none');
+
+            // 1. HEADER (Nombre + Telefono)
+            let name = "Cliente Desconocido";
+            if(matchesRes.length > 0 && matchesRes[0]['Lead Name']) name = matchesRes[0]['Lead Name'];
+            else if(matchVol && matchVol['Nombre']) name = matchVol['Nombre'];
+            
+            document.getElementById('leadName').innerText = name;
+
+            // Lógica Telefono (Columna D de Volumen, generalmente index 3 si A=0)
+            // Buscamos una columna que parezca teléfono en el match de Volumen
+            let phoneHtml = "";
+            if(matchVol) {
+                // Buscamos columna 'Phone' o tomamos la 4ta columna (Col D)
+                let phone = matchVol['Phone'] || matchVol['Telefono'] || Object.values(matchVol)[3]; 
+                
+                if(phone) {
+                    // Limpiar teléfono para link (solo números)
+                    let cleanPhone = String(phone).replace(/\D/g, '');
+                    phoneHtml = `
+                        <a href="https://wa.me/${cleanPhone}" target="_blank" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> ${phone}
+                        </a>
+                    `;
+                }
+            }
+            document.getElementById('leadPhoneContainer').innerHTML = phoneHtml;
+
+
+            // 2. CARD VOLUMEN
+            const divVol = document.getElementById('card-volumen');
+            if(matchVol) {
+                // Fechas
+                let fecha = matchVol['Fecha Creación'] || "Desconocida";
+                divVol.innerHTML = `
+                    <div class="timeline-header">1️⃣ INGRESO (FORMULARIO)</div>
+                    <div class="timeline-card">
+                        <div class="data-row"><span class="data-label">📅 Fecha Registro:</span> <span class="data-val">${fecha}</span></div>
+                        <div class="data-row"><span class="data-label">📢 Campaña:</span> <span class="data-val">${matchVol['Campaña (UTM)'] || 'N/A'}</span></div>
+                        <div class="data-row"><span class="data-label">🎯 Conjunto:</span> <span class="data-val">${matchVol['Conjunto (ID)'] || 'N/A'}</span></div>
+                        <div class="data-row"><span class="data-label">🖼️ Anuncio:</span> <span class="data-val">${matchVol['Ad Content'] || 'N/A'}</span></div>
+                    </div>
+                `;
+            } else {
+                divVol.innerHTML = `<div class="timeline-header">1️⃣ INGRESO</div><div class="timeline-card" style="border-left-color: #555; opacity:0.6">⚠️ No encontrado en hoja Volumen.</div>`;
+            }
+
+            // 3. CARD QUAL
+            const divQual = document.getElementById('card-qual');
+            if(matchQual) {
+                let fechaQ = matchQual['Fecha Creación'] || "S/F";
+                divQual.innerHTML = `
+                    <div class="timeline-header">2️⃣ CALIFICACIÓN</div>
+                    <div class="timeline-card card-success">
+                        <div class="data-row"><i class="fas fa-check-circle me-2"></i> <span class="data-val fw-bold">Lead Calificado</span></div>
+                        <div class="data-row"><span class="data-label">📅 Fecha:</span> <span class="data-val">${fechaQ}</span></div>
+                    </div>
+                `;
+            } else {
+                divQual.innerHTML = `<div class="timeline-header">2️⃣ CALIFICACIÓN</div><div class="timeline-card card-fail">❌ No aparece en lista de Calificados</div>`;
+            }
+
+            // 4. CARD RESULTADOS
+            const divRes = document.getElementById('card-res');
+            divRes.innerHTML = `<div class="timeline-header">3️⃣ LLAMADA Y CIERRE</div>`;
+            
+            if(matchesRes.length > 0) {
+                matchesRes.forEach(r => {
+                    let resStatus = (r['Resultado'] || "").toLowerCase();
+                    let cardClass = "timeline-card";
+                    let icon = "📞";
+                    
+                    if(resStatus.includes("venta")) { cardClass = "timeline-card card-success"; icon = "💰"; }
+                    else if(resStatus.includes("no show") || resStatus.includes("descalificado")) { cardClass = "timeline-card card-fail"; icon = "❌"; }
+
+                    let monto = parseFloat((r['Monto ($)'] || "0").toString().replace(/[$,]/g, '')) || 0;
+
+                    divRes.innerHTML += `
+                        <div class="${cardClass}">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="fw-bold text-white" style="font-size:1.1rem">${icon} ${String(r['Resultado']).toUpperCase()}</span>
+                                <span class="text-muted" style="font-size:0.8rem">${r['Fecha'] || ''}</span>
+                            </div>
+                            <div class="data-row"><span class="data-label">👤 Closer:</span> <span class="data-val">${r['Closer'] || 'N/A'}</span></div>
+                            <div class="data-row"><span class="data-label">💵 Monto:</span> <span class="data-val text-success fw-bold">${fmtMoney(monto)}</span></div>
+                            <div class="data-row"><span class="data-label">📝 Notas:</span> <span class="data-val text-muted fst-italic">"${r['Notas'] || ''}"</span></div>
+                            <hr style="border-color: rgba(255,255,255,0.1)">
+                            <div class="data-row" style="font-size:0.8rem"><span class="data-label">🕵️ Atribución:</span> <span class="data-val">${r['Origen Campaña'] || '-'} | ${r['Nombre del Ad'] || '-'}</span></div>
+                        </div>
+                    `;
+                });
+            } else {
+                divRes.innerHTML += `<div class="p-3 text-muted border border-secondary rounded" style="font-style:italic">⚠️ El lead aún no tiene registro de llamada/cierre.</div>`;
+            }
+        }
+
+        // --- RANKING ---
+        function renderRanking() {
+            // Agrupar por email solo ventas
+            let clientMap = {};
+            
+            db.res.forEach(r => {
+                let res = (r['Resultado'] || "").toLowerCase();
+                if(res.includes("venta")) {
+                    let email = r._email_norm;
+                    if(!email) return;
+                    
+                    let monto = parseFloat((r['Monto ($)'] || "0").toString().replace(/[$,]/g, '')) || 0;
+                    
+                    if(!clientMap[email]) {
+                        clientMap[email] = {
+                            name: r['Lead Name'] || "Desconocido",
+                            total: 0,
+                            lastDate: r['Fecha'] || ""
+                        };
+                    }
+                    clientMap[email].total += monto;
+                    // Actualizar fecha si es más reciente (comparación básica de strings ISO/Latam podría fallar, idealmente usar moment, pero para simpleza visual vale)
+                    if(r['Fecha']) clientMap[email].lastDate = r['Fecha'];
+                }
+            });
+
+            // Convertir a array y ordenar
+            let ranking = Object.keys(clientMap).map(e => ({
+                email: e, ...clientMap[e]
+            })).sort((a,b) => b.total - a.total);
+
+            const tbody = document.querySelector("#rankingTable tbody");
+            tbody.innerHTML = "";
+            
+            ranking.forEach((c, index) => {
+                let medal = "";
+                if(index === 0) medal = "🥇";
+                else if(index === 1) medal = "🥈";
+                else if(index === 2) medal = "🥉";
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="font-weight:bold; color:var(--text-muted)">${index + 1} ${medal}</td>
+                        <td class="text-white fw-bold">${c.name}</td>
+                        <td class="text-muted">${c.email}</td>
+                        <td style="color:var(--neon-green); font-weight:800">${fmtMoney(c.total)}</td>
+                        <td class="text-white">${c.lastDate}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Event listener para Enter en input
+        document.getElementById('emailInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') buscarLead();
+        });
+
+        init();
+
+    </script>
+</body>
+</html>
