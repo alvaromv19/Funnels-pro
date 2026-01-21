@@ -14,99 +14,196 @@
         :root {
             /* COLORES */
             --bg-body: #050b14;
-            --bg-panel: rgba(17, 24, 39, 0.85);
+            --bg-panel: rgba(17, 24, 39, 0.7); /* Más transparencia para efecto glass */
             --glass-border: rgba(255, 255, 255, 0.08);
             --neon-green: #0aff00;
             --neon-blue: #3b82f6;
             --neon-red: #ef4444;
             --text-main: #f8fafc;
-            --text-muted: #ffffff;
+            --text-muted: #cbd5e1;
+            --transition-speed: 0.3s ease;
         }
 
         body {
             background-color: var(--bg-body);
-            background-image: radial-gradient(circle at 50% -20%, rgba(10, 255, 0, 0.05), transparent 60%);
+            background-image: 
+                radial-gradient(circle at 10% 10%, rgba(59, 130, 246, 0.15), transparent 40%),
+                radial-gradient(circle at 90% 90%, rgba(10, 255, 0, 0.1), transparent 40%);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             min-height: 100vh;
             padding: 40px 20px;
+            overflow-x: hidden;
         }
 
-        /* --- COMPONENTES UI --- */
+        /* --- COMPONENTES UI (GLASSMORPHISM PRO) --- */
         .glass-panel {
-            background: var(--bg-panel); backdrop-filter: blur(16px);
-            border: 1px solid var(--glass-border); border-radius: 16px; padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); margin-bottom: 30px;
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            transition: var(--transition-speed);
+            position: relative;
+            overflow: hidden;
         }
-
-        h1, h2, h3 { color: white; font-weight: 800; letter-spacing: -0.5px; }
-
-        /* SEARCH INPUT */
-        .search-container { position: relative; margin-bottom: 40px; }
-        .search-input {
-            background: rgba(0, 0, 0, 0.3); border: 2px solid var(--glass-border);
-            color: var(--neon-green); font-size: 1.2rem; padding: 20px 25px;
-            border-radius: 12px; width: 100%; transition: 0.3s; font-family: monospace;
-        }
-        .search-input:focus { border-color: var(--neon-green); outline: none; box-shadow: 0 0 20px rgba(10, 255, 0, 0.2); }
         
+        /* Brillo superior sutil */
+        .glass-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
+
+        h1, h2, h3 { color: white; font-weight: 800; letter-spacing: -0.5px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+
+        /* SEARCH INPUT (CON GLOW AL FOCO) */
+        .search-container { position: relative; margin-bottom: 40px; max-width: 700px; margin-left: auto; margin-right: auto; }
+        
+        .search-input {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--glass-border);
+            color: var(--neon-green);
+            font-size: 1.1rem;
+            padding: 20px 25px;
+            border-radius: 16px;
+            width: 100%;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', monospace; /* Toque tech */
+        }
+        .search-input:focus {
+            border-color: var(--neon-green);
+            outline: none;
+            box-shadow: 0 0 25px rgba(10, 255, 0, 0.15);
+            background: rgba(0, 0, 0, 0.6);
+            transform: scale(1.01);
+        }
+
         .search-btn {
-            position: absolute; right: 10px; top: 10px; bottom: 10px;
-            background: var(--neon-green); color: black; border: none;
-            padding: 0 30px; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.2s;
+            position: absolute; right: 8px; top: 8px; bottom: 8px;
+            background: var(--neon-green);
+            color: black;
+            border: none;
+            padding: 0 30px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 1px;
         }
-        .search-btn:hover { transform: scale(1.05); box-shadow: 0 0 15px var(--neon-green); }
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(10, 255, 0, 0.4);
+        }
 
-        /* TIMELINE CARDS */
+        /* --- CARDS TIMELINE (ANIMADAS) --- */
         .timeline-card {
-            background: rgba(255, 255, 255, 0.03); border-left: 4px solid var(--neon-blue);
-            padding: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0;
-            position: relative; overflow: hidden; transition: transform 0.2s;
+            background: rgba(255, 255, 255, 0.02);
+            border-left: 4px solid var(--neon-blue);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 0 16px 16px 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Efecto rebote suave */
+            cursor: default;
         }
-        .timeline-card:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.05); }
-        .card-success { border-left-color: var(--neon-green); background: linear-gradient(90deg, rgba(10,255,0,0.05), transparent); }
-        .card-fail { border-left-color: var(--neon-red); background: linear-gradient(90deg, rgba(239,68,68,0.05), transparent); }
+        
+        /* HOVER MODE: LEVITACIÓN */
+        .timeline-card:hover {
+            transform: translateX(10px) scale(1.01);
+            background: linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            box-shadow: -5px 5px 20px rgba(0,0,0,0.3);
+            border-left-width: 6px; /* Engrosar borde al hover */
+        }
+        
+        /* Variantes de color */
+        .card-success { border-left-color: var(--neon-green); }
+        .card-success:hover { box-shadow: -5px 5px 20px rgba(10, 255, 0, 0.1); }
+        
+        .card-fail { border-left-color: var(--neon-red); }
+        .card-fail:hover { box-shadow: -5px 5px 20px rgba(239, 68, 68, 0.1); }
 
-        .timeline-header { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; display: block; }
-        .data-row { margin-bottom: 8px; font-size: 0.95rem; }
-        .data-label { color: var(--text-muted); font-weight: 600; margin-right: 8px; }
+        .timeline-header {
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--text-muted); margin-bottom: 12px; display: block; font-weight: 700; opacity: 0.7;
+        }
+        .data-row { margin-bottom: 10px; font-size: 0.95rem; display: flex; align-items: baseline; }
+        .data-label { color: var(--text-muted); font-weight: 600; margin-right: 10px; min-width: 120px; }
         .data-val { color: white; }
 
-        /* PROFILE HEAD */
-        .profile-header { text-align: center; margin-bottom: 40px; display: none; animation: fadeIn 0.5s ease; }
-        .profile-name { font-size: 2.5rem; color: var(--neon-green); text-shadow: 0 0 20px rgba(10,255,0,0.3); margin-bottom: 5px; }
+        /* --- PERFIL HEADER --- */
+        .profile-header { text-align: center; margin-bottom: 50px; display: none; animation: fadeIn 0.6s ease; }
+        .profile-name {
+            font-size: 3rem; font-weight: 900; color: white;
+            background: linear-gradient(to right, #fff, #cbd5e1); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 15px; letter-spacing: -1px;
+        }
+        
         .whatsapp-btn {
             background: rgba(37, 211, 102, 0.1); border: 1px solid #25D366; color: #25D366;
-            padding: 8px 20px; border-radius: 50px; text-decoration: none; font-weight: 600;
-            display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; margin-top: 10px; font-size: 1.1rem;
+            padding: 10px 25px; border-radius: 50px; text-decoration: none; font-weight: 700;
+            display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s; font-size: 1rem;
         }
-        .whatsapp-btn:hover { background: #25D366; color: black; box-shadow: 0 0 15px #25D366; }
+        .whatsapp-btn:hover {
+            background: #25D366; color: black;
+            box-shadow: 0 0 20px rgba(37, 211, 102, 0.4);
+            transform: translateY(-3px);
+        }
 
-        /* TABS */
-        .nav-tabs-custom { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        /* --- TABS ESTILIZADAS --- */
+        .nav-tabs-custom { display: flex; justify-content: center; gap: 20px; margin-bottom: 40px; }
         .tab-btn {
-            background: transparent; border: 1px solid var(--glass-border); color: var(--text-muted);
-            padding: 10px 30px; border-radius: 30px; cursor: pointer; transition: 0.3s;
+            background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--text-muted);
+            padding: 12px 40px; border-radius: 50px; cursor: pointer; transition: all 0.3s;
+            font-weight: 600; letter-spacing: 0.5px;
         }
-        .tab-btn.active { border-color: var(--neon-green); color: var(--neon-green); background: rgba(10,255,0,0.05); }
+        .tab-btn:hover { background: rgba(255,255,255,0.05); color: white; border-color: rgba(255,255,255,0.3); }
+        .tab-btn.active {
+            background: rgba(10, 255, 0, 0.1); border-color: var(--neon-green); color: var(--neon-green);
+            box-shadow: 0 0 15px rgba(10, 255, 0, 0.2) inset;
+        }
 
-        /* TABLE */
-        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
+        /* --- TABLA PRO --- */
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
         .table-custom th { 
-            text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; 
-            cursor: pointer; user-select: none; transition: color 0.2s;
+            text-align: left; padding: 20px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+            cursor: pointer; user-select: none; transition: color 0.2s; border-bottom: 1px solid rgba(255,255,255,0.1);
         }
-        .table-custom th:hover { color: white; }
-        .table-custom td { background: rgba(255, 255, 255, 0.02); padding: 15px; border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02); }
-        .table-custom tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
-        .table-custom tr td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
+        .table-custom th:hover { color: white; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        
+        .table-custom td {
+            background: rgba(255, 255, 255, 0.02); padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.03); border-bottom: 1px solid rgba(255,255,255,0.03);
+            transition: all 0.2s;
+        }
+        .table-custom tr td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; border-left: 1px solid rgba(255,255,255,0.03); }
+        .table-custom tr td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-right: 1px solid rgba(255,255,255,0.03); }
+
+        /* Hover Effect Fila Tabla */
+        .table-custom tr:hover td {
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-color: rgba(255,255,255,0.1);
+        }
 
         /* UTILS */
-        .filter-select { background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; padding: 8px 15px; border-radius: 8px; margin-bottom: 20px; float: right; }
+        .filter-select {
+            background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: white; padding: 10px 20px; border-radius: 10px; float: right; outline: none; cursor: pointer;
+        }
+        .filter-select:hover { border-color: rgba(255,255,255,0.3); }
+
         #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); z-index: 9999; display: flex; align-items: center; justify-content: center; flex-direction: column;}
-        .spinner { width: 50px; height: 50px; border: 4px solid rgba(10, 255, 0, 0.2); border-top: 4px solid var(--neon-green); border-radius: 50%; animation: spin 1s infinite linear; }
+        .spinner { width: 60px; height: 60px; border: 4px solid rgba(10, 255, 0, 0.2); border-top: 4px solid var(--neon-green); border-radius: 50%; animation: spin 1s infinite linear; }
+        
         @keyframes spin { to { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Animación de entrada en cascada */
+        .fade-in { animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes fadeIn { to { opacity: 1; transform: translateY(0); } }
+        
         .d-none { display: none !important; }
     </style>
 
@@ -118,51 +215,53 @@
 
     <div id="loader">
         <div class="spinner"></div>
-        <p style="margin-top: 20px; letter-spacing: 2px; color: var(--text-muted);">CARGANDO BASE DE DATOS...</p>
+        <p style="margin-top: 25px; letter-spacing: 3px; font-size: 0.9rem; color: var(--text-muted);">ACCEDIENDO A LA MATRIX...</p>
     </div>
 
-    <div class="container" style="max-width: 1000px; margin: 0 auto;">
+    <div class="container" style="max-width: 1100px; margin: 0 auto;">
         
-        <div class="text-center mb-5">
-            <h1>🕵️ DETECTIVE DE LEADS</h1>
-            <p class="text-muted">Sistema de Rastreo e Identificación</p>
+        <div class="text-center mb-5 fade-in" style="animation-delay: 0.1s;">
+            <div style="font-size: 3rem; margin-bottom: 10px;">🕵️‍♂️</div>
+            <h1 class="display-4">LEAD DETECTIVE</h1>
+            <p class="text-muted" style="font-size: 1.1rem;">Sistema Avanzado de Rastreo de Clientes</p>
         </div>
 
-        <div class="nav-tabs-custom">
-            <button class="tab-btn active" onclick="switchTab('tab-search')">🔍 Buscador</button>
+        <div class="nav-tabs-custom fade-in" style="animation-delay: 0.2s;">
+            <button class="tab-btn active" onclick="switchTab('tab-search')">🔍 Buscador Inteligente</button>
             <button class="tab-btn" onclick="switchTab('tab-ranking')">🏆 Top Clientes (LTV)</button>
         </div>
 
-        <div id="tab-search">
+        <div id="tab-search" class="fade-in" style="animation-delay: 0.3s;">
             <div class="search-container">
-                <input type="text" id="emailInput" class="search-input" placeholder="Ingresa el correo (ej: cliente@gmail.com)...">
-                <button class="search-btn" onclick="buscarLead()">BUSCAR</button>
+                <input type="text" id="emailInput" class="search-input" placeholder="Escribe el correo del cliente...">
+                <button class="search-btn" onclick="buscarLead()">RASTREAR</button>
             </div>
 
-            <div id="resultsArea" class="d-none fade-in">
-                <div class="profile-header" style="display: block;">
+            <div id="resultsArea" class="d-none">
+                <div class="profile-header">
                     <div class="profile-name" id="leadName">Nombre Cliente</div>
                     <div id="leadPhoneContainer"></div>
                 </div>
+
                 <div class="glass-panel">
-                    <div id="card-volumen"></div>
-                    <div id="card-qual"></div>
-                    <div id="card-res"></div>
+                    <div id="card-volumen" style="animation-delay: 0.1s;"></div>
+                    <div id="card-qual" style="animation-delay: 0.2s;"></div>
+                    <div id="card-res" style="animation-delay: 0.3s;"></div>
                 </div>
             </div>
             
-            <div id="noResults" class="text-center d-none text-muted mt-5">
-                <i class="fas fa-search fa-3x mb-3" style="opacity: 0.3;"></i><br>
-                No se encontraron datos para este correo.
+            <div id="noResults" class="text-center d-none text-muted mt-5 fade-in">
+                <i class="fas fa-search fa-4x mb-4" style="opacity: 0.2;"></i><br>
+                <span style="font-size: 1.2rem;">No encontramos rastros de este correo.</span>
             </div>
         </div>
 
         <div id="tab-ranking" class="d-none fade-in">
             <div class="glass-panel">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="mb-0">🏆 Ranking de Clientes</h3>
+                <div class="d-flex justify-content-between align-items-center mb-5">
+                    <h3 class="mb-0">🏆 Tabla de Líderes</h3>
                     <select id="rankingTimeFilter" class="filter-select" onchange="renderRanking()">
-                        <option value="all">📅 Todo el Histórico</option>
+                        <option value="all">📅 Histórico Completo</option>
                         <option value="year">📅 Este Año</option>
                         <option value="month">📅 Este Mes</option>
                         <option value="week">📅 Esta Semana</option>
@@ -174,10 +273,10 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th onclick="sortRanking('name')">Cliente <i class="fas fa-sort text-muted ms-1"></i></th>
-                                <th onclick="sortRanking('email')">Email <i class="fas fa-sort text-muted ms-1"></i></th>
-                                <th onclick="sortRanking('total')">Facturado <i class="fas fa-sort text-muted ms-1"></i></th>
-                                <th onclick="sortRanking('date')">Última Compra <i class="fas fa-sort text-muted ms-1"></i></th>
+                                <th onclick="sortRanking('name')">Cliente <i class="fas fa-sort text-muted ms-1" style="opacity:0.5"></i></th>
+                                <th onclick="sortRanking('email')">Email <i class="fas fa-sort text-muted ms-1" style="opacity:0.5"></i></th>
+                                <th onclick="sortRanking('total')">LTV Facturado <i class="fas fa-sort text-muted ms-1" style="opacity:0.5"></i></th>
+                                <th onclick="sortRanking('date')">Última Actividad <i class="fas fa-sort text-muted ms-1" style="opacity:0.5"></i></th>
                             </tr>
                         </thead>
                         <tbody></tbody>
@@ -189,39 +288,39 @@
     </div>
 
     <script>
-        // =================================================================
-        // 1. CONFIGURACIÓN Y ESTADO
-        // =================================================================
         
-        // URLs de Google Sheets (CSV)
+        // ========================================================
+        // 1. CONFIGURACIÓN Y ESTADO
+        // ========================================================
         const URL_VOLUMEN = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=0&single=true&output=csv";
         const URL_QUAL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv";
         const URL_RES = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv";
 
-        // Estado Global de Datos
         let db = { vol: [], qual: [], res: [] };
-        let currentSort = { col: 'total', dir: 'desc' }; // Orden default: Mayor facturación primero
+        let currentSort = { col: 'total', dir: 'desc' };
 
-        // =================================================================
-        // 2. UTILIDADES GENERALES
-        // =================================================================
-        
+        // ========================================================
+        // 2. UTILIDADES
+        // ========================================================
         const fmtMoney = v => "$" + v.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        
-        // Cambio de Pestañas
+
         function switchTab(tabId) {
             document.getElementById('tab-search').classList.add('d-none');
             document.getElementById('tab-ranking').classList.add('d-none');
-            document.getElementById(tabId).classList.remove('d-none');
+            
+            // Animación suave de entrada al cambiar tab
+            const target = document.getElementById(tabId);
+            target.classList.remove('d-none');
+            target.classList.remove('fade-in'); // Reset animation
+            void target.offsetWidth; // Trigger reflow
+            target.classList.add('fade-in');
             
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             event.target.classList.add('active');
         }
 
-        // Lógica de limpieza de teléfonos (Elimina errores de GSheet y formatea para WA)
         function extractPhone(row) {
             let rawPhone = row['Phone'] || row['Telefono'] || row['Móvil'] || row['Celular'];
-            // Fallback: Busca por posición (índice 3 / Col D) si no hay header claro
             if (!rawPhone) {
                 let values = Object.values(row);
                 if (values[3] && String(values[3]).length > 6) rawPhone = values[3];
@@ -229,42 +328,36 @@
             if (!rawPhone) return null;
             
             let str = String(rawPhone).trim();
-            if (str.includes("#ERROR")) return null; // Ignora errores de hoja
+            if (str.includes("#ERROR")) return null;
             
-            let linkPhone = str.replace(/\D/g, ''); // Solo números para link
+            let linkPhone = str.replace(/\D/g, ''); 
             let displayPhone = str;
-            if (displayPhone.startsWith("'")) displayPhone = displayPhone.substring(1); // Quita apóstrofe
+            if (displayPhone.startsWith("'")) displayPhone = displayPhone.substring(1);
             
             return { link: linkPhone, display: displayPhone };
         }
 
-        // =================================================================
-        // 3. CARGA DE DATOS (INIT)
-        // =================================================================
-        
+        // ========================================================
+        // 3. CAPA DE DATOS
+        // ========================================================
         async function init() {
             const ts = Date.now();
             try {
                 const fetchOpts = { cache: "no-store" };
-                
-                // Carga paralela de las 3 hojas
                 const [rVol, rQual, rRes] = await Promise.all([
                     fetch(URL_VOLUMEN + "&t=" + ts, fetchOpts).then(r => r.text()),
                     fetch(URL_QUAL + "&t=" + ts, fetchOpts).then(r => r.text()),
                     fetch(URL_RES + "&t=" + ts, fetchOpts).then(r => r.text())
                 ]);
 
-                // Función auxiliar para parsear CSV y limpiar claves
                 const parseData = (csv) => {
                     return Papa.parse(csv, {header: true, skipEmptyLines: true}).data.map(row => {
                         let clean = {};
                         Object.keys(row).forEach(k => clean[k.trim()] = row[k]);
                         
-                        // Normaliza email para búsqueda
                         const emailKey = Object.keys(clean).find(k => k.toLowerCase().includes("email"));
                         if (emailKey) clean._email_norm = String(clean[emailKey]).trim().toLowerCase();
                         
-                        // Extrae teléfono limpio preventivamente
                         const phoneKey = Object.keys(clean).find(k => k.toLowerCase().includes("phone") || k.toLowerCase().includes("telefono"));
                         if(phoneKey) clean._phone_clean = extractPhone({[phoneKey]: clean[phoneKey]}); 
                         
@@ -275,44 +368,44 @@
                 db.vol = parseData(rVol);
                 db.qual = parseData(rQual);
                 
-                // Procesamiento especial para hoja Resultados (Corrige desplazamiento de columnas)
                 const pRes = Papa.parse(rRes, {header: false, skipEmptyLines: true});
                 const hRes = pRes.data[0].map(h => h.trim());
                 
                 db.res = pRes.data.slice(1).map(row => {
                     let vals = row;
-                    // Detecta si la fila está desplazada (columna 0 vacía)
                     if(!row[0] || row[0].trim() === "") {
                         let shifted = row.slice(8);
                         while(shifted.length < hRes.length) shifted.push("");
                         vals = shifted;
                     }
-                    // Reconstruye objeto con headers correctos
                     let obj = {};
                     hRes.forEach((h, i) => obj[h] = vals[i]);
                     
                     const ek = Object.keys(obj).find(k => k.toLowerCase().includes("email"));
                     if(ek) obj._email_norm = String(obj[ek]).trim().toLowerCase();
                     
-                    // Crea objeto fecha para filtros
                     if(obj['Fecha']) obj._date_obj = moment(obj['Fecha'], "DD/MM/YYYY");
                     
                     return obj;
                 });
 
                 renderRanking();
-                document.getElementById('loader').classList.add('d-none');
+                
+                // Animación de salida del loader
+                const loader = document.getElementById('loader');
+                loader.style.transition = "opacity 0.5s ease";
+                loader.style.opacity = "0";
+                setTimeout(() => loader.classList.add('d-none'), 500);
 
             } catch (e) {
                 console.error(e);
-                alert("Error de conexión con Sheets. Revisa la consola.");
+                alert("Error de conexión con Sheets.");
             }
         }
 
-        // =================================================================
-        // 4. LÓGICA DEL BUSCADOR (TAB 1)
-        // =================================================================
-        
+        // ========================================================
+        // 4. MÓDULO BÚSQUEDA
+        // ========================================================
         function buscarLead() {
             const query = document.getElementById('emailInput').value.trim().toLowerCase();
             if(!query) return;
@@ -320,7 +413,6 @@
             const resArea = document.getElementById('resultsArea');
             const noRes = document.getElementById('noResults');
             
-            // Busca coincidencias en las 3 bases
             const matchVol = db.vol.find(r => r._email_norm === query);
             const matchQual = db.qual.find(r => r._email_norm === query);
             const matchesRes = db.res.filter(r => r._email_norm === query);
@@ -333,52 +425,60 @@
 
             noRes.classList.add('d-none');
             resArea.classList.remove('d-none');
+            
+            // Reiniciar animación de entrada
+            resArea.classList.remove('fade-in');
+            void resArea.offsetWidth;
+            resArea.classList.add('fade-in');
 
-            // --- A. RENDERIZAR PERFIL ---
+            // -- Header --
             let name = "Cliente Desconocido";
             if(matchesRes.length > 0 && matchesRes[0]['Lead Name']) name = matchesRes[0]['Lead Name'];
             else if(matchVol && matchVol['Nombre']) name = matchVol['Nombre'];
             document.getElementById('leadName').innerText = name;
 
+            // -- Phone --
             let phoneData = null;
             if(matchVol) phoneData = extractPhone(matchVol);
-            
             let phoneHtml = "";
             if(phoneData && phoneData.link.length > 6) {
-                phoneHtml = `<a href="https://wa.me/${phoneData.link}" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp"></i> ${phoneData.display}</a>`;
+                phoneHtml = `<a href="https://wa.me/${phoneData.link}" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp" style="font-size:1.2rem"></i> ${phoneData.display}</a>`;
             } else {
-                phoneHtml = `<span class="text-muted" style="font-size:0.9rem"><i class="fas fa-phone-slash"></i> Sin teléfono válido</span>`;
+                phoneHtml = `<span class="text-muted" style="font-size:0.9rem; border:1px solid rgba(255,255,255,0.1); padding:8px 15px; border-radius:50px;"><i class="fas fa-phone-slash me-2"></i> Sin teléfono válido</span>`;
             }
             document.getElementById('leadPhoneContainer').innerHTML = phoneHtml;
 
-            // --- B. RENDERIZAR CARDS TIMELINE ---
-            
-            // 1. Volumen
+            // -- Card 1 --
             const divVol = document.getElementById('card-volumen');
+            // Aplicar clase fade-in a cada tarjeta
+            divVol.className = "fade-in"; 
             if(matchVol) {
                 divVol.innerHTML = `
-                    <div class="timeline-header">1️⃣ INGRESO</div>
+                    <div class="timeline-header">1️⃣ ORIGEN</div>
                     <div class="timeline-card">
                         <div class="data-row"><span class="data-label">📅 Fecha:</span> <span class="data-val">${matchVol['Fecha Creación'] || 'N/A'}</span></div>
                         <div class="data-row"><span class="data-label">📢 Campaña:</span> <span class="data-val">${matchVol['Campaña (UTM)'] || 'N/A'}</span></div>
+                        <div class="data-row"><span class="data-label">🎯 Conjunto:</span> <span class="data-val">${matchVol['Conjunto (ID)'] || 'N/A'}</span></div>
                         <div class="data-row"><span class="data-label">🖼️ Anuncio:</span> <span class="data-val">${matchVol['Ad Content'] || 'N/A'}</span></div>
                     </div>`;
-            } else divVol.innerHTML = `<div class="timeline-header">1️⃣ INGRESO</div><div class="timeline-card" style="opacity:0.5">No encontrado en Volumen.</div>`;
+            } else divVol.innerHTML = `<div class="timeline-header">1️⃣ ORIGEN</div><div class="timeline-card" style="opacity:0.5; border-left-color:#555;">No encontrado en Volumen.</div>`;
 
-            // 2. Calificados
+            // -- Card 2 --
             const divQual = document.getElementById('card-qual');
+            divQual.className = "fade-in";
             if(matchQual) {
                 divQual.innerHTML = `
                     <div class="timeline-header">2️⃣ CALIFICACIÓN</div>
                     <div class="timeline-card card-success">
-                        <div class="data-row"><i class="fas fa-check-circle me-2"></i> <span class="data-val fw-bold">Calificado</span></div>
+                        <div class="data-row"><i class="fas fa-check-circle me-2 text-success"></i> <span class="data-val fw-bold text-success">Lead Calificado</span></div>
                         <div class="data-row"><span class="data-label">📅 Fecha:</span> <span class="data-val">${matchQual['Fecha Creación'] || 'N/A'}</span></div>
                     </div>`;
-            } else divQual.innerHTML = `<div class="timeline-header">2️⃣ CALIFICACIÓN</div><div class="timeline-card card-fail">No calificado.</div>`;
+            } else divQual.innerHTML = `<div class="timeline-header">2️⃣ CALIFICACIÓN</div><div class="timeline-card card-fail">❌ No calificado (No apto).</div>`;
 
-            // 3. Cierre (Resultados)
+            // -- Card 3 --
             const divRes = document.getElementById('card-res');
-            divRes.innerHTML = `<div class="timeline-header">3️⃣ CIERRE</div>`;
+            divRes.className = "fade-in";
+            divRes.innerHTML = `<div class="timeline-header">3️⃣ CIERRE COMERCIAL</div>`;
             if(matchesRes.length > 0) {
                 matchesRes.forEach(r => {
                     let st = (r['Resultado']||"").toLowerCase();
@@ -390,29 +490,27 @@
                     
                     divRes.innerHTML += `
                         <div class="${css}">
-                            <div class="d-flex justify-content-between mb-2">
-                                <span class="fw-bold text-white">${ico} ${String(r['Resultado']).toUpperCase()}</span>
-                                <span class="text-muted" style="font-size:0.8rem">${r['Fecha']||''}</span>
+                            <div class="d-flex justify-content-between mb-3 align-items-center">
+                                <span class="fw-bold text-white" style="font-size:1.1rem; letter-spacing:0.5px;">${ico} ${String(r['Resultado']).toUpperCase()}</span>
+                                <span class="text-muted" style="font-size:0.8rem; background:rgba(255,255,255,0.1); padding:4px 10px; border-radius:10px;">${r['Fecha']||''}</span>
                             </div>
                             <div class="data-row"><span class="data-label">👤 Closer:</span> <span class="data-val">${r['Closer']||'-'}</span></div>
-                            <div class="data-row"><span class="data-label">💵 Monto:</span> <span class="data-val fw-bold text-success">${fmtMoney(m)}</span></div>
+                            <div class="data-row"><span class="data-label">💵 Monto:</span> <span class="data-val fw-bold text-success" style="font-size:1.2rem;">${fmtMoney(m)}</span></div>
                             <div class="data-row"><span class="data-label">📝 Notas:</span> <span class="data-val text-muted fst-italic">"${r['Notas']||''}"</span></div>
                         </div>`;
                 });
-            } else divRes.innerHTML += `<div class="p-3 text-muted border border-secondary rounded">Sin registro de llamada.</div>`;
+            } else divRes.innerHTML += `<div class="p-4 text-muted border border-secondary rounded text-center" style="background:rgba(255,255,255,0.01)">⏳ Sin registro de llamada aún.</div>`;
         }
 
-        // =================================================================
-        // 5. LÓGICA DEL RANKING (TAB 2)
-        // =================================================================
-
+        // ========================================================
+        // 5. MÓDULO RANKING (TAB 2)
+        // ========================================================
         function sortRanking(colName) {
-            // Alternar dirección si es la misma columna
             if(currentSort.col === colName) {
                 currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
             } else {
                 currentSort.col = colName;
-                currentSort.dir = 'desc'; // Por defecto descendente
+                currentSort.dir = 'desc';
             }
             renderRanking();
         }
@@ -422,17 +520,14 @@
             const now = moment();
             let cutoff = null;
 
-            // Definir fecha de corte según filtro
             if(filter === 'month') cutoff = now.startOf('month');
             else if(filter === 'year') cutoff = now.startOf('year');
             else if(filter === 'week') cutoff = now.startOf('isoWeek');
 
-            // 1. Filtrar y Agrupar por Cliente
             let map = {};
             db.res.forEach(r => {
                 let st = (r['Resultado']||"").toLowerCase();
                 if(st.includes("venta")) {
-                    // Aplicar Filtro de Tiempo
                     if(cutoff && (!r._date_obj || r._date_obj.isBefore(cutoff))) return;
 
                     let email = r._email_norm;
@@ -442,7 +537,6 @@
                     if(!map[email]) map[email] = { name: r['Lead Name']||"Desc.", total: 0, dateObj: r._date_obj, dateStr: r['Fecha']||"" };
                     map[email].total += m;
                     
-                    // Mantener fecha más reciente
                     if(r._date_obj && (!map[email].dateObj || r._date_obj.isAfter(map[email].dateObj))) {
                         map[email].dateObj = r._date_obj;
                         map[email].dateStr = r['Fecha'];
@@ -450,10 +544,7 @@
                 }
             });
             
-            // 2. Convertir a Array
             let list = Object.keys(map).map(e => ({ email: e, ...map[e] }));
-
-            // 3. Ordenar según columna clickeada
             list.sort((a,b) => {
                 let valA, valB;
                 switch(currentSort.col) {
@@ -467,13 +558,14 @@
                 return 0;
             });
 
-            // 4. Renderizar en DOM
             const tb = document.querySelector("#rankingTable tbody");
             tb.innerHTML = "";
             list.forEach((c, i) => {
                 let medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":"";
-                tb.innerHTML += `<tr>
-                    <td class="text-muted fw-bold">${i+1} ${medal}</td>
+                let rankStyle = i<3 ? "font-size:1.2rem;" : "";
+                
+                tb.innerHTML += `<tr style="animation: fadeIn 0.3s ease forwards; animation-delay: ${i*0.05}s; opacity: 0; transform: translateY(10px);">
+                    <td style="color:var(--text-muted); font-weight:bold; ${rankStyle}">${i+1} ${medal}</td>
                     <td class="text-white fw-bold">${c.name}</td>
                     <td class="text-muted">${c.email}</td>
                     <td class="text-success fw-bold">${fmtMoney(c.total)}</td>
@@ -482,10 +574,7 @@
             });
         }
 
-        // Listener para tecla Enter en buscador
         document.getElementById('emailInput').addEventListener('keypress', e => { if(e.key==='Enter') buscarLead(); });
-        
-        // Iniciar App
         init();
 
     </script>
