@@ -5,169 +5,189 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agency Command Center 🚀</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         :root {
-            --bg-color: #0f172a; /* Azul oscuro profundo */
-            --glass-bg: rgba(30, 41, 59, 0.7); /* Cristal oscuro */
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --accent-primary: #3b82f6; /* Azul eléctrico */
-            --accent-glow: rgba(59, 130, 246, 0.5);
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --success: #10b981;
-            --danger: #ef4444;
+            --bg-body: #050b14;
+            --bg-panel: rgba(17, 24, 39, 0.7);
+            --bg-sidebar: #0b1121;
+            --glass-border: rgba(255, 255, 255, 0.05);
+            
+            --neon-blue: #3b82f6;
+            --neon-purple: #8b5cf6;
+            --neon-green: #10b981;
+            --neon-red: #ef4444;
+            --neon-orange: #f59e0b;
+            
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            
+            --sidebar-width: 280px;
+            --sidebar-width-collapsed: 80px;
+            --transition-speed: 0.4s;
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-body);
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.08), transparent 25%), 
-                radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.05), transparent 25%);
+                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15), transparent 40%), 
+                radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.1), transparent 40%),
+                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.05), transparent 40%);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
             margin: 0;
             overflow-x: hidden;
         }
 
-        /* --- UI COMPONENTS (Glassmorphism) --- */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 24px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .glass-panel:hover {
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            border-color: rgba(255, 255, 255, 0.15);
-        }
-
-        /* Sidebar Styling */
+        /* --- LAYOUT & TRANSITIONS --- */
+        .wrapper { display: flex; width: 100%; transition: all var(--transition-speed) ease; }
+        
+        /* SIDEBAR */
         .sidebar {
-            background: rgba(15, 23, 42, 0.95);
-            border-right: 1px solid var(--glass-border);
+            width: var(--sidebar-width);
             height: 100vh;
+            background: var(--bg-sidebar);
+            border-right: 1px solid var(--glass-border);
             position: fixed;
-            padding: 30px 20px;
+            top: 0; left: 0;
+            z-index: 1000;
+            padding: 20px;
             overflow-y: auto;
-            z-index: 100;
+            transition: width var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column;
         }
 
         .main-content {
-            margin-left: 16.66667%; /* Offset col-md-2 */
+            margin-left: var(--sidebar-width);
+            width: calc(100% - var(--sidebar-width));
             padding: 40px;
+            transition: margin-left var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1), width var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Typography */
-        h1, h2, h3, h4 { color: white; font-weight: 700; letter-spacing: -0.5px; }
-        .text-muted { color: var(--text-muted) !important; }
-        .metric-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); font-weight: 600; margin-bottom: 5px; display: block;}
-        .metric-value { font-size: 2.2rem; font-weight: 800; color: white; line-height: 1.1; text-shadow: 0 2px 10px rgba(0,0,0,0.3); }
-        .metric-sub { font-size: 0.9rem; margin-top: 5px; font-weight: 500; }
+        /* COLLAPSED STATE */
+        body.collapsed .sidebar { width: var(--sidebar-width-collapsed); padding: 20px 10px; }
+        body.collapsed .sidebar .hide-on-collapse { display: none !important; opacity: 0; }
+        body.collapsed .sidebar .sidebar-header { justify-content: center; }
+        body.collapsed .main-content { margin-left: var(--sidebar-width-collapsed); width: calc(100% - var(--sidebar-width-collapsed)); }
+        
+        /* --- GLASS COMPONENTS --- */
+        .glass-panel {
+            background: var(--bg-panel);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Gradient Top Line for Panels */
+        .glass-panel::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        }
 
-        /* Form Elements "Pro" */
+        /* --- TYPOGRAPHY & ELEMENTS --- */
+        h1, h2, h3, h4, h5 { color: white; font-weight: 800; letter-spacing: -0.02em; }
+        .text-muted { color: var(--text-muted) !important; }
+        
+        .metric-label { 
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; 
+            color: var(--text-muted); font-weight: 700; margin-bottom: 8px; display: block;
+        }
+        .metric-value { 
+            font-size: 2.5rem; font-weight: 900; color: white; line-height: 1; 
+            background: -webkit-linear-gradient(90deg, #fff, #94a3b8); -webkit-background-clip: text;
+        }
+
+        /* Inputs & Selects */
         select, input {
-            background: rgba(0, 0, 0, 0.3) !important;
+            background: rgba(255, 255, 255, 0.03) !important;
             border: 1px solid var(--glass-border) !important;
             color: white !important;
-            border-radius: 8px !important;
-            padding: 10px 15px !important;
-            font-size: 0.95rem;
+            border-radius: 12px !important;
+            padding: 12px !important;
+            font-size: 0.9rem;
+            transition: all 0.3s;
         }
         select:focus, input:focus {
-            border-color: var(--accent-primary) !important;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+            border-color: var(--neon-blue) !important;
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3) !important;
             outline: none;
+            background: rgba(255,255,255,0.05) !important;
         }
 
         /* Buttons */
+        .btn-toggle {
+            background: transparent; border: none; color: white; font-size: 1.2rem; cursor: pointer;
+            margin-bottom: 20px; transition: 0.3s;
+        }
+        .btn-toggle:hover { color: var(--neon-blue); transform: scale(1.1); }
+
         .btn-glow {
-            background: linear-gradient(135deg, var(--accent-primary), #2563eb);
-            border: none;
-            color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            width: 100%;
-            box-shadow: 0 4px 15px var(--accent-glow);
-            transition: all 0.2s;
+            background: linear-gradient(135deg, var(--neon-blue), #2563eb);
+            border: none; color: white; padding: 14px; border-radius: 12px; font-weight: 700;
+            width: 100%; letter-spacing: 0.5px; position: relative; overflow: hidden;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s;
         }
         .btn-glow:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px var(--accent-glow);
-            color: white;
-        }
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            width: 100%;
-            padding: 8px;
-            border-radius: 8px;
-            transition: all 0.2s;
-        }
-        .btn-outline:hover {
-            border-color: var(--text-main);
-            color: var(--text-main);
-            background: rgba(255,255,255,0.05);
+            transform: translateY(-2px); box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
         }
 
-        /* Custom Table */
-        .table-custom {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 8px; /* Espacio entre filas */
+        .btn-outline {
+            background: rgba(255,255,255,0.02); border: 1px solid var(--glass-border);
+            color: var(--text-muted); width: 100%; padding: 10px; border-radius: 10px;
+            font-size: 0.9rem; transition: all 0.2s;
         }
+        .btn-outline:hover {
+            border-color: var(--text-main); color: white; background: rgba(255,255,255,0.05);
+        }
+
+        /* Table */
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 10px; }
         .table-custom th {
-            text-align: left;
-            padding: 15px;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid var(--glass-border);
+            text-align: left; padding: 15px; color: var(--text-muted); font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--glass-border);
         }
         .table-custom td {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
-            font-weight: 500;
+            background: rgba(255, 255, 255, 0.02); padding: 20px 15px; font-weight: 500;
+            border-top: 1px solid rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.02);
         }
-        .table-custom tr td:first-child { border-top-left-radius: 10px; border-bottom-left-radius: 10px; }
-        .table-custom tr td:last-child { border-top-right-radius: 10px; border-bottom-right-radius: 10px; }
-        .table-custom tr:hover td { background: rgba(255, 255, 255, 0.07); transform: scale(1.01); transition: 0.2s; }
+        .table-custom tr td:first-child { border-top-left-radius: 12px; border-bottom-left-radius: 12px; border-left: 1px solid rgba(255,255,255,0.02); }
+        .table-custom tr td:last-child { border-top-right-radius: 12px; border-bottom-right-radius: 12px; border-right: 1px solid rgba(255,255,255,0.02); }
+        .table-custom tr:hover td { background: rgba(255, 255, 255, 0.06); transform: translateY(-2px); transition: 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
 
         /* Loader */
         #loader {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); z-index: 9999;
+            background: var(--bg-body); z-index: 9999;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
-        .spinner {
-            width: 50px; height: 50px;
-            border: 3px solid rgba(59, 130, 246, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--accent-primary);
-            animation: spin 1s ease-in-out infinite;
-            margin-bottom: 20px;
+        .loader-ring {
+            width: 60px; height: 60px; border: 4px solid rgba(59, 130, 246, 0.2);
+            border-top: 4px solid var(--neon-blue); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
         }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Progress Bars */
-        .progress-slim {
-            height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; margin-top: 10px;
-        }
-        .progress-bar-custom {
-            height: 100%; background: linear-gradient(90deg, var(--accent-primary), #60a5fa); border-radius: 10px;
-        }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-body); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+        /* Animation Classes */
+        .fade-up { animation: fadeUp 0.6s ease forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
     </style>
 
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -177,198 +197,197 @@
 <body>
 
     <div id="loader">
-        <div class="spinner"></div>
-        <h2 style="font-weight: 300; letter-spacing: 2px;">AGENCY OS</h2>
-        <p class="text-muted">Sincronizando datos...</p>
+        <div class="loader-ring"></div>
+        <h4 style="letter-spacing: 4px; font-weight: 300;">AGENCY OS</h4>
     </div>
 
-    <div class="container-fluid d-none" id="main-app">
-        <div class="row">
-            <div class="col-md-2 sidebar">
-                <div class="mb-5 text-center">
-                    <div style="width: 40px; height: 40px; background: var(--accent-primary); border-radius: 10px; margin: 0 auto 15px; display:flex; align-items:center; justify-content:center; box-shadow: 0 0 20px var(--accent-glow);">
-                        <i class="fas fa-rocket text-white"></i>
+    <div class="wrapper d-none" id="main-app">
+        
+        <nav class="sidebar">
+            <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
+                <div class="d-flex align-items-center hide-on-collapse">
+                    <div style="width: 32px; height: 32px; background: var(--neon-blue); border-radius: 8px; display:flex; align-items:center; justify-content:center; margin-right: 12px; box-shadow: 0 0 15px var(--neon-blue);">
+                        <i class="fas fa-rocket text-white" style="font-size: 14px;"></i>
                     </div>
-                    <h5 class="text-white mb-0">AGENCY OS</h5>
-                    <small class="text-muted">Command Center</small>
+                    <span style="font-weight: 700; letter-spacing: 1px;">NEXUS</span>
                 </div>
+                <button class="btn-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            </div>
 
-                <div class="mb-4">
-                    <label class="metric-label mb-2">Filtros Globales</label>
-                    <button class="btn-outline mb-3" onclick="location.reload()">
-                        <i class="fas fa-sync-alt me-2"></i> Actualizar
-                    </button>
-                    
-                    <select id="filtroTiempo" class="form-select mb-3">
-                        <option value="mes_actual">📅 Este Mes</option>
-                        <option value="mes_anterior">⏮️ Mes Anterior</option>
-                        <option value="hoy">🔥 Hoy</option>
-                        <option value="ayer">⏪ Ayer</option>
-                        <option value="semana">📆 Esta Semana</option>
-                        <option value="30dias">🗓️ Últimos 30 días</option>
-                        <option value="historico">💾 Todo el Histórico</option>
-                    </select>
+            <div class="hide-on-collapse">
+                <label class="metric-label">Panel de Control</label>
+                <button class="btn-outline mb-4" onclick="location.reload()">
+                    <i class="fas fa-sync-alt me-2"></i> Refrescar Data
+                </button>
+                
+                <label class="metric-label">Filtros de Tiempo</label>
+                <select id="filtroTiempo" class="form-select mb-4">
+                    <option value="mes_actual">📅 Este Mes</option>
+                    <option value="mes_anterior">⏮️ Mes Anterior</option>
+                    <option value="hoy">🔥 Hoy</option>
+                    <option value="ayer">⏪ Ayer</option>
+                    <option value="semana">📆 Esta Semana</option>
+                    <option value="30dias">🗓️ Últimos 30 días</option>
+                    <option value="historico">💾 Todo el Histórico</option>
+                </select>
 
-                    <select id="filtroCloser" class="form-select">
-                        <option value="Todos">👤 Todos los Closers</option>
-                    </select>
+                <label class="metric-label">Equipo</label>
+                <select id="filtroCloser" class="form-select mb-4">
+                    <option value="Todos">👤 Todos los Closers</option>
+                </select>
+
+                <hr style="border-color: var(--glass-border); margin: 20px 0;">
+
+                <label class="metric-label">Metas ($)</label>
+                <div class="mb-2">
+                    <input type="number" id="metaFact" class="form-control" value="30000" placeholder="Meta Facturación">
                 </div>
-
-                <hr style="border-color: rgba(255,255,255,0.1); margin: 30px 0;">
-
                 <div class="mb-4">
-                    <label class="metric-label mb-2">Objetivos (KPIs)</label>
-                    <div class="mb-2">
-                        <small class="text-muted">Meta Facturación ($)</small>
-                        <input type="number" id="metaFact" class="form-control" value="30000">
-                    </div>
-                    <div class="mb-3">
-                        <small class="text-muted">Presupuesto Ads ($)</small>
-                        <input type="number" id="metaAds" class="form-control" value="3500">
-                    </div>
-                    <button class="btn-glow" onclick="updateDashboard()">Aplicar Metas</button>
+                    <input type="number" id="metaAds" class="form-control" value="3500" placeholder="Budget Ads">
+                </div>
+                <button class="btn-glow" onclick="updateDashboard()">
+                    APLICAR METAS
+                </button>
+
+                <div class="mt-auto pt-5 text-center text-muted" style="font-size: 0.7rem;">
+                    v2.0.4 PRO
+                </div>
+            </div>
+        </nav>
+
+        <main class="main-content">
+            
+            <div class="d-flex justify-content-between align-items-end mb-5 fade-up" style="animation-delay: 0.1s;">
+                <div>
+                    <h1 class="display-5 mb-1">Command Center</h1>
+                    <p class="text-muted mb-0" style="font-family: monospace;" id="rangoFechasTexto">Iniciando sistema...</p>
+                </div>
+                <div>
+                    <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid rgba(16, 185, 129, 0.2); padding: 8px 16px; border-radius: 20px;">
+                        <i class="fas fa-dot-circle me-2 fa-beat-fade"></i> LIVE FEED
+                    </span>
                 </div>
             </div>
 
-            <div class="col-md-10 main-content">
-                
-                <div class="d-flex justify-content-between align-items-end mb-5">
-                    <div>
-                        <h1 class="mb-0">Resumen Ejecutivo</h1>
-                        <p class="text-muted mb-0" id="rangoFechasTexto">Cargando...</p>
+            <div id="proyeccionesContainer" class="row mb-4 fade-up" style="animation-delay: 0.2s;"></div>
+
+            <div class="glass-panel fade-up" style="animation-delay: 0.3s; padding: 40px;">
+                <h4 class="mb-4"><i class="fas fa-chart-line me-2" style="color: var(--neon-blue);"></i>Financial Performance</h4>
+                <div class="row g-4">
+                    <div class="col-md-2" style="width: 20%;">
+                        <span class="metric-label">Facturación</span>
+                        <div class="metric-value" id="kpi-facturacion">$0</div>
+                        <small class="text-muted"><i class="fas fa-arrow-up text-success"></i> Gross Revenue</small>
                     </div>
-                    <div class="text-end">
-                        <span class="badge bg-dark border border-secondary p-2 rounded-pill text-muted font-monospace">
-                            <i class="fas fa-circle text-success me-1" style="font-size: 8px;"></i> LIVE DATA
-                        </span>
+                    <div class="col-md-2" style="width: 20%;">
+                        <span class="metric-label">Profit (Neto)</span>
+                        <div class="metric-value" style="background: -webkit-linear-gradient(90deg, #4ade80, #22c55e); -webkit-background-clip: text;" id="kpi-profit">$0</div>
+                        <small class="text-muted">Liquid Cash</small>
+                    </div>
+                    <div class="col-md-2" style="width: 20%;">
+                        <span class="metric-label">ROAS</span>
+                        <div class="metric-value" id="kpi-roas">0.00x</div>
+                        <small class="text-muted">Target: 3.5x</small>
+                    </div>
+                    <div class="col-md-2" style="width: 20%;">
+                        <span class="metric-label">New Clients</span>
+                        <div class="metric-value" id="kpi-ventas">0</div>
+                        <small class="text-muted">Deals Closed</small>
+                    </div>
+                    <div class="col-md-2" style="width: 20%;">
+                        <span class="metric-label">Ad Spend</span>
+                        <div class="metric-value" style="background: -webkit-linear-gradient(90deg, #f87171, #ef4444); -webkit-background-clip: text;" id="kpi-ads">$0</div>
+                        <small class="text-muted">Invested</small>
                     </div>
                 </div>
-
-                <div id="proyeccionesContainer" class="row mb-2">
-                    </div>
-
-                <h4 class="mb-4 mt-4"><i class="fas fa-wallet me-2 text-muted"></i>Finanzas</h4>
-                <div class="row">
-                    <div class="col-md-20" style="width: 20%;">
-                        <div class="glass-panel text-center">
-                            <span class="metric-label">Facturación</span>
-                            <div class="metric-value text-white" id="kpi-facturacion">$0</div>
-                            <small class="text-success"><i class="fas fa-arrow-up"></i> Ingreso Bruto</small>
-                        </div>
-                    </div>
-                    <div class="col-md-20" style="width: 20%;">
-                        <div class="glass-panel text-center">
-                            <span class="metric-label">Profit Líquido</span>
-                            <div class="metric-value" style="color: #4ade80;" id="kpi-profit">$0</div>
-                            <small class="text-muted">Neto Real</small>
-                        </div>
-                    </div>
-                    <div class="col-md-20" style="width: 20%;">
-                        <div class="glass-panel text-center">
-                            <span class="metric-label">ROAS</span>
-                            <div class="metric-value" id="kpi-roas">0.00x</div>
-                            <small class="text-muted">Meta: 3.5x</small>
-                        </div>
-                    </div>
-                    <div class="col-md-20" style="width: 20%;">
-                        <div class="glass-panel text-center">
-                            <span class="metric-label">Ventas</span>
-                            <div class="metric-value" id="kpi-ventas">0</div>
-                            <small class="text-muted">Clientes Nuevos</small>
-                        </div>
-                    </div>
-                    <div class="col-md-20" style="width: 20%;">
-                        <div class="glass-panel text-center">
-                            <span class="metric-label">Ad Spend</span>
-                            <div class="metric-value" style="color: #f87171;" id="kpi-ads">$0</div>
-                            <small class="text-muted">Gasto Publicitario</small>
-                        </div>
-                    </div>
-                </div>
-
-                <h4 class="mb-4 mt-2"><i class="fas fa-filter me-2 text-muted"></i>Eficiencia de Funnel</h4>
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="glass-panel d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="metric-label">Leads Únicos</span>
-                                <div class="metric-value h3 mb-0" id="kpi-leads">0</div>
-                            </div>
-                            <i class="fas fa-users fa-2x text-muted opacity-25"></i>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="glass-panel d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="metric-label">Asistencias</span>
-                                <div class="metric-value h3 mb-0" id="kpi-asistencias">0</div>
-                            </div>
-                            <i class="fas fa-handshake fa-2x text-muted opacity-25"></i>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="glass-panel d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="metric-label">Tasa Asistencia</span>
-                                <div class="metric-value h3 mb-0" id="kpi-tasa-asistencia">0%</div>
-                            </div>
-                            <i class="fas fa-percent fa-2x text-muted opacity-25"></i>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="glass-panel d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="metric-label">Tasa Cierre</span>
-                                <div class="metric-value h3 mb-0" id="kpi-tasa-cierre">0%</div>
-                            </div>
-                            <i class="fas fa-check-circle fa-2x text-muted opacity-25"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mt-2">
-                    <div class="col-md-6">
-                        <div class="glass-panel h-100">
-                            <h5 class="mb-4">📊 Comportamiento Diario de Leads</h5>
-                            <div id="chart-daily-status" style="height: 350px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="glass-panel h-100">
-                            <h5 class="mb-4">📈 Dinámica Financiera</h5>
-                            <div id="chart-finance" style="height: 350px;"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mt-4 mb-5">
-                    <div class="col-12">
-                        <div class="glass-panel">
-                            <h5 class="mb-4">🏆 Ranking de Rendimiento</h5>
-                            <div class="table-responsive">
-                                <table class="table-custom" id="tabla-ranking">
-                                    <thead>
-                                        <tr>
-                                            <th>Closer / Agente</th>
-                                            <th>Facturación Total</th>
-                                            <th>Asistencias</th>
-                                            <th>Ventas Cerradas</th>
-                                            <th>Eficiencia (Cierre)</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <footer class="text-center text-muted mb-4">
-                    <small>System developed for High Performance Agencies • &copy; 2024</small>
-                </footer>
-
             </div>
-        </div>
+
+            <div class="row mb-4 fade-up" style="animation-delay: 0.4s;">
+                <div class="col-md-3">
+                    <div class="glass-panel d-flex justify-content-between align-items-center h-100">
+                        <div>
+                            <span class="metric-label">Leads Únicos</span>
+                            <div class="h2 text-white mb-0" id="kpi-leads">0</div>
+                        </div>
+                        <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.05); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-users text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-panel d-flex justify-content-between align-items-center h-100">
+                        <div>
+                            <span class="metric-label">Asistencias</span>
+                            <div class="h2 text-white mb-0" id="kpi-asistencias">0</div>
+                        </div>
+                        <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.05); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-handshake text-muted"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-panel d-flex justify-content-between align-items-center h-100">
+                        <div>
+                            <span class="metric-label">Tasa Asistencia</span>
+                            <div class="h2 text-white mb-0" id="kpi-tasa-asistencia">0%</div>
+                        </div>
+                        <div style="width: 50px; height: 50px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-percent" style="color: var(--neon-blue);"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-panel d-flex justify-content-between align-items-center h-100">
+                        <div>
+                            <span class="metric-label">Tasa Cierre</span>
+                            <div class="h2 text-white mb-0" id="kpi-tasa-cierre">0%</div>
+                        </div>
+                        <div style="width: 50px; height: 50px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-check" style="color: var(--neon-green);"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel fade-up" style="animation-delay: 0.5s;">
+                <div class="d-flex justify-content-between mb-4">
+                    <h5 class="mb-0">🌊 Flujo Diario de Leads</h5>
+                    <button class="btn btn-sm btn-outline-secondary" style="border:1px solid var(--glass-border); color: var(--text-muted);"><i class="fas fa-expand"></i></button>
+                </div>
+                <div id="chart-daily-status" style="height: 400px; width: 100%;"></div>
+            </div>
+
+            <div class="glass-panel fade-up" style="animation-delay: 0.6s;">
+                <div class="d-flex justify-content-between mb-4">
+                    <h5 class="mb-0">💸 Dinámica Financiera (Ingreso vs Gasto)</h5>
+                    <span class="badge bg-dark border border-secondary text-muted">Financial Health</span>
+                </div>
+                <div id="chart-finance" style="height: 400px; width: 100%;"></div>
+            </div>
+
+            <div class="glass-panel fade-up" style="animation-delay: 0.7s;">
+                <h5 class="mb-4">🏆 Top Performers</h5>
+                <div class="table-responsive">
+                    <table class="table-custom" id="tabla-ranking">
+                        <thead>
+                            <tr>
+                                <th>Closer</th>
+                                <th>Facturación</th>
+                                <th>Asistencias</th>
+                                <th>Ventas</th>
+                                <th>Eficiencia</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <footer class="text-center text-muted mt-5 mb-3 fade-up" style="animation-delay: 0.8s; opacity: 0.5; font-size: 0.8rem;">
+                SECURE CONNECTION • AGENCY OS PRO
+            </footer>
+
+        </main>
     </div>
 
     <script>
@@ -377,10 +396,16 @@
         const URL_GASTOS_DIC = "https://docs.google.com/spreadsheets/d/e/2PACX-1vGOLgPTDLie5gEbkViCbpebWfN9S_eb2h2GGlpWLjmfVgzfnwR_ncVTs4IqmKgmAFfxZTQHJlMBrIi/pub?gid=0&single=true&output=csv";
         const URL_GASTOS_ANUAL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?output=csv";
 
-        // STATE
-        let rawDataVentas = [], rawDataGastos = [], filteredVentas = [], filteredGastos = [];
+        // SIDEBAR TOGGLE
+        function toggleSidebar() {
+            document.body.classList.toggle('collapsed');
+            // Trigger Plotly resize after transition
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 450);
+        }
 
-        // --- ANIMATIONS UTILS ---
+        // ANIMATE NUMBERS
         function animateValue(obj, start, end, duration, isMoney=false, isPercent=false) {
             let startTimestamp = null;
             const step = (timestamp) => {
@@ -394,7 +419,6 @@
 
                 if (progress < 1) window.requestAnimationFrame(step);
                 else {
-                    // Final set to ensure precision
                     if (isMoney) obj.innerHTML = fmtMoney(end);
                     else if (isPercent) obj.innerHTML = end.toFixed(1) + "%";
                     else obj.innerHTML = end.toLocaleString();
@@ -403,10 +427,12 @@
             window.requestAnimationFrame(step);
         }
 
-        // --- INIT ---
+        // INIT & DATA
+        let rawDataVentas = [], rawDataGastos = [], filteredVentas = [], filteredGastos = [];
+
         async function init() {
             try {
-                const ts = Date.now(); // Cache busting
+                const ts = Date.now();
                 const [resVentas, resG1, resG2] = await Promise.all([
                     fetch(URL_VENTAS + "&t=" + ts).then(r => r.text()),
                     fetch(URL_GASTOS_DIC + "&t=" + ts).then(r => r.text()),
@@ -418,38 +444,26 @@
                 populateClosers();
                 updateDashboard();
 
-                // Hide loader with fade
+                // Loader Exit
                 const loader = document.getElementById('loader');
                 loader.style.opacity = '0';
                 loader.style.transition = 'opacity 0.5s ease';
                 setTimeout(() => {
                     loader.classList.add('d-none');
                     document.getElementById('main-app').classList.remove('d-none');
-                    // Trigger entry animation
-                    document.querySelectorAll('.glass-panel').forEach((el, index) => {
-                        el.style.opacity = '0';
-                        el.style.transform = 'translateY(20px)';
-                        setTimeout(() => {
-                            el.style.transition = 'all 0.6s ease';
-                            el.style.opacity = '1';
-                            el.style.transform = 'translateY(0)';
-                        }, index * 100);
-                    });
                 }, 500);
 
             } catch (error) {
                 console.error(error);
-                alert("Error de conexión. Verifica los enlaces de Google Sheets.");
+                alert("Error crítico conectando a la base de datos.");
             }
         }
 
-        // --- DATA PROCESSING (Exact Logic from Python/Streamlit) ---
         function processVentas(csvText) {
             const results = Papa.parse(csvText, { header: true, skipEmptyLines: true });
             let data = results.data;
             const keys = results.meta.fields;
 
-            // Reparación de desplazamiento (GHL Bug Fix)
             data = data.map(row => {
                 const primerCol = row[keys[0]];
                 if (!primerCol || primerCol.trim() === "") {
@@ -465,11 +479,9 @@
             rawDataVentas = data.map(row => {
                 let fecha = moment(row['Fecha'], "DD/MM/YYYY");
                 if (!fecha.isValid()) fecha = moment(row['Fecha']); 
-
-                let montoStr = row['Monto ($)'] || "0";
-                let monto = parseFloat(montoStr.toString().replace(/[$,]/g, '')) || 0;
-
+                let monto = parseFloat((row['Monto ($)'] || "0").toString().replace(/[$,]/g, '')) || 0;
                 let res = (row['Resultado'] || "Pendiente").toLowerCase();
+                
                 let estadoSimple = "Otro/Pendiente";
                 if (res.includes("venta")) estadoSimple = "✅ Venta";
                 else if (res.includes("no show")) estadoSimple = "❌ No Show";
@@ -481,12 +493,9 @@
                 if (res.includes("venta") || res.includes("seguimiento") || res.includes("descalificado") || (res.includes("asistió") && !res.includes("no show"))) esAsistencia = true;
 
                 return {
-                    fecha: fecha,
-                    monto: monto,
-                    closer: (row['Closer'] || "Sin Asignar").trim(),
-                    email: (row['Email'] || row['Lead Name'] || Math.random().toString()).trim().toLowerCase(),
-                    estadoSimple: estadoSimple,
-                    esAsistencia: esAsistencia
+                    fecha: fecha, monto: monto, closer: (row['Closer'] || "Sin Asignar").trim(),
+                    email: (row['Email'] || row['Lead Name'] || Math.random()).toString().trim().toLowerCase(),
+                    estadoSimple: estadoSimple, esAsistencia: esAsistencia
                 };
             }).filter(r => r.fecha.isValid());
         }
@@ -494,8 +503,8 @@
         function processGastos(csv1, csv2) {
             const p1 = Papa.parse(csv1, { header: true, skipEmptyLines: true }).data;
             const p2 = Papa.parse(csv2, { header: false, skipEmptyLines: true }).data;
-
             let allGastos = [];
+            
             p1.forEach(r => {
                 let f = moment(r['Fecha'], "DD/MM/YYYY");
                 let g = parseFloat((r['Gasto'] || "0").toString().replace(/[$,]/g, '')) || 0;
@@ -503,8 +512,7 @@
             });
             p2.forEach(r => {
                 if(r[0] === 'Fecha') return;
-                let f = moment(r[0]); 
-                if (!f.isValid()) f = moment(r[0], "DD/MM/YYYY");
+                let f = moment(r[0]); if (!f.isValid()) f = moment(r[0], "DD/MM/YYYY");
                 let g = parseFloat((r[1] || "0").toString().replace(/[$,]/g, '')) || 0;
                 if(f.isValid()) allGastos.push({ fecha: f, gasto: g });
             });
@@ -516,14 +524,13 @@
             const sel = document.getElementById('filtroCloser');
             closers.forEach(c => {
                 if(c) {
-                    let opt = document.createElement('option');
-                    opt.value = c; opt.innerText = c;
+                    let opt = document.createElement('option'); opt.value = c; opt.innerText = c;
                     sel.appendChild(opt);
                 }
             });
         }
 
-        function getDatesFromFilter(filterVal) {
+        function getDates(filterVal) {
             const hoy = moment();
             let inicio, fin;
             switch(filterVal) {
@@ -539,46 +546,41 @@
             return { inicio, fin };
         }
 
-        // --- DASHBOARD UPDATE ---
         function updateDashboard() {
             const filtroTiempo = document.getElementById('filtroTiempo').value;
             const filtroCloser = document.getElementById('filtroCloser').value;
             const metaFact = parseFloat(document.getElementById('metaFact').value) || 0;
             const presAds = parseFloat(document.getElementById('metaAds').value) || 0;
 
-            const { inicio, fin } = getDatesFromFilter(filtroTiempo);
-            document.getElementById('rangoFechasTexto').innerText = `${inicio.format("D MMM, YYYY")} — ${fin.format("D MMM, YYYY")}`;
+            const { inicio, fin } = getDates(filtroTiempo);
+            document.getElementById('rangoFechasTexto').innerText = `DATA RANGE: ${inicio.format("MMM DD").toUpperCase()} - ${fin.format("MMM DD").toUpperCase()}`;
 
             filteredVentas = rawDataVentas.filter(v => v.fecha.isSameOrAfter(inicio, 'day') && v.fecha.isSameOrBefore(fin, 'day'));
             if (filtroCloser !== "Todos") filteredVentas = filteredVentas.filter(v => v.closer === filtroCloser);
-
             filteredGastos = rawDataGastos.filter(g => g.fecha.isSameOrAfter(inicio, 'day') && g.fecha.isSameOrBefore(fin, 'day'));
             
             let totalGasto = (filtroCloser === "Todos") ? filteredGastos.reduce((sum, g) => sum + g.gasto, 0) : 0;
             let totalFacturacion = filteredVentas.reduce((sum, v) => sum + v.monto, 0);
 
-            // Calculations
+            // KPIs
             const uniqueEmails = [...new Set(filteredVentas.map(v => v.email))];
-            const leadsUnicos = uniqueEmails.length;
             const asistenciasSet = new Set(filteredVentas.filter(v => v.esAsistencia).map(v => v.email));
-            const totalAsistencias = asistenciasSet.size;
             const ventasSet = new Set(filteredVentas.filter(v => v.estadoSimple === "✅ Venta").map(v => v.email));
-            const ventasCerradas = ventasSet.size;
-
+            
             const profit = totalFacturacion - totalGasto;
             const roas = totalGasto > 0 ? (totalFacturacion / totalGasto) : 0;
-            const tasaAsist = leadsUnicos > 0 ? (totalAsistencias / leadsUnicos * 100) : 0;
-            const tasaCierre = totalAsistencias > 0 ? (ventasCerradas / totalAsistencias * 100) : 0;
-
-            // Update DOM with Animations
+            
+            // Animations
             animateValue(document.getElementById('kpi-facturacion'), 0, totalFacturacion, 1000, true);
             animateValue(document.getElementById('kpi-profit'), 0, profit, 1000, true);
-            document.getElementById('kpi-roas').innerHTML = `${roas.toFixed(2)}x <span class="metric-delta ${roas >= 3.5 ? 'text-success' : 'text-danger'}" style="font-size:0.5em; vertical-align:middle;">(${roas >= 3.5 ? 'WIN' : 'LOW'})</span>`;
-            animateValue(document.getElementById('kpi-ventas'), 0, ventasCerradas, 1000);
+            document.getElementById('kpi-roas').innerHTML = `${roas.toFixed(2)}x`;
+            animateValue(document.getElementById('kpi-ventas'), 0, ventasSet.size, 1000);
             animateValue(document.getElementById('kpi-ads'), 0, totalGasto, 1000, true);
-
-            animateValue(document.getElementById('kpi-leads'), 0, leadsUnicos, 800);
-            animateValue(document.getElementById('kpi-asistencias'), 0, totalAsistencias, 800);
+            
+            animateValue(document.getElementById('kpi-leads'), 0, uniqueEmails.length, 800);
+            animateValue(document.getElementById('kpi-asistencias'), 0, asistenciasSet.size, 800);
+            const tasaAsist = uniqueEmails.length > 0 ? (asistenciasSet.size / uniqueEmails.length * 100) : 0;
+            const tasaCierre = asistenciasSet.size > 0 ? (ventasSet.size / asistenciasSet.size * 100) : 0;
             animateValue(document.getElementById('kpi-tasa-asistencia'), 0, tasaAsist, 800, false, true);
             animateValue(document.getElementById('kpi-tasa-cierre'), 0, tasaCierre, 800, false, true);
 
@@ -587,162 +589,174 @@
             renderTable(filteredVentas);
         }
 
-        function renderProjections(filtroTiempo, facturacion, metaFact, presAds, gastoTotal) {
-            const container = document.getElementById('proyeccionesContainer');
-            if (filtroTiempo !== "mes_actual") {
-                container.innerHTML = ""; return;
-            }
-
+        function renderProjections(filtro, fact, meta, presAds, gasto) {
+            const div = document.getElementById('proyeccionesContainer');
+            if(filtro !== "mes_actual") { div.innerHTML=""; return; }
+            
             const hoy = moment();
-            const diasEnMes = hoy.daysInMonth();
+            const diasMes = hoy.daysInMonth();
             const diaHoy = hoy.date();
-            const diasRestantes = diasEnMes - diaHoy;
+            const restante = diasMes - diaHoy;
             
-            const progreso = Math.min((facturacion / metaFact) * 100, 100);
-            const faltante = Math.max(metaFact - facturacion, 0);
-            const proyeccion = (diaHoy > 0) ? (facturacion / diaHoy) * diasEnMes : 0;
-            
-            const budgetRestante = Math.max(presAds - gastoTotal, 0);
-            const gastoIdeal = (diasRestantes > 0) ? budgetRestante / diasRestantes : 0;
+            const proy = (diaHoy > 0) ? (fact / diaHoy) * diasMes : 0;
+            const budgetRest = Math.max(presAds - gasto, 0);
+            const pace = restante > 0 ? budgetRest / restante : 0;
 
-            container.innerHTML = `
+            div.innerHTML = `
                 <div class="col-md-4">
-                    <div class="glass-panel" style="background: linear-gradient(145deg, rgba(59, 130, 246, 0.1), rgba(30, 41, 59, 0.7)); border-color: rgba(59,130,246,0.3);">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span>🚀 Proyección de Cierre</span>
-                            <span class="fw-bold text-white">${fmtMoney(proyeccion)}</span>
+                    <div class="glass-panel" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2);">
+                        <h6 class="text-white">PROJECTED REVENUE</h6>
+                        <div class="d-flex justify-content-between align-items-end">
+                            <h2 class="mb-0 text-white">${fmtMoney(proy)}</h2>
+                            <small class="text-muted">Meta: ${fmtMoney(meta)}</small>
                         </div>
-                        <h3 class="mb-0 text-white">${fmtMoney(facturacion)} <span class="text-muted fs-6">/ ${fmtMoney(metaFact)}</span></h3>
-                        <div class="progress-slim"><div class="progress-bar-custom" style="width: ${progreso}%"></div></div>
+                        <div class="progress mt-3" style="height: 6px; background: rgba(0,0,0,0.3);">
+                            <div class="progress-bar bg-primary" style="width: ${Math.min((fact/meta)*100, 100)}%"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="glass-panel">
-                        <span class="metric-label text-warning">Gap para Meta</span>
-                        <h3 class="text-white mb-0">${fmtMoney(faltante)}</h3>
-                        <small class="text-muted">Necesitas facturar la diferencia en ${diasRestantes} días.</small>
+                        <h6 class="text-white">GAP TO GOAL</h6>
+                        <h2 class="mb-0 text-warning">${fmtMoney(Math.max(meta - fact, 0))}</h2>
+                        <small class="text-muted">Push required for last ${restante} days</small>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="glass-panel">
-                        <span class="metric-label text-info">Pacing Diario (Ads)</span>
-                        <h3 class="text-white mb-0">${fmtMoney(gastoIdeal)}<span class="fs-6 text-muted">/día</span></h3>
-                        <small class="text-muted">Presupuesto restante: ${fmtMoney(budgetRestante)}</small>
+                        <h6 class="text-white">ADS PACING (DAILY)</h6>
+                        <h2 class="mb-0 text-info">${fmtMoney(pace)}</h2>
+                        <small class="text-muted">Budget Left: ${fmtMoney(budgetRest)}</small>
                     </div>
                 </div>
             `;
         }
 
         function renderCharts(ventas, gastos, closerSel) {
-            // CHART 1: STATUS
+            // CHART 1: LEADS BEHAVIOR (SPLINE AREA)
             let statusData = {};
             ventas.forEach(v => {
-                let dateStr = v.fecha.format("YYYY-MM-DD");
-                if(!statusData[dateStr]) statusData[dateStr] = {};
-                if(!statusData[dateStr][v.estadoSimple]) statusData[dateStr][v.estadoSimple] = 0;
-                statusData[dateStr][v.estadoSimple]++;
+                let d = v.fecha.format("YYYY-MM-DD");
+                if(!statusData[d]) statusData[d] = {};
+                if(!statusData[d][v.estadoSimple]) statusData[d][v.estadoSimple] = 0;
+                statusData[d][v.estadoSimple]++;
             });
-
-            let fechasSorted = Object.keys(statusData).sort();
-            let traces = [];
-            const colores = {
-                "✅ Venta": "#10b981", "❌ No Show": "#ef4444",
-                "🚫 Descalificado": "#f59e0b", "👀 Seguimiento": "#3b82f6",
-                "📅 Re-Agendado": "#8b5cf6", "Otro/Pendiente": "#64748b"
+            
+            let sortedDates = Object.keys(statusData).sort();
+            let datasets = [];
+            const colors = {
+                "✅ Venta": "#10b981", "❌ No Show": "#ef4444", "🚫 Descalificado": "#f59e0b",
+                "👀 Seguimiento": "#3b82f6", "📅 Re-Agendado": "#8b5cf6", "Otro/Pendiente": "#64748b"
             };
 
-            Object.keys(colores).forEach(status => {
-                let yVals = fechasSorted.map(f => statusData[f][status] || 0);
-                traces.push({
-                    x: fechasSorted, y: yVals, name: status, type: 'bar', marker: {color: colores[status]}
+            Object.keys(colors).forEach(status => {
+                let y = sortedDates.map(d => statusData[d][status] || 0);
+                // "Pro" Style: Scatter with fill (Stacked Area)
+                datasets.push({
+                    x: sortedDates, y: y, name: status, 
+                    mode: 'none', // No lines on top, just fill
+                    stackgroup: 'one', // Enable stacking
+                    fillcolor: colors[status],
+                    type: 'scatter',
+                    hoverinfo: 'x+y+name'
                 });
             });
 
-            const layoutBase = {
+            Plotly.newPlot('chart-daily-status', datasets, {
                 paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
-                font: {family: 'Inter', color: '#94a3b8'},
-                margin: {t:0, l:40, r:10, b:40},
-                legend: {orientation: 'h', y: -0.2},
-                xaxis: {gridcolor: 'rgba(255,255,255,0.05)'},
-                yaxis: {gridcolor: 'rgba(255,255,255,0.05)'}
-            };
+                font: {family: 'Inter', color: '#64748b'},
+                margin: {t:10, l:30, r:10, b:30},
+                showlegend: true,
+                legend: {orientation: 'h', y: 1.1, x: 0},
+                xaxis: {gridcolor: 'rgba(255,255,255,0.05)', showgrid: false},
+                yaxis: {gridcolor: 'rgba(255,255,255,0.05)', showgrid: true}
+            }, {responsive: true, displayModeBar: false});
 
-            Plotly.newPlot('chart-daily-status', traces, {...layoutBase, barmode: 'stack'}, {responsive: true, displayModeBar: false});
-
-            // CHART 2: FINANCE
+            // CHART 2: FINANCE (GRADIENT LINES)
             let finData = {};
             ventas.forEach(v => {
-                let dateStr = v.fecha.format("YYYY-MM-DD");
-                if(!finData[dateStr]) finData[dateStr] = {fact: 0, ads: 0};
-                finData[dateStr].fact += v.monto;
+                let d = v.fecha.format("YYYY-MM-DD");
+                if(!finData[d]) finData[d] = {fact: 0, ads: 0};
+                finData[d].fact += v.monto;
             });
             if(closerSel === "Todos") {
                 gastos.forEach(g => {
-                    let dateStr = g.fecha.format("YYYY-MM-DD");
-                    if(!finData[dateStr]) finData[dateStr] = {fact: 0, ads: 0};
-                    finData[dateStr].ads += g.gasto;
+                    let d = g.fecha.format("YYYY-MM-DD");
+                    if(!finData[d]) finData[d] = {fact: 0, ads: 0};
+                    finData[d].ads += g.gasto;
                 });
             }
 
-            let fechasFin = Object.keys(finData).sort();
+            let datesF = Object.keys(finData).sort();
             let traceFact = {
-                x: fechasFin, y: fechasFin.map(f => finData[f].fact),
-                name: 'Facturación', mode: 'lines', line: {color: '#10b981', width: 3, shape: 'spline'}, fill: 'tozeroy', fillcolor: 'rgba(16, 185, 129, 0.1)'
+                x: datesF, y: datesF.map(d => finData[d].fact),
+                name: 'Facturación', mode: 'lines',
+                line: {color: '#10b981', width: 3, shape: 'spline'},
+                fill: 'tozeroy', fillcolor: 'rgba(16, 185, 129, 0.1)'
             };
             let traceAds = {
-                x: fechasFin, y: fechasFin.map(f => finData[f].ads),
-                name: 'Gasto Ads', mode: 'lines', line: {color: '#f87171', width: 2, dash: 'dot'}
+                x: datesF, y: datesF.map(d => finData[d].ads),
+                name: 'Ads', mode: 'lines',
+                line: {color: '#ef4444', width: 2, shape: 'spline'},
+                fill: 'tozeroy', fillcolor: 'rgba(239, 68, 68, 0.05)'
             };
 
-            Plotly.newPlot('chart-finance', [traceFact, traceAds], {...layoutBase, hovermode: 'x unified'}, {responsive: true, displayModeBar: false});
+            Plotly.newPlot('chart-finance', [traceFact, traceAds], {
+                paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+                font: {family: 'Inter', color: '#64748b'},
+                margin: {t:10, l:40, r:10, b:30},
+                hovermode: 'x unified',
+                legend: {orientation: 'h', y: 1.1},
+                xaxis: {showgrid: false}, yaxis: {gridcolor: 'rgba(255,255,255,0.05)'}
+            }, {responsive: true, displayModeBar: false});
         }
 
         function renderTable(ventas) {
             let ranking = {};
             ventas.forEach(v => {
                 let c = v.closer;
-                if(!ranking[c]) ranking[c] = {fact: 0, asistenciasSet: new Set(), ventasSet: new Set()};
+                if(!ranking[c]) ranking[c] = {fact: 0, asist: new Set(), ventas: new Set()};
                 ranking[c].fact += v.monto;
-                if(v.esAsistencia) ranking[c].asistenciasSet.add(v.email);
-                if(v.estadoSimple === "✅ Venta") ranking[c].ventasSet.add(v.email);
+                if(v.esAsistencia) ranking[c].asist.add(v.email);
+                if(v.estadoSimple === "✅ Venta") ranking[c].ventas.add(v.email);
             });
 
-            let rows = Object.keys(ranking).map(key => {
-                let r = ranking[key];
-                let nAsist = r.asistenciasSet.size;
-                let nVentas = r.ventasSet.size;
-                let pct = nAsist > 0 ? (nVentas / nAsist * 100) : 0;
-                return { name: key, ...r, nAsist, nVentas, pct };
+            let rows = Object.keys(ranking).map(k => {
+                let r = ranking[k];
+                let pct = r.asist.size > 0 ? (r.ventas.size / r.asist.size * 100) : 0;
+                return { name: k, fact: r.fact, asist: r.asist.size, ventas: r.ventas.size, pct };
             }).sort((a,b) => b.fact - a.fact);
 
             let tbody = document.querySelector("#tabla-ranking tbody");
             tbody.innerHTML = "";
-            rows.forEach((r, i) => {
-                let medal = i === 0 ? "🥇" : (i === 1 ? "🥈" : (i === 2 ? "🥉" : ""));
-                let tr = `<tr>
-                    <td><div class="d-flex align-items-center"><div style="width:30px;height:30px;background:rgba(255,255,255,0.1);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-right:10px;font-size:12px;">${r.name.charAt(0)}</div> ${r.name} ${medal}</div></td>
-                    <td class="text-white fw-bold">${fmtMoney(r.fact)}</td>
-                    <td>${r.nAsist}</td>
-                    <td>${r.nVentas}</td>
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <span class="me-2">${r.pct.toFixed(1)}%</span>
-                            <div class="progress" style="height: 4px; width: 60px; background: rgba(255,255,255,0.1);">
-                                <div class="progress-bar" style="width: ${Math.min(r.pct, 100)}%; background: ${r.pct > 20 ? '#10b981' : '#f59e0b'};"></div>
+            rows.forEach(r => {
+                let color = r.pct > 20 ? 'bg-success' : 'bg-warning';
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="text-white fw-bold">${r.name}</td>
+                        <td style="color: #4ade80;">${fmtMoney(r.fact)}</td>
+                        <td class="text-white">${r.asist}</td>
+                        <td class="text-white">${r.ventas}</td>
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <span class="me-2 text-white">${r.pct.toFixed(1)}%</span>
+                                <div class="progress flex-grow-1" style="height: 4px; background: rgba(255,255,255,0.1);">
+                                    <div class="progress-bar ${color}" style="width: ${Math.min(r.pct, 100)}%"></div>
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                </tr>`;
-                tbody.innerHTML += tr;
+                        </td>
+                    </tr>
+                `;
             });
         }
 
         const fmtMoney = (val) => "$" + val.toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0});
-
-        // Events
+        
+        // Event Listeners
         document.getElementById('filtroTiempo').addEventListener('change', updateDashboard);
         document.getElementById('filtroCloser').addEventListener('change', updateDashboard);
         init();
+
     </script>
 </body>
 </html>
