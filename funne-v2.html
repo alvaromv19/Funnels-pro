@@ -160,12 +160,30 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* --- 5. FUNNEL CARDS (HIGH END) --- */
+        /* --- 5. FUNNEL CARDS (HIGH END) - UPDATED FOR SCROLL --- */
         .funnel-grid {
             display: flex;
             gap: 24px;
             align-items: center;
+            
+            /* NUEVAS PROPIEDADES PARA SCROLL */
+            width: 100%;
+            overflow-x: auto;         /* Activa el scroll horizontal */
+            justify-content: flex-start; /* Alinea al inicio para evitar cortes */
+            
+            /* Espaciado Vital */
+            padding: 60px 40px;       /* Padding Arriba/Abajo para que la animación 3D no se corte */
+            padding-right: 500px;     /* MAGIA: Espacio extra a la derecha para el panel lateral */
+            
+            /* Suavizado */
+            scroll-behavior: smooth;
         }
+
+        /* Opcional: Estilizar la barra de scroll para que sea sutil */
+        .funnel-grid::-webkit-scrollbar { height: 8px; }
+        .funnel-grid::-webkit-scrollbar-track { background: transparent; }
+        .funnel-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .funnel-grid::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
         .glass-card {
             width: 180px; height: 220px;
