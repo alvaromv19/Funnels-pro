@@ -160,30 +160,47 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* --- 5. FUNNEL CARDS (HIGH END) - UPDATED FOR SCROLL --- */
+       /* --- 5. FUNNEL CARDS (CORREGIDO) --- */
         .funnel-grid {
             display: flex;
             gap: 24px;
             align-items: center;
             
-            /* NUEVAS PROPIEDADES PARA SCROLL */
+            /* Scroll Configuration */
             width: 100%;
-            overflow-x: auto;         /* Activa el scroll horizontal */
-            justify-content: flex-start; /* Alinea al inicio para evitar cortes */
+            overflow-x: auto;
+            padding: 60px 40px; /* Padding equilibrado inicial */
             
-            /* Espaciado Vital */
-            padding: 60px 40px;       /* Padding Arriba/Abajo para que la animación 3D no se corte */
-            padding-right: 500px;     /* MAGIA: Espacio extra a la derecha para el panel lateral */
-            
-            /* Suavizado */
-            scroll-behavior: smooth;
+            /* Transición suave para cuando se abra el panel */
+            transition: padding-right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Opcional: Estilizar la barra de scroll para que sea sutil */
-        .funnel-grid::-webkit-scrollbar { height: 8px; }
+        /* Ocultar barra de scroll fea pero mantener funcionalidad */
+        .funnel-grid::-webkit-scrollbar { height: 6px; }
         .funnel-grid::-webkit-scrollbar-track { background: transparent; }
         .funnel-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-        .funnel-grid::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+        .glass-card {
+            /* Dimensiones FIJAS - Esto evita que se encojan */
+            flex-shrink: 0; 
+            width: 180px; 
+            height: 220px;
+            
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--border-glass);
+            border-radius: 24px;
+            padding: 24px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 15px;
+            cursor: pointer;
+            transition: all 0.4s var(--ease-elastic);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        /* ... el resto de estilos de hover y connectors se mantienen igual ... */
+        /* Asegúrate de mantener .glass-card:hover, .card-icon, etc. que ya tenías */
         
         .glass-card {
             width: 180px; height: 220px;
@@ -613,7 +630,7 @@
             const panel = document.getElementById('detailPanel');
             const body = document.getElementById('panelBody');
             
-            // Generate List HTML
+            // 1. Inyectar HTML (Igual que antes)
             let listHtml = '';
             data.items.forEach(item => {
                 listHtml += `<li class="check-item"><i class="fa-solid fa-circle-check"></i> <span>${item}</span></li>`;
@@ -630,11 +647,28 @@
                 </ul>
             `;
 
+            // 2. Activar Panel
             panel.classList.add('active');
+
+            // 3. NUEVO: Empujar el grid para crear espacio de scroll
+            // Solo si estamos en la vista de funnel
+            const grid = document.querySelector('.funnel-grid');
+            if(grid) {
+                grid.style.paddingRight = '500px'; // Agrega el espacio dinámicamente
+                
+                // Opcional: Hacer scroll automático hacia la tarjeta seleccionada si deseas
+                // element.scrollIntoView({behavior: "smooth", inline: "center"}); 
+            }
         }
 
         function closePanel() {
             document.getElementById('detailPanel').classList.remove('active');
+            
+            // NUEVO: Quitar el espacio extra
+            const grid = document.querySelector('.funnel-grid');
+            if(grid) {
+                grid.style.paddingRight = '40px'; // Vuelve al padding original
+            }
         }
     </script>
 </body>
