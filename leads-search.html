@@ -26,7 +26,7 @@
             --neon-red: #fb7185;
             
             --text-main: #ffffff;
-            --text-secondary: #94a3b8; /* Gris claro legible */
+            --text-secondary: #94a3b8;
             --text-muted: #64748b;
         }
 
@@ -140,7 +140,7 @@
         .data-val { color: white; font-weight: 600; }
         .data-val.highlight { color: var(--neon-green); text-shadow: 0 0 10px rgba(0,255,157,0.3); }
 
-        /* --- PERFIL --- */
+        /* --- PERFIL HEADER --- */
         .profile-header { text-align: center; margin-bottom: 50px; display: none; }
         .profile-name {
             font-size: 3rem; font-weight: 900; color: white;
@@ -152,6 +152,7 @@
             background: rgba(37, 211, 102, 0.1); border: 1px solid #25D366; color: #25D366;
             padding: 12px 30px; border-radius: 50px; text-decoration: none; font-weight: 700;
             display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s; font-size: 1rem;
+            margin-top: 10px;
         }
         .whatsapp-btn:hover {
             background: #25D366; color: black;
@@ -193,7 +194,7 @@
             background: rgba(255, 255, 255, 0.08);
             transform: scale(1.01);
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            cursor: pointer; /* Indicar clickeable */
+            cursor: pointer;
         }
 
         /* --- MODAL (POPUP) --- */
@@ -356,18 +357,50 @@
             event.target.classList.add('active');
         }
 
+        // --- FUNCIÓN ROBUSTA PARA EXTRAER NOMBRE ---
+        function extractName(row) {
+            if (!row) return null;
+            // Buscar en claves comunes (ignorando mayúsculas)
+            for (let key in row) {
+                let k = key.toLowerCase();
+                if ((k === "name" || k === "nombre" || k === "lead name" || k === "cliente") && row[key]) {
+                    return row[key];
+                }
+            }
+            return null;
+        }
+
+        // --- FUNCIÓN ROBUSTA PARA EXTRAER TELÉFONO ---
         function extractPhone(row) {
-            let rawPhone = row['Phone'] || row['Telefono'] || row['Móvil'] || row['Celular'];
+            if (!row) return null;
+            
+            let rawPhone = null;
+            
+            // 1. Buscar por nombre de columna
+            for (let key in row) {
+                let k = key.toLowerCase();
+                if ((k.includes("phone") || k.includes("telefono") || k.includes("movil") || k.includes("celular")) && row[key]) {
+                    rawPhone = row[key];
+                    break;
+                }
+            }
+
+            // 2. Fallback: Buscar por valor (si es un número largo)
             if (!rawPhone) {
                 let values = Object.values(row);
+                // Generalmente la columna D (índice 3) en GHL
                 if (values[3] && String(values[3]).length > 6) rawPhone = values[3];
             }
+
             if (!rawPhone) return null;
+            
             let str = String(rawPhone).trim();
             if (str.includes("#ERROR")) return null;
+            
             let linkPhone = str.replace(/\D/g, ''); 
             let displayPhone = str;
             if (displayPhone.startsWith("'")) displayPhone = displayPhone.substring(1);
+            
             return { link: linkPhone, display: displayPhone };
         }
 
@@ -382,14 +415,20 @@
                     fetch(URL_RES + "&t=" + ts, fetchOpts).then(r => r.text())
                 ]);
 
+                // Procesador CSV Genérico (Limpia keys)
                 const parseData = (csv) => {
                     return Papa.parse(csv, {header: true, skipEmptyLines: true}).data.map(row => {
                         let clean = {};
                         Object.keys(row).forEach(k => clean[k.trim()] = row[k]);
+                        
+                        // Normalizar Email (Clave primaria)
                         const emailKey = Object.keys(clean).find(k => k.toLowerCase().includes("email"));
                         if (emailKey) clean._email_norm = String(clean[emailKey]).trim().toLowerCase();
-                        const phoneKey = Object.keys(clean).find(k => k.toLowerCase().includes("phone") || k.toLowerCase().includes("telefono"));
-                        if(phoneKey) clean._phone_clean = extractPhone({[phoneKey]: clean[phoneKey]}); 
+                        
+                        // Guardar datos limpios en el objeto
+                        clean._phone_clean = extractPhone(clean);
+                        clean._name_clean = extractName(clean);
+
                         return clean;
                     });
                 };
@@ -397,6 +436,7 @@
                 db.vol = parseData(rVol);
                 db.qual = parseData(rQual);
                 
+                // Procesador Resultados (Con Fix Desplazamiento)
                 const pRes = Papa.parse(rRes, {header: false, skipEmptyLines: true});
                 const hRes = pRes.data[0].map(h => h.trim());
                 db.res = pRes.data.slice(1).map(row => {
@@ -408,9 +448,13 @@
                     }
                     let obj = {};
                     hRes.forEach((h, i) => obj[h] = vals[i]);
+                    
                     const ek = Object.keys(obj).find(k => k.toLowerCase().includes("email"));
                     if(ek) obj._email_norm = String(obj[ek]).trim().toLowerCase();
                     if(obj['Fecha']) obj._date_obj = moment(obj['Fecha'], "DD/MM/YYYY");
+                    
+                    obj._name_clean = extractName(obj); // Extraer nombre también aquí
+
                     return obj;
                 });
 
@@ -448,27 +492,38 @@
 
             noRes.classList.add('d-none');
             resArea.classList.remove('d-none');
-            
-            resArea.classList.remove('fade-in'); void resArea.offsetWidth; resArea.classList.add('fade-in');
+            resArea.classList.remove('fade-in'); void resArea.offsetWidth; resArea.classList.add('fade-in'); // Reset animación
 
-            // Header
+            // -- A. EXTRAER NOMBRE (Prioridad: Ventas > Volumen) --
+            // Usamos la propiedad _name_clean que calculamos en el init
             let name = "Cliente Desconocido";
-            if(matchesRes.length > 0 && matchesRes[0]['Lead Name']) name = matchesRes[0]['Lead Name'];
-            else if(matchVol && matchVol['Nombre']) name = matchVol['Nombre'];
-            document.getElementById('leadName').innerText = name;
+            if(matchesRes.length > 0 && matchesRes[0]._name_clean) name = matchesRes[0]._name_clean;
+            else if(matchVol && matchVol._name_clean) name = matchVol._name_clean;
+            
+            // Capitalizar
+            document.getElementById('leadName').innerText = name.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
 
-            // Phone
+            // -- B. EXTRAER TELÉFONO Y BOTÓN WHATSAPP --
+            // Buscamos el teléfono limpio en el objeto de Volumen
             let phoneData = null;
-            if(matchVol) phoneData = extractPhone(matchVol);
+            if(matchVol && matchVol._phone_clean) phoneData = matchVol._phone_clean;
+            
             let phoneHtml = "";
-            if(phoneData && phoneData.link.length > 6) {
-                phoneHtml = `<a href="https://wa.me/${phoneData.link}" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp" style="font-size:1.2rem"></i> ${phoneData.display}</a>`;
+            if(phoneData && phoneData.link && phoneData.link.length > 6) {
+                phoneHtml = `
+                    <a href="https://wa.me/${phoneData.link}" target="_blank" class="whatsapp-btn">
+                        <i class="fab fa-whatsapp" style="font-size:1.3rem"></i> 
+                        ${phoneData.display}
+                    </a>`;
             } else {
-                phoneHtml = `<span style="color:var(--text-secondary); border:1px solid var(--glass-border); padding:8px 20px; border-radius:30px; font-size:0.9rem"><i class="fas fa-phone-slash me-2"></i> Sin teléfono válido</span>`;
+                phoneHtml = `
+                    <span style="color:var(--text-secondary); border:1px solid var(--glass-border); padding:8px 20px; border-radius:30px; font-size:0.9rem; display:inline-block; margin-top:10px;">
+                        <i class="fas fa-phone-slash me-2"></i> Sin teléfono válido
+                    </span>`;
             }
             document.getElementById('leadPhoneContainer').innerHTML = phoneHtml;
 
-            // Render Cards
+            // -- C. RENDER CARDS --
             const divVol = document.getElementById('card-volumen');
             divVol.className = "fade-in-up"; 
             if(matchVol) {
@@ -521,13 +576,11 @@
 
         // --- 5. MODAL DETALLES ---
         function showClientDetails(email) {
-            // Filtrar todas las ventas de ese email
             const sales = db.res.filter(r => r._email_norm === email && String(r['Resultado']).toLowerCase().includes('venta'));
             if(sales.length === 0) return;
 
-            // Datos del cliente (tomamos el nombre del primero)
-            const clientName = sales[0]['Lead Name'] || "Cliente";
-            document.getElementById('modalName').innerText = clientName;
+            const clientName = sales[0]._name_clean || "Cliente";
+            document.getElementById('modalName').innerText = clientName.replace(/(^\w{1})|(\s+\w{1})/g, letter => letter.toUpperCase());
 
             let contentHtml = "";
             sales.forEach((s, i) => {
@@ -549,14 +602,8 @@
             document.getElementById('clientModal').classList.add('active');
         }
 
-        function closeModal() {
-            document.getElementById('clientModal').classList.remove('active');
-        }
-
-        // Cerrar modal al hacer clic fuera
-        document.getElementById('clientModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
-        });
+        function closeModal() { document.getElementById('clientModal').classList.remove('active'); }
+        document.getElementById('clientModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
 
         // --- 6. RANKING ---
         function sortRanking(colName) {
@@ -587,7 +634,7 @@
                     if(!email) return;
                     let m = parseFloat((r['Monto ($)']||"0").replace(/[$,]/g,'')) || 0;
                     
-                    if(!map[email]) map[email] = { name: r['Lead Name']||"Desc.", total: 0, dateObj: r._date_obj, dateStr: r['Fecha']||"" };
+                    if(!map[email]) map[email] = { name: r._name_clean || "Desc.", total: 0, dateObj: r._date_obj, dateStr: r['Fecha']||"" };
                     map[email].total += m;
                     
                     if(r._date_obj && (!map[email].dateObj || r._date_obj.isAfter(map[email].dateObj))) {
@@ -617,7 +664,6 @@
                 let medal = i===0?"🥇":i===1?"🥈":i===2?"🥉":"";
                 let rankClass = i<3 ? "font-weight:bold; font-size:1.1rem; color:white;" : "color:var(--text-secondary);";
                 
-                // Aquí agregamos el evento onclick para abrir el modal
                 tb.innerHTML += `<tr onclick="showClientDetails('${c.email}')" style="animation: fadeInUp 0.3s ease forwards; animation-delay: ${i*0.03}s; opacity: 0;">
                     <td style="${rankClass}">${i+1} ${medal}</td>
                     <td style="color:white; font-weight:600; text-decoration:underline; text-decoration-color:var(--neon-blue); text-underline-offset:4px;">${c.name}</td>
