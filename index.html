@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evo Launch | Central Hub</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #050b14;
+            --bg-panel: rgba(16, 23, 41, 0.8);
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --text-main: #e0e6ed;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(188, 19, 254, 0.2) 0%, transparent 60%),
+                linear-gradient(0deg, rgba(0,0,0,0.8), rgba(0,0,0,0.2)),
+                url("https://www.transparenttextures.com/patterns/cubes.png");
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-dark);
+            z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column;
+            transition: opacity 0.5s ease;
+        }
+
+        .login-box {
+            background: rgba(20, 30, 50, 0.9);
+            border: 1px solid var(--neon-blue);
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+            text-align: center;
+            width: 350px;
+        }
+
+        .login-input {
+            width: 100%; padding: 12px; margin: 10px 0;
+            background: rgba(0,0,0,0.5); border: 1px solid #333;
+            color: white; border-radius: 6px; font-family: 'Rajdhani'; font-size: 1.1rem;
+            text-align: center;
+        }
+        .login-input:focus { outline: none; border-color: var(--neon-purple); }
+
+        .btn-neon {
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+            border: none; padding: 12px 30px; color: white; font-weight: bold;
+            font-family: 'Orbitron'; cursor: pointer; border-radius: 50px;
+            margin-top: 20px; width: 100%; transition: 0.3s;
+        }
+        .btn-neon:hover { transform: scale(1.05); box-shadow: 0 0 20px var(--neon-blue); }
+
+        /* --- MAIN DASHBOARD (Hidden by default) --- */
+        #main-dashboard {
+            display: none; /* Oculto hasta login */
+            width: 100%; max-width: 1000px; padding: 20px;
+            animation: fadeIn 1s ease;
+        }
+
+        h1 { font-family: 'Orbitron'; text-align: center; margin-bottom: 40px; font-size: 2.5rem; letter-spacing: 2px; }
+        h1 span { color: var(--neon-blue); }
+
+        .grid-apps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .app-card {
+            background: var(--bg-panel);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-blue);
+            box-shadow: 0 10px 30px rgba(0, 243, 255, 0.15);
+        }
+
+        .app-icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--neon-blue); transition: 0.3s; }
+        .app-card:hover .app-icon { transform: scale(1.2); color: var(--neon-purple); }
+        
+        .app-title { font-family: 'Orbitron'; font-weight: 700; margin-bottom: 5px; font-size: 1.1rem; }
+        .app-desc { font-size: 0.9rem; color: #94a3b8; }
+
+        .footer-pro {
+            margin-top: 50px; text-align: center; font-size: 0.9rem; color: #666;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .error-msg { color: #ff0055; font-size: 0.9rem; display: none; margin-top: 10px; }
+
+    </style>
+</head>
+<body>
+
+    <div id="login-screen">
+        <div class="login-box">
+            <h2 style="font-family:'Orbitron'; color:white; margin-bottom:5px;">ACCESO RESTRINGIDO</h2>
+            <p style="color:#aaa; font-size:0.9rem; margin-bottom:20px;">Evo Launch Internal System</p>
+            
+            <input type="text" id="userInput" class="login-input" placeholder="Usuario">
+            <input type="password" id="passInput" class="login-input" placeholder="Contraseña">
+            
+            <button class="btn-neon" onclick="checkLogin()">INGRESAR</button>
+            <p id="errorMsg" class="error-msg">Credenciales Incorrectas</p>
+        </div>
+    </div>
+
+    <div id="main-dashboard">
+        <h1>EVO <span>LAUNCH</span> HUB</h1>
+        
+        <div class="grid-apps">
+            <a href="./dash-cn/" class="app-card">
+                <i class="fas fa-chart-line app-icon"></i>
+                <div class="app-title">DASHBOARD CN</div>
+                <div class="app-desc">Versión Estándar</div>
+            </a>
+
+            <a href="./dash-pro/" class="app-card">
+                <i class="fas fa-chart-pie app-icon" style="color:var(--neon-purple)"></i>
+                <div class="app-title">DASHBOARD CN PRO</div>
+                <div class="app-desc">Analítica Avanzada</div>
+            </a>
+
+            <a href="./funnel-v2/" class="app-card">
+                <i class="fas fa-filter app-icon"></i>
+                <div class="app-title">FUNNEL V2</div>
+                <div class="app-desc">Sistema de Ventas</div>
+            </a>
+
+            <a href="./leads-search/" class="app-card">
+                <i class="fas fa-search app-icon"></i>
+                <div class="app-title">LEAD DETECTIVE</div>
+                <div class="app-desc">Buscador de Leads</div>
+            </a>
+
+            <a href="./calculator/" class="app-card">
+                <i class="fas fa-calculator app-icon"></i>
+                <div class="app-title">CALCULATOR PRO</div>
+                <div class="app-desc">Proyecciones Ads</div>
+            </a>
+        </div>
+
+        <footer class="footer-pro">
+            <p>System by <span style="color:var(--neon-blue)">Alvaro MV</span> | Evo Launch &copy; 2024</p>
+        </footer>
+    </div>
+
+    <script>
+        // --- CONFIGURACIÓN DE ACCESO ---
+        const USR = "alvaro";
+        const PSS = "evo2026"; 
+
+        // Lógica del sistema
+        const loginScreen = document.getElementById('login-screen');
+        const dashboard = document.getElementById('main-dashboard');
+        const errorMsg = document.getElementById('errorMsg');
+
+        // Verificar sesión guardada
+        if (sessionStorage.getItem('evo_auth') === 'true') {
+            showDashboard(false);
+        }
+
+        function checkLogin() {
+            const u = document.getElementById('userInput').value;
+            const p = document.getElementById('passInput').value;
+
+            if (u === USR && p === PSS) {
+                sessionStorage.setItem('evo_auth', 'true');
+                showDashboard(true);
+            } else {
+                errorMsg.style.display = 'block';
+                document.querySelector('.login-box').style.animation = "shake 0.3s";
+                setTimeout(() => document.querySelector('.login-box').style.animation = "", 300);
+            }
+        }
+
+        function showDashboard(animate) {
+            if(animate) {
+                loginScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    dashboard.style.display = 'block';
+                }, 500);
+            } else {
+                loginScreen.style.display = 'none';
+                dashboard.style.display = 'block';
+            }
+        }
+
+        document.getElementById('passInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') checkLogin();
+        });
+
+        const style = document.createElement('style');
+        style.innerHTML = `@keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); } }`;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
