@@ -3,37 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Central Hub</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml,
+    <title>Central Hub</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,
 <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
   <defs>
-    <filter id='glow' x='-50%' y='-50%' width='200%' height='200%'>
-      <feGaussianBlur stdDeviation='4' result='coloredBlur'/>
+    <filter id='glow'>
+      <feGaussianBlur stdDeviation='4' result='blur'/>
       <feMerge>
-        <feMergeNode in='coloredBlur'/>
+        <feMergeNode in='blur'/>
         <feMergeNode in='SourceGraphic'/>
       </feMerge>
     </filter>
   </defs>
 
-  <!-- Dragón estilizado -->
   <path d='M70 20 
            C55 10, 30 20, 28 40 
            C26 60, 45 75, 65 70 
            C80 66, 85 50, 78 40 
-           C74 32, 75 25, 70 20 Z
-           M55 45 
-           C50 40, 45 45, 48 50 
-           C50 55, 58 55, 60 50 
-           C62 46, 58 42, 55 45 Z'
+           C74 32, 75 25, 70 20 Z'
         fill='none'
-        stroke='%2300e5ff'
-        stroke-width='5'
+        stroke='#00e5ff'
+        stroke-width='6'
         stroke-linecap='round'
         stroke-linejoin='round'
-        filter='url(%23glow)'/>
+        filter='url(#glow)'/>
 </svg>">
-
-
     
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
