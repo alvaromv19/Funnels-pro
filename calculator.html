@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ads Master Pro | Proyecciones Futuras</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #050b14;
+            --bg-panel: rgba(20, 30, 50, 0.6);
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --neon-green: #0aff00;
+            --neon-red: #ff0055;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --text-main: #e0e6ed;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; scrollbar-width: thin; scrollbar-color: var(--neon-blue) var(--bg-dark); }
+        
+        body {
+            background-color: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(188, 19, 254, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 20%),
+                linear-gradient(rgba(5, 11, 20, 0.9), rgba(5, 11, 20, 0.9)),
+                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%231f293a' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            color: var(--text-main);
+            font-family: 'Rajdhani', sans-serif;
+            margin: 0; padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* --- UI COMPONENTS --- */
+        .container { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 280px 1fr; gap: 30px; }
+        
+        /* Glass Panel */
+        .glass-panel {
+            background: var(--bg-panel);
+            backdrop-filter: blur(12px);
+            border: var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        h1, h2, h3, h4 { font-family: 'Orbitron', sans-serif; margin-top: 0; text-transform: uppercase; letter-spacing: 1px; }
+        h1 { background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.8rem; }
+        
+        /* Inputs */
+        label { display: block; margin-bottom: 8px; color: var(--neon-blue); font-weight: 600; font-size: 0.9rem; }
+        input[type="number"], input[type="date"], select {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid #2d3748;
+            border-bottom: 2px solid var(--neon-blue);
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+        input:focus { outline: none; box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); border-bottom-color: var(--neon-purple); }
+
+        /* Sliders */
+        input[type=range] {
+            -webkit-appearance: none; width: 100%; background: transparent; margin: 15px 0;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%;
+            background: var(--neon-blue); cursor: pointer; margin-top: -6px;
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 4px; cursor: pointer; background: #2d3748; border-radius: 2px;
+        }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 15px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+        .tab-btn {
+            background: transparent; border: none; color: var(--text-muted);
+            font-family: 'Orbitron'; font-size: 1rem; cursor: pointer; padding: 10px 20px;
+            transition: 0.3s; position: relative;
+        }
+        .tab-btn:hover { color: white; text-shadow: 0 0 8px rgba(255,255,255,0.5); }
+        .tab-btn.active { color: var(--neon-blue); }
+        .tab-btn.active::after {
+            content: ''; position: absolute; bottom: -11px; left: 0; width: 100%; height: 3px;
+            background: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.5s ease; }
+        .tab-content.active { display: block; }
+        
+        /* Metrics Grid */
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0; }
+        .metric-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px; padding: 20px; border-left: 4px solid var(--neon-blue);
+            transition: transform 0.3s;
+        }
+        .metric-card:hover { transform: translateY(-5px); background: rgba(255, 255, 255, 0.07); box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+        .metric-title { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 5px; text-transform: uppercase; }
+        .metric-value { font-size: 1.8rem; font-weight: 700; color: white; }
+        .metric-sub { font-size: 0.8rem; color: var(--neon-green); }
+
+        /* Platform Cards */
+        .platform-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; }
+        .plat-card {
+            background: rgba(0,0,0,0.4); padding: 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);
+            transition: 0.3s;
+        }
+        .plat-card:hover { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 243, 255, 0.1); }
+        
+        /* Alerts */
+        .alert { padding: 10px 15px; border-radius: 6px; margin-top: 10px; font-weight: 600; display: none; }
+        .alert.show { display: block; animation: shake 0.5s; }
+        .alert-success { background: rgba(10, 255, 0, 0.15); color: #0aff00; border: 1px solid #0aff00; }
+        .alert-warning { background: rgba(255, 153, 0, 0.15); color: #ff9900; border: 1px solid #ff9900; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } 100% { transform: translateX(0); } }
+
+        /* Responsive */
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <aside class="glass-panel" style="height: fit-content;">
+            <h2><i class="fas fa-chart-line"></i> Ads Master</h2>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+            
+            <label>⚙️ Configuración Global</label>
+            <div style="margin-bottom: 20px;">
+                <label>Fecha Actual</label>
+                <input type="date" id="currentDate">
+            </div>
+
+            <div class="metric-card" style="border-left-color: var(--neon-purple);">
+                <div class="metric-title">Progreso del Mes</div>
+                <div class="metric-value" id="daysPassedDisplay">0</div>
+                <div class="metric-sub">Días transcurridos</div>
+            </div>
+            <br>
+            <div class="metric-card" style="border-left-color: var(--neon-green);">
+                <div class="metric-title">Días Restantes</div>
+                <div class="metric-value" id="daysRemainingDisplay">0</div>
+                <div class="metric-sub">Para cierre de mes</div>
+            </div>
+        </aside>
+
+        <main>
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('tab1')">🔭 Planificador (Futuro)</button>
+                <button class="tab-btn" onclick="switchTab('tab2')">📊 Analizador (Presente)</button>
+            </div>
+
+            <div id="tab1" class="tab-content active glass-panel">
+                <h3>Simulador de Escenarios Futuros</h3>
+                
+                <div class="metrics-grid" style="grid-template-columns: 1fr 1fr;">
+                    <div>
+                        <label>💰 Presupuesto a Invertir ($)</label>
+                        <input type="number" id="budget" value="1000">
+                        <div style="margin-top:10px; display:flex; gap:10px; align-items:center; font-size:0.9rem; color:#bbb;">
+                            <input type="radio" name="invMode" value="month" checked onclick="calculateTab1()"> Mensual (Restante)
+                            <input type="radio" name="invMode" value="custom" onclick="calculateTab1()"> Días Específicos
+                        </div>
+                        <input type="number" id="customDays" value="10" style="display:none; margin-top:5px;" placeholder="Días...">
+                    </div>
+                    <div>
+                        <label>🎯 ROAS Objetivo</label>
+                        <input type="number" id="targetRoas" value="3.0" step="0.1">
+                        <label style="margin-top:10px;">🏷️ Precio Producto ($)</label>
+                        <input type="number" id="productPrice" value="50">
+                    </div>
+                </div>
+
+                <hr style="border-color: rgba(255,255,255,0.1);">
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">Inversión Diaria</div>
+                        <div class="metric-value" id="resDailySpend">$0.00</div>
+                    </div>
+                    <div class="metric-card" style="border-color: var(--neon-purple);">
+                        <div class="metric-title">Facturación Est.</div>
+                        <div class="metric-value" id="resRevenue">$0.00</div>
+                    </div>
+                    <div class="metric-card" style="border-color: var(--neon-green);">
+                        <div class="metric-title">Profit Neto</div>
+                        <div class="metric-value" id="resProfit">$0.00</div>
+                    </div>
+                    <div class="metric-card" style="border-color: var(--neon-red);">
+                        <div class="metric-title">Ventas Necesarias</div>
+                        <div class="metric-value" id="resSales">0</div>
+                    </div>
+                </div>
+
+                <h4 style="margin-top:30px; color:var(--neon-blue);">📢 Distribución por Canal</h4>
+                <div class="alert" id="distAlert"></div>
+
+                <div class="platform-grid">
+                    <div class="plat-card" style="border-top: 3px solid #1877F2;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>Meta Ads</strong>
+                            <span id="valMeta">50%</span>
+                        </div>
+                        <input type="range" id="sliderMeta" min="0" max="100" value="50">
+                        <div style="font-size:0.8rem; color:#888;">Diario Sugerido:</div>
+                        <div style="font-size:1.2rem; font-weight:bold; color:#1877F2;" id="moneyMeta">$0</div>
+                    </div>
+
+                    <div class="plat-card" style="border-top: 3px solid #ffffff;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>TikTok</strong>
+                            <span id="valTiktok">30%</span>
+                        </div>
+                        <input type="range" id="sliderTiktok" min="0" max="100" value="30">
+                        <div style="font-size:0.8rem; color:#888;">Diario Sugerido:</div>
+                        <div style="font-size:1.2rem; font-weight:bold; color:#fff;" id="moneyTiktok">$0</div>
+                    </div>
+
+                    <div class="plat-card" style="border-top: 3px solid #FF0000;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>YouTube</strong>
+                            <span id="valYoutube">10%</span>
+                        </div>
+                        <input type="range" id="sliderYoutube" min="0" max="100" value="10">
+                        <div style="font-size:0.8rem; color:#888;">Diario Sugerido:</div>
+                        <div style="font-size:1.2rem; font-weight:bold; color:#FF0000;" id="moneyYoutube">$0</div>
+                    </div>
+
+                     <div class="plat-card" style="border-top: 3px solid #FF9900;">
+                        <div style="display:flex; justify-content:space-between;">
+                            <strong>Otros</strong>
+                            <span id="valOther">10%</span>
+                        </div>
+                        <input type="range" id="sliderOther" min="0" max="100" value="10">
+                        <div style="font-size:0.8rem; color:#888;">Diario Sugerido:</div>
+                        <div style="font-size:1.2rem; font-weight:bold; color:#FF9900;" id="moneyOther">$0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab2" class="tab-content glass-panel">
+                <h3>Proyección de Ritmo Actual (Pacing)</h3>
+                <div class="metrics-grid" style="grid-template-columns: repeat(4, 1fr);">
+                    <div><label>Gasto Actual (MTD)</label><input type="number" id="curSpend" value="550"></div>
+                    <div><label>Facturación (MTD)</label><input type="number" id="curRev" value="1200"></div>
+                    <div><label>Ventas Totales</label><input type="number" id="curSales" value="20"></div>
+                    <div><label>Días Extra a Proyectar</label><input type="number" id="projDays" value="15"></div>
+                </div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-title">ROAS Actual</div>
+                        <div class="metric-value" id="statRoas">0.00</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">CPA Actual</div>
+                        <div class="metric-value" id="statCpa">$0.00</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Velocity (Gasto/Día)</div>
+                        <div class="metric-value" id="statVel">$0.00</div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 30px; height: 400px;">
+                    <canvas id="projectionChart"></canvas>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // --- LOGICA DE FECHAS ---
+        const dateInput = document.getElementById('currentDate');
+        
+        // Set Today
+        const today = new Date();
+        dateInput.valueAsDate = today;
+
+        function updateDateMetrics() {
+            const selectedDate = new Date(dateInput.value);
+            // Ajuste zona horaria simple
+            const date = new Date(selectedDate.getTime() + selectedDate.getTimezoneOffset() * 60000);
+            
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            const day = date.getDate();
+
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const remaining = daysInMonth - day;
+
+            document.getElementById('daysPassedDisplay').innerText = day;
+            document.getElementById('daysRemainingDisplay').innerText = remaining;
+            
+            return { day, remaining, daysInMonth };
+        }
+
+        // --- TAB 1 CALCULATOR ---
+        function calculateTab1() {
+            const timeData = updateDateMetrics();
+            const budget = parseFloat(document.getElementById('budget').value) || 0;
+            const roas = parseFloat(document.getElementById('targetRoas').value) || 0;
+            const price = parseFloat(document.getElementById('productPrice').value) || 1;
+            
+            // Determinar modo
+            const isCustom = document.querySelector('input[name="invMode"]:checked').value === 'custom';
+            const customInput = document.getElementById('customDays');
+            customInput.style.display = isCustom ? 'block' : 'none';
+            
+            const daysToCalc = isCustom ? (parseFloat(customInput.value) || 1) : (timeData.remaining || 1);
+
+            // Cálculos
+            const dailySpend = budget / daysToCalc;
+            const revenue = budget * roas;
+            const profit = revenue - budget;
+            const sales = revenue / price;
+
+            // Render DOM
+            document.getElementById('resDailySpend').innerText = "$" + dailySpend.toLocaleString('en-US', {maximumFractionDigits:2});
+            document.getElementById('resRevenue').innerText = "$" + revenue.toLocaleString('en-US', {maximumFractionDigits:2});
+            document.getElementById('resProfit').innerText = "$" + profit.toLocaleString('en-US', {maximumFractionDigits:2});
+            document.getElementById('resSales').innerText = Math.ceil(sales);
+
+            updateSliders(dailySpend, budget);
+        }
+
+        function updateSliders(dailyTotal, totalBudget) {
+            const sMeta = parseInt(document.getElementById('sliderMeta').value);
+            const sTiktok = parseInt(document.getElementById('sliderTiktok').value);
+            const sYoutube = parseInt(document.getElementById('sliderYoutube').value);
+            const sOther = parseInt(document.getElementById('sliderOther').value);
+
+            // Update Labels
+            document.getElementById('valMeta').innerText = sMeta + "%";
+            document.getElementById('valTiktok').innerText = sTiktok + "%";
+            document.getElementById('valYoutube').innerText = sYoutube + "%";
+            document.getElementById('valOther').innerText = sOther + "%";
+
+            // Update Money
+            document.getElementById('moneyMeta').innerText = "$" + (dailyTotal * (sMeta/100)).toLocaleString('en-US', {maximumFractionDigits:0});
+            document.getElementById('moneyTiktok').innerText = "$" + (dailyTotal * (sTiktok/100)).toLocaleString('en-US', {maximumFractionDigits:0});
+            document.getElementById('moneyYoutube').innerText = "$" + (dailyTotal * (sYoutube/100)).toLocaleString('en-US', {maximumFractionDigits:0});
+            document.getElementById('moneyOther').innerText = "$" + (dailyTotal * (sOther/100)).toLocaleString('en-US', {maximumFractionDigits:0});
+
+            // Validation 100%
+            const sum = sMeta + sTiktok + sYoutube + sOther;
+            const alertBox = document.getElementById('distAlert');
+            
+            if(sum === 100) {
+                alertBox.className = "alert alert-success show";
+                alertBox.innerHTML = '<i class="fas fa-check-circle"></i> Distribución Perfecta (100%)';
+            } else {
+                alertBox.className = "alert alert-warning show";
+                alertBox.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Suma actual: ${sum}%. Ajusta para llegar a 100%.`;
+            }
+        }
+
+        // --- TAB 2 CALCULATOR & CHART ---
+        let myChart = null;
+
+        function calculateTab2() {
+            const timeData = updateDateMetrics();
+            const curSpend = parseFloat(document.getElementById('curSpend').value) || 0;
+            const curRev = parseFloat(document.getElementById('curRev').value) || 0;
+            const curSales = parseFloat(document.getElementById('curSales').value) || 0;
+            const projDays = parseFloat(document.getElementById('projDays').value) || timeData.remaining;
+
+            const daysPassed = timeData.day || 1;
+
+            // Stats Actuales
+            const roas = curSpend > 0 ? (curRev / curSpend) : 0;
+            const cpa = curSales > 0 ? (curSpend / curSales) : 0;
+            const dailySpendVel = curSpend / daysPassed;
+            const dailyRevVel = curRev / daysPassed;
+
+            document.getElementById('statRoas').innerText = roas.toFixed(2);
+            document.getElementById('statCpa').innerText = "$" + cpa.toFixed(2);
+            document.getElementById('statVel').innerText = "$" + dailySpendVel.toFixed(2);
+
+            // Proyecciones
+            // 1. Realista
+            const revReal = curRev + (dailyRevVel * projDays);
+            const profitReal = revReal - (curSpend + (dailySpendVel * projDays));
+
+            // 2. Optimista (+15% revenue velocity)
+            const revOpt = curRev + ((dailyRevVel * 1.15) * projDays);
+            const profitOpt = revOpt - (curSpend + (dailySpendVel * projDays));
+
+            // 3. Pesimista (-15%)
+            const revPes = curRev + ((dailyRevVel * 0.85) * projDays);
+            const profitPes = revPes - (curSpend + (dailySpendVel * projDays));
+
+            renderChart([revPes, revReal, revOpt], [profitPes, profitReal, profitOpt]);
+        }
+
+        function renderChart(revData, profitData) {
+            const ctx = document.getElementById('projectionChart').getContext('2d');
+            
+            if(myChart) myChart.destroy();
+
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Pesimista (-15%)', 'Realista (Ritmo Actual)', 'Optimista (+15%)'],
+                    datasets: [
+                        {
+                            label: 'Facturación Proyectada',
+                            data: revData,
+                            backgroundColor: ['rgba(255, 0, 85, 0.5)', 'rgba(99, 110, 250, 0.5)', 'rgba(0, 204, 150, 0.5)'],
+                            borderColor: ['#ff0055', '#636efa', '#00cc96'],
+                            borderWidth: 1
+                        },
+                        {
+                            label: 'Profit Neto',
+                            data: profitData,
+                            type: 'line',
+                            borderColor: '#ffffff',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointBackgroundColor: '#fff',
+                            pointRadius: 5
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { labels: { color: 'white', font: {family: 'Rajdhani'} } },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        y: { ticks: { color: '#94a3b8', callback: function(value) { return '$' + value; } }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        x: { ticks: { color: 'white', font: {family: 'Orbitron'} }, grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // --- UTILS ---
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+
+            if(tabId === 'tab2') calculateTab2();
+        }
+
+        // --- EVENTS ---
+        // Listeners Tab 1
+        ['budget', 'targetRoas', 'productPrice', 'customDays'].forEach(id => {
+            document.getElementById(id).addEventListener('input', calculateTab1);
+        });
+        ['sliderMeta', 'sliderTiktok', 'sliderYoutube', 'sliderOther'].forEach(id => {
+            document.getElementById(id).addEventListener('input', calculateTab1);
+        });
+        document.getElementById('currentDate').addEventListener('change', () => {
+            updateDateMetrics(); calculateTab1(); calculateTab2();
+        });
+
+        // Listeners Tab 2
+        ['curSpend', 'curRev', 'curSales', 'projDays'].forEach(id => {
+            document.getElementById(id).addEventListener('input', calculateTab2);
+        });
+
+        // Init
+        updateDateMetrics();
+        calculateTab1();
+        // Tab 2 se calcula al cambiar de tab o inputs
+    </script>
+</body>
+</html>
