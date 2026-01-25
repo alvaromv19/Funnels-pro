@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVO LAUNCH | High Ticket Scaling</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        /* =========================================
+           1. CORE STYLES & VARIABLES
+           ========================================= */
+        :root {
+            --bg-main: #0B0C10;
+            --bg-secondary: #12141a;
+            --accent-cyan: #66FCF1;
+            --accent-cyan-glow: rgba(102, 252, 241, 0.4);
+            --accent-purple: #C542CB;
+            --text-main: #FFFFFF;
+            --text-muted: #B0B3B8; /* Ligeramente más claro para mejor lectura */
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-main);
+            /* PATRÓN DE CUADRÍCULA (INGENIERÍA) */
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.8; 
+            overflow-x: hidden;
+            font-size: 18px;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.1;
+            color: #fff;
+            letter-spacing: -0.02em; /* Hace los títulos más compactos y modernos */
+        }
+
+        p { margin-bottom: 1.5rem; color: var(--text-muted); font-weight: 300; }
+        
+        /* RESALTADO DE TEXTO "MARKER" */
+        strong { 
+            color: #fff; 
+            font-weight: 600; 
+            background: linear-gradient(120deg, transparent 0%, rgba(255, 255, 255, 0.1) 100%);
+            padding: 0 4px;
+            border-radius: 4px;
+        }
+        
+        strong.alert {
+            color: #ff4d4d;
+            background: rgba(255, 77, 77, 0.1);
+        }
+
+        .container {
+            max-width: 900px; /* Más estrecho = Lectura más rápida */
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Gradientes de Texto Animados */
+        .text-gradient {
+            background: linear-gradient(90deg, #fff, var(--accent-cyan), #fff);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 5s linear infinite;
+        }
+        
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        .text-purple { color: var(--accent-purple); }
+
+        /* =========================================
+           2. AMBIENTE & DECORACIÓN
+           ========================================= */
+        
+        /* Luz ambiental superior */
+        .ambient-light {
+            position: fixed;
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(102, 252, 241, 0.06), transparent 60%);
+            top: -30%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+            animation: pulseLight 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseLight {
+            0% { opacity: 0.5; transform: translateX(-50%) scale(1); }
+            100% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+        }
+
+        .neon-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
+            margin: 80px 0;
+            opacity: 0.7;
+            box-shadow: 0 0 10px var(--accent-purple);
+        }
+
+        /* =========================================
+           3. UI COMPONENTS (BOTONES & CARDS)
+           ========================================= */
+
+        /* Botón "Liquid Metal" */
+        .btn-cta {
+            position: relative;
+            background: var(--accent-cyan);
+            color: #0B0C10;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 1.1rem;
+            padding: 22px 45px;
+            border-radius: 6px;
+            text-decoration: none;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(102, 252, 241, 0.2);
+            border: none;
+            cursor: pointer;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-cta::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 40px var(--accent-cyan-glow);
+            color: #000;
+        }
+
+        .btn-cta:hover::before {
+            left: 100%;
+            transition: 0.5s;
+        }
+
+        .btn-caption {
+            display: block;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            opacity: 0.8;
+            font-weight: 500;
+        }
+
+        /* Glassmorphism Interactivo */
+        .glass-box {
+            background: rgba(20, 22, 28, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 40px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-box::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.05), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .glass-box:hover {
+            border-color: rgba(102, 252, 241, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+        
+        .glass-box:hover::after { opacity: 1; }
+
+        /* =========================================
+           4. SECCIONES
+           ========================================= */
+
+        /* HERO */
+        .hero {
+            min-height: 95vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 120px 0 80px 0;
+        }
+
+        .pre-headline {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            margin-bottom: 25px;
+            font-weight: 700;
+            display: inline-block;
+            background: rgba(102, 252, 241, 0.05);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(102, 252, 241, 0.2);
+            box-shadow: 0 0 15px rgba(102, 252, 241, 0.1);
+        }
+
+        .hero h1 {
+            font-size: 3.8rem;
+            margin-bottom: 30px;
+            line-height: 1.1;
+        }
+
+        .hero-sub {
+            font-size: 1.3rem;
+            max-width: 750px;
+            margin: 0 auto 50px auto;
+            color: #C5C6C7;
+        }
+
+        /* PROBLEM SECTION (Estilo Carta Tecnológica) */
+        .text-column {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .letter-style {
+            border-left: 3px solid var(--accent-purple);
+            padding-left: 40px;
+            position: relative;
+        }
+        
+        /* Efecto de "Código" en el borde izquierdo */
+        .letter-style::before {
+            content: '';
+            position: absolute;
+            left: -3px; top: 0;
+            width: 3px; height: 30px;
+            background: #fff;
+            animation: scanVertical 3s ease-in-out infinite;
+        }
+        
+        @keyframes scanVertical {
+            0%, 100% { top: 0; }
+            50% { top: calc(100% - 30px); }
+        }
+
+        /* MECHANISM */
+        .mechanism-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 50px; /* Más espacio para la línea conectora */
+            margin-top: 50px;
+            position: relative;
+        }
+
+        /* Línea conectora entre cajas */
+        .mechanism-grid::before {
+            content: '';
+            position: absolute;
+            left: 50%; top: 50px; bottom: 50px;
+            width: 2px;
+            background: repeating-linear-gradient(to bottom, #333 0, #333 10px, transparent 10px, transparent 20px);
+            transform: translateX(-50%);
+            z-index: -1;
+        }
+
+        .phase-box {
+            background: #15171e;
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 40px;
+            border-radius: 12px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        .phase-number {
+            position: absolute;
+            top: -18px;
+            left: 30px;
+            background: var(--accent-cyan);
+            color: #000;
+            font-weight: 800;
+            padding: 8px 18px;
+            border-radius: 4px;
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            box-shadow: 0 5px 15px rgba(102, 252, 241, 0.4);
+        }
+
+        /* OFFER GRID */
+        .offer-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .offer-item h3 { 
+            margin-bottom: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+            font-size: 1.3rem;
+        }
+        .offer-item i { color: var(--accent-cyan); font-size: 1.8rem; }
+        .offer-item p { font-size: 1rem; margin-bottom: 0; }
+
+        /* CHECKLIST */
+        .checklist { list-style: none; margin: 40px 0; }
+        .checklist li {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            padding: 15px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: 0.3s;
+        }
+        .checklist li:hover { border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); }
+        .checklist i {
+            color: var(--accent-cyan);
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+            text-shadow: 0 0 10px var(--accent-cyan-glow);
+        }
+
+        /* MOBILE STICKY */
+        .mobile-sticky {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background: rgba(11, 12, 16, 0.9);
+            padding: 15px;
+            border-top: 1px solid var(--accent-cyan);
+            z-index: 100;
+            display: none;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        .mobile-sticky .btn-cta { width: 100%; padding: 16px; margin: 0; font-size: 1rem; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .hero-sub { font-size: 1.1rem; }
+            .letter-style { padding-left: 20px; border-left-width: 2px; }
+            .offer-grid { grid-template-columns: 1fr; }
+            .mobile-sticky { display: block; }
+            .footer-btn-container { margin-bottom: 80px; } 
+            .mechanism-grid::before { left: 20px; transform: none; } /* Línea alineada a la izquierda en móvil */
+        }
+
+        /* ANIMACIONES SCROLL */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="ambient-light"></div>
+
+    <header class="hero container reveal">
+        <div>
+            <div class="pre-headline">Para Dueños de Marcas & Creadores Validados</div>
+            <h1>Deja de Construir <br><span class="text-gradient">"Escaleras de Valor".</span><br>Están Matando Tu Margen.</h1>
+            <p class="hero-sub">
+                Descubre el sistema "Directo-a-la-Yugular" para vender High Ticket ($1k-$5k) a tráfico frío desde el día 1, utilizando un "Mecanismo de Seguridad" que hace que tu publicidad te salga matemáticamente gratis.
+            </p>
+            <a href="#audit" class="btn-cta">Quiero Agendar mi Auditoría</a>
+            <span class="btn-caption"><i class="ph-fill ph-lock-key"></i> Plazas limitadas para este mes</span>
+        </div>
+    </header>
+
+    <div class="neon-divider"></div>
+
+    <section class="container text-column reveal">
+        <div class="letter-style">
+            <p><strong>Estimado dueño de negocio,</strong></p>
+            <p>Si tienes una marca con seguidores, una lista de clientes o un producto validado, pero al final del mes miras tus cuentas y te preguntas: <strong>“¿Dónde está el beneficio real de todo este esfuerzo?”</strong>, lee esto con atención.</p>
+            
+            <p>Probablemente te han dicho que para vender algo de $1,000, $2,000 o $5,000 dólares a gente que no te conoce, primero tienes que "calentarlos".</p>
+            
+            <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 8px; margin: 30px 0; border: 1px dashed #333;">
+                <p style="margin-bottom: 10px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: #666;">La vieja receta:</p>
+                <ul style="margin-bottom: 0; margin-left: 20px; color: var(--text-muted);">
+                    <li>Regalar un Lead Magnet.</li>
+                    <li>Vender un producto barato de $27.</li>
+                    <li>Vender un curso medio.</li>
+                    <li>Y meses después... (si siguen ahí) ofrecer tu servicio Premium.</li>
+                </ul>
+            </div>
+
+            <p><strong class="alert">Te han mentido.</strong> O al menos, te han dado un consejo obsoleto.</p>
+            
+            <p>La "Escalera de Valor" es la forma más lenta, dolorosa y costosa de escalar un negocio hoy en día. Mientras tú pasas meses "nutriendo" a un prospecto con contenido gratuito, tu competencia (que es más agresiva) ya le vendió la solución completa.</p>
+        </div>
+    </section>
+
+    <section class="container reveal" style="padding: 100px 20px; text-align: center;">
+        <div class="glass-box">
+            <h2 style="margin-bottom: 10px;" class="text-gradient">LA NUEVA OPORTUNIDAD</h2>
+            <p style="text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 30px; color: var(--accent-purple);">Cambio de Paradigma</p>
+            
+            <h3 style="margin-bottom: 20px;">La Verdad sobre tu Mercado:</h3>
+            <p>En este preciso momento, el <strong>3% de tu mercado</strong> está en lo que llamamos "Modo de Compra Inmediata". Tienen un dolor agudo, tienen el dinero y quieren la solución YA. No quieren leer tu ebook gratuito. Quieren pagarte para que les resuelvas el problema.</p>
+            <p>Si los obligas a pasar por un embudo lento, los pierdes.</p>
+            <p>En <strong>EVO LAUNCH</strong>, hemos desarrollado una metodología diferente. Nosotros no buscamos likes. No buscamos "engagement". Nosotros conectamos tu oferta más cara con tráfico frío de manera rentable.</p>
+        </div>
+    </section>
+
+    <section class="container reveal">
+        <h2 style="text-align: center; margin-bottom: 10px;">CÓMO FUNCIONA</h2>
+        <p style="text-align: center; color: var(--accent-purple); font-weight: 600;">EL MECANISMO DE SEGURIDAD</p>
+        
+        <div class="text-column" style="margin-bottom: 50px; text-align: center; margin-top: 30px;">
+            <p>Quizás estés pensando: <em>"Álvaro, pero ir directo a tráfico frío es arriesgado. ¿Qué pasa si gasto $1,000 en ads y nadie compra?"</em></p>
+            <p><strong>Exacto.</strong> Ese miedo es lo que te mantiene jugando en pequeño. Por eso, nuestro sistema integra un <strong>Mecanismo de Seguridad Financiera.</strong></p>
+        </div>
+
+        <div class="mechanism-grid">
+            <div class="phase-box">
+                <div class="phase-number">FASE 1</div>
+                <h3>El Filtro de Alta Intención</h3>
+                <p style="margin-top: 15px;">Lanzamos campañas publicitarias directas a tu oferta High Ticket. Filtramos a los curiosos y ponemos frente a tu equipo de ventas solo a prospectos cualificados listos para invertir. <strong>Atacamos la facturación grande primero.</strong></p>
+            </div>
+
+            <div class="phase-box" style="border-color: var(--accent-purple); box-shadow: 0 0 30px rgba(197, 66, 203, 0.15);">
+                <div class="phase-number" style="background: var(--accent-purple); color: #fff;">FASE 2</div>
+                <h3 class="text-purple">La Monetización del "NO" (Tu Seguro de Vida)</h3>
+                <p style="margin-top: 15px;">Aquí está el secreto. Sabemos que no todos comprarán tu servicio de $3,000 hoy. En un modelo tradicional, ese lead perdido es dinero tirado a la basura. En nuestro modelo, si un prospecto calificado no compra el High Ticket, se le ofrece inmediatamente un <strong>"Downsell Autofinanciable"</strong>: una versión "Hazlo tú mismo" o un producto de menor coste.</p>
+                <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 3px solid var(--accent-cyan);">
+                    <p style="margin-bottom: 0; font-size: 0.95rem;"><strong>¿El resultado matemático?</strong> Las ventas de este producto de "consuelo" cubren el coste de tus anuncios. Tus campañas se pagan con los "No", y te quedas con el 100% de beneficio limpio de los "Sí".</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container reveal" style="padding: 120px 20px;">
+        <h2 style="text-align: center; margin-bottom: 20px;">LA OFERTA (EL ENTREGABLE)</h2>
+        <p class="text-center" style="margin-bottom: 50px; max-width: 600px; margin-left: auto; margin-right: auto;">No somos una agencia creativa. No hacemos "post bonitos". Somos Socios de Crecimiento. <br>Cuando trabajas con nosotros, obtienes una infraestructura de negocio completa:</p>
+
+        <div class="offer-grid">
+            <div class="glass-box offer-item">
+                <h3><i class="ph-fill ph-strategy"></i> Ingeniería de Oferta</h3>
+                <p>Transformamos tu servicio en una Oferta Irresistible High Ticket.</p>
+            </div>
+            <div class="glass-box offer-item">
+                <h3><i class="ph-fill ph-funnel"></i> Sistema de Doble Embudo</h3>
+                <p>La tecnología para captar clientes Premium y monetizar a los demás.</p>
+            </div>
+            <div class="glass-box offer-item">
+                <h3><i class="ph-fill ph-pen-nib"></i> Copywriting Directo</h3>
+                <p>Guiones y textos diseñados para vender, no para entretener.</p>
+            </div>
+            <div class="glass-box offer-item">
+                <h3><i class="ph-fill ph-chart-line-up"></i> Dashboard de Inteligencia</h3>
+                <p>Un panel de control para ver tu retorno de inversión en tiempo real.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="neon-divider"></div>
+
+    <footer class="container reveal footer-btn-container" style="padding-bottom: 120px; text-align: center;" id="audit">
+        <h2 style="font-size: 2.8rem; margin-bottom: 20px;">¿Calificas para esto?</h2>
+        <p>Buscamos casos de éxito, no experimentos. Solo podemos ayudarte si:</p>
+
+        <ul class="checklist text-column">
+            <li><i class="ph-fill ph-check-circle"></i> <span>Ya tienes una marca, trayectoria o una habilidad validada.</span></li>
+            <li><i class="ph-fill ph-check-circle"></i> <span>Tienes capacidad de inversión para escalar.</span></li>
+            <li><i class="ph-fill ph-check-circle"></i> <span>Estás dispuesto a dejar de jugar a "vender barato".</span></li>
+        </ul>
+
+        <div class="glass-box" style="margin-top: 50px;">
+            <p>Si cumples con esto, te invito a una Auditoría de Escalamiento High Ticket.</p>
+            <p>No es una llamada de ventas presionante. Analizaremos tus números actuales, tu audiencia y te diremos honestamente si tu oferta soporta tráfico frío. Si vemos el potencial de agregar $30k extra a tu facturación en 90 días, te explicaremos cómo trabajar con nosotros.</p>
+            <p>Si no, te llevarás el plan de acción y el diagnóstico totalmente gratis.</p>
+            <p style="margin-bottom: 30px;"><strong>El mercado premia a los que actúan rápido.</strong></p>
+            
+            <a href="#" class="btn-cta">SÍ, QUIERO AGENDAR MI AUDITORÍA AHORA</a>
+        </div>
+    </footer>
+
+    <div class="mobile-sticky">
+        <a href="#audit" class="btn-cta">AGENDAR AUDITORÍA</a>
+    </div>
+
+    <script>
+        // MOUSE EFFECT ON CARDS
+        document.querySelectorAll('.glass-box').forEach(box => {
+            box.addEventListener('mousemove', e => {
+                const rect = box.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                box.style.setProperty('--x', `${x}px`);
+                box.style.setProperty('--y', `${y}px`);
+            });
+        });
+
+        // SCROLL REVEAL
+        const reveals = document.querySelectorAll('.reveal');
+        const revealOnScroll = () => {
+            const windowHeight = window.innerHeight;
+            const elementVisible = 100;
+            reveals.forEach((reveal) => {
+                const elementTop = reveal.getBoundingClientRect().top;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveal.classList.add('active');
+                }
+            });
+        };
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); 
+    </script>
+</body>
+</html>
