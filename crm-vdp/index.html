@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>High Ticket Sales CRM</title>
+    <title>CRM Closer VDP🏠</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -144,12 +144,20 @@
         .loading-spinner { border: 2px solid rgba(255,255,255,0.1); border-top: 2px solid var(--accent); border-radius: 50%; width: 12px; height: 12px; animation: spin 1s linear infinite; display: none; }
 
         /* Filtros */
+        .filters-wrapper {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid var(--border);
+        }
+
         .filters-bar {
             padding: 1rem 2rem;
             display: flex;
             gap: 0.5rem;
             overflow-x: auto;
+            align-items: center;
         }
+
         .filter-chip {
             background: transparent;
             border: 1px solid var(--border);
@@ -163,6 +171,25 @@
         }
         .filter-chip:hover { color: white; border-color: var(--text-muted); }
         .filter-chip.active { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 4px 12px var(--accent-glow); }
+
+        /* Panel de Fechas Personalizadas */
+        .custom-date-panel {
+            display: none; /* Oculto por defecto */
+            padding: 0 2rem 1rem 2rem;
+            gap: 1rem;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .custom-date-panel.show { display: flex; }
+        
+        .date-input {
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-family: inherit;
+        }
 
         /* Tabla */
         .table-wrapper {
@@ -186,7 +213,15 @@
             font-weight: 500;
             border-bottom: 2px solid var(--border);
             z-index: 5;
+            cursor: pointer; /* Cursor de mano */
+            user-select: none;
+            transition: color 0.2s;
         }
+        th:hover { color: white; }
+        th span.sort-icon { margin-left: 5px; font-size: 0.8rem; opacity: 0.5; }
+        th.sort-active { color: var(--accent); }
+        th.sort-active span.sort-icon { opacity: 1; }
+
         td {
             padding: 1rem;
             border-bottom: 1px solid var(--border);
@@ -279,6 +314,7 @@
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
     </style>
 </head>
@@ -286,7 +322,7 @@
 
 <aside class="sidebar">
     <div class="brand">
-        📊 EVO <span>LAUNCH</span>
+        🏠 VDP <span>AGUS Q</span>
     </div>
 
     <div class="search-container">
@@ -315,24 +351,35 @@
         </button>
     </header>
 
-    <div class="filters-bar" id="filterContainer">
-        <button class="filter-chip active" data-range="all">Histórico Completo</button>
-        <button class="filter-chip" data-range="today">Hoy</button>
-        <button class="filter-chip" data-range="yesterday">Ayer</button>
-        <button class="filter-chip" data-range="thisMonth">Este Mes</button>
-        <button class="filter-chip" data-range="lastMonth">Mes Pasado</button>
+    <div class="filters-wrapper">
+        <div class="filters-bar" id="filterContainer">
+            <button class="filter-chip active" data-range="all">Histórico Completo</button>
+            <button class="filter-chip" data-range="today">Hoy</button>
+            <button class="filter-chip" data-range="yesterday">Ayer</button>
+            <button class="filter-chip" data-range="thisMonth">Este Mes</button>
+            <button class="filter-chip" data-range="lastMonth">Mes Pasado</button>
+            <button class="filter-chip" data-range="custom" style="border-color: var(--accent);">📅 Personalizado</button>
+        </div>
+        
+        <div class="custom-date-panel" id="customDatePanel">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Desde:</span>
+            <input type="date" id="startDate" class="date-input">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Hasta:</span>
+            <input type="date" id="endDate" class="date-input">
+            <button class="filter-chip active" onclick="applyFilter('custom')">Aplicar Filtro</button>
+        </div>
     </div>
 
     <div class="table-wrapper">
         <table id="rankingTable">
             <thead>
                 <tr>
-                    <th>Fecha Reunión</th>
-                    <th>Lead</th>
+                    <th onclick="sortBy('date')" data-col="date">Fecha Reunión <span class="sort-icon">↕</span></th>
+                    <th onclick="sortBy('name')" data-col="name">Lead <span class="sort-icon">↕</span></th>
                     <th>Closer</th>
-                    <th>Score</th>
+                    <th onclick="sortBy('score')" data-col="score">Score <span class="sort-icon">↕</span></th>
                     <th>Estado de Compra</th>
-                    <th>Valor</th>
+                    <th onclick="sortBy('value')" data-col="value">Valor <span class="sort-icon">↕</span></th>
                 </tr>
             </thead>
             <tbody id="tableBody">
@@ -404,6 +451,11 @@
 
     let globalData = [];
     let currentFilter = 'all';
+    // Estado inicial del ordenamiento (Por defecto Valor Descendente)
+    let sortState = {
+        column: 'value', 
+        direction: 'desc' 
+    };
 
     // Iniciar carga al abrir
     document.addEventListener('DOMContentLoaded', () => {
@@ -419,6 +471,7 @@
             const text = await response.text();
             
             globalData = parseCSV(text);
+            updateSortIcons(); // Pintar ícono inicial
             applyFilter(currentFilter);
             
         } catch (error) {
@@ -429,7 +482,39 @@
         }
     }
 
-    // --- PARSER INTELIGENTE (Mejorado para Google Sheets) ---
+    // --- LOGICA DE ORDENAMIENTO ---
+    function sortBy(column) {
+        // Si clickeo la misma columna, invierto la dirección
+        if (sortState.column === column) {
+            sortState.direction = sortState.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            // Si es nueva columna, por defecto descendente para números, ascendente para texto
+            sortState.column = column;
+            sortState.direction = column === 'name' ? 'asc' : 'desc';
+        }
+        
+        updateSortIcons();
+        applyFilter(currentFilter); // Re-aplicar filtro y orden
+    }
+
+    function updateSortIcons() {
+        // Limpiar clases
+        document.querySelectorAll('th').forEach(th => {
+            th.classList.remove('sort-active');
+            const icon = th.querySelector('.sort-icon');
+            if(icon) icon.textContent = '↕';
+        });
+
+        // Activar la columna actual
+        const activeTh = document.querySelector(`th[data-col="${sortState.column}"]`);
+        if (activeTh) {
+            activeTh.classList.add('sort-active');
+            const icon = activeTh.querySelector('.sort-icon');
+            if(icon) icon.textContent = sortState.direction === 'asc' ? '↑' : '↓';
+        }
+    }
+
+    // --- PARSER INTELIGENTE ---
     function parseCSV(text) {
         const lines = [];
         let row = [];
@@ -459,7 +544,6 @@
         }
         if(row.length > 0) lines.push(row);
 
-        // Mapeo de columnas basado en tu estructura
         return lines.slice(1).map(r => {
             if(r.length < 5) return null;
             
@@ -467,14 +551,17 @@
             const parsed = parseNotes(rawNotes);
             const money = extractMoney(parsed.p9);
             
-            // Parseo de Fecha
             let d = new Date();
-            let dateStr = r[1]; // Fecha Reunión
+            let dateStr = r[1];
             if(dateStr.includes('T')) d = new Date(dateStr);
             else if(dateStr.includes('/')) {
                 const p = dateStr.split('/');
-                if(p.length === 3) d = new Date(`${p[2]}-${p[1]}-${p[0]}`); // Asumiendo DD/MM/YYYY
+                if(p.length === 3) d = new Date(`${p[2]}-${p[1]}-${p[0]}`);
             }
+
+            // Score numérico seguro
+            let scoreNum = parseInt(parsed.p1);
+            if(isNaN(scoreNum)) scoreNum = 0;
 
             return {
                 id: Math.random().toString(36),
@@ -484,6 +571,7 @@
                 closer: r[4],
                 notes: parsed,
                 saleValue: money,
+                scoreValue: scoreNum, // Para ordenar
                 status: money > 0 ? 'paid' : (parsed.p9 ? 'negotiation' : 'unknown')
             };
         }).filter(x => x !== null);
@@ -498,15 +586,8 @@
         const linkMatch = text.match(/https?:\/\/fathom\.video[^\s]*/);
 
         return {
-            p1: extract(1), // Score
-            p2: extract(2), // Interes
-            p3: extract(3), // Urgencia
-            p4: extract(4), // Capacidad
-            p5: extract(5), // Objeciones
-            p6: extract(6), // Probabilidad
-            p7: extract(7), // Pasos
-            p8: extract(8), // Nota Final
-            p9: extract(9), // Estado Compra
+            p1: extract(1), p2: extract(2), p3: extract(3), p4: extract(4),
+            p5: extract(5), p6: extract(6), p7: extract(7), p8: extract(8), p9: extract(9),
             link: linkMatch ? linkMatch[0] : null
         };
     }
@@ -520,6 +601,16 @@
     // --- FILTROS Y RENDERIZADO ---
     document.getElementById('filterContainer').addEventListener('click', (e) => {
         if(e.target.classList.contains('filter-chip')) {
+            // Manejo especial para botón personalizado (toggle)
+            if (e.target.dataset.range === 'custom') {
+                const panel = document.getElementById('customDatePanel');
+                panel.classList.toggle('show');
+                return;
+            }
+
+            // Ocultar panel si selecciono otro filtro
+            document.getElementById('customDatePanel').classList.remove('show');
+            
             document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
             e.target.classList.add('active');
             currentFilter = e.target.dataset.range;
@@ -528,6 +619,7 @@
     });
 
     function applyFilter(range) {
+        currentFilter = range; // Actualizar global por si viene de sort
         const now = new Date();
         const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         
@@ -543,12 +635,35 @@
                     const lm = new Date(now.getFullYear(), now.getMonth()-1, 1);
                     const lmEnd = new Date(now.getFullYear(), now.getMonth(), 0);
                     return d >= lm && d <= lmEnd;
+                case 'custom':
+                    const s = document.getElementById('startDate').value;
+                    const e = document.getElementById('endDate').value;
+                    if(!s || !e) return true; // Si no hay fecha, muestra todo
+                    const startD = new Date(s);
+                    const endD = new Date(e);
+                    // Ajustar fin del día para endD
+                    endD.setHours(23,59,59);
+                    return d >= startD && d <= endD;
                 default: return true;
             }
         });
 
-        // Ordenar por Valor $ y luego Fecha
-        filtered.sort((a,b) => b.saleValue - a.saleValue || b.meetingDate - a.meetingDate);
+        // APLICAR ORDENAMIENTO DINÁMICO
+        filtered.sort((a,b) => {
+            let valA, valB;
+
+            switch(sortState.column) {
+                case 'value': valA = a.saleValue; valB = b.saleValue; break;
+                case 'date': valA = a.meetingDate; valB = b.meetingDate; break;
+                case 'score': valA = a.scoreValue; valB = b.scoreValue; break;
+                case 'name': valA = a.name.toLowerCase(); valB = b.name.toLowerCase(); break;
+                default: valA = a.saleValue; valB = b.saleValue;
+            }
+
+            if (valA < valB) return sortState.direction === 'asc' ? -1 : 1;
+            if (valA > valB) return sortState.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
         
         renderTable(filtered);
         updateKPIs(filtered);
@@ -563,19 +678,16 @@
             return;
         }
 
-        data.forEach((lead, idx) => {
+        data.forEach((lead) => {
             const dateFmt = lead.meetingDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
             const moneyFmt = lead.saleValue > 0 ? `$${lead.saleValue.toLocaleString()}` : '-';
-            const statusBadge = lead.saleValue > 0 
-                ? `<span class="status-badge status-paid">Pago Detectado</span>` 
-                : (lead.notes.p9 ? `<span class="status-badge status-pending">En Proceso</span>` : `<span class="status-badge">Lead</span>`);
             
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td>${dateFmt}</td>
                 <td style="font-weight: 600; color: white;">${lead.name}</td>
                 <td>${lead.closer}</td>
-                <td>${lead.notes.p1 || '-'}</td>
+                <td style="text-align:center;">${lead.notes.p1 || '-'}</td>
                 <td>
                     <div style="font-size:0.85rem; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
                         ${lead.notes.p9 || '<span style="color:#444">Sin datos item 9</span>'}
