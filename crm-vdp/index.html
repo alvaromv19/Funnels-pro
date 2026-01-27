@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Ticket Sales CRM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #0f1115;
+            --bg-sidebar: #161b22;
+            --bg-card: #1c232d;
+            --bg-hover: #262f3d;
+            --border: #2d3748;
+            --accent: #6366f1; /* Indigo */
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * { box-sizing: border-box; outline: none; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand span { color: var(--accent); }
+
+        .search-container label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
+            padding: 12px;
+            border-radius: 8px;
+            color: white;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .search-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+
+        /* Resultado búsqueda rápida en sidebar */
+        .mini-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            animation: slideIn 0.3s ease;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .mini-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+        .mini-card h4 { margin: 0 0 5px 0; font-size: 1rem; }
+        .mini-card p { margin: 0; color: var(--text-muted); font-size: 0.85rem; }
+
+        /* --- MAIN CONTENT --- */
+        .main {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header flotante */
+        .top-bar {
+            padding: 1.5rem 2rem;
+            background: rgba(15, 17, 21, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kpi-grid {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .kpi-card {
+            display: flex;
+            flex-direction: column;
+        }
+        .kpi-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+        .kpi-value { font-size: 1.25rem; font-weight: 700; color: white; }
+        .kpi-value.money { color: var(--success); }
+
+        .refresh-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+        .refresh-btn:hover { background: var(--bg-hover); }
+        .loading-spinner { border: 2px solid rgba(255,255,255,0.1); border-top: 2px solid var(--accent); border-radius: 50%; width: 12px; height: 12px; animation: spin 1s linear infinite; display: none; }
+
+        /* Filtros */
+        .filters-bar {
+            padding: 1rem 2rem;
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+        }
+        .filter-chip {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .filter-chip:hover { color: white; border-color: var(--text-muted); }
+        .filter-chip.active { background: var(--accent); border-color: var(--accent); color: white; box-shadow: 0 4px 12px var(--accent-glow); }
+
+        /* Tabla */
+        .table-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 2rem 2rem 2rem;
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 0.9rem;
+        }
+        th {
+            position: sticky;
+            top: 0;
+            background: var(--bg-body);
+            padding: 1rem;
+            text-align: left;
+            color: var(--text-muted);
+            font-weight: 500;
+            border-bottom: 2px solid var(--border);
+            z-index: 5;
+        }
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-main);
+            vertical-align: middle;
+        }
+        tr:hover td { background-color: var(--bg-hover); cursor: pointer; }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+        }
+        .status-paid { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        .status-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+
+        /* --- MODAL --- */
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-backdrop.active { opacity: 1; pointer-events: all; }
+
+        .modal-panel {
+            background: var(--bg-card);
+            width: 800px;
+            max-width: 90%;
+            max-height: 85vh;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.3s;
+        }
+        .modal-backdrop.active .modal-panel { transform: scale(1); }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            background: #1e293b;
+        }
+        .modal-title h2 { margin: 0; font-size: 1.5rem; }
+        .modal-title p { margin: 5px 0 0; color: var(--accent); }
+        .close-btn { background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer; }
+
+        .modal-body {
+            padding: 2rem;
+            overflow-y: auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .full-width { grid-column: span 2; }
+
+        .info-group h4 {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 5px;
+        }
+        .info-text { font-size: 0.95rem; line-height: 1.6; white-space: pre-wrap; }
+
+        .highlight-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        📊 EVO <span>LAUNCH</span>
+    </div>
+
+    <div class="search-container">
+        <label>Buscador Inteligente</label>
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar email, nombre...">
+        <div id="searchResults"></div>
+    </div>
+</aside>
+
+<main class="main">
+    <header class="top-bar">
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <span class="kpi-label">Leads Totales (Periodo)</span>
+                <span class="kpi-value" id="kpiCount">0</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Facturación Detectada</span>
+                <span class="kpi-value money" id="kpiMoney">$0</span>
+            </div>
+        </div>
+
+        <button class="refresh-btn" onclick="loadData()">
+            <div class="loading-spinner" id="spinner"></div>
+            Actualizar Datos
+        </button>
+    </header>
+
+    <div class="filters-bar" id="filterContainer">
+        <button class="filter-chip active" data-range="all">Histórico Completo</button>
+        <button class="filter-chip" data-range="today">Hoy</button>
+        <button class="filter-chip" data-range="yesterday">Ayer</button>
+        <button class="filter-chip" data-range="thisMonth">Este Mes</button>
+        <button class="filter-chip" data-range="lastMonth">Mes Pasado</button>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="rankingTable">
+            <thead>
+                <tr>
+                    <th>Fecha Reunión</th>
+                    <th>Lead</th>
+                    <th>Closer</th>
+                    <th>Score</th>
+                    <th>Estado de Compra</th>
+                    <th>Valor</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
+</main>
+
+<div class="modal-backdrop" id="modal">
+    <div class="modal-panel">
+        <div class="modal-header">
+            <div class="modal-title">
+                <h2 id="mName">Nombre del Lead</h2>
+                <p id="mEmail">email@ejemplo.com</p>
+            </div>
+            <button class="close-btn" onclick="closeModal()">×</button>
+        </div>
+        <div class="modal-body">
+            <div>
+                <div class="info-group">
+                    <h4>Detalles de Sesión</h4>
+                    <p class="info-text">
+                        <strong>Closer:</strong> <span id="mCloser"></span><br>
+                        <strong>Fecha:</strong> <span id="mDate"></span><br>
+                        <strong>Score Intención:</strong> <span id="mScore"></span>
+                    </p>
+                </div>
+                <div class="info-group" style="margin-top: 1.5rem;">
+                    <h4>Diagnóstico</h4>
+                    <p class="info-text">
+                        <strong>Interés:</strong> <span id="mInterest"></span><br>
+                        <strong>Urgencia:</strong> <span id="mUrgency"></span><br>
+                        <strong>Capacidad:</strong> <span id="mCap"></span>
+                    </p>
+                </div>
+                <div id="mLinkContainer" style="margin-top: 2rem;"></div>
+            </div>
+
+            <div>
+                <div class="info-group">
+                    <h4>Estado Financiero (Item 9)</h4>
+                    <div class="highlight-box" id="mStatusBox">
+                        <span id="mStatus"></span>
+                    </div>
+                </div>
+                <div class="info-group" style="margin-top: 1.5rem;">
+                    <h4>Objeciones Principales</h4>
+                    <p class="info-text" id="mObjections"></p>
+                </div>
+                <div class="info-group" style="margin-top: 1.5rem;">
+                    <h4>Próximos Pasos</h4>
+                    <p class="info-text" id="mNextSteps"></p>
+                </div>
+            </div>
+
+            <div class="full-width">
+                <div class="info-group">
+                    <h4>Nota Final del Closer</h4>
+                    <p class="info-text" id="mFinalNote" style="background: #111; padding: 1rem; border-radius: 6px;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- CONFIGURACIÓN ---
+    const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQhTbxvLz2rMivV3L6JN23pdggW_-Rw6NZbZRvmVekbL_naRW7h2Ay4qhDPkTJ7VkxTGmV3wPJozvnd/pub?gid=0&single=true&output=csv";
+
+    let globalData = [];
+    let currentFilter = 'all';
+
+    // Iniciar carga al abrir
+    document.addEventListener('DOMContentLoaded', () => {
+        loadData();
+    });
+
+    async function loadData() {
+        const spinner = document.getElementById('spinner');
+        spinner.style.display = 'block';
+        
+        try {
+            const response = await fetch(GOOGLE_SHEET_CSV_URL);
+            const text = await response.text();
+            
+            globalData = parseCSV(text);
+            applyFilter(currentFilter);
+            
+        } catch (error) {
+            console.error(error);
+            alert("Error cargando datos. Verifica tu conexión a internet.");
+        } finally {
+            spinner.style.display = 'none';
+        }
+    }
+
+    // --- PARSER INTELIGENTE (Mejorado para Google Sheets) ---
+    function parseCSV(text) {
+        const lines = [];
+        let row = [];
+        let cell = "";
+        let inQuotes = false;
+
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i];
+            let next = text[i+1];
+
+            if (char === '"') {
+                if (inQuotes && next === '"') {
+                    cell += '"'; i++; 
+                } else {
+                    inQuotes = !inQuotes;
+                }
+            } else if (char === ',' && !inQuotes) {
+                row.push(cell.trim()); cell = "";
+            } else if ((char === '\r' || char === '\n') && !inQuotes) {
+                if(cell || row.length > 0) row.push(cell.trim());
+                if(row.length > 0) lines.push(row);
+                row = []; cell = "";
+                if(char === '\r' && next === '\n') i++;
+            } else {
+                cell += char;
+            }
+        }
+        if(row.length > 0) lines.push(row);
+
+        // Mapeo de columnas basado en tu estructura
+        return lines.slice(1).map(r => {
+            if(r.length < 5) return null;
+            
+            const rawNotes = r[5] || "";
+            const parsed = parseNotes(rawNotes);
+            const money = extractMoney(parsed.p9);
+            
+            // Parseo de Fecha
+            let d = new Date();
+            let dateStr = r[1]; // Fecha Reunión
+            if(dateStr.includes('T')) d = new Date(dateStr);
+            else if(dateStr.includes('/')) {
+                const p = dateStr.split('/');
+                if(p.length === 3) d = new Date(`${p[2]}-${p[1]}-${p[0]}`); // Asumiendo DD/MM/YYYY
+            }
+
+            return {
+                id: Math.random().toString(36),
+                meetingDate: d,
+                name: r[2],
+                email: r[3],
+                closer: r[4],
+                notes: parsed,
+                saleValue: money,
+                status: money > 0 ? 'paid' : (parsed.p9 ? 'negotiation' : 'unknown')
+            };
+        }).filter(x => x !== null);
+    }
+
+    function parseNotes(text) {
+        const extract = (n) => {
+            const regex = new RegExp(`${n}\\.\\s*\\**[^*]*\\**\\s*:?\\s*([\\s\\S]*?)(?=\\n\\d+\\.|$)`, 'i');
+            const match = text.match(regex);
+            return match ? match[1].trim() : '';
+        };
+        const linkMatch = text.match(/https?:\/\/fathom\.video[^\s]*/);
+
+        return {
+            p1: extract(1), // Score
+            p2: extract(2), // Interes
+            p3: extract(3), // Urgencia
+            p4: extract(4), // Capacidad
+            p5: extract(5), // Objeciones
+            p6: extract(6), // Probabilidad
+            p7: extract(7), // Pasos
+            p8: extract(8), // Nota Final
+            p9: extract(9), // Estado Compra
+            link: linkMatch ? linkMatch[0] : null
+        };
+    }
+
+    function extractMoney(text) {
+        if(!text) return 0;
+        const match = text.match(/\$\s?([0-9,.]+)/);
+        return match ? parseFloat(match[1].replace(/,/g, '')) : 0;
+    }
+
+    // --- FILTROS Y RENDERIZADO ---
+    document.getElementById('filterContainer').addEventListener('click', (e) => {
+        if(e.target.classList.contains('filter-chip')) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            e.target.classList.add('active');
+            currentFilter = e.target.dataset.range;
+            applyFilter(currentFilter);
+        }
+    });
+
+    function applyFilter(range) {
+        const now = new Date();
+        const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        let filtered = globalData.filter(item => {
+            const d = item.meetingDate;
+            switch(range) {
+                case 'today': return d >= startToday;
+                case 'yesterday': 
+                    const y = new Date(startToday); y.setDate(y.getDate()-1);
+                    return d >= y && d < startToday;
+                case 'thisMonth': return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                case 'lastMonth': 
+                    const lm = new Date(now.getFullYear(), now.getMonth()-1, 1);
+                    const lmEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+                    return d >= lm && d <= lmEnd;
+                default: return true;
+            }
+        });
+
+        // Ordenar por Valor $ y luego Fecha
+        filtered.sort((a,b) => b.saleValue - a.saleValue || b.meetingDate - a.meetingDate);
+        
+        renderTable(filtered);
+        updateKPIs(filtered);
+    }
+
+    function renderTable(data) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        
+        if(data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: #64748b;">No hay datos para este periodo</td></tr>`;
+            return;
+        }
+
+        data.forEach((lead, idx) => {
+            const dateFmt = lead.meetingDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+            const moneyFmt = lead.saleValue > 0 ? `$${lead.saleValue.toLocaleString()}` : '-';
+            const statusBadge = lead.saleValue > 0 
+                ? `<span class="status-badge status-paid">Pago Detectado</span>` 
+                : (lead.notes.p9 ? `<span class="status-badge status-pending">En Proceso</span>` : `<span class="status-badge">Lead</span>`);
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${dateFmt}</td>
+                <td style="font-weight: 600; color: white;">${lead.name}</td>
+                <td>${lead.closer}</td>
+                <td>${lead.notes.p1 || '-'}</td>
+                <td>
+                    <div style="font-size:0.85rem; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        ${lead.notes.p9 || '<span style="color:#444">Sin datos item 9</span>'}
+                    </div>
+                </td>
+                <td style="font-weight: 700; color: ${lead.saleValue > 0 ? '#10b981' : '#64748b'}">${moneyFmt}</td>
+            `;
+            tr.onclick = () => openModal(lead);
+            tbody.appendChild(tr);
+        });
+    }
+
+    function updateKPIs(data) {
+        document.getElementById('kpiCount').textContent = data.length;
+        const total = data.reduce((acc, curr) => acc + curr.saleValue, 0);
+        document.getElementById('kpiMoney').textContent = `$${total.toLocaleString()}`;
+    }
+
+    // --- BUSQUEDA ---
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const resultsDiv = document.getElementById('searchResults');
+        resultsDiv.innerHTML = '';
+
+        if(term.length < 2) return;
+
+        const matches = globalData.filter(l => l.name.toLowerCase().includes(term) || l.email.toLowerCase().includes(term)).slice(0, 5);
+        
+        matches.forEach(lead => {
+            const div = document.createElement('div');
+            div.className = 'mini-card';
+            div.innerHTML = `<h4>${lead.name}</h4><p>${lead.email}</p>`;
+            div.onclick = () => openModal(lead);
+            resultsDiv.appendChild(div);
+        });
+    });
+
+    // --- MODAL LOGIC ---
+    function openModal(lead) {
+        document.getElementById('mName').textContent = lead.name;
+        document.getElementById('mEmail').textContent = lead.email;
+        document.getElementById('mCloser').textContent = lead.closer;
+        document.getElementById('mDate').textContent = lead.meetingDate.toLocaleString();
+        document.getElementById('mScore').textContent = lead.notes.p1;
+        
+        document.getElementById('mInterest').textContent = lead.notes.p2;
+        document.getElementById('mUrgency').textContent = lead.notes.p3;
+        document.getElementById('mCap').textContent = lead.notes.p4;
+        
+        document.getElementById('mStatus').textContent = lead.notes.p9 || "No hay información de estado de compra (Item 9 no detectado)";
+        document.getElementById('mObjections').textContent = lead.notes.p5;
+        document.getElementById('mNextSteps').textContent = lead.notes.p7;
+        document.getElementById('mFinalNote').textContent = lead.notes.p8;
+
+        const linkDiv = document.getElementById('mLinkContainer');
+        linkDiv.innerHTML = lead.notes.link 
+            ? `<a href="${lead.notes.link}" target="_blank" style="display:inline-block; background:#3b82f6; color:white; padding:10px 20px; text-decoration:none; border-radius:6px; font-weight:600;">Ver Grabación Fathom ▶</a>`
+            : '';
+
+        document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.remove('active');
+    }
+
+    document.getElementById('modal').addEventListener('click', (e) => {
+        if(e.target === document.getElementById('modal')) closeModal();
+    });
+</script>
+
+</body>
+</html>
