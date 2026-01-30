@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Verification Hub 💸</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #000000;
+            --bg-sidebar: #050505;
+            --bg-card: #0a0a0a;
+            --border: #1f1f1f;
+            
+            /* FINANCE NEON PALETTE */
+            --neon-green: #00ffa3;
+            --neon-dim: rgba(0, 255, 163, 0.1);
+            --neon-glow: rgba(0, 255, 163, 0.4);
+            
+            --text-main: #ffffff;
+            --text-muted: #666;
+            
+            --chip-bg: #111;
+        }
+
+        * { box-sizing: border-box; outline: none; scrollbar-width: thin; scrollbar-color: var(--neon-green) #111; }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: var(--neon-green); }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            overflow: hidden;
+            background-image: linear-gradient(0deg, transparent 24%, rgba(0, 255, 163, .03) 25%, rgba(0, 255, 163, .03) 26%, transparent 27%, transparent 74%, rgba(0, 255, 163, .03) 75%, rgba(0, 255, 163, .03) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(0, 255, 163, .03) 25%, rgba(0, 255, 163, .03) 26%, transparent 27%, transparent 74%, rgba(0, 255, 163, .03) 75%, rgba(0, 255, 163, .03) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 10;
+        }
+
+        .brand {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -1px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .brand span { color: var(--neon-green); text-shadow: 0 0 15px var(--neon-glow); }
+
+        .search-box { position: relative; }
+        .search-input {
+            width: 100%;
+            background: #080808;
+            border: 1px solid #333;
+            padding: 12px 12px 12px 40px;
+            border-radius: 4px;
+            color: var(--neon-green);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+        .search-input:focus { border-color: var(--neon-green); box-shadow: 0 0 20px var(--neon-dim); }
+        .search-icon { position: absolute; left: 12px; top: 13px; color: #444; }
+
+        /* KPI Cards in Sidebar for quick glance */
+        .kpi-mini {
+            background: #090909; border: 1px solid #222; padding: 1rem; border-radius: 6px;
+        }
+        .kpi-mini label { font-size: 0.7rem; color: #555; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 5px; }
+        .kpi-mini value { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; color: white; display: block; }
+        .kpi-mini value.cash { color: var(--neon-green); text-shadow: 0 0 10px var(--neon-dim); }
+
+        /* Filtros Laterales */
+        .filter-group label { font-size: 0.75rem; color: #888; margin-bottom: 0.5rem; display: block; font-weight: 600; }
+        .filter-select {
+            width: 100%; background: #080808; border: 1px solid #333; color: #ccc;
+            padding: 8px; border-radius: 4px; margin-bottom: 1rem; cursor: pointer;
+        }
+        .filter-select:hover { border-color: #555; }
+
+        /* --- MAIN AREA --- */
+        .main { display: flex; flex-direction: column; overflow: hidden; position: relative; }
+
+        .header {
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border);
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .header h1 { margin: 0; font-size: 1.2rem; font-weight: 400; color: #888; }
+        .header strong { color: white; font-weight: 600; }
+
+        .refresh-btn {
+            background: var(--neon-dim); border: 1px solid var(--neon-green); color: var(--neon-green);
+            padding: 8px 16px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+            cursor: pointer; transition: all 0.3s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .refresh-btn:hover { background: var(--neon-green); color: black; box-shadow: 0 0 20px var(--neon-glow); }
+
+        /* TABLE */
+        .table-container { flex: 1; overflow-y: auto; padding: 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        
+        thead { position: sticky; top: 0; background: #050505; z-index: 5; box-shadow: 0 2px 10px rgba(0,0,0,0.5); }
+        th {
+            text-align: left; padding: 1rem 1.5rem; color: #555; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.7rem; border-bottom: 1px solid #222;
+            cursor: pointer; transition: color 0.2s;
+        }
+        th:hover { color: var(--neon-green); }
+
+        tbody tr { border-bottom: 1px solid #111; transition: background 0.1s; }
+        tbody tr:hover { background: rgba(0, 255, 163, 0.03); cursor: pointer; }
+        td { padding: 1rem 1.5rem; vertical-align: middle; color: #ccc; }
+        
+        .td-amount { font-family: 'JetBrains Mono', monospace; color: var(--neon-green); font-weight: 700; text-align: right; }
+        .td-method { 
+            display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; 
+            background: #111; border: 1px solid #333; color: #999; text-transform: uppercase; 
+        }
+        .td-closer { color: #fff; font-weight: 600; }
+
+        /* --- TICKET MODAL (RECEIPT STYLE) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+            z-index: 100; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s;
+        }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+        .ticket {
+            background: #fff; /* Ticket blanco/gris para contraste o negro estilo terminal */
+            background: #0a0a0a;
+            width: 450px;
+            border: 1px solid #333;
+            border-top: 4px solid var(--neon-green);
+            box-shadow: 0 0 50px rgba(0, 255, 163, 0.1);
+            position: relative;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 2rem;
+            color: #ccc;
+            display: flex; flex-direction: column; gap: 1.5rem;
+        }
+
+        .ticket::before {
+            content: ''; position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            width: 100px; height: 10px; background: var(--neon-green); box-shadow: 0 0 20px var(--neon-glow); border-radius: 10px;
+        }
+
+        .ticket-header { text-align: center; border-bottom: 2px dashed #333; padding-bottom: 1.5rem; }
+        .ticket-header h2 { margin: 0; color: white; font-size: 1.5rem; }
+        .ticket-header .amount-big { font-size: 2.5rem; color: var(--neon-green); margin: 10px 0; display: block; text-shadow: 0 0 20px var(--neon-glow); }
+        .ticket-header .date-small { color: #666; font-size: 0.8rem; }
+
+        .ticket-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; }
+        .ticket-label { color: #666; }
+        .ticket-val { color: white; text-align: right; }
+
+        .ticket-note {
+            background: #111; padding: 1rem; border: 1px solid #222; color: #888; font-size: 0.8rem; line-height: 1.5; font-family: 'Inter', sans-serif;
+            border-left: 2px solid var(--neon-green);
+        }
+
+        .action-btn {
+            background: #111; color: white; border: 1px solid #333; padding: 10px; cursor: pointer;
+            display: flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s;
+            font-size: 0.8rem;
+        }
+        .action-btn:hover { background: #222; border-color: #555; }
+        .close-ticket { position: absolute; top: 10px; right: 10px; background: none; border: none; color: #444; cursor: pointer; font-size: 1.5rem; }
+        .close-ticket:hover { color: white; }
+
+        .copy-feedback { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); background: var(--neon-green); color: black; padding: 5px 10px; font-size: 0.7rem; opacity: 0; transition: opacity 0.5s; border-radius: 4px; font-weight: bold; }
+
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        <span>$</span> FINANCE TRUTH
+    </div>
+
+    <div class="kpi-mini">
+        <label>Total Recaudado</label>
+        <value class="cash" id="totalCash">$0.00</value>
+    </div>
+    <div class="kpi-mini">
+        <label>Transacciones</label>
+        <value id="totalTx">0</value>
+    </div>
+
+    <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar email, nombre, ID...">
+    </div>
+
+    <div class="filter-group">
+        <label>FILTRAR POR CLOSER</label>
+        <select id="filterCloser" class="filter-select">
+            <option value="all">Todos los Closers</option>
+        </select>
+
+        <label>MÉTODO DE PAGO</label>
+        <select id="filterMethod" class="filter-select">
+            <option value="all">Todos los Métodos</option>
+        </select>
+
+        <label>PERIODO</label>
+        <select id="filterDate" class="filter-select">
+            <option value="all">Histórico Completo</option>
+            <option value="thisMonth">Este Mes</option>
+            <option value="lastMonth">Mes Pasado</option>
+            <option value="today">Hoy</option>
+        </select>
+    </div>
+</aside>
+
+<main class="main">
+    <header class="header">
+        <h1>VERIFICACIÓN DE VENTAS &nbsp;//&nbsp; <strong>TRACKER VS REALIDAD</strong></h1>
+        <button class="refresh-btn" onclick="loadData()">↻ Sync Data</button>
+    </header>
+
+    <div class="table-container">
+        <table id="financeTable">
+            <thead>
+                <tr>
+                    <th onclick="sortBy('date')">Fecha</th>
+                    <th onclick="sortBy('name')">Cliente</th>
+                    <th onclick="sortBy('method')">Método</th>
+                    <th>Forma</th>
+                    <th onclick="sortBy('closer')">Closer</th>
+                    <th onclick="sortBy('amount')" style="text-align:right">Monto (USD)</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
+</main>
+
+<div class="modal-overlay" id="modal">
+    <div class="ticket">
+        <button class="close-ticket" onclick="closeModal()">×</button>
+        <div class="ticket-header">
+            <h2 id="tName">Nombre Cliente</h2>
+            <span class="amount-big" id="tAmount">$0.00</span>
+            <span class="date-small" id="tDate">00/00/0000</span>
+        </div>
+
+        <div class="ticket-body">
+            <div class="ticket-row">
+                <span class="ticket-label">Email:</span>
+                <span class="ticket-val" id="tEmail" style="color:var(--neon-green); cursor:pointer;" onclick="copyToClipboard('tEmail')">email@example.com 📋</span>
+            </div>
+            <div class="ticket-row">
+                <span class="ticket-label">Teléfono:</span>
+                <span class="ticket-val" id="tPhone">+00 000 000</span>
+            </div>
+            <div class="ticket-row">
+                <span class="ticket-label">Closer:</span>
+                <span class="ticket-val" id="tCloser">Nombre Closer</span>
+            </div>
+            <hr style="border-color:#222; margin: 1rem 0;">
+            <div class="ticket-row">
+                <span class="ticket-label">Método:</span>
+                <span class="ticket-val" id="tMethod">Stripe</span>
+            </div>
+            <div class="ticket-row">
+                <span class="ticket-label">Forma:</span>
+                <span class="ticket-val" id="tType">Pago Único</span>
+            </div>
+        </div>
+
+        <div class="ticket-note" id="tNote">
+            Sin notas adicionales.
+        </div>
+
+        <button class="action-btn" onclick="closeModal()">Cerrar Verificación</button>
+        <div class="copy-feedback" id="copyFeedback">Copiado!</div>
+    </div>
+</div>
+
+<script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQJiSO6e8bRW7jT1676Ut-Jv0r2wd2GBa-lyFJPO8B63-bJ3VdiIxGcr2cASd6u6chFMQECrWRBHxjU/pub?gid=1201966640&single=true&output=csv";
+    
+    let rawData = [];
+    let filteredData = [];
+
+    // --- INIT ---
+    document.addEventListener('DOMContentLoaded', loadData);
+
+    async function loadData() {
+        const btn = document.querySelector('.refresh-btn');
+        btn.textContent = '...';
+        try {
+            const res = await fetch(CSV_URL);
+            const text = await res.text();
+            rawData = parseCSV(text);
+            populateFilters();
+            applyFilters(); // Initial render
+            btn.textContent = '↻ Sync Data';
+        } catch (e) {
+            console.error(e);
+            alert("Error cargando CSV. Revisa la conexión.");
+            btn.textContent = 'Error';
+        }
+    }
+
+    // --- PARSER ROBUSTO ---
+    function parseCSV(text) {
+        // Simple CSV split logic (assumes clean google sheet output)
+        const rows = text.split(/\r?\n/).slice(1); // Skip header
+        return rows.map(row => {
+            // Regex to handle commas inside quotes
+            const cols = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g);
+            if (!cols || cols.length < 5) return null;
+            
+            // Clean function
+            const clean = (str) => str ? str.replace(/^"|"$/g, '').trim() : '';
+
+            // Mapping based on: Fecha, Nombre, Monto USD, Medio de Pago, Forma de pago, Numero de Telefono, Email, Closer, Nota
+            // Index logic might vary if split fails, using standard split by comma if regex fails? 
+            // Better strategy: Simple split if no internal commas expected in simple fields, but Notes might have them.
+            
+            // Let's use a smarter regex split for CSV lines
+            const data = splitCSVLine(row);
+            if(data.length < 8) return null;
+
+            // Parse Date (DD/MM/YYYY usually from Sheets Latin America)
+            let dateStr = data[0];
+            let dateObj = new Date();
+            if(dateStr.includes('/')) {
+                const [d, m, y] = dateStr.split('/');
+                dateObj = new Date(`${y}-${m}-${d}`);
+            } else {
+                dateObj = new Date(dateStr);
+            }
+
+            // Parse Money
+            let moneyStr = data[2]; // Monto USD
+            let money = 0;
+            if(moneyStr) {
+                // Remove $ , and spaces
+                money = parseFloat(moneyStr.replace(/[$,\s]/g, ''));
+            }
+
+            return {
+                id: Math.random().toString(36).substr(2, 9),
+                date: dateObj,
+                name: data[1],
+                amount: money || 0,
+                method: data[3], // Medio de Pago
+                type: data[4],   // Forma de Pago
+                phone: data[5],
+                email: data[6],
+                closer: data[7],
+                note: data[8]
+            };
+        }).filter(x => x !== null);
+    }
+
+    function splitCSVLine(str) {
+        const result = [];
+        let s = '';
+        let quote = false;
+        for(let i=0;i<str.length;i++){
+            let c = str[i];
+            if(c === '"'){ quote = !quote; }
+            else if(c === ',' && !quote){
+                result.push(s); s = '';
+            } else {
+                s += c;
+            }
+        }
+        result.push(s);
+        return result.map(s => s.replace(/^"|"$/g, '').trim());
+    }
+
+    // --- FILTERS & UI ---
+    function populateFilters() {
+        // Unique Closers
+        const closers = [...new Set(rawData.map(d => d.closer))].sort();
+        const closerSel = document.getElementById('filterCloser');
+        closerSel.innerHTML = '<option value="all">Todos los Closers</option>';
+        closers.forEach(c => closerSel.innerHTML += `<option value="${c}">${c}</option>`);
+
+        // Unique Methods
+        const methods = [...new Set(rawData.map(d => d.method))].sort();
+        const methodSel = document.getElementById('filterMethod');
+        methodSel.innerHTML = '<option value="all">Todos los Métodos</option>';
+        methods.forEach(m => methodSel.innerHTML += `<option value="${m}">${m}</option>`);
+    }
+
+    // Event Listeners
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('filterCloser').addEventListener('change', applyFilters);
+    document.getElementById('filterMethod').addEventListener('change', applyFilters);
+    document.getElementById('filterDate').addEventListener('change', applyFilters);
+
+    function applyFilters() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const fCloser = document.getElementById('filterCloser').value;
+        const fMethod = document.getElementById('filterMethod').value;
+        const fDate = document.getElementById('filterDate').value;
+
+        const now = new Date();
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+
+        filteredData = rawData.filter(item => {
+            // Search
+            const matchSearch = item.name.toLowerCase().includes(search) || 
+                                item.email.toLowerCase().includes(search) ||
+                                (item.amount + "").includes(search);
+            if(!matchSearch) return false;
+
+            // Filters
+            if(fCloser !== 'all' && item.closer !== fCloser) return false;
+            if(fMethod !== 'all' && item.method !== fMethod) return false;
+
+            // Date
+            if(fDate === 'thisMonth' && item.date < startOfMonth) return false;
+            if(fDate === 'lastMonth' && (item.date < startOfLastMonth || item.date > endOfLastMonth)) return false;
+            if(fDate === 'today') {
+                const today = new Date(); today.setHours(0,0,0,0);
+                if(item.date < today) return false;
+            }
+
+            return true;
+        });
+
+        renderTable();
+        updateKPIs();
+    }
+
+    function updateKPIs() {
+        const total = filteredData.reduce((acc, curr) => acc + curr.amount, 0);
+        document.getElementById('totalCash').textContent = `$${total.toLocaleString('en-US')}`;
+        document.getElementById('totalTx').textContent = filteredData.length;
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+
+        if(filteredData.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:2rem;">No se encontraron registros.</td></tr>';
+            return;
+        }
+
+        filteredData.forEach(item => {
+            const tr = document.createElement('tr');
+            tr.onclick = () => openTicket(item);
+            tr.innerHTML = `
+                <td style="color:#666;">${item.date.toLocaleDateString()}</td>
+                <td>
+                    <div style="font-weight:600; color:white;">${item.name}</div>
+                    <div style="font-size:0.75rem; color:#555;">${item.email}</div>
+                </td>
+                <td><span class="td-method">${item.method}</span></td>
+                <td>${item.type}</td>
+                <td class="td-closer">${item.closer}</td>
+                <td class="td-amount">$${item.amount.toLocaleString()}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // --- SORTING ---
+    let sortDir = 1;
+    window.sortBy = function(col) {
+        sortDir = -sortDir;
+        filteredData.sort((a,b) => {
+            let valA = a[col];
+            let valB = b[col];
+            if(col === 'amount') return (valA - valB) * sortDir;
+            if(col === 'date') return (valA - valB) * sortDir;
+            return valA.localeCompare(valB) * sortDir;
+        });
+        renderTable();
+    }
+
+    // --- MODAL / TICKET ---
+    function openTicket(item) {
+        document.getElementById('tName').textContent = item.name;
+        document.getElementById('tAmount').textContent = `$${item.amount.toLocaleString()}`;
+        document.getElementById('tDate').textContent = item.date.toLocaleDateString() + ' ' + item.date.toLocaleTimeString();
+        document.getElementById('tEmail').textContent = item.email;
+        document.getElementById('tPhone').textContent = item.phone;
+        document.getElementById('tCloser').textContent = item.closer;
+        document.getElementById('tMethod').textContent = item.method;
+        document.getElementById('tType').textContent = item.type;
+        document.getElementById('tNote').textContent = item.note || "Sin notas.";
+        
+        document.getElementById('modal').classList.add('open');
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.remove('open');
+    }
+    
+    // Close on click outside
+    document.getElementById('modal').addEventListener('click', (e) => {
+        if(e.target.id === 'modal') closeModal();
+    });
+
+    // Copy to clipboard
+    window.copyToClipboard = function(elementId) {
+        const text = document.getElementById(elementId).textContent;
+        navigator.clipboard.writeText(text).then(() => {
+            const fb = document.getElementById('copyFeedback');
+            fb.style.opacity = 1;
+            setTimeout(() => fb.style.opacity = 0, 1500);
+        });
+    }
+
+</script>
+
+</body>
+</html>
