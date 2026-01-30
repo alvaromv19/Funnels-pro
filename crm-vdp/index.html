@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CENTER VDP🏠</title>
+    <title>Agus Q - VDP Master 🚀</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,10 +12,10 @@
             --bg-card: #0f0f0f;
             --border: #222;
             
-            /* VARIABLES DINÁMICAS (Se cambian con JS) */
-            --accent: #d946ef; /* Por defecto CRM (Magenta) */
-            --accent-glow: rgba(217, 70, 239, 0.4);
+            /* VARIABLES DE TEMA (Se actualizan con JS) */
+            --accent: #d946ef; /* Default: CRM Magenta */
             --accent-dim: rgba(217, 70, 239, 0.1);
+            --accent-glow: rgba(217, 70, 239, 0.4);
             
             --text-main: #ffffff;
             --text-muted: #888;
@@ -41,49 +41,38 @@
             transition: --accent 0.5s;
         }
 
-        /* --- 1. ICON NAV RAIL (Izquierda Extrema) --- */
+        /* --- 1. ICON RAIL (Navegación) --- */
         .nav-rail {
-            background: #000;
-            border-right: 1px solid #222;
+            background: #000; border-right: 1px solid #222;
             display: flex; flex-direction: column; align-items: center;
             padding-top: 2rem; gap: 2rem; z-index: 20;
         }
         .nav-btn {
             width: 50px; height: 50px; border-radius: 12px;
-            background: #111; border: 1px solid #333;
-            color: #666; font-size: 1.5rem;
+            background: #111; border: 1px solid #333; color: #666; font-size: 1.5rem;
             display: flex; justify-content: center; align-items: center;
-            cursor: pointer; transition: all 0.3s;
-            position: relative;
+            cursor: pointer; transition: all 0.3s; position: relative;
         }
         .nav-btn:hover { color: white; background: #222; }
         .nav-btn.active {
             background: var(--accent-dim); color: var(--accent);
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
+            border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow);
         }
         .nav-tooltip {
             position: absolute; left: 60px; background: #222; color: white;
             padding: 5px 10px; border-radius: 4px; font-size: 0.75rem;
             opacity: 0; pointer-events: none; transition: opacity 0.2s; white-space: nowrap;
-            font-weight: 600; letter-spacing: 1px; border: 1px solid #444;
+            font-weight: 600; letter-spacing: 1px; border: 1px solid #444; z-index: 30;
         }
         .nav-btn:hover .nav-tooltip { opacity: 1; }
 
-        /* --- 2. SIDEBAR INFO (Centro Izquierda) --- */
+        /* --- 2. SIDEBAR INFO --- */
         .sidebar-info {
-            background-color: var(--bg-sidebar);
-            border-right: 1px solid var(--border);
-            padding: 2rem;
-            display: flex; flex-direction: column; gap: 2rem;
+            background-color: var(--bg-sidebar); border-right: 1px solid var(--border);
+            padding: 2rem; display: flex; flex-direction: column; gap: 2rem;
             z-index: 10;
-            transition: border-color 0.3s;
         }
-
-        .brand {
-            font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px;
-            color: white; text-transform: uppercase;
-        }
+        .brand { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; color: white; text-transform: uppercase; }
         .brand span { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); transition: color 0.3s; }
 
         .search-input {
@@ -104,28 +93,47 @@
             background: var(--accent); opacity: 0.5; transition: background 0.3s;
         }
 
-        /* --- 3. MAIN CONTENT (Derecha) --- */
+        /* --- 3. MAIN CONTENT --- */
         .main { 
             display: flex; flex-direction: column; overflow: hidden; position: relative; 
             background-image: radial-gradient(circle at 50% 50%, rgba(20,20,20,0.5), #050505); 
         }
 
         .header {
-            padding: 1.5rem 2rem; background: rgba(5,5,5,0.8); backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem; background: rgba(5,5,5,0.9); backdrop-filter: blur(10px);
             border-bottom: 1px solid #222; display: flex; justify-content: space-between; align-items: center;
         }
         .view-title { font-size: 1.5rem; font-weight: 700; color: white; letter-spacing: -1px; }
         .view-subtitle { font-size: 0.8rem; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; transition: color 0.3s; }
 
-        .filters-bar { padding: 1rem 2rem; display: flex; gap: 0.8rem; border-bottom: 1px solid #222; overflow-x: auto; }
+        /* BARRA DE FILTROS DINÁMICA */
+        .filters-container {
+            padding: 1rem 2rem; border-bottom: 1px solid #222; display: flex; gap: 1rem; align-items: center; overflow-x: auto;
+            background: rgba(10,10,10,0.5); min-height: 70px;
+        }
+        
+        /* Estilos Chips (CRM) */
         .filter-chip {
             background: transparent; border: 1px solid #333; color: #888;
             padding: 6px 16px; border-radius: 20px; font-size: 0.8rem; cursor: pointer; transition: all 0.3s;
+            white-space: nowrap;
         }
         .filter-chip:hover { border-color: var(--accent); color: white; }
         .filter-chip.active { background: var(--accent-dim); border-color: var(--accent); color: white; }
 
-        /* TABLE STYLES (Compartidos) */
+        /* Estilos Selects (Finanzas) */
+        .neon-select {
+            background: #080808; border: 1px solid #333; color: #ccc; padding: 8px 12px; border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; cursor: pointer;
+        }
+        .neon-select:focus { border-color: var(--accent); outline: none; }
+
+        /* Panel Fecha Personalizada */
+        .custom-date-panel { display: none; align-items: center; gap: 10px; animation: fadeIn 0.3s; }
+        .custom-date-panel.show { display: flex; }
+        .date-input { background: #111; border: 1px solid #444; color: white; padding: 5px; border-radius: 4px; font-family: inherit; }
+
+        /* TABLE */
         .table-wrapper { flex: 1; overflow-y: auto; padding: 0 2rem 2rem 2rem; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.9rem; }
         th {
@@ -134,17 +142,16 @@
             border-bottom: 1px solid #333; z-index: 5; cursor: pointer;
         }
         th:hover { color: var(--accent); }
+        th .sort-icon { margin-left: 5px; opacity: 0.5; }
         td { padding: 1rem; border-bottom: 1px solid #1a1a1a; color: #ddd; vertical-align: middle; }
         tr:hover td { background-color: rgba(255,255,255,0.03); cursor: pointer; }
 
-        /* Modificadores Tabla Finance */
-        .money-val { font-family: 'JetBrains Mono', monospace; color: var(--success); font-weight: 700; text-align: right; }
-        .method-tag { background: #111; border: 1px solid #333; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; text-transform: uppercase; color: #888; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .status-paid { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .status-pending { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-lead { background: rgba(255, 255, 255, 0.05); color: #888; border: 1px solid #333; }
 
-        /* Modificadores Tabla CRM */
-        .score-val { font-weight: 700; text-align: center; }
-
-        /* --- MODALS (Overlay Compartido) --- */
+        /* --- MODALS --- */
         .modal-backdrop {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
@@ -158,40 +165,26 @@
             border: 1px solid #333; border-radius: 12px;
             box-shadow: 0 0 50px rgba(0,0,0,0.5);
             display: flex; flex-direction: column; transform: scale(0.95); transition: transform 0.3s;
-            overflow: hidden; /* Importante para el scroll interno */
+            overflow: hidden;
         }
         .modal-backdrop.active .modal-panel { transform: scale(1); border-color: var(--accent); }
 
-        /* ESTILOS ESPECIFICOS CRM MODAL */
-        .crm-header { 
-            padding: 2rem; border-bottom: 1px solid #222; display: flex; gap: 1.5rem; align-items: center; 
-            background: linear-gradient(90deg, var(--accent-dim), transparent);
-        }
-        .crm-avatar {
-            width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--accent);
-            display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-dim); text-shadow: 0 0 10px var(--accent);
-        }
+        /* CRM Modal Styles */
+        .crm-header { padding: 2rem; border-bottom: 1px solid #222; display: flex; gap: 1.5rem; align-items: center; background: linear-gradient(90deg, var(--accent-dim), transparent); }
+        .crm-avatar { width: 70px; height: 70px; border-radius: 50%; border: 2px solid var(--accent); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; color: var(--accent); box-shadow: 0 0 20px var(--accent-dim); }
         .crm-body-scroll { padding: 2rem; overflow-y: auto; flex: 1; }
         .crm-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; }
         .info-card { background: #111; border: 1px solid #222; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; }
-        .info-card h4 { color: var(--accent); margin-top: 0; font-size: 0.9rem; text-transform: uppercase; margin-bottom: 10px; }
+        .info-card h4 { color: var(--accent); margin-top: 0; font-size: 0.9rem; text-transform: uppercase; }
 
-        /* ESTILOS ESPECIFICOS FINANCE TICKET */
-        .ticket-wrapper {
-            background: #0a0a0a; width: 450px; margin: auto; padding: 2rem;
-            border-top: 4px solid var(--accent); border-bottom: 2px dashed #333;
-            font-family: 'JetBrains Mono', monospace; position: relative;
-            box-shadow: 0 0 30px rgba(0,0,0,0.5);
-        }
+        /* Finance Ticket Styles */
+        .ticket-wrapper { background: #0a0a0a; width: 450px; margin: auto; padding: 2rem; border-top: 4px solid var(--accent); border-bottom: 2px dashed #333; font-family: 'JetBrains Mono', monospace; position: relative; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         .ticket-amount { font-size: 2.5rem; color: var(--accent); display: block; margin: 10px 0; text-shadow: 0 0 20px var(--accent-dim); }
         .ticket-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem; color: #ccc; }
         .ticket-copy { cursor: pointer; color: var(--accent); text-decoration: underline; }
 
-        /* Botón Cerrar */
         .close-modal { position: absolute; top: 1rem; right: 1rem; font-size: 2rem; color: #666; background: none; border: none; cursor: pointer; z-index: 10; }
         .close-modal:hover { color: white; }
-
         .fade-in { animation: fadeIn 0.3s ease forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -212,7 +205,7 @@
 
 <aside class="sidebar-info">
     <div class="brand">
-        AGUS Q<span>VDP</span>
+        Agus Q <span>VDP</span>
     </div>
 
     <div class="kpi-mini">
@@ -226,8 +219,7 @@
 
     <div style="margin-top: auto;">
         <label style="font-size:0.7rem; color:#666; display:block; margin-bottom:5px;">BUSCADOR GLOBAL</label>
-        <input type="text" id="searchInput" class="search-input" placeholder="Buscar Lead, Email, ID...">
-        <div id="searchResults" style="margin-top:10px;"></div>
+        <input type="text" id="searchInput" class="search-input" placeholder="Nombre, Email, ID...">
     </div>
 </aside>
 
@@ -237,10 +229,10 @@
             <div class="view-subtitle" id="headerSubtitle">CRM VDP</div>
             <div class="view-title" id="headerTitle">Análisis de Leads</div>
         </div>
-        <button onclick="refreshData()" style="background:transparent; border:1px solid #333; color:white; padding:8px 16px; cursor:pointer; border-radius:4px; font-size:0.8rem; text-transform:uppercase;">↻ Actualizar Datos</button>
+        <button onclick="refreshData()" style="background:transparent; border:1px solid #333; color:white; padding:8px 16px; cursor:pointer; border-radius:4px; font-size:0.8rem; text-transform:uppercase;">↻ Sync Data</button>
     </header>
 
-    <div class="filters-bar" id="filtersBar">
+    <div class="filters-container" id="filtersBar">
         </div>
 
     <div class="table-wrapper">
@@ -266,69 +258,57 @@
     };
 
     const THEMES = {
-        crm: { accent: '#d946ef', sub: 'CRM CLOSERS', title: 'Análisis de Conversiones' }, // Magenta
-        finance: { accent: '#00ffa3', sub: 'FINANCE TRUTH', title: 'Verificación de Pagos' } // Green
+        crm: { accent: '#d946ef', sub: 'CRM VDP', title: 'Análisis de Conversiones' }, 
+        finance: { accent: '#00ffa3', sub: 'FINANCE TRUTH', title: 'Verificación de Pagos' } 
     };
 
     // --- ESTADO ---
-    let currentMode = 'crm'; // 'crm' o 'finance'
+    let currentMode = 'crm';
     let dataStore = { crm: [], finance: [] };
-    let currentFilter = 'all';
+    let currentFilterState = {
+        crm: { range: 'all', start: null, end: null },
+        finance: { closer: 'all', method: 'all', period: 'all' }
+    };
+    let sortState = { col: null, dir: 1 };
 
     // --- INICIALIZACIÓN ---
-    document.addEventListener('DOMContentLoaded', () => {
-        refreshData();
-    });
+    document.addEventListener('DOMContentLoaded', () => { refreshData(); });
 
     async function refreshData() {
         try {
-            // Cargar ambas bases de datos en paralelo
             const [resCRM, resFin] = await Promise.all([
                 fetch(URLS.crm).then(r => r.text()),
                 fetch(URLS.finance).then(r => r.text())
             ]);
-            
             dataStore.crm = parseCRM(resCRM);
             dataStore.finance = parseFinance(resFin);
-            
-            renderView(); // Renderizar vista actual
-        } catch(e) {
-            console.error(e);
-            alert("Error conectando con Google Sheets. Verifica tu internet.");
-        }
+            renderView();
+        } catch(e) { console.error(e); alert("Error cargando datos."); }
     }
 
     function switchMode(mode) {
         currentMode = mode;
-        // Actualizar UI Botones
+        // UI Updates
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
         document.getElementById(mode === 'crm' ? 'btnCRM' : 'btnFinance').classList.add('active');
         
-        // Actualizar Variables CSS (Tema)
+        // Theme Updates
         const root = document.documentElement;
         root.style.setProperty('--accent', THEMES[mode].accent);
         root.style.setProperty('--accent-glow', THEMES[mode].accent + '66'); 
         root.style.setProperty('--accent-dim', THEMES[mode].accent + '1a');
 
-        // Actualizar Textos Header
         document.getElementById('headerSubtitle').textContent = THEMES[mode].sub;
         document.getElementById('headerTitle').textContent = THEMES[mode].title;
 
-        // Resetear filtro y renderizar
-        currentFilter = 'all';
+        // Reset Search & Sort
+        document.getElementById('searchInput').value = '';
+        sortState = { col: null, dir: 1 };
+        
         renderView();
     }
 
-    function renderView() {
-        const data = currentMode === 'crm' ? dataStore.crm : dataStore.finance;
-        updateKPIs(data);
-        renderFilters();
-        renderTable(data);
-    }
-
-    // --- PARSERS (Lógica de extracción) ---
-    
-    // Parser CRM (Código 1)
+    // --- PARSERS EXACTOS (SEGÚN TUS CÓDIGOS) ---
     function parseCRM(text) {
         const rows = parseCSVLines(text);
         return rows.map(r => {
@@ -336,59 +316,45 @@
             const notes = parseNotes(r[5] || "");
             const money = extractMoney(notes.p9);
             let d = parseDate(r[1]);
+            let scoreNum = parseInt(notes.p1); if(isNaN(scoreNum)) scoreNum = 0;
             return {
                 id: Math.random().toString(36), type: 'crm',
                 date: d, name: r[2], email: r[3], closer: r[4], notes: notes,
-                value: money, status: money > 0 ? 'paid' : 'lead', score: notes.p1
+                saleValue: money, status: money > 0 ? 'paid' : (notes.p9 ? 'pending' : 'lead'), scoreValue: scoreNum
             };
         }).filter(x => x);
     }
 
-    // Parser Finanzas (Código 2)
     function parseFinance(text) {
         const rows = parseCSVLines(text);
         return rows.map(r => {
             if(r.length < 5) return null;
             let d = parseDate(r[0]);
-            let amt = parseFloat((r[2] || "0").replace(/[$,]/g, ''));
+            let amt = parseFloat((r[2] || "0").replace(/[$,\s]/g, ''));
             return {
                 id: Math.random().toString(36), type: 'finance',
-                date: d, name: r[1], amount: amt, method: r[3], form: r[4],
+                date: d, name: r[1], amount: amt, method: r[3], type_pay: r[4],
                 phone: r[5], email: r[6], closer: r[7], note: r[8]
             };
         }).filter(x => x);
     }
 
-    // Utilidad: CSV Split que respeta comillas
     function parseCSVLines(text) {
-        const lines = [];
-        let row = []; let cell = ""; let inQuotes = false;
-        for (let i = 0; i < text.length; i++) {
-            let char = text[i]; let next = text[i+1];
-            if (char === '"') {
-                if (inQuotes && next === '"') { cell += '"'; i++; } else { inQuotes = !inQuotes; }
-            } else if (char === ',' && !inQuotes) {
-                row.push(cell.trim()); cell = "";
-            } else if ((char === '\r' || char === '\n') && !inQuotes) {
-                if(cell || row.length > 0) row.push(cell.trim());
-                if(row.length > 0) lines.push(row);
-                row = []; cell = "";
-                if(char === '\r' && next === '\n') i++;
-            } else { cell += char; }
-        }
-        if(row.length > 0) lines.push(row);
-        return lines.slice(1); // Saltar header
-    }
-
-    function parseDate(str) {
-        if(!str) return new Date();
-        if(str.includes('T')) return new Date(str);
-        // Formato DD/MM/YYYY común en Sheets Latam
-        if(str.includes('/')) {
-            const parts = str.split('/');
-            if(parts.length === 3) return new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
-        }
-        return new Date(str);
+        const result = [];
+        const lines = text.split(/\r?\n/).slice(1);
+        lines.forEach(line => {
+            const row = [];
+            let cell = ''; let quote = false;
+            for(let i=0; i<line.length; i++){
+                let c = line[i];
+                if(c === '"'){ if(quote && line[i+1] === '"'){ cell += '"'; i++; } else { quote = !quote; } }
+                else if(c === ',' && !quote){ row.push(cell.trim()); cell = ''; }
+                else { cell += c; }
+            }
+            row.push(cell.trim());
+            if(row.length > 1) result.push(row);
+        });
+        return result;
     }
 
     function parseNotes(text) {
@@ -405,80 +371,203 @@
         };
     }
 
+    function parseDate(str) {
+        if(!str) return new Date();
+        if(str.includes('T')) return new Date(str);
+        if(str.includes('/')) {
+            const [d, m, y] = str.split('/');
+            return new Date(`${y}-${m}-${d}`);
+        }
+        return new Date(str);
+    }
+
     function extractMoney(text) {
         if(!text) return 0;
         const match = text.match(/\$\s?([0-9,.]+)/);
         return match ? parseFloat(match[1].replace(/,/g, '')) : 0;
     }
 
-    // --- RENDERIZADO VISUAL ---
-    function updateKPIs(data) {
+    // --- RENDERIZADO DE VISTAS ---
+    function renderView() {
+        const container = document.getElementById('filtersBar');
+        container.innerHTML = '';
+
         if(currentMode === 'crm') {
-            document.getElementById('kpiLabel1').textContent = "Leads Analizados";
-            document.getElementById('kpiValue1').textContent = data.length;
-            document.getElementById('kpiLabel2').textContent = "Pipeline Estimado";
-            const val = data.reduce((acc, c) => acc + c.value, 0);
-            document.getElementById('kpiValue2').textContent = `$${val.toLocaleString()}`;
+            // Render CRM Chips
+            const ranges = [
+                {id:'all', lbl:'Histórico'}, {id:'today', lbl:'Hoy'}, {id:'yesterday', lbl:'Ayer'},
+                {id:'thisMonth', lbl:'Este Mes'}, {id:'lastMonth', lbl:'Mes Pasado'}, {id:'custom', lbl:'Personalizado'}
+            ];
+            ranges.forEach(r => {
+                const btn = document.createElement('button');
+                btn.className = `filter-chip ${currentFilterState.crm.range === r.id ? 'active' : ''}`;
+                btn.textContent = r.lbl;
+                btn.onclick = () => setCRMFilter(r.id);
+                container.appendChild(btn);
+            });
+            // Custom Date Panel
+            const customPanel = document.createElement('div');
+            customPanel.className = `custom-date-panel ${currentFilterState.crm.range === 'custom' ? 'show' : ''}`;
+            customPanel.innerHTML = `
+                <span style="color:#888; font-size:0.8rem">Desde:</span><input type="date" id="startD" class="date-input">
+                <span style="color:#888; font-size:0.8rem">Hasta:</span><input type="date" id="endD" class="date-input">
+                <button class="filter-chip active" onclick="applyCustomDate()">Aplicar</button>
+            `;
+            container.appendChild(customPanel);
+
         } else {
-            document.getElementById('kpiLabel1').textContent = "Transacciones";
-            document.getElementById('kpiValue1').textContent = data.length;
-            document.getElementById('kpiLabel2').textContent = "Cash Collected";
-            const val = data.reduce((acc, c) => acc + c.amount, 0);
-            document.getElementById('kpiValue2').textContent = `$${val.toLocaleString()}`;
+            // Render Finance Selects (Lógica del código Finance)
+            const closers = [...new Set(dataStore.finance.map(d => d.closer))].sort();
+            const methods = [...new Set(dataStore.finance.map(d => d.method))].sort();
+
+            const createSelect = (id, opts, label) => {
+                const sel = document.createElement('select');
+                sel.id = id; sel.className = 'neon-select';
+                sel.innerHTML = `<option value="all">Todo ${label}</option>` + opts.map(o => `<option value="${o}">${o}</option>`).join('');
+                sel.value = currentFilterState.finance[id === 'finCloser' ? 'closer' : 'method']; // restore state
+                sel.onchange = () => updateFinanceState();
+                return sel;
+            };
+
+            container.appendChild(createSelect('finCloser', closers, 'Closer'));
+            container.appendChild(createSelect('finMethod', methods, 'Método'));
+            
+            const periodSel = document.createElement('select');
+            periodSel.id = 'finPeriod'; periodSel.className = 'neon-select';
+            periodSel.innerHTML = `<option value="all">Histórico</option><option value="thisMonth">Este Mes</option><option value="lastMonth">Mes Pasado</option><option value="today">Hoy</option>`;
+            periodSel.value = currentFilterState.finance.period;
+            periodSel.onchange = () => updateFinanceState();
+            container.appendChild(periodSel);
         }
+
+        renderTable();
     }
 
-    function renderFilters() {
-        const bar = document.getElementById('filtersBar');
-        bar.innerHTML = `
-            <button class="filter-chip ${currentFilter==='all'?'active':''}" onclick="setFilter('all', this)">Histórico</button>
-            <button class="filter-chip ${currentFilter==='today'?'active':''}" onclick="setFilter('today', this)">Hoy</button>
-            <button class="filter-chip ${currentFilter==='thisMonth'?'active':''}" onclick="setFilter('thisMonth', this)">Este Mes</button>
-        `;
-    }
-    
-    window.setFilter = function(f, btn) {
-        document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = f;
-        renderTable(currentMode === 'crm' ? dataStore.crm : dataStore.finance);
+    // --- LÓGICA DE FILTRADO ---
+    function setCRMFilter(range) {
+        currentFilterState.crm.range = range;
+        renderView(); // Re-render to show/hide custom panel
     }
 
-    function filterData(data) {
+    function applyCustomDate() {
+        currentFilterState.crm.start = document.getElementById('startD').value;
+        currentFilterState.crm.end = document.getElementById('endD').value;
+        renderTable();
+    }
+
+    function updateFinanceState() {
+        currentFilterState.finance.closer = document.getElementById('finCloser').value;
+        currentFilterState.finance.method = document.getElementById('finMethod').value;
+        currentFilterState.finance.period = document.getElementById('finPeriod').value;
+        renderTable();
+    }
+
+    function getFilteredData() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        let data = currentMode === 'crm' ? dataStore.crm : dataStore.finance;
         const now = new Date();
-        const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const startMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        const startLastMonth = new Date(now.getFullYear(), now.getMonth()-1, 1);
+        const endLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
 
-        return data.filter(d => {
-            const date = d.date;
-            if(currentFilter === 'today') return date >= today;
-            if(currentFilter === 'thisMonth') return date >= startMonth;
-            return true;
-        });
+        // 1. Filtros Específicos
+        if(currentMode === 'crm') {
+            const range = currentFilterState.crm.range;
+            data = data.filter(d => {
+                if(range === 'today') return d.date >= today;
+                if(range === 'yesterday') { const y = new Date(today); y.setDate(y.getDate()-1); return d.date >= y && d.date < today; }
+                if(range === 'thisMonth') return d.date >= startMonth;
+                if(range === 'lastMonth') return d.date >= startLastMonth && d.date <= endLastMonth;
+                if(range === 'custom' && currentFilterState.crm.start && currentFilterState.crm.end) {
+                    const s = new Date(currentFilterState.crm.start);
+                    const e = new Date(currentFilterState.crm.end); e.setHours(23,59,59);
+                    return d.date >= s && d.date <= e;
+                }
+                return true;
+            });
+        } else {
+            const { closer, method, period } = currentFilterState.finance;
+            data = data.filter(d => {
+                if(closer !== 'all' && d.closer !== closer) return false;
+                if(method !== 'all' && d.method !== method) return false;
+                if(period === 'today') return d.date >= today;
+                if(period === 'thisMonth') return d.date >= startMonth;
+                if(period === 'lastMonth') return d.date >= startLastMonth && d.date <= endLastMonth;
+                return true;
+            });
+        }
+
+        // 2. Buscador Global
+        if(search.length > 1) {
+            data = data.filter(d => 
+                d.name.toLowerCase().includes(search) || 
+                d.email.toLowerCase().includes(search) || 
+                (d.amount && d.amount.toString().includes(search))
+            );
+        }
+
+        // 3. Sorting
+        if(sortState.col) {
+            data.sort((a,b) => {
+                let valA = a[sortState.col];
+                let valB = b[sortState.col];
+                if(typeof valA === 'string') {
+                    return valA.localeCompare(valB) * sortState.dir;
+                }
+                return (valA - valB) * sortState.dir;
+            });
+        } else {
+            // Default sort by date desc
+            data.sort((a,b) => b.date - a.date);
+        }
+
+        return data;
     }
 
-    function renderTable(rawData) {
-        const data = filterData(rawData);
+    function renderTable() {
+        const data = getFilteredData();
+        updateKPIs(data);
+        
         const thead = document.getElementById('tableHead');
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
 
         if(currentMode === 'crm') {
-            thead.innerHTML = `<tr><th>Fecha</th><th>Lead</th><th>Closer</th><th style="text-align:center">Score</th><th>Status</th></tr>`;
+            thead.innerHTML = `
+                <tr>
+                    <th onclick="doSort('date')">Fecha <span class="sort-icon">↕</span></th>
+                    <th onclick="doSort('name')">Lead <span class="sort-icon">↕</span></th>
+                    <th onclick="doSort('closer')">Closer <span class="sort-icon">↕</span></th>
+                    <th onclick="doSort('scoreValue')" style="text-align:center">Score <span class="sort-icon">↕</span></th>
+                    <th onclick="doSort('saleValue')">Valor <span class="sort-icon">↕</span></th>
+                </tr>`;
+            
             data.forEach(item => {
                 const tr = document.createElement('tr');
+                const scoreColor = getScoreColor(item.notes.p1);
+                const moneyFmt = item.saleValue > 0 ? `$${item.saleValue.toLocaleString()}` : '-';
+                
                 tr.innerHTML = `
                     <td>${item.date.toLocaleDateString()}</td>
                     <td style="color:white; font-weight:600">${item.name}<br><span style="font-size:0.75rem; color:#666">${item.email}</span></td>
                     <td>${item.closer}</td>
-                    <td style="text-align:center; color:var(--accent); font-weight:700;">${item.score || '-'}</td>
-                    <td>${item.status === 'paid' ? '<span style="color:var(--success)">Pago Detectado</span>' : '<span style="color:#666">Lead</span>'}</td>
+                    <td style="text-align:center;"><span style="color:${scoreColor}">${item.notes.p1 || '-'}</span></td>
+                    <td style="font-weight:700; color:${item.saleValue > 0 ? 'var(--success)' : '#666'}">${moneyFmt}</td>
                 `;
                 tr.onclick = () => openModal(item);
                 tbody.appendChild(tr);
             });
         } else {
-            thead.innerHTML = `<tr><th>Fecha</th><th>Cliente</th><th>Método</th><th>Closer</th><th style="text-align:right">Monto</th></tr>`;
+            thead.innerHTML = `
+                <tr>
+                    <th onclick="doSort('date')">Fecha <span class="sort-icon">↕</span></th>
+                    <th onclick="doSort('name')">Cliente <span class="sort-icon">↕</span></th>
+                    <th onclick="doSort('method')">Método <span class="sort-icon">↕</span></th>
+                    <th onclick="doSort('closer')">Closer <span class="sort-icon">↕</span></th>
+                    <th onclick="doSort('amount')" style="text-align:right">Monto <span class="sort-icon">↕</span></th>
+                </tr>`;
+                
             data.forEach(item => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -494,50 +583,63 @@
         }
     }
 
-    // --- BUSCADOR HÍBRIDO ---
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const container = document.getElementById('searchResults');
-        container.innerHTML = '';
-        if(term.length < 2) return;
+    function doSort(col) {
+        if(sortState.col === col) sortState.dir *= -1;
+        else { sortState.col = col; sortState.dir = -1; } // Default desc
+        renderTable();
+    }
 
-        // Busca en la fuente de datos actual
-        const source = currentMode === 'crm' ? dataStore.crm : dataStore.finance;
-        const matches = source.filter(i => i.name.toLowerCase().includes(term) || i.email.toLowerCase().includes(term)).slice(0,5);
+    function updateKPIs(data) {
+        if(currentMode === 'crm') {
+            document.getElementById('kpiLabel1').textContent = "Leads Analizados";
+            document.getElementById('kpiValue1').textContent = data.length;
+            document.getElementById('kpiLabel2').textContent = "Pipeline";
+            const val = data.reduce((acc, c) => acc + c.saleValue, 0);
+            document.getElementById('kpiValue2').textContent = `$${val.toLocaleString()}`;
+        } else {
+            document.getElementById('kpiLabel1').textContent = "Transacciones";
+            document.getElementById('kpiValue1').textContent = data.length;
+            document.getElementById('kpiLabel2').textContent = "Cash Collected";
+            const val = data.reduce((acc, c) => acc + c.amount, 0);
+            document.getElementById('kpiValue2').textContent = `$${val.toLocaleString()}`;
+        }
+    }
 
-        matches.forEach(m => {
-            const div = document.createElement('div');
-            div.style.padding = "10px";
-            div.style.border = "1px solid #333";
-            div.style.marginBottom = "5px";
-            div.style.borderRadius = "4px";
-            div.style.cursor = "pointer";
-            div.style.backgroundColor = "rgba(255,255,255,0.03)";
-            div.innerHTML = `<div style="color:white; font-size:0.85rem; font-weight:600;">${m.name}</div><div style="color:#666; font-size:0.7rem">${m.email}</div>`;
-            div.onclick = () => openModal(m);
-            container.appendChild(div);
-        });
-    });
+    document.getElementById('searchInput').addEventListener('input', renderTable);
 
-    // --- SISTEMA DE MODALES UNIFICADO ---
+    function getScoreColor(val) {
+        const n = parseInt(val);
+        if(!n) return '#666';
+        if(n >= 4) return '#22c55e';
+        if(n === 3) return '#f59e0b';
+        return '#ef4444';
+    }
+
+    // --- MODALES (Ficha CRM vs Ticket Finance) ---
     function openModal(item) {
         const modal = document.getElementById('modal');
         const content = document.getElementById('modalContent');
         modal.classList.add('active');
-        content.innerHTML = ''; // Limpiar previo
+        content.innerHTML = ''; 
 
         if(item.type === 'crm') {
-            // RENDER CRM MODAL (Ficha Visual)
             const initials = item.name.substring(0,2).toUpperCase();
+            const scoreColor = getScoreColor(item.notes.p1);
             content.innerHTML = `
                 <div class="crm-header">
-                    <div class="crm-avatar">${initials}</div>
+                    <div class="crm-avatar" style="border-color:${scoreColor}; color:${scoreColor}; box-shadow:0 0 15px ${scoreColor}">${initials}</div>
                     <div>
                         <h2 style="margin:0; color:white; font-size:1.8rem;">${item.name}</h2>
-                        <div style="color:#ccc; font-size:0.9rem">✉️ ${item.email}</div>
+                        <div style="color:#ccc; font-size:0.9rem">✉️ ${item.email} | 📅 ${item.date.toLocaleDateString()}</div>
                     </div>
                 </div>
                 <div class="crm-body-scroll">
+                    <div class="metrics-bar">
+                        <div class="metric-card"><div class="metric-title">Score</div><div class="metric-value" style="color:${scoreColor}">${item.notes.p1}</div></div>
+                        <div class="metric-card"><div class="metric-title">Interés</div><div class="metric-value">${item.notes.p2}</div></div>
+                        <div class="metric-card"><div class="metric-title">Urgencia</div><div class="metric-value">${item.notes.p3}</div></div>
+                        <div class="metric-card"><div class="metric-title">Capacidad</div><div class="metric-value">${item.notes.p4}</div></div>
+                    </div>
                     <div class="crm-grid">
                         <div>
                             <div class="info-card">
@@ -560,7 +662,7 @@
                 </div>
             `;
         } else {
-            // RENDER FINANCE MODAL (Ticket de Compra)
+            // TICKET FINANZAS
             content.style.justifyContent = 'center';
             content.style.alignItems = 'center';
             content.innerHTML = `
@@ -571,7 +673,7 @@
                         <div style="color:#666; font-size:0.8rem">${item.date.toLocaleString()}</div>
                     </div>
                     <div class="ticket-row"><span>Método</span><span style="color:white">${item.method}</span></div>
-                    <div class="ticket-row"><span>Forma</span><span style="color:white">${item.form}</span></div>
+                    <div class="ticket-row"><span>Forma</span><span style="color:white">${item.type_pay}</span></div>
                     <div class="ticket-row"><span>Closer</span><span style="color:white">${item.closer}</span></div>
                     <hr style="border-color:#222; margin:1rem 0">
                     <div class="ticket-row"><span>Email</span><span class="ticket-copy" onclick="navigator.clipboard.writeText('${item.email}')">${item.email} 📋</span></div>
@@ -586,7 +688,7 @@
 
     window.closeModal = function() {
         document.getElementById('modal').classList.remove('active');
-        // Reset styles for ticket centering
+        // Reset styles for ticket centering vs CRM scroll
         setTimeout(() => {
             document.getElementById('modalContent').style.justifyContent = 'flex-start';
             document.getElementById('modalContent').style.alignItems = 'stretch';
