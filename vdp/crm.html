@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM Closer VDP ⚡</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #050505;
+            --bg-sidebar: #0a0a0a;
+            --bg-card: #0f0f0f;
+            --bg-hover: #161616;
+            
+            /* NEON PALETTE */
+            --primary-neon: #d946ef; /* Magenta Neón */
+            --secondary-neon: #06b6d4; /* Cyan Neón */
+            --border-neon: rgba(217, 70, 239, 0.5);
+            
+            --text-main: #ffffff;
+            --text-muted: #a3a3a3;
+            
+            --success: #22c55e;
+            --warning: #f59e0b;
+            
+            --glass: rgba(20, 20, 20, 0.8);
+        }
+
+        * { box-sizing: border-box; outline: none; scrollbar-width: thin; scrollbar-color: var(--secondary-neon) #111; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #111; }
+        ::-webkit-scrollbar-thumb { background: var(--secondary-neon); border-radius: 3px; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            height: 100vh;
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(217, 70, 239, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.05) 0%, transparent 20%);
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid #333;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 10;
+            box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+        }
+
+        .brand {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: white;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(217, 70, 239, 0.5);
+        }
+        .brand span { color: var(--primary-neon); }
+
+        .search-container label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--secondary-neon);
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            display: block;
+            text-shadow: 0 0 5px rgba(6, 182, 212, 0.4);
+        }
+
+        .search-input {
+            width: 100%;
+            background: #111;
+            border: 1px solid #333;
+            padding: 12px;
+            border-radius: 6px;
+            color: white;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+        .search-input:focus {
+            border-color: var(--primary-neon);
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.2);
+        }
+
+        /* Resultado búsqueda rápida */
+        .mini-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.8rem;
+            animation: slideIn 0.3s ease;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .mini-card:hover { 
+            transform: translateX(5px); 
+            border-color: var(--secondary-neon); 
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.1);
+        }
+        .mini-card h4 { margin: 0 0 5px 0; font-size: 0.95rem; color: white; }
+        .mini-card p { margin: 0; color: var(--text-muted); font-size: 0.8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        .status-dot {
+            position: absolute; left: 10px; top: 18px; width: 6px; height: 6px; border-radius: 50%;
+        }
+        .dot-green { background: var(--success); box-shadow: 0 0 8px var(--success); }
+        .dot-yellow { background: var(--warning); box-shadow: 0 0 8px var(--warning); }
+        .dot-gray { background: #444; }
+
+        /* --- MAIN CONTENT --- */
+        .main {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .top-bar {
+            padding: 1.5rem 2rem;
+            background: rgba(5, 5, 5, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kpi-grid { display: flex; gap: 2.5rem; }
+        .kpi-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+        .kpi-value { font-size: 1.8rem; font-weight: 700; color: white; margin-top: 4px; text-shadow: 0 0 20px rgba(255,255,255,0.1); }
+        .kpi-value.money { color: var(--success); text-shadow: 0 0 25px rgba(34, 197, 94, 0.4); }
+
+        .refresh-btn {
+            background: linear-gradient(45deg, #111, #222);
+            border: 1px solid #333;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            display: flex; align-items: center; gap: 8px;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .refresh-btn:hover { 
+            border-color: var(--primary-neon); 
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.2); 
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        .loading-spinner { border: 2px solid rgba(255,255,255,0.1); border-top: 2px solid var(--primary-neon); border-radius: 50%; width: 14px; height: 14px; animation: spin 0.8s linear infinite; display: none; }
+
+        /* Filtros Neon */
+        .filters-wrapper {
+            display: flex; flex-direction: column;
+            border-bottom: 1px solid #222;
+            background: rgba(10, 10, 10, 0.5);
+        }
+
+        .filters-bar { padding: 1rem 2rem; display: flex; gap: 0.8rem; overflow-x: auto; align-items: center; }
+
+        .filter-chip {
+            background: transparent;
+            border: 1px solid #444;
+            color: #888;
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s;
+        }
+        .filter-chip:hover { border-color: var(--secondary-neon); color: white; box-shadow: 0 0 10px rgba(6, 182, 212, 0.2); }
+        .filter-chip.active { 
+            background: rgba(6, 182, 212, 0.1); 
+            border-color: var(--secondary-neon); 
+            color: var(--secondary-neon); 
+            box-shadow: 0 0 15px rgba(6, 182, 212, 0.15); 
+        }
+
+        .custom-date-panel { display: none; padding: 0 2rem 1rem 2rem; gap: 1rem; align-items: center; animation: fadeIn 0.3s ease; }
+        .custom-date-panel.show { display: flex; }
+        .date-input { background: #111; border: 1px solid #444; color: white; padding: 6px 10px; border-radius: 4px; font-family: inherit; }
+
+        /* Tabla Neon */
+        .table-wrapper { flex: 1; overflow-y: auto; padding: 0 2rem 2rem 2rem; }
+        table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.9rem; }
+        th {
+            position: sticky; top: 0; background: var(--bg-body);
+            padding: 1.2rem 1rem; text-align: left; color: #666;
+            font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 1px;
+            border-bottom: 1px solid #333; z-index: 5;
+            cursor: pointer; user-select: none; transition: color 0.2s;
+        }
+        th:hover { color: var(--secondary-neon); text-shadow: 0 0 5px rgba(6, 182, 212, 0.5); }
+        th.sort-active { color: var(--secondary-neon); }
+
+        td { padding: 1rem; border-bottom: 1px solid #1a1a1a; color: #ddd; vertical-align: middle; }
+        tr:hover td { background-color: rgba(255, 255, 255, 0.02); cursor: pointer; }
+        
+        .status-badge {
+            display: inline-block; padding: 4px 10px; border-radius: 4px;
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .status-paid { background: rgba(34, 197, 94, 0.1); color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.3); box-shadow: 0 0 10px rgba(34, 197, 94, 0.1); }
+        .status-pending { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+        .status-lead { background: rgba(255, 255, 255, 0.05); color: #888; border: 1px solid #333; }
+
+        /* --- MODAL FIX & NEON STYLE --- */
+        .modal-backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(5px);
+            z-index: 100; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        .modal-backdrop.active { opacity: 1; pointer-events: all; }
+
+        .modal-panel {
+            background: #09090b;
+            width: 900px; max-width: 95%; 
+            /* ARREGLO DE SCROLL AQUI */
+            max-height: 90vh; /* Altura máxima del 90% de la ventana */
+            height: 90vh;     /* Forzamos altura para pantallas grandes */
+            
+            border: 1px solid #333;
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(217, 70, 239, 0.1), 0 0 0 1px rgba(255,255,255,0.05);
+            display: flex; flex-direction: column; /* Flex vertical */
+            overflow: hidden; /* Ocultamos overflow del contenedor padre */
+            transform: scale(0.95); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-backdrop.active .modal-panel { transform: scale(1); }
+
+        /* Header Modal */
+        .modal-header-modern {
+            padding: 2rem; 
+            background: linear-gradient(90deg, rgba(217, 70, 239, 0.05), transparent);
+            border-bottom: 1px solid #222; 
+            display: flex; align-items: center; gap: 1.5rem;
+            flex-shrink: 0; /* No encoger el header */
+        }
+        .avatar-placeholder {
+            width: 70px; height: 70px; 
+            background: transparent;
+            border: 2px solid var(--primary-neon);
+            color: var(--primary-neon);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.8rem; font-weight: 700; 
+            box-shadow: 0 0 15px rgba(217, 70, 239, 0.3), inset 0 0 10px rgba(217, 70, 239, 0.1);
+            text-shadow: 0 0 10px var(--primary-neon);
+        }
+        .header-info h2 { margin: 0; font-size: 2rem; color: white; line-height: 1.1; letter-spacing: -1px; }
+        .header-info p { margin: 5px 0 0; color: #888; font-size: 0.9rem; font-family: monospace; }
+        .header-meta { margin-left: auto; text-align: right; }
+        .meta-tag { 
+            background: rgba(255,255,255,0.03); padding: 5px 12px; border-radius: 4px; 
+            font-size: 0.8rem; color: #aaa; border: 1px solid #333; 
+            margin-bottom: 5px; display: inline-block; font-family: monospace;
+        }
+        .close-btn { 
+            position: absolute; top: 1.5rem; right: 1.5rem; background: none; border: none; 
+            color: #666; font-size: 2rem; cursor: pointer; transition: color 0.2s; line-height: 1;
+        }
+        .close-btn:hover { color: var(--primary-neon); text-shadow: 0 0 10px var(--primary-neon); }
+
+        /* Cuerpo Modal con SCROLL */
+        .modal-content-scroll { 
+            padding: 2rem; 
+            overflow-y: auto; /* Scroll vertical activado */
+            flex: 1; /* Ocupa el espacio restante */
+            min-height: 0; /* Fix para firefox flexbox scroll */
+        }
+
+        /* Barra de Métricas */
+        .metrics-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+        .metric-card {
+            background: #0e0e0e; border: 1px solid #222; padding: 1.2rem; border-radius: 8px;
+            text-align: center; transition: all 0.3s; position: relative; overflow: hidden;
+        }
+        .metric-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--secondary-neon), transparent);
+            opacity: 0; transition: opacity 0.3s;
+        }
+        .metric-card:hover { transform: translateY(-3px); border-color: #333; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); }
+        .metric-card:hover::before { opacity: 1; }
+        
+        .metric-title { font-size: 0.7rem; text-transform: uppercase; color: #666; margin-bottom: 8px; letter-spacing: 1px; font-weight: 700; }
+        .metric-value { font-size: 1.2rem; font-weight: 600; color: white; }
+        .score-box { 
+            display: inline-block; width: 40px; height: 40px; line-height: 40px; border-radius: 50%;
+            font-weight: 800; border: 2px solid currentColor; box-shadow: 0 0 15px currentColor;
+        }
+
+        /* Grid Principal */
+        .details-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem; padding-bottom: 2rem; }
+        
+        .section-title { 
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; 
+            color: var(--secondary-neon); margin-bottom: 1.2rem; 
+            border-bottom: 1px solid #333; padding-bottom: 0.8rem; font-weight: 700;
+        }
+
+        /* Bloque Financiero */
+        .finance-block {
+            background: rgba(34, 197, 94, 0.03);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;
+            position: relative; overflow: hidden;
+        }
+        .finance-block::after {
+            content: '$$$'; position: absolute; right: -10px; bottom: -10px;
+            font-size: 5rem; font-weight: 900; color: rgba(34, 197, 94, 0.05);
+            pointer-events: none;
+        }
+        .finance-block.pending {
+             background: rgba(245, 158, 11, 0.03);
+             border-color: rgba(245, 158, 11, 0.2);
+        }
+        .finance-block.pending::after { color: rgba(245, 158, 11, 0.05); content: '...'; }
+        
+        .finance-label { display: block; font-size: 0.75rem; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        .finance-status { font-size: 1.2rem; font-weight: 500; color: #eee; line-height: 1.4; }
+        
+        .info-card { 
+            background: #0e0e0e; border-radius: 8px; padding: 1.5rem; 
+            margin-bottom: 1.5rem; border: 1px solid #222; 
+        }
+        .info-card h4 { margin: 0 0 15px 0; color: var(--secondary-neon); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 10px; }
+        .info-content { font-size: 0.95rem; line-height: 1.7; color: #ccc; white-space: pre-wrap; font-family: 'Inter', sans-serif; }
+
+        .final-note { 
+            margin-top: 0; background: #050505; padding: 1.5rem; border-radius: 8px; 
+            border: 1px solid #333; border-left: 3px solid var(--primary-neon);
+        }
+        .final-note-title { font-weight: 700; color: white; margin-bottom: 1rem; display: block; font-size: 0.9rem; color: var(--primary-neon); }
+        .final-note-text { font-style: italic; color: #bbb; line-height: 1.6; }
+
+        .fathom-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: transparent; color: var(--primary-neon); text-decoration: none;
+            padding: 15px; border-radius: 8px; font-weight: 700; margin-top: 2rem;
+            border: 1px solid var(--primary-neon);
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem;
+            transition: all 0.3s;
+            box-shadow: 0 0 10px rgba(217, 70, 239, 0.1);
+        }
+        .fathom-btn:hover { 
+            background: var(--primary-neon); color: black; 
+            box-shadow: 0 0 20px rgba(217, 70, 239, 0.4);
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+
+    </style>
+</head>
+<body>
+
+<aside class="sidebar">
+    <div class="brand">
+        ⚡ VDP <span>AGUS Q</span>
+    </div>
+
+    <div class="search-container">
+        <label>Buscador Inteligente</label>
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar email, nombre...">
+        <div id="searchResults"></div>
+    </div>
+</aside>
+
+<main class="main">
+    <header class="top-bar">
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <span class="kpi-label">Leads Totales</span>
+                <span class="kpi-value" id="kpiCount">0</span>
+            </div>
+            <div class="kpi-card">
+                <span class="kpi-label">Facturación Detectada</span>
+                <span class="kpi-value money" id="kpiMoney">$0</span>
+            </div>
+        </div>
+
+        <button class="refresh-btn" onclick="loadData()">
+            <div class="loading-spinner" id="spinner"></div>
+            Actualizar Datos
+        </button>
+    </header>
+
+    <div class="filters-wrapper">
+        <div class="filters-bar" id="filterContainer">
+            <button class="filter-chip active" data-range="all">Histórico Completo</button>
+            <button class="filter-chip" data-range="today">Hoy</button>
+            <button class="filter-chip" data-range="yesterday">Ayer</button>
+            <button class="filter-chip" data-range="thisMonth">Este Mes</button>
+            <button class="filter-chip" data-range="lastMonth">Mes Pasado</button>
+            <button class="filter-chip" data-range="custom" style="border-color: var(--secondary-neon);">📅 Personalizado</button>
+        </div>
+        
+        <div class="custom-date-panel" id="customDatePanel">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Desde:</span>
+            <input type="date" id="startDate" class="date-input">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Hasta:</span>
+            <input type="date" id="endDate" class="date-input">
+            <button class="filter-chip active" onclick="applyFilter('custom')">Aplicar Filtro</button>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="rankingTable">
+            <thead>
+                <tr>
+                    <th onclick="sortBy('date')" data-col="date">Fecha Reunión <span class="sort-icon">↕</span></th>
+                    <th onclick="sortBy('name')" data-col="name">Lead <span class="sort-icon">↕</span></th>
+                    <th>Closer</th>
+                    <th onclick="sortBy('score')" data-col="score">Score <span class="sort-icon">↕</span></th>
+                    <th>Estado de Compra</th>
+                    <th onclick="sortBy('value')" data-col="value">Valor <span class="sort-icon">↕</span></th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
+</main>
+
+<div class="modal-backdrop" id="modal">
+    <div class="modal-panel">
+        <div id="modalContent" style="display: flex; flex-direction: column; height: 100%;"></div> 
+    </div>
+</div>
+
+<script>
+    const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQhTbxvLz2rMivV3L6JN23pdggW_-Rw6NZbZRvmVekbL_naRW7h2Ay4qhDPkTJ7VkxTGmV3wPJozvnd/pub?gid=0&single=true&output=csv";
+
+    let globalData = [];
+    let currentFilter = 'all';
+    let sortState = { column: 'value', direction: 'desc' };
+
+    document.addEventListener('DOMContentLoaded', () => { loadData(); });
+
+    async function loadData() {
+        const spinner = document.getElementById('spinner');
+        spinner.style.display = 'block';
+        try {
+            const response = await fetch(GOOGLE_SHEET_CSV_URL);
+            const text = await response.text();
+            globalData = parseCSV(text);
+            updateSortIcons();
+            applyFilter(currentFilter);
+        } catch (error) {
+            console.error(error);
+            alert("Error cargando datos.");
+        } finally {
+            spinner.style.display = 'none';
+        }
+    }
+
+    function sortBy(column) {
+        if (sortState.column === column) {
+            sortState.direction = sortState.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            sortState.column = column;
+            sortState.direction = column === 'name' ? 'asc' : 'desc';
+        }
+        updateSortIcons();
+        applyFilter(currentFilter);
+    }
+
+    function updateSortIcons() {
+        document.querySelectorAll('th').forEach(th => {
+            th.classList.remove('sort-active');
+            const icon = th.querySelector('.sort-icon');
+            if(icon) icon.textContent = '↕';
+        });
+        const activeTh = document.querySelector(`th[data-col="${sortState.column}"]`);
+        if (activeTh) {
+            activeTh.classList.add('sort-active');
+            const icon = activeTh.querySelector('.sort-icon');
+            if(icon) icon.textContent = sortState.direction === 'asc' ? '↑' : '↓';
+        }
+    }
+
+    function parseCSV(text) {
+        const lines = [];
+        let row = []; let cell = ""; let inQuotes = false;
+        for (let i = 0; i < text.length; i++) {
+            let char = text[i]; let next = text[i+1];
+            if (char === '"') {
+                if (inQuotes && next === '"') { cell += '"'; i++; } 
+                else { inQuotes = !inQuotes; }
+            } else if (char === ',' && !inQuotes) {
+                row.push(cell.trim()); cell = "";
+            } else if ((char === '\r' || char === '\n') && !inQuotes) {
+                if(cell || row.length > 0) row.push(cell.trim());
+                if(row.length > 0) lines.push(row);
+                row = []; cell = "";
+                if(char === '\r' && next === '\n') i++;
+            } else { cell += char; }
+        }
+        if(row.length > 0) lines.push(row);
+
+        return lines.slice(1).map(r => {
+            if(r.length < 5) return null;
+            const parsed = parseNotes(r[5] || "");
+            const money = extractMoney(parsed.p9);
+            
+            let d = new Date();
+            let dateStr = r[1];
+            if(dateStr.includes('T')) d = new Date(dateStr);
+            else if(dateStr.includes('/')) {
+                const p = dateStr.split('/');
+                if(p.length === 3) d = new Date(`${p[2]}-${p[1]}-${p[0]}`);
+            }
+
+            let scoreNum = parseInt(parsed.p1);
+            if(isNaN(scoreNum)) scoreNum = 0;
+
+            return {
+                id: Math.random().toString(36),
+                meetingDate: d,
+                name: r[2],
+                email: r[3],
+                closer: r[4],
+                notes: parsed,
+                saleValue: money,
+                scoreValue: scoreNum,
+                status: money > 0 ? 'paid' : (parsed.p9 ? 'pending' : 'lead')
+            };
+        }).filter(x => x !== null);
+    }
+
+    function parseNotes(text) {
+        const extract = (n) => {
+            const regex = new RegExp(`${n}\\.\\s*\\**[^*]*\\**\\s*:?\\s*([\\s\\S]*?)(?=\\n\\d+\\.|$)`, 'i');
+            const match = text.match(regex);
+            return match ? match[1].trim() : '';
+        };
+        const linkMatch = text.match(/https?:\/\/fathom\.video[^\s]*/);
+        return {
+            p1: extract(1), p2: extract(2), p3: extract(3), p4: extract(4),
+            p5: extract(5), p6: extract(6), p7: extract(7), p8: extract(8), p9: extract(9),
+            link: linkMatch ? linkMatch[0] : null
+        };
+    }
+
+    function extractMoney(text) {
+        if(!text) return 0;
+        const match = text.match(/\$\s?([0-9,.]+)/);
+        return match ? parseFloat(match[1].replace(/,/g, '')) : 0;
+    }
+
+    document.getElementById('filterContainer').addEventListener('click', (e) => {
+        if(e.target.classList.contains('filter-chip')) {
+            if (e.target.dataset.range === 'custom') {
+                document.getElementById('customDatePanel').classList.toggle('show');
+                return;
+            }
+            document.getElementById('customDatePanel').classList.remove('show');
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            e.target.classList.add('active');
+            currentFilter = e.target.dataset.range;
+            applyFilter(currentFilter);
+        }
+    });
+
+    function applyFilter(range) {
+        currentFilter = range;
+        const now = new Date();
+        const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        
+        let filtered = globalData.filter(item => {
+            const d = item.meetingDate;
+            switch(range) {
+                case 'today': return d >= startToday;
+                case 'yesterday': 
+                    const y = new Date(startToday); y.setDate(y.getDate()-1);
+                    return d >= y && d < startToday;
+                case 'thisMonth': return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+                case 'lastMonth': 
+                    const lm = new Date(now.getFullYear(), now.getMonth()-1, 1);
+                    const lmEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+                    return d >= lm && d <= lmEnd;
+                case 'custom':
+                    const s = document.getElementById('startDate').value;
+                    const e = document.getElementById('endDate').value;
+                    if(!s || !e) return true;
+                    const startD = new Date(s); const endD = new Date(e); endD.setHours(23,59,59);
+                    return d >= startD && d <= endD;
+                default: return true;
+            }
+        });
+
+        filtered.sort((a,b) => {
+            let valA, valB;
+            switch(sortState.column) {
+                case 'value': valA = a.saleValue; valB = b.saleValue; break;
+                case 'date': valA = a.meetingDate; valB = b.meetingDate; break;
+                case 'score': valA = a.scoreValue; valB = b.scoreValue; break;
+                case 'name': valA = a.name.toLowerCase(); valB = b.name.toLowerCase(); break;
+                default: valA = a.saleValue; valB = b.saleValue;
+            }
+            if (valA < valB) return sortState.direction === 'asc' ? -1 : 1;
+            if (valA > valB) return sortState.direction === 'asc' ? 1 : -1;
+            return 0;
+        });
+        
+        renderTable(filtered);
+        updateKPIs(filtered);
+    }
+
+    function renderTable(data) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+        if(data.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 2rem; color: #666;">No hay datos para este periodo</td></tr>`;
+            return;
+        }
+
+        data.forEach((lead) => {
+            const dateFmt = lead.meetingDate.toLocaleDateString('es-ES', { day: '2-digit', month: 'short' });
+            const moneyFmt = lead.saleValue > 0 ? `$${lead.saleValue.toLocaleString()}` : '-';
+            let statusBadge = '<span class="status-badge status-lead">Lead</span>';
+            if(lead.status === 'paid') statusBadge = '<span class="status-badge status-paid">Pago Detectado</span>';
+            else if(lead.status === 'pending') statusBadge = '<span class="status-badge status-pending">En Proceso</span>';
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${dateFmt}</td>
+                <td style="font-weight: 600; color: white;">${lead.name}</td>
+                <td>${lead.closer}</td>
+                <td style="text-align:center;"><span style="color:${getScoreColor(lead.notes.p1)}">${lead.notes.p1 || '-'}</span></td>
+                <td>
+                    <div style="font-size:0.85rem; max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        ${lead.notes.p9 || '<span style="color:#444">N/A</span>'}
+                    </div>
+                </td>
+                <td style="font-weight: 700; color: ${lead.saleValue > 0 ? '#4ade80' : '#666'}">${moneyFmt}</td>
+            `;
+            tr.onclick = () => openModal(lead);
+            tbody.appendChild(tr);
+        });
+    }
+
+    function getScoreColor(val) {
+        const n = parseInt(val);
+        if(!n) return '#666';
+        if(n >= 4) return '#22c55e';
+        if(n === 3) return '#f59e0b';
+        return '#ef4444';
+    }
+
+    function updateKPIs(data) {
+        document.getElementById('kpiCount').textContent = data.length;
+        const total = data.reduce((acc, curr) => acc + curr.saleValue, 0);
+        document.getElementById('kpiMoney').textContent = `$${total.toLocaleString()}`;
+    }
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const term = e.target.value.toLowerCase();
+        const resultsDiv = document.getElementById('searchResults');
+        resultsDiv.innerHTML = '';
+        if(term.length < 2) return;
+
+        const matches = globalData.filter(l => l.name.toLowerCase().includes(term) || l.email.toLowerCase().includes(term)).slice(0, 5);
+        
+        matches.forEach(lead => {
+            const div = document.createElement('div');
+            div.className = 'mini-card';
+            let dotClass = 'dot-gray';
+            if(lead.status === 'paid') dotClass = 'dot-green';
+            else if(lead.status === 'pending') dotClass = 'dot-yellow';
+
+            div.innerHTML = `
+                <div class="status-dot ${dotClass}"></div>
+                <h4>${lead.name}</h4>
+                <p>${lead.email}</p>
+            `;
+            div.onclick = () => openModal(lead);
+            resultsDiv.appendChild(div);
+        });
+    });
+
+    function openModal(lead) {
+        const initials = lead.name.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
+        const scoreColor = getScoreColor(lead.notes.p1);
+        const financeClass = lead.status === 'paid' ? '' : 'pending';
+        
+        const html = `
+            <div class="modal-header-modern">
+                <div class="avatar-placeholder" style="color:white; border-color: ${scoreColor}; box-shadow: 0 0 15px ${scoreColor}, inset 0 0 10px ${scoreColor}; text-shadow: 0 0 5px ${scoreColor}">${initials}</div>
+                <div class="header-info">
+                    <h2>${lead.name}</h2>
+                    <p>✉️ ${lead.email} &nbsp;&nbsp;|&nbsp;&nbsp; 📅 ${lead.meetingDate.toLocaleString()}</p>
+                </div>
+                <div class="header-meta">
+                    <button class="close-btn" onclick="closeModal()">×</button>
+                    <span class="meta-tag">👤 Closer: ${lead.closer}</span>
+                    <br>
+                    <span class="meta-tag" style="margin-top:5px; color:${scoreColor}; border-color:${scoreColor}">Probabilidad: ${lead.notes.p6 || '?'}</span>
+                </div>
+            </div>
+
+            <div class="modal-content-scroll">
+                <div class="metrics-bar">
+                    <div class="metric-card">
+                        <div class="metric-title">Score Intención</div>
+                        <div class="metric-value"><span class="score-box" style="color:${scoreColor}; border-color:${scoreColor}; box-shadow: 0 0 10px ${scoreColor}">${lead.notes.p1 || '-'}</span></div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Interés</div>
+                        <div class="metric-value">${lead.notes.p2 || '-'}</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Urgencia</div>
+                        <div class="metric-value">${lead.notes.p3 || '-'}</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-title">Capacidad</div>
+                        <div class="metric-value">${lead.notes.p4 || '-'}</div>
+                    </div>
+                </div>
+
+                <div class="details-grid">
+                    <div class="left-col">
+                        <div class="section-title">Situación Financiera</div>
+                        <div class="finance-block ${financeClass}">
+                            <span class="finance-label">ESTADO DE COMPRA REPORTADO:</span>
+                            <div class="finance-status">${lead.notes.p9 || 'No hay información registrada en Item 9.'}</div>
+                        </div>
+
+                        <div class="info-card">
+                            <h4>🚧 Objeciones Principales</h4>
+                            <div class="info-content">${lead.notes.p5 || 'Sin objeciones registradas.'}</div>
+                        </div>
+
+                         <div class="info-card" style="border-color: #333;">
+                            <h4>➡️ Próximos Pasos</h4>
+                            <div class="info-content">${lead.notes.p7 || '-'}</div>
+                        </div>
+                    </div>
+
+                    <div class="right-col">
+                        <div class="section-title">Análisis Cualitativo</div>
+                        
+                        <div class="final-note">
+                            <span class="final-note-title">📝 Nota Final del Closer</span>
+                            <div class="final-note-text">"${lead.notes.p8 || 'Sin nota final.'}"</div>
+                        </div>
+
+                        ${lead.notes.link ? 
+                            `<a href="${lead.notes.link}" target="_blank" class="fathom-btn">
+                                <span>▶</span> Ver Grabación en Fathom
+                            </a>` : 
+                            '<div style="text-align:center; padding: 2rem; color: #666; border: 1px dashed #333; border-radius:8px; margin-top:2rem;">Sin grabación adjunta</div>'
+                        }
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.getElementById('modalContent').innerHTML = html;
+        document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.remove('active');
+    }
+
+    document.getElementById('modal').addEventListener('click', (e) => {
+        if(e.target === document.getElementById('modal')) closeModal();
+    });
+</script>
+
+</body>
+</html>
+
