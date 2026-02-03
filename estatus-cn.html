@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creamos Negocios | Trafficker Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root { --primary: #2563eb; --bg: #f8fafc; --card: #ffffff; --text: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); padding: 20px; margin: 0; }
+        
+        /* HEADER */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .status-badge { background: #e2e8f0; padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+        
+        /* KPIS CARDS */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: var(--card); padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .kpi-title { font-size: 0.9rem; color: #64748b; margin-bottom: 5px; }
+        .kpi-value { font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        
+        /* CHART SECTION */
+        .chart-container { position: relative; height: 400px; width: 100%; }
+        
+        /* FILTROS (Visual - Funcionalidad pendiente) */
+        .filters { display: flex; gap: 10px; margin-bottom: 20px; }
+        select { padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div>
+            <h1 style="margin:0;">📊 Control de Traffickers</h1>
+            <p style="margin:5px 0 0 0; color:#64748b;">Vista Unificada: Eduardo & Wilson</p>
+        </div>
+        <div id="status" class="status-badge">🟡 Conectando...</div>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="card">
+            <div class="kpi-title">Inversión Total (Spend)</div>
+            <div class="kpi-value" id="kpi-spend">$0.00</div>
+        </div>
+        <div class="card">
+            <div class="kpi-title">Ingresos (Revenue)</div>
+            <div class="kpi-value" id="kpi-revenue">$0.00</div>
+        </div>
+        <div class="card">
+            <div class="kpi-title">ROAS General</div>
+            <div class="kpi-value" id="kpi-roas">0.00x</div>
+        </div>
+        <div class="card">
+            <div class="kpi-title">Ventas Totales</div>
+            <div class="kpi-value" id="kpi-sales">0</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>Rendimiento Diario (Revenue vs Spend)</h3>
+        <div class="chart-container">
+            <canvas id="mainChart"></canvas>
+        </div>
+    </div>
+
+<script>
+    // ==========================================
+    // 1. CONFIGURACIÓN (TUS ENLACES AQUÍ)
+    // ==========================================
+    
+    // PEGA AQUÍ LOS LINKS CSV DE LAS HOJAS MAESTRAS PUBLICADAS
+    const MASTERS = [
+        { name: "Wilson", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7Bu502uunh1jNrhwtlnTydouE42S1Y_6AbvVP5zjb4M263P5B3XiTNDqKOMdegB3MKsQ80C2d9w9r/pub?gid=0&single=true&output=csv" }, 
+        { name: "Eduardo", url: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSHssz65lYXBPdRoDP3JX6Cpx0NtYAXmL8ihteILfIN_knTx3hNe2CbK14F84gGy2WKjeRakEIzKl-l/pub?gid=0&single=true&output=csv" }
+    ];
+    // Nota: He puesto links de ejemplo basados en tus archivos, pero verifica que sean los correctos.
+
+    // EL ESTÁNDAR APROBADO (Tus Columnas)
+    const MAPPING = {
+        date: "Day", 
+        revenue: "Purchases conversion value",
+        spend: "Amount spent",
+        sales: "Purchases",
+        checkouts: "Checkouts Initiated",
+        views: "Landing page views",
+        clicks: "Link clicks",
+        ctr: "CTR (link click-through rate)",
+        cpm: "CPM (cost per 1,000 impressions)",
+        reach: "Reach"
+    };
+
+    // ==========================================
+    // 2. MOTOR DE PROCESAMIENTO
+    // ==========================================
+
+    let GLOBAL_DATA = [];
+
+    async function init() {
+        updateStatus("⏳ Leyendo Hojas Maestras...", "orange");
+        
+        try {
+            // A. Leer Maestros para obtener lista de clientes
+            let clientList = [];
+            for (let m of MASTERS) {
+                const data = await fetchCSV(m.url);
+                // Filtrar solo filas con link válido y marcar de quién son
+                const validClients = data
+                    .filter(row => row['Link_CSV_Data'] && row['Link_CSV_Data'].includes('http'))
+                    .map(row => ({ ...row, _owner: m.name }));
+                
+                clientList = clientList.concat(validClients);
+            }
+
+            updateStatus(`📥 Descargando ${clientList.length} clientes...`, "blue");
+
+            // B. Descargar cada cliente en paralelo
+            const promises = clientList.map(async (client) => {
+                try {
+                    const raw = await fetchCSV(client['Link_CSV_Data']);
+                    
+                    // Limpieza y Mapeo de datos
+                    return raw.map(r => ({
+                        trafficker: client._owner,
+                        clientName: client['Cliente'],
+                        date: r[MAPPING.date],
+                        spend: cleanNum(r[MAPPING.spend]),
+                        revenue: cleanNum(r[MAPPING.revenue]),
+                        sales: cleanNum(r[MAPPING.sales]),
+                        clicks: cleanNum(r[MAPPING.clicks])
+                    })).filter(item => item.date); // Eliminar filas vacías
+                } catch (e) {
+                    console.warn(`Fallo al leer cliente: ${client['Cliente']}`, e);
+                    return [];
+                }
+            });
+
+            const results = await Promise.all(promises);
+            GLOBAL_DATA = results.flat();
+
+            // C. Calcular KPIs y Renderizar
+            calculateKPIs();
+            renderChart();
+            updateStatus("✅ Sistema Operativo", "#10b981");
+
+        } catch (error) {
+            console.error(error);
+            updateStatus("❌ Error: Revisa la consola (F12)", "red");
+        }
+    }
+
+    // ==========================================
+    // 3. FUNCIONES AUXILIARES
+    // ==========================================
+
+    function calculateKPIs() {
+        // Sumatoria simple
+        const totalSpend = GLOBAL_DATA.reduce((acc, row) => acc + row.spend, 0);
+        const totalRev = GLOBAL_DATA.reduce((acc, row) => acc + row.revenue, 0);
+        const totalSales = GLOBAL_DATA.reduce((acc, row) => acc + row.sales, 0);
+        
+        // Inyectar en HTML
+        document.getElementById('kpi-spend').innerText = formatMoney(totalSpend);
+        document.getElementById('kpi-revenue').innerText = formatMoney(totalRev);
+        document.getElementById('kpi-sales').innerText = totalSales;
+        
+        const roas = totalSpend > 0 ? (totalRev / totalSpend).toFixed(2) : "0.00";
+        document.getElementById('kpi-roas').innerText = roas + "x";
+        
+        // Color del ROAS (Semáforo)
+        const roasEl = document.getElementById('kpi-roas');
+        if(roas >= 2) roasEl.style.color = "#10b981"; // Verde
+        else if(roas < 1) roasEl.style.color = "#ef4444"; // Rojo
+    }
+
+    function renderChart() {
+        const ctx = document.getElementById('mainChart').getContext('2d');
+        
+        // Agrupar por fecha (Últimos 15 días por defecto)
+        // Nota: Para simplificar este ejemplo, tomamos toda la data.
+        // En producción idealmente ordenamos por fecha.
+        
+        // Agrupación simple por Trafficker para demostración
+        const owners = {};
+        GLOBAL_DATA.forEach(d => {
+            if(!owners[d.trafficker]) owners[d.trafficker] = { rev: 0, spend: 0 };
+            owners[d.trafficker].rev += d.revenue;
+            owners[d.trafficker].spend += d.spend;
+        });
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(owners),
+                datasets: [
+                    { label: 'Inversión', data: Object.keys(owners).map(k => owners[k].spend), backgroundColor: '#94a3b8' },
+                    { label: 'Ingresos', data: Object.keys(owners).map(k => owners[k].rev), backgroundColor: '#2563eb' }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+    }
+
+    // Limpiador de números robusto (Maneja "$1,200.00" y "1.200,00")
+    function cleanNum(val) {
+        if (!val) return 0;
+        let str = val.toString();
+        // Detectar si es porcentaje y quitar %
+        str = str.replace('%', '').trim();
+        // Quitar símbolos de moneda
+        str = str.replace(/[^\d.,-]/g, ''); 
+        
+        // INTENTO DE DETECCIÓN DE DECIMALES:
+        // Si hay coma y punto, asumimos el último es el decimal
+        if (str.includes(',') && str.includes('.')) {
+             if (str.lastIndexOf(',') > str.lastIndexOf('.')) {
+                 // Estilo Europeo: 1.000,00 -> Eliminar puntos, cambiar coma por punto
+                 str = str.replace(/\./g, '').replace(',', '.');
+             } else {
+                 // Estilo US: 1,000.00 -> Eliminar comas
+                 str = str.replace(/,/g, '');
+             }
+        } else if (str.includes(',')) {
+            // Si solo hay comas, asumimos que si hay 2 decimales es coma decimal, o si es texto largo
+            // Para seguridad en SyncWith (que suele usar formato US), eliminamos comas de miles.
+            // OJO: Si tu Sheet está en Español España, la coma es decimal.
+            // POR AHORA: Asumimos formato US ($1,200.50). Si usas formato ES, cambia esto.
+            str = str.replace(/,/g, ''); 
+        }
+        
+        return parseFloat(str) || 0;
+    }
+
+    function formatMoney(num) {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+    }
+
+    async function fetchCSV(url) {
+        return new Promise((resolve, reject) => {
+            Papa.parse(url, {
+                download: true,
+                header: true,
+                skipEmptyLines: true,
+                complete: (res) => resolve(res.data),
+                error: (err) => reject(err)
+            });
+        });
+    }
+
+    function updateStatus(msg, color) {
+        const el = document.getElementById('status');
+        el.innerText = msg;
+        el.style.backgroundColor = color === 'red' ? '#fee2e2' : (color === 'blue' ? '#dbeafe' : '#d1fae5');
+        el.style.color = color === 'red' ? '#991b1b' : (color === 'blue' ? '#1e40af' : '#065f46');
+    }
+
+    // INICIAR
+    init();
+</script>
+
+</body>
+</html>
