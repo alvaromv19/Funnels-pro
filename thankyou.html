@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Agenda Confirmada! | EVO LAUNCH</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@500;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <script>
+        var timeout = 3000; // Timeout value
+        !function(h,i,d,e){var t,n=h.createElement("style");n.id=e,n.innerHTML="body{opacity:0}",h.head.appendChild(n),t=d,i.rmfk=function(){var t=h.getElementById(e);t&&t.parentNode.removeChild(t)},setTimeout(i.rmfk,t)}(document,window,timeout,"abhide");
+    </script>
+
+    <script type="text/javascript" async src="https://cdn.mida.so/js/optimize.js?key=5MbwXVxaRjD7qdgD6p1oNq"></script>
+
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '2926363234241406');
+        fbq('track', 'PageView');
+        fbq('track', 'Schedule'); /* EVENTO DE CONVERSIÓN AÑADIDO */
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=2926363234241406&ev=PageView&noscript=1"
+    /></noscript>
+    <style>
+        /* =========================================
+           ESTILOS CORE (Mismos que Landing V4.0)
+           ========================================= */
+        :root {
+            --bg-main: #0B0C10;
+            --accent-cyan: #66FCF1;
+            --accent-cyan-glow: rgba(102, 252, 241, 0.4);
+            --accent-purple: #C542CB;
+            --text-main: #FFFFFF;
+            --text-muted: #B0B3B8;
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-main);
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: var(--text-main);
+            font-family: var(--font-body);
+            line-height: 1.8; 
+            overflow-x: hidden;
+            font-size: 18px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        h1, h2 { font-family: var(--font-heading); color: #fff; line-height: 1.1; }
+        
+        .text-gradient {
+            background: linear-gradient(90deg, #fff, var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* LUZ AMBIENTAL */
+        .ambient-light {
+            position: fixed;
+            width: 800px; height: 600px;
+            background: radial-gradient(circle, rgba(102, 252, 241, 0.08), transparent 70%);
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* SUCCESS ICON ANIMATION */
+        .success-icon-container {
+            width: 100px; height: 100px;
+            margin: 0 auto 30px auto;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .pulse-ring {
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+            animation: pulseRing 2s infinite;
+        }
+        
+        .icon-check {
+            font-size: 3rem;
+            color: #0B0C10;
+            background: var(--accent-cyan);
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 20px var(--accent-cyan-glow);
+            z-index: 2;
+        }
+
+        @keyframes pulseRing {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        /* GLASS BOX (PROTOCOLO) */
+        .glass-box {
+            background: rgba(20, 22, 28, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 40px;
+            margin-top: 40px;
+            text-align: left;
+            position: relative;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 25px;
+            align-items: flex-start;
+        }
+
+        .step-num {
+            background: rgba(255,255,255,0.05);
+            color: var(--accent-cyan);
+            font-weight: 800;
+            min-width: 40px; height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-heading);
+            border: 1px solid rgba(102, 252, 241, 0.2);
+        }
+
+        .step-content h3 { margin-bottom: 5px; font-size: 1.1rem; }
+        .step-content p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 0; line-height: 1.5; }
+
+        /* WARNING BOX */
+        .warning-box {
+            margin-top: 30px;
+            padding: 15px;
+            border-left: 3px solid #ff4d4d;
+            background: rgba(255, 77, 77, 0.05);
+            color: #ffcccc;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        /* BUTTON */
+        .btn-home {
+            display: inline-block;
+            margin-top: 40px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+        .btn-home:hover { color: #fff; border-bottom-color: var(--accent-cyan); }
+
+        /* ANIMATION */
+        .reveal { animation: fadeUp 0.8s ease-out forwards; opacity: 0; transform: translateY(20px); }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 600px) {
+            .glass-box { padding: 25px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-light"></div>
+
+    <div class="container reveal">
+        
+        <div class="success-icon-container">
+            <div class="pulse-ring"></div>
+            <div class="icon-check">
+                <i class="ph-bold ph-check"></i>
+            </div>
+        </div>
+
+        <p style="text-transform: uppercase; letter-spacing: 3px; font-size: 0.8rem; color: var(--accent-cyan); font-weight: 700; margin-bottom: 10px;">Solicitud Recibida</p>
+        
+        <h1 style="font-size: 2.5rem; margin-bottom: 15px;">Tu Auditoría ha sido <br><span class="text-gradient">Agendada con Éxito</span></h1>
+        
+        <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto;">
+            Hemos reservado tu espacio en nuestra agenda. Revisa tu correo electrónico inmediatamente, te hemos enviado el enlace de Zoom y los detalles de acceso.
+        </p>
+
+        <div class="glass-box">
+            <h2 style="font-size: 1.2rem; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;">
+                <i class="ph-fill ph-clipboard-text" style="color: var(--accent-purple); margin-right: 8px;"></i> Protocolo Obligatorio de la Sesión
+            </h2>
+
+            <div class="step-item">
+                <div class="step-num">01</div>
+                <div class="step-content">
+                    <h3>Bloquea tu Calendario</h3>
+                    <p>Esto no es una llamada de ventas cualquiera. Es una consultoría estratégica. Date el tiempo y respeto que tu negocio merece.</p>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <div class="step-num">02</div>
+                <div class="step-content">
+                    <h3>Ordenador Obligatorio</h3>
+                    <p>Analizaremos datos, embudos y métricas. <strong>No te conectes desde el celular</strong> o mientras conduces. Si lo haces, la llamada se cancelará automáticamente.</p>
+                </div>
+            </div>
+
+            <div class="step-item">
+                <div class="step-num">03</div>
+                <div class="step-content">
+                    <h3>Revisa el Material Previo</h3>
+                    <p>En tu correo tienes un video corto de preparación. Velo antes de la llamada para aprovechar los 30 minutos al máximo.</p>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong><i class="ph-fill ph-warning"></i> POLÍTICA DE NO-SHOW:</strong>
+                Debido a la alta demanda, si no asistes a la llamada sin avisar con 24h de antelación, no podrás volver a agendar una auditoría gratuita en el futuro.
+            </div>
+        </div>
+
+        <a href="index.html" class="btn-home"><i class="ph-bold ph-arrow-left"></i> Volver a la página principal</a>
+
+    </div>
+
+</body>
+</html>
