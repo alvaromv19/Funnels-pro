@@ -11,6 +11,28 @@
     
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '2926363234241406');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=2926363234241406&ev=PageView&noscript=1"
+    /></noscript>
+    <script>
+    var  timeout = 3000; 
+    !function(h,i,d,e){var  t,n=h.createElement("style");n.id=e,n.innerHTML="body{opacity:0}",h.head.appendChild(n),t=d,i.rmfk=function(){var  t=h.getElementById(e);t&&t.parentNode.removeChild(t)},setTimeout(i.rmfk,t)}(document,window,timeout,"abhide");
+    </script>
+
+    <script type="text/javascript" async src="https://cdn.mida.so/js/optimize.js?key=5MbwXVxaRjD7qdgD6p1oNq"></script>
+
     <style>
         /* =========================================
            1. CORE STYLES & VARIABLES
@@ -33,7 +55,7 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             font-family: var(--font-body);
-            line-height: 1.7; /* Mayor interlineado para lectura cómoda */
+            line-height: 1.7; 
             overflow-x: hidden;
             font-size: 18px;
         }
@@ -50,7 +72,7 @@
         strong { color: #fff; font-weight: 600; }
 
         .container {
-            max-width: 1000px; /* Ancho optimizado para lectura */
+            max-width: 1000px;
             margin: 0 auto;
             padding: 0 20px;
             position: relative;
@@ -67,10 +89,9 @@
         .text-purple { color: var(--accent-purple); }
 
         /* =========================================
-           2. ELEMENTOS VISUALES (CSS PURO - SIN IMÁGENES ROTAS)
+           2. ELEMENTOS VISUALES
            ========================================= */
         
-        /* Esferas de fondo (Ambiente) */
         .ambient-light {
             position: fixed;
             width: 600px;
@@ -84,7 +105,6 @@
             pointer-events: none;
         }
 
-        /* Separadores de sección Neón */
         .neon-divider {
             height: 1px;
             background: linear-gradient(90deg, transparent, var(--accent-purple), transparent);
@@ -143,7 +163,7 @@
            3. SECCIONES ESPECÍFICAS
            ========================================= */
 
-        /* HERO SECTION (Centrado) */
+        /* HERO SECTION */
         .hero {
             min-height: 90vh;
             display: flex;
@@ -168,7 +188,7 @@
         }
 
         .hero h1 {
-            font-size: 3.5rem; /* Grande para PC */
+            font-size: 3.5rem;
             margin-bottom: 25px;
             letter-spacing: -1px;
         }
@@ -179,9 +199,9 @@
             margin: 0 auto 40px auto;
         }
 
-        /* PROBLEM SECTION (Lead de Texto) */
+        /* PROBLEM SECTION */
         .text-column {
-            max-width: 700px; /* Estrecho para forzar lectura */
+            max-width: 700px;
             margin: 0 auto;
         }
 
@@ -190,7 +210,7 @@
             padding-left: 30px;
         }
 
-        /* MECHANISM (Diagrama + Texto) */
+        /* MECHANISM */
         .mechanism-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -198,7 +218,6 @@
             margin-top: 40px;
         }
 
-        /* Fase Box Styling */
         .phase-box {
             background: var(--bg-secondary);
             border: 1px solid #333;
@@ -219,7 +238,7 @@
             font-family: var(--font-heading);
         }
 
-        /* OFFER GRID (Bento) */
+        /* OFFER GRID */
         .offer-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -260,6 +279,38 @@
         }
         .mobile-sticky .btn-cta { width: 100%; padding: 15px; margin: 0; font-size: 1rem; }
 
+        /* FORM ANIMATION STYLES */
+        #conversion-container {
+            position: relative;
+            min-height: 200px; /* Evita saltos de layout */
+            transition: all 0.5s ease;
+        }
+
+        #initial-offer-content {
+            opacity: 1;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        #initial-offer-content.hidden-content {
+            opacity: 0;
+            pointer-events: none;
+            display: none; /* Se oculta completamente tras la animación */
+        }
+
+        #embedded-agenda {
+            display: none; /* Oculto inicialmente */
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            width: 100%;
+            height: 800px; /* Altura base para la agenda */
+            overflow: hidden;
+        }
+
+        #embedded-agenda.visible-content {
+            display: block;
+            opacity: 1;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.2rem; }
@@ -267,10 +318,7 @@
             .letter-style { padding-left: 15px; border-left-width: 1px; }
             .offer-grid { grid-template-columns: 1fr; }
             
-            /* En móvil mostramos el sticky button */
             .mobile-sticky { display: block; }
-            
-            /* Ocultar el botón del footer para no duplicar en móvil si ya está el sticky */
             .footer-btn-container { margin-bottom: 80px; } 
         }
 
@@ -400,13 +448,38 @@
             <li><i class="ph-fill ph-check-circle"></i> Estás dispuesto a dejar de jugar a "vender barato".</li>
         </ul>
 
-        <div class="glass-box" style="margin-top: 40px;">
-            <p>Si cumples con esto, te invito a una Auditoría de Escalamiento High Ticket.</p>
-            <p>No es una llamada de ventas presionante. Analizaremos tus números actuales, tu audiencia y te diremos honestamente si tu oferta soporta tráfico frío. Si vemos el potencial de agregar $30k extra a tu facturación en 90 días, te explicaremos cómo trabajar con nosotros.</p>
-            <p>Si no, te llevarás el plan de acción y el diagnóstico totalmente gratis.</p>
-            <p><strong>El mercado premia a los que actúan rápido.</strong></p>
+        <div class="glass-box" style="margin-top: 40px;" id="conversion-container">
             
-            <a href="#" class="btn-cta">SÍ, QUIERO AGENDAR MI AUDITORÍA GRATUITA AHORA</a>
+            <div id="initial-offer-content">
+                <p>Si cumples con esto, te invito a una Auditoría de Escalamiento High Ticket.</p>
+                <p>No es una llamada de ventas presionante. Analizaremos tus números actuales, tu audiencia y te diremos honestamente si tu oferta soporta tráfico frío. Si vemos el potencial de agregar $30k extra a tu facturación en 90 días, te explicaremos cómo trabajar con nosotros.</p>
+                <p>Si no, te llevarás el plan de acción y el diagnóstico totalmente gratis.</p>
+                <p><strong>El mercado premia a los que actúan rápido.</strong></p>
+                
+                <button id="trigger-agenda-btn" class="btn-cta">SÍ, QUIERO AGENDAR MI AUDITORÍA GRATUITA AHORA</button>
+            </div>
+
+            <div id="embedded-agenda">
+                <iframe
+                    src="https://api.leadconnectorhq.com/widget/form/RelaE0sawBzErOQybhY3"
+                    style="width:100%;height:100%;border:none;border-radius:3px"
+                    id="inline-RelaE0sawBzErOQybhY3" 
+                    data-layout="{'id':'INLINE'}"
+                    data-trigger-type="alwaysShow"
+                    data-trigger-value=""
+                    data-activation-type="alwaysActivated"
+                    data-activation-value=""
+                    data-deactivation-type="neverDeactivate"
+                    data-deactivation-value=""
+                    data-form-name="Form - Auditoria Evo_Launch"
+                    data-height="undefined"
+                    data-layout-iframe-id="inline-RelaE0sawBzErOQybhY3"
+                    data-form-id="RelaE0sawBzErOQybhY3"
+                    title="Form - Auditoria Evo_Launch"
+                >
+                </iframe>
+            </div>
+
         </div>
     </footer>
 
@@ -429,31 +502,35 @@
         window.addEventListener('scroll', revealOnScroll);
         revealOnScroll(); // Trigger inicial
     </script>
-<head><!-- Meta Pixel Code -->
-<script>
-!function(f,b,e,v,n,t,s)
-{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');
-fbq('init', '2926363234241406');
-fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=2926363234241406&ev=PageView&noscript=1"
-/></noscript>
-<!-- End Meta Pixel Code --></head>
 
-<!-- Anti-flickering script -->
-<script>
-var  timeout = 3000; // Timeout value to remove the flicker (in milliseconds)
-!function(h,i,d,e){var  t,n=h.createElement("style");n.id=e,n.innerHTML="body{opacity:0}",h.head.appendChild(n),t=d,i.rmfk=function(){var  t=h.getElementById(e);t&&t.parentNode.removeChild(t)},setTimeout(i.rmfk,t)}(document,window,timeout,"abhide");
-</script>
+    <script>
+        const triggerBtn = document.getElementById('trigger-agenda-btn');
+        const initialContent = document.getElementById('initial-offer-content');
+        const agendaContent = document.getElementById('embedded-agenda');
 
-<!-- Mida A/B Testing Script (Place in <HEAD> for speed & no flicker) -->
-<script type="text/javascript" async src="https://cdn.mida.so/js/optimize.js?key=5MbwXVxaRjD7qdgD6p1oNq"></script>
+        triggerBtn.addEventListener('click', function() {
+            // 1. Desvanecer el contenido inicial
+            initialContent.style.opacity = '0';
+            
+            // 2. Esperar a que termine la transición de opacidad (500ms)
+            setTimeout(() => {
+                // Ocultar completamente el div inicial para que no ocupe espacio
+                initialContent.classList.add('hidden-content');
+                initialContent.style.display = 'none';
+
+                // 3. Mostrar la agenda
+                agendaContent.style.display = 'block';
+                
+                // Pequeño delay para permitir que el navegador renderice el display:block antes de cambiar opacidad
+                setTimeout(() => {
+                    agendaContent.classList.add('visible-content');
+                }, 50);
+
+            }, 500);
+        });
+    </script>
+
+    <script src="https://link.msgsndr.com/js/form_embed.js"></script>
+
 </body>
 </html>
