@@ -226,66 +226,67 @@
         
         .glass-box:hover::after { opacity: 1; }
 
-        /* RESULTADOS STYLES (OPTIMIZADO) */
+        /* RESULTADOS STYLES (SEPARADOS) */
+        .result-wrapper {
+            width: 100%;
+            background: #000;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
         .result-image-container {
             position: relative;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            background: #000; /* Fondo negro para contraste */
-            display: flex; /* Centrado perfecto */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
             justify-content: center;
-            align-items: center;
+            width: 100%;
         }
         
         .result-image-container img {
-            width: 100%;
             height: auto;
-            max-width: 100%; /* Evita desbordamiento */
+            max-width: 100%; /* Desktop default */
             display: block;
-            object-fit: contain; /* Asegura que se vea completa */
-            transition: transform 0.5s ease;
+            transition: transform 0.4s ease;
+            transform-origin: center center;
         }
 
-        .result-image-container:hover img {
-            transform: scale(1.05); /* Zoom sutil al hover */
+        /* Zoom Hover solo en Desktop */
+        @media (min-width: 769px) {
+            .glass-box:hover .result-image-container img {
+                transform: scale(1.1);
+                cursor: zoom-in;
+            }
         }
 
-        .result-overlay {
-            position: absolute;
-            bottom: 20px; /* Lo despegamos del fondo */
-            left: 50%; 
-            transform: translateX(-50%); /* Centrado perfecto */
-            width: max-content; /* Se ajusta al tamaño del texto */
-            max-width: 90%;
-            
-            /* NUEVO ESTILO: Cápsula flotante en vez de gradiente */
-            background: rgba(11, 12, 16, 0.85); /* Fondo oscuro semitransparente */
-            backdrop-filter: blur(8px); /* Efecto borroso elegante */
-            padding: 10px 25px;
-            border-radius: 50px;
-            border: 1px solid rgba(102, 252, 241, 0.2); /* Borde sutil cyan */
-            
-            pointer-events: none;
-            z-index: 10;
+        /* INFO BOX (TEXTO ABAJO) */
+        .result-info-box {
+            padding: 25px 20px; 
             text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            position: relative;
+            z-index: 5;
         }
 
         .stat-badge {
-            background: rgba(16, 185, 129, 0.2);
+            background: rgba(16, 185, 129, 0.15);
             color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 5px 12px;
+            border-radius: 50px; 
+            font-size: 0.85rem;
             font-weight: 700;
             display: inline-block;
-            margin-bottom: 5px;
-            backdrop-filter: blur(4px);
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
         }
 
+        /* Mobile specific styles */
+        .result-hint { display: none; }
+        
         /* =========================================
            4. SECCIONES
            ========================================= */
@@ -463,18 +464,24 @@
             display: none;
         }
 
-        /* --- ESTILOS DE AGENDA (DESKTOP DEFAULT) --- */
+        /* --- ESTILOS MEJORADOS PARA LA AGENDA CON SCROLL --- */
         #embedded-agenda {
-            display: none;
+            display: none; /* Asegura que inicie oculto */
             opacity: 0;
             transition: opacity 0.8s ease;
             width: 100%;
-            height: 700px;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
+            
+            /* ALTURA OPTIMIZADA PARA DESKTOP */
+            height: 700px; 
+            
+            /* HABILITAR SCROLL */
+            overflow-y: auto; 
+            -webkit-overflow-scrolling: touch; 
+            
+            /* Scrollbar styling */
             scrollbar-width: thin;
             scrollbar-color: var(--accent-cyan-dark) rgba(255, 255, 255, 0.05);
-            padding-right: 5px;
+            padding-right: 5px; 
         }
 
         #embedded-agenda::-webkit-scrollbar { width: 6px; }
@@ -544,6 +551,24 @@
             #embedded-agenda {
                 height: 85vh; /* Casi toda la pantalla */
                 padding-right: 0;
+            }
+
+            /* RESULTADOS MÓVIL */
+            .result-image-container {
+                justify-content: flex-start; 
+            }
+            .result-image-container img {
+                min-width: 600px; /* Forzar scroll para ver data */
+                max-width: none;
+            }
+            .result-hint {
+                display: block !important;
+                text-align: center;
+                font-size: 0.75rem;
+                color: var(--accent-cyan);
+                margin-bottom: 5px;
+                opacity: 0.8;
+                padding: 10px 0 5px 0;
             }
         }
 
@@ -617,15 +642,21 @@
         <h2 style="margin-bottom: 10px;">NO CONFIAMOS EN LA TEORÍA <br><span class="text-gradient">CONFIAMOS EN EL ROAS</span></h2>
         <p style="text-align: center; max-width: 600px; margin: 0 auto 40px auto;">Esto es lo que sucede cuando conectas una oferta validada con nuestro sistema de tráfico.</p>
 
-        <div class="glass-box" style="padding: 0 !important; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
-            <div class="result-image-container">
-                <img src="Resultado-1.webp" alt="Resultados ROAS 5.27" loading="lazy">
-                
-                <div class="result-overlay">
-                    <span class="stat-badge"><i class="ph-fill ph-trend-up"></i> ROAS 5.27</span>
-                    <p style="color: #fff; margin: 0; font-size: 0.9rem; font-weight: 500;">$197,354 generados con Tráfico Frío</p>
+        <div class="glass-box" style="padding: 0 !important; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; max-width: 800px; margin: 0 auto;">
+            
+            <div class="result-wrapper">
+                <span class="result-hint"><i class="ph-bold ph-hand-swipe-left"></i> Desliza para ver más</span>
+                <div class="result-image-container">
+                    <img src="Resultado-1.webp" alt="Resultados ROAS 5.27" loading="lazy">
                 </div>
             </div>
+
+            <div class="result-info-box">
+                <span class="stat-badge"><i class="ph-fill ph-trend-up"></i> ROAS 5.27</span>
+                <h3 style="font-size: 1.2rem; margin-bottom: 5px; color: #fff;">$197,354 USD Generados</h3>
+                <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Campaña de Tráfico Frío (Sin Retargeting)</p>
+            </div>
+
         </div>
     </section>
 
