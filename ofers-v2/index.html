@@ -248,10 +248,23 @@
 
         .result-overlay {
             position: absolute;
-            bottom: 0; left: 0; width: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
-            padding: 40px 20px 15px;
+            bottom: 20px; /* Lo despegamos del fondo */
+            left: 50%; 
+            transform: translateX(-50%); /* Centrado perfecto */
+            width: max-content; /* Se ajusta al tamaño del texto */
+            max-width: 90%;
+            
+            /* NUEVO ESTILO: Cápsula flotante en vez de gradiente */
+            background: rgba(11, 12, 16, 0.85); /* Fondo oscuro semitransparente */
+            backdrop-filter: blur(8px); /* Efecto borroso elegante */
+            padding: 10px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(102, 252, 241, 0.2); /* Borde sutil cyan */
+            
             pointer-events: none;
+            z-index: 10;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
         .stat-badge {
