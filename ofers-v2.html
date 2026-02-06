@@ -380,13 +380,14 @@
         .mobile-sticky {
             position: fixed;
             bottom: 0; left: 0; width: 100%;
-            background: rgba(11, 12, 16, 0.9);
+            background: rgba(11, 12, 16, 0.95);
             padding: 15px;
             border-top: 1px solid var(--accent-cyan);
             z-index: 100;
             display: none;
             backdrop-filter: blur(10px);
             text-align: center;
+            transition: transform 0.3s ease;
         }
         .mobile-sticky .btn-cta { width: 100%; padding: 16px; margin: 0; font-size: 1rem; }
 
@@ -402,22 +403,15 @@
             display: none;
         }
 
-        /* --- Estilos para la agenda con Scroll --- */
+        /* --- ESTILOS DE AGENDA (DESKTOP) --- */
         #embedded-agenda {
             display: none;
             opacity: 0;
             transition: opacity 0.8s ease;
             width: 100%;
-            
-            /* Altura fija para forzar el scroll dentro de la caja */
-            height: 650px; 
-            max-height: 70vh;
-            
-            /* Scroll settings */
+            height: 700px; /* Altura Desktop */
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            
-            /* Custom Scrollbar */
             scrollbar-width: thin;
             scrollbar-color: var(--accent-cyan-dark) rgba(255, 255, 255, 0.05);
             padding-right: 5px;
@@ -433,15 +427,65 @@
             opacity: 1;
         }
 
-        /* RESPONSIVE */
+        /* =========================================
+           6. OPTIMIZACIÓN FULL-WIDTH MÓVIL
+           ========================================= */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
             .hero-sub { font-size: 1.1rem; }
             .letter-style { padding-left: 20px; border-left-width: 2px; }
             .offer-grid { grid-template-columns: 1fr; }
+            
+            /* Sticky y Footer ajustes */
             .mobile-sticky { display: block; }
-            .footer-btn-container { margin-bottom: 80px; } 
+            .footer-btn-container { padding-bottom: 120px; } 
+            
+            /* Mechanism Grid fix */
             .mechanism-grid::before { left: 20px; transform: none; } 
+
+            /* --- MÁRGENES CERO EN FOOTER PARA LA AGENDA --- */
+            
+            /* 1. Quitamos padding lateral al contenedor del footer */
+            #audit.container {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            /* 2. Mantener padding en el título y texto, pero no en la caja */
+            #audit h2, #audit p, #audit ul {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            /* 3. La caja de conversión (Form) ocupa el 100% */
+            #conversion-box {
+                margin-top: 30px;
+                border-radius: 0; /* Bordes cuadrados en móvil para full width */
+                border-left: none;
+                border-right: none;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                width: 100vw; /* Ancho total de la ventana */
+                position: relative;
+                left: 50%;
+                right: 50%;
+                margin-left: -50vw;
+                margin-right: -50vw;
+                background: #0B0C10; /* Fondo sólido para que no se vea raro el glass */
+            }
+
+            /* 4. Padding para el texto inicial dentro de la caja */
+            #initial-offer-content {
+                padding: 0 20px; /* Recuperamos padding solo para el texto */
+            }
+
+            /* 5. Altura maximizada para la agenda en móvil */
+            #embedded-agenda {
+                height: 85vh; /* Casi toda la pantalla */
+                padding-right: 0;
+            }
         }
 
         /* ANIMACIONES SCROLL */
@@ -632,16 +676,24 @@
         const triggerBtn = document.getElementById('trigger-agenda-btn');
         const initialContent = document.getElementById('initial-offer-content');
         const agendaContent = document.getElementById('embedded-agenda');
+        const mobileSticky = document.querySelector('.mobile-sticky');
 
         function activateForm() {
-            // Desvanecer el contenido inicial
+            // 1. Desvanecer el contenido inicial
             initialContent.style.opacity = '0';
             
-            // Esperar animación
+            // 2. Ocultar el botón sticky móvil inmediatamente para que no estorbe
+            if(mobileSticky) mobileSticky.style.transform = 'translateY(100%)'; 
+
+            // 3. Esperar animación
             setTimeout(() => {
                 initialContent.classList.add('hidden-content');
+                // Ocultar del todo para liberar espacio
+                initialContent.style.display = 'none';
+
                 // Mostrar agenda
                 agendaContent.style.display = 'block';
+                
                 // Trigger fade in
                 setTimeout(() => {
                     agendaContent.classList.add('visible-content');
@@ -654,17 +706,14 @@
         // FUNCIÓN SCROLL SUAVE AL CLICKAR BOTONES DE ARRIBA
         function scrollToAudit() {
             const auditSection = document.getElementById('audit-section');
-            const conversionBox = document.getElementById('conversion-box');
             
             // 1. Scroll hasta la sección
             auditSection.scrollIntoView({ behavior: 'smooth' });
 
             // 2. Si venimos del botón sticky o header, activamos el form automáticamente
-            // Opcional: Si prefieres que solo haga scroll y el usuario deba dar clic otra vez al botón final, quita la línea 'activateForm()' de abajo.
-            // Yo recomiendo activarlo directo para reducir fricción.
             setTimeout(() => {
                activateForm();
-            }, 800); // Espera a que llegue el scroll
+            }, 800); 
         }
 
     </script>
