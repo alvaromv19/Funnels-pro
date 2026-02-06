@@ -226,35 +226,73 @@
         
         .glass-box:hover::after { opacity: 1; }
 
-        /* RESULTADOS STYLES */
-        /* CONTENEDOR DE LA IMAGEN (SOLO IMAGEN) */
-        .result-image-container {
+        /* RESULTADOS STYLES (OPTIMIZADO) */
+        .result-wrapper {
+            width: 100%;
+            background: #000;
             position: relative;
             overflow: hidden;
-            background: #000;
-            /* La imagen ocupa todo el espacio sin paddings */
             display: flex;
             justify-content: center;
-            border-bottom: 1px solid rgba(255,255,255,0.08); /* Línea sutil separadora */
+        }
+
+        .result-image-container {
+            position: relative;
+            /* Scroll horizontal en móvil */
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            justify-content: center;
+            width: 100%;
         }
         
         .result-image-container img {
-            width: 100%;
             height: auto;
+            max-width: 100%; /* Default para desktop */
             display: block;
-            transition: transform 0.5s ease;
+            transition: transform 0.4s ease;
+            transform-origin: center center;
         }
 
-        /* EFECTO ZOOM AL PASAR MOUSE POR LA TARJETA COMPLETA */
-        .glass-box:hover .result-image-container img {
-            transform: scale(1.03);
+        /* Hover Effect para Desktop */
+        @media (min-width: 769px) {
+            .glass-box:hover .result-image-container img {
+                transform: scale(1.2); /* Zoom más notorio para ver data */
+                cursor: zoom-in;
+            }
         }
 
-        /* NUEVA CAJA DE TEXTO DEBAJO DE LA IMAGEN */
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .result-image-container {
+                justify-content: flex-start; /* Alinear al inicio para scroll */
+            }
+            .result-image-container img {
+                /* Forzar tamaño mínimo para que sea legible en móvil */
+                min-width: 600px; 
+                max-width: none;
+            }
+            /* Indicador visual de scroll */
+            .result-hint {
+                display: block !important;
+                text-align: center;
+                font-size: 0.75rem;
+                color: var(--accent-cyan);
+                margin-bottom: 5px;
+                opacity: 0.8;
+            }
+        }
+
+        .result-hint { display: none; }
+
+        /* INFO BOX */
         .result-info-box {
-            padding: 25px 20px; /* Espacio para respirar */
+            padding: 25px 20px; 
             text-align: center;
-            background: rgba(255, 255, 255, 0.01); /* Fondo muy sutil */
+            background: rgba(255, 255, 255, 0.01);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            position: relative;
+            z-index: 5; /* Encima de la imagen si hay overlap */
         }
 
         .stat-badge {
@@ -262,13 +300,14 @@
             color: #10b981;
             border: 1px solid rgba(16, 185, 129, 0.2);
             padding: 5px 12px;
-            border-radius: 50px; /* Más redondo */
+            border-radius: 50px; 
             font-size: 0.85rem;
             font-weight: 700;
             display: inline-block;
             margin-bottom: 10px;
             letter-spacing: 0.5px;
         }
+
         /* =========================================
            4. SECCIONES
            ========================================= */
@@ -585,13 +624,28 @@
     </section>
 
     <section class="container reveal" style="padding: 100px 20px; text-align: center;">
+        <div class="glass-box">
+            <h2 style="margin-bottom: 10px;" class="text-gradient">LA NUEVA OPORTUNIDAD</h2>
+            <p style="text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 30px; color: var(--accent-purple);">Cambio de Paradigma</p>
+            
+            <h3 style="margin-bottom: 20px;">La Verdad sobre tu Mercado:</h3>
+            <p>En este preciso momento, el <strong>3% de tu mercado</strong> está en lo que llamamos "Modo de Compra Inmediata". Tienen un dolor agudo, tienen el dinero y quieren la solución YA. No quieren leer tu ebook gratuito. Quieren pagarte para que les resuelvas el problema.</p>
+            <p>Si los obligas a pasar por un embudo lento, los pierdes.</p>
+            <p>En <strong>EVO LAUNCH</strong>, hemos desarrollado una metodología diferente. Nosotros no buscamos likes. No buscamos "engagement". Nosotros conectamos tu oferta más cara con tráfico frío de manera rentable.</p>
+        </div>
+    </section>
+
+    <section class="container reveal" style="padding: 100px 20px; text-align: center;">
         <h2 style="margin-bottom: 10px;">NO CONFIAMOS EN LA TEORÍA <br><span class="text-gradient">CONFIAMOS EN EL ROAS</span></h2>
         <p style="text-align: center; max-width: 600px; margin: 0 auto 40px auto;">Esto es lo que sucede cuando conectas una oferta validada con nuestro sistema de tráfico.</p>
 
         <div class="glass-box" style="padding: 0 !important; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; max-width: 800px; margin: 0 auto;">
             
-            <div class="result-image-container">
-                <img src="Resultado-1.webp" alt="Resultados ROAS 5.27" loading="lazy">
+            <div class="result-wrapper">
+                <span class="result-hint"><i class="ph-bold ph-hand-swipe-left"></i> Desliza para ver más</span>
+                <div class="result-image-container">
+                    <img src="Resultado-1.webp" alt="Resultados ROAS 5.27" loading="lazy">
+                </div>
             </div>
 
             <div class="result-info-box">
@@ -600,21 +654,6 @@
                 <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Campaña de Tráfico Frío (Sin Retargeting)</p>
             </div>
 
-        </div>
-    </section>
-
-    <section class="container reveal" style="padding: 100px 20px; text-align: center;">
-        <h2 style="margin-bottom: 10px;">NO CONFIAMOS EN LA TEORÍA <br><span class="text-gradient">CONFIAMOS EN EL RETORNO</span></h2>
-        <p style="text-align: center; max-width: 600px; margin: 0 auto 40px auto;">Esto es lo que sucede cuando conectas una oferta validada con nuestro sistema de tráfico.</p>
-
-        <div class="glass-box" style="padding: 10px !important;">
-            <div class="result-image-container">
-                <img src="Resultado-1.webp" alt="Resultados ROAS 5.27" loading="lazy">
-                <div class="result-overlay">
-                    <span class="stat-badge"><i class="ph-fill ph-trend-up"></i> ROAS 5.27</span>
-                    <p style="color: #fff; margin: 0; font-size: 0.9rem; font-weight: 500;">$197,354 generados con Tráfico Frío</p>
-                </div>
-            </div>
         </div>
     </section>
 
