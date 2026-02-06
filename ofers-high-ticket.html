@@ -380,13 +380,14 @@
         .mobile-sticky {
             position: fixed;
             bottom: 0; left: 0; width: 100%;
-            background: rgba(11, 12, 16, 0.9);
+            background: rgba(11, 12, 16, 0.95);
             padding: 15px;
             border-top: 1px solid var(--accent-cyan);
             z-index: 100;
             display: none;
             backdrop-filter: blur(10px);
             text-align: center;
+            transition: transform 0.3s ease;
         }
         .mobile-sticky .btn-cta { width: 100%; padding: 16px; margin: 0; font-size: 1rem; }
 
@@ -409,55 +410,49 @@
             transition: opacity 0.8s ease;
             width: 100%;
             
-            /* ALTURA FIJA PARA FORZAR SCROLL INTERNO */
-            height: 650px; 
-            max-height: 70vh; /* En pantallas pequeñas se ajusta */
+            /* ALTURA OPTIMIZADA PARA DESKTOP */
+            height: 700px; 
             
             /* HABILITAR SCROLL */
             overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; /* Scroll suave en iOS */
+            -webkit-overflow-scrolling: touch; 
             
-            /* Estilización de la barra de scroll (Firefox) */
+            /* Scrollbar styling */
             scrollbar-width: thin;
             scrollbar-color: var(--accent-cyan-dark) rgba(255, 255, 255, 0.05);
-            
-            /* Espaciado interno para que no corte sombras del form */
             padding-right: 5px; 
         }
 
-        /* Estilización de la barra de scroll (Chrome, Edge, Safari) */
-        #embedded-agenda::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        #embedded-agenda::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-        }
-
-        #embedded-agenda::-webkit-scrollbar-thumb {
-            background-color: var(--accent-cyan-dark);
-            border-radius: 10px;
-        }
-
-        #embedded-agenda::-webkit-scrollbar-thumb:hover {
-            background-color: var(--accent-cyan);
-        }
+        #embedded-agenda::-webkit-scrollbar { width: 6px; }
+        #embedded-agenda::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
+        #embedded-agenda::-webkit-scrollbar-thumb { background-color: var(--accent-cyan-dark); border-radius: 10px; }
+        #embedded-agenda::-webkit-scrollbar-thumb:hover { background-color: var(--accent-cyan); }
 
         #embedded-agenda.visible-content {
             display: block;
             opacity: 1;
         }
 
-        /* RESPONSIVE */
+        /* RESPONSIVE & MOBILE FIXES */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
             .hero-sub { font-size: 1.1rem; }
             .letter-style { padding-left: 20px; border-left-width: 2px; }
             .offer-grid { grid-template-columns: 1fr; }
+            
+            /* Mostrar botón sticky */
             .mobile-sticky { display: block; }
-            .footer-btn-container { margin-bottom: 80px; } 
+            /* Footer padding para que no lo tape el botón sticky */
+            .footer-btn-container { padding-bottom: 120px; } 
+            
             .mechanism-grid::before { left: 20px; transform: none; } 
+
+            /* --- ALTURA MEJORADA PARA MÓVIL --- */
+            #embedded-agenda {
+                /* Más alto en móvil para ver mejor el calendario */
+                height: 800px; 
+                max-height: 85vh;
+            }
         }
 
         /* ANIMACIONES SCROLL */
@@ -648,21 +643,25 @@
         const triggerBtn = document.getElementById('trigger-agenda-btn');
         const initialContent = document.getElementById('initial-offer-content');
         const agendaContent = document.getElementById('embedded-agenda');
+        const mobileSticky = document.querySelector('.mobile-sticky'); // Seleccionamos el botón sticky
 
         function activateForm() {
             // 1. Desvanecer el contenido inicial
             initialContent.style.opacity = '0';
             
-            // 2. Esperar animación
+            // 2. Ocultar el botón sticky móvil inmediatamente para que no estorbe
+            if(mobileSticky) mobileSticky.style.transform = 'translateY(100%)'; 
+
+            // 3. Esperar animación
             setTimeout(() => {
                 initialContent.classList.add('hidden-content');
-                // 3. Ocultar del todo para liberar espacio
+                // Ocultar del todo para liberar espacio
                 initialContent.style.display = 'none';
 
-                // 4. Mostrar agenda
+                // Mostrar agenda
                 agendaContent.style.display = 'block';
                 
-                // 5. Trigger fade in
+                // Trigger fade in
                 setTimeout(() => {
                     agendaContent.classList.add('visible-content');
                 }, 50);
