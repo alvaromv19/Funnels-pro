@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Ticket Analytics | Realistic Funnel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        /* Un tema más "SaaS Tecnológico" con tonos Slate y Indigo */
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0f172a; color: #f1f5f9; }
+        .card { background-color: #1e293b; border: 1px solid #334155; }
+        .kpi-value { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+        
+        /* Gráfico de barra de progreso custom para el funnel */
+        .funnel-step { position: relative; padding-left: 20px; border-left: 2px solid #334155; padding-bottom: 20px; }
+        .funnel-step:last-child { border-left: 0; }
+        .funnel-dot { position: absolute; left: -6px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: #64748b; }
+        .funnel-dot.active { background: #6366f1; box-shadow: 0 0 10px rgba(99, 102, 241, 0.5); }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+
+    <aside class="w-20 bg-slate-900 border-r border-slate-800 flex flex-col items-center py-6 gap-6">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <i class="fa-solid fa-layer-group text-white text-lg"></i>
+        </div>
+        <nav class="flex-1 flex flex-col gap-4 w-full px-2">
+            <a href="#" class="w-full aspect-square flex items-center justify-center rounded-xl bg-slate-800 text-indigo-400 border border-slate-700">
+                <i class="fa-solid fa-chart-pie text-xl"></i>
+            </a>
+            <a href="#" class="w-full aspect-square flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-800 hover:text-white transition">
+                <i class="fa-solid fa-users-gear text-xl"></i>
+            </a>
+            <a href="#" class="w-full aspect-square flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-800 hover:text-white transition">
+                <i class="fa-solid fa-wallet text-xl"></i>
+            </a>
+        </nav>
+        <div class="w-10 h-10 rounded-full bg-slate-700 border border-slate-600"></div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+        
+        <header class="h-20 border-b border-slate-800 flex items-center justify-between px-8 bg-slate-900/80 backdrop-blur-sm z-10">
+            <div>
+                <h1 class="text-xl font-bold text-white tracking-tight">Reporte de Conversión</h1>
+                <p class="text-xs text-slate-400">Funnel: High Ticket VSL > Call</p>
+            </div>
+            
+            <div class="flex bg-slate-800 p-1 rounded-lg border border-slate-700">
+                <button onclick="updateRealisticData('mes')" id="btn-mes" class="px-4 py-2 text-xs font-semibold rounded-md bg-slate-700 text-white shadow-sm transition border border-slate-600">Este Mes</button>
+                <button onclick="updateRealisticData('semana')" id="btn-semana" class="px-4 py-2 text-xs font-medium text-slate-400 hover:text-white transition">Esta Semana</button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-8 scroll-smooth">
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="card p-5 rounded-xl">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-xs font-semibold text-slate-400 uppercase">Ad Spend</span>
+                        <i class="fa-solid fa-credit-card text-slate-500 text-xs"></i>
+                    </div>
+                    <div class="text-2xl font-bold text-white kpi-value" id="val-spend">$3,200</div>
+                    <div class="mt-2 text-xs text-slate-400">Presupuesto mensual</div>
+                </div>
+                
+                <div class="card p-5 rounded-xl">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-xs font-semibold text-emerald-400 uppercase">Revenue (Facturado)</span>
+                        <i class="fa-solid fa-sack-dollar text-emerald-500 text-xs"></i>
+                    </div>
+                    <div class="text-2xl font-bold text-emerald-400 kpi-value" id="val-revenue">$10,500</div>
+                    <div class="mt-2 text-xs text-emerald-500/80 bg-emerald-500/10 inline-block px-2 py-0.5 rounded">Cobrado Cash</div>
+                </div>
+
+                <div class="card p-5 rounded-xl border-indigo-500/30 bg-indigo-900/10">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-xs font-semibold text-indigo-300 uppercase">ROAS</span>
+                        <i class="fa-solid fa-trophy text-indigo-400 text-xs"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-indigo-400 kpi-value" id="val-roas">3.28x</div>
+                    <div class="mt-2 text-xs text-indigo-300">Retorno saludable</div>
+                </div>
+
+                <div class="card p-5 rounded-xl">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-xs font-semibold text-slate-400 uppercase">Costo x Agenda</span>
+                        <i class="fa-solid fa-calendar-check text-slate-500 text-xs"></i>
+                    </div>
+                    <div class="text-2xl font-bold text-white kpi-value" id="val-cpa">$85.40</div>
+                    <div class="mt-2 text-xs text-slate-400">KPI Meta: < $100</div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <div class="lg:col-span-8 flex flex-col gap-6">
+                    <div class="card p-6 rounded-xl">
+                        <h3 class="text-sm font-semibold text-white mb-6">Tráfico vs Agendamientos (Tendencia)</h3>
+                        <div class="h-80 w-full">
+                            <canvas id="mainTrendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card rounded-xl overflow-hidden">
+                        <div class="px-6 py-4 border-b border-slate-700 bg-slate-800/50">
+                            <h3 class="text-sm font-semibold text-white">Desglose de Conversión</h3>
+                        </div>
+                        <table class="w-full text-sm text-left text-slate-400">
+                            <thead class="text-xs text-slate-500 uppercase bg-slate-900">
+                                <tr>
+                                    <th class="px-6 py-3">Etapa</th>
+                                    <th class="px-6 py-3 text-center">Cantidad</th>
+                                    <th class="px-6 py-3 text-center">Tasa (%)</th>
+                                    <th class="px-6 py-3 text-right">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-800">
+                                <tr>
+                                    <td class="px-6 py-4 font-medium text-white">Leads Captados</td>
+                                    <td class="px-6 py-4 text-center" id="tbl-leads">420</td>
+                                    <td class="px-6 py-4 text-center text-slate-500">-</td>
+                                    <td class="px-6 py-4 text-right"><span class="px-2 py-1 bg-slate-700 rounded text-xs">Top Funnel</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-medium text-white">Llamadas Agendadas</td>
+                                    <td class="px-6 py-4 text-center font-bold text-indigo-400" id="tbl-booked">38</td>
+                                    <td class="px-6 py-4 text-center text-indigo-300">9.0%</td>
+                                    <td class="px-6 py-4 text-right"><span class="px-2 py-1 bg-indigo-900/30 text-indigo-300 rounded text-xs">Calificado</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-medium text-white">Shows (Asistieron)</td>
+                                    <td class="px-6 py-4 text-center font-bold text-blue-400" id="tbl-shows">28</td>
+                                    <td class="px-6 py-4 text-center text-blue-300">73.6%</td>
+                                    <td class="px-6 py-4 text-right"><span class="px-2 py-1 bg-blue-900/30 text-blue-300 rounded text-xs">Show Rate OK</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 font-medium text-white">Ventas Cerradas</td>
+                                    <td class="px-6 py-4 text-center font-bold text-emerald-400" id="tbl-sales">5</td>
+                                    <td class="px-6 py-4 text-center text-emerald-300">17.8%</td>
+                                    <td class="px-6 py-4 text-right"><span class="px-2 py-1 bg-emerald-900/30 text-emerald-300 rounded text-xs">Cliente</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-4">
+                    <div class="card p-6 rounded-xl h-full">
+                        <h3 class="text-sm font-semibold text-white mb-6">Embudo Visual</h3>
+                        
+                        <div class="relative h-64 mb-6">
+                            <canvas id="funnelVisualChart"></canvas>
+                        </div>
+
+                        <div class="space-y-6 mt-8">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-400">Show Rate (Asistencia)</span>
+                                    <span class="text-white font-bold" id="metric-showrate">74%</span>
+                                </div>
+                                <div class="w-full bg-slate-700 rounded-full h-1.5">
+                                    <div class="bg-blue-500 h-1.5 rounded-full" style="width: 74%"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-slate-400">Closing Rate (Cierre)</span>
+                                    <span class="text-white font-bold" id="metric-closingrate">18%</span>
+                                </div>
+                                <div class="w-full bg-slate-700 rounded-full h-1.5">
+                                    <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 18%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-8 p-4 bg-slate-800 rounded-lg border border-slate-700">
+                                <p class="text-xs text-slate-400 leading-relaxed">
+                                    <i class="fa-solid fa-circle-info mr-1 text-indigo-400"></i>
+                                    <strong>Insight IA:</strong> Tu tasa de asistencia (Shows) está saludable (>70%). Para escalar a <strong>$15k</strong>, enfócate en mejorar el cierre de ventas del 18% al 25% con seguimiento.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Configuración Base
+        Chart.defaults.font.family = 'Plus Jakarta Sans';
+        Chart.defaults.color = '#64748b';
+
+        let trendChart = null;
+        let funnelChart = null;
+
+        // DATOS REALISTAS (ROAS ~3x)
+        const db = {
+            mes: {
+                kpis: { spend: '$3,200', revenue: '$10,500', roas: '3.28x', cpa: '$84.20' },
+                funnel: { leads: 420, booked: 38, shows: 28, sales: 5 }, // 5 sales * $2100 avg ticket = $10.5k
+                rates: { show: '74%', closing: '18%' },
+                trend: {
+                    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+                    leads: [95, 110, 105, 110],
+                    booked: [8, 11, 9, 10]
+                }
+            },
+            semana: {
+                kpis: { spend: '$850', revenue: '$2,500', roas: '2.94x', cpa: '$94.40' },
+                funnel: { leads: 110, booked: 9, shows: 6, sales: 1 },
+                rates: { show: '66%', closing: '16%' },
+                trend: {
+                    labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
+                    leads: [15, 18, 12, 20, 15, 18, 12],
+                    booked: [1, 2, 1, 2, 1, 2, 0]
+                }
+            }
+        };
+
+        function initCharts() {
+            // 1. Gráfico de Tendencia (Línea + Barras)
+            const ctxTrend = document.getElementById('mainTrendChart').getContext('2d');
+            trendChart = new Chart(ctxTrend, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Leads',
+                            data: [],
+                            backgroundColor: '#334155',
+                            borderRadius: 4,
+                            order: 2
+                        },
+                        {
+                            label: 'Agendamientos',
+                            data: [],
+                            type: 'line',
+                            borderColor: '#6366f1', // Indigo
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#6366f1',
+                            yAxisID: 'y1',
+                            order: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top', align: 'end' } },
+                    scales: {
+                        y: { grid: { display: false } },
+                        y1: { position: 'right', grid: { color: '#334155', drawBorder: false }, min: 0 }
+                    }
+                }
+            });
+
+            // 2. Gráfico Funnel Visual (Vertical)
+            const ctxFunnel = document.getElementById('funnelVisualChart').getContext('2d');
+            funnelChart = new Chart(ctxFunnel, {
+                type: 'bar',
+                data: {
+                    labels: ['Leads', 'Agendas', 'Shows', 'Ventas'],
+                    datasets: [{
+                        label: 'Volumen',
+                        data: [],
+                        backgroundColor: [
+                            '#475569', // Slate
+                            '#6366f1', // Indigo
+                            '#3b82f6', // Blue
+                            '#10b981'  // Emerald
+                        ],
+                        borderRadius: 6,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { type: 'logarithmic', grid: { color: '#334155', borderDash: [5, 5] }, display:true }, // Logarítmico para ver bien las diferencias
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateRealisticData(period) {
+            // Estilos de botones
+            document.getElementById('btn-mes').className = period === 'mes' ? 
+                "px-4 py-2 text-xs font-semibold rounded-md bg-slate-700 text-white shadow-sm transition border border-slate-600" : 
+                "px-4 py-2 text-xs font-medium text-slate-400 hover:text-white transition";
+            
+            document.getElementById('btn-semana').className = period === 'semana' ? 
+                "px-4 py-2 text-xs font-semibold rounded-md bg-slate-700 text-white shadow-sm transition border border-slate-600" : 
+                "px-4 py-2 text-xs font-medium text-slate-400 hover:text-white transition";
+
+            const data = db[period];
+
+            // Update KPIs Texto
+            document.getElementById('val-spend').innerText = data.kpis.spend;
+            document.getElementById('val-revenue').innerText = data.kpis.revenue;
+            document.getElementById('val-roas').innerText = data.kpis.roas;
+            document.getElementById('val-cpa').innerText = data.kpis.cpa;
+
+            // Update Tabla
+            document.getElementById('tbl-leads').innerText = data.funnel.leads;
+            document.getElementById('tbl-booked').innerText = data.funnel.booked;
+            document.getElementById('tbl-shows').innerText = data.funnel.shows;
+            document.getElementById('tbl-sales').innerText = data.funnel.sales;
+
+            // Update Barras de Progreso
+            document.getElementById('metric-showrate').innerText = data.rates.show;
+            document.getElementById('metric-closingrate').innerText = data.rates.closing;
+
+            // Update Gráfico Tendencia
+            trendChart.data.labels = data.trend.labels;
+            trendChart.data.datasets[0].data = data.trend.leads; // Barras Leads
+            trendChart.data.datasets[1].data = data.trend.booked; // Linea Agendas
+            trendChart.update();
+
+            // Update Gráfico Funnel
+            funnelChart.data.datasets[0].data = [
+                data.funnel.leads, 
+                data.funnel.booked, 
+                data.funnel.shows, 
+                data.funnel.sales
+            ];
+            funnelChart.update();
+        }
+
+        // Inicializar
+        window.onload = function() {
+            initCharts();
+            updateRealisticData('mes');
+        };
+
+    </script>
+</body>
+</html>
