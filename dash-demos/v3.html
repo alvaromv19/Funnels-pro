@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EstateFlow | Real Estate Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        /* Configuración de Tipografía y Colores Premium */
+        body { font-family: 'Lato', sans-serif; background-color: #0B1120; color: #cbd5e1; } /* Azul muy oscuro */
+        h1, h2, h3, .brand-font { font-family: 'Playfair Display', serif; }
+        
+        /* Carta con efecto "Glass Luxury" */
+        .card { 
+            background: linear-gradient(145deg, #162032 0%, #0f172a 100%); 
+            border: 1px solid #334155; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Detalles en Dorado */
+        .text-gold { color: #fbbf24; }
+        .bg-gold { background-color: #fbbf24; }
+        .border-gold { border-color: #fbbf24; }
+        .gold-gradient-text {
+            background: linear-gradient(to right, #fbbf24, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Botones de Filtro */
+        .btn-filter.active { 
+            background-color: #fbbf24; 
+            color: #0f172a; 
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="h-screen flex overflow-hidden">
+
+    <aside class="w-64 bg-[#080c17] border-r border-slate-800 hidden md:flex flex-col">
+        <div class="h-24 flex items-center justify-center border-b border-slate-800">
+            <div class="text-center">
+                <i class="fa-solid fa-building-columns text-amber-400 text-2xl mb-1"></i>
+                <h2 class="text-xl font-bold text-white tracking-widest brand-font">LUXURY<span class="text-amber-400">ESTATE</span></h2>
+            </div>
+        </div>
+        
+        <nav class="flex-1 py-8 px-4 space-y-2">
+            <div class="px-4 py-2 text-xs uppercase text-slate-500 font-bold tracking-wider mb-2">Menú Principal</div>
+            
+            <a href="#" class="flex items-center px-4 py-3 bg-amber-500/10 text-amber-400 border-l-4 border-amber-400 rounded-r-lg transition">
+                <i class="fa-solid fa-chart-line w-8"></i> Rendimiento
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition">
+                <i class="fa-solid fa-house-user w-8"></i> Propiedades
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition">
+                <i class="fa-solid fa-users w-8"></i> CRM Clientes
+            </a>
+             <a href="#" class="flex items-center px-4 py-3 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition">
+                <i class="fa-solid fa-calendar-check w-8"></i> Visitas (Tours)
+            </a>
+        </nav>
+
+        <div class="p-6 border-t border-slate-800">
+            <div class="flex items-center gap-3">
+                <img src="https://ui-avatars.com/api/?name=Alvaro+Maza&background=fbbf24&color=0f172a" class="w-10 h-10 rounded-full border-2 border-slate-700">
+                <div>
+                    <p class="text-sm font-bold text-white">Alvaro Maza</p>
+                    <p class="text-xs text-amber-500">Top Producer</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full overflow-hidden bg-[#0B1120]">
+        
+        <header class="h-20 flex items-center justify-between px-8 border-b border-slate-800 bg-[#0B1120]">
+            <div>
+                <h1 class="text-2xl text-white brand-font">Panel de Control <span class="text-slate-500 text-lg font-sans font-light">| Q1 2026</span></h1>
+            </div>
+            
+            <div class="flex bg-slate-800/50 p-1 rounded-lg border border-slate-700">
+                <button onclick="updateEstateData('mes')" id="btn-mes" class="btn-filter active px-6 py-2 text-sm rounded-md text-slate-400 hover:text-white transition">Mensual</button>
+                <button onclick="updateEstateData('semana')" id="btn-semana" class="btn-filter px-6 py-2 text-sm rounded-md text-slate-400 hover:text-white transition">Semanal</button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <div class="card p-6 rounded-lg relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition"><i class="fa-solid fa-bullhorn text-6xl text-white"></i></div>
+                    <p class="text-slate-400 text-xs uppercase tracking-widest font-bold">Inversión Ads</p>
+                    <h3 class="text-3xl font-bold text-white mt-2 brand-font" id="kpi-spend">$1,800</h3>
+                    <p class="text-xs text-slate-500 mt-2">Facebook & Instagram (Meta)</p>
+                </div>
+
+                <div class="card p-6 rounded-lg relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition"><i class="fa-solid fa-user-group text-6xl text-blue-400"></i></div>
+                    <p class="text-slate-400 text-xs uppercase tracking-widest font-bold">Prospectos</p>
+                    <h3 class="text-3xl font-bold text-white mt-2 brand-font" id="kpi-leads">145</h3>
+                    <p class="text-xs text-blue-400 mt-2">CPL: <span id="kpi-cpl">$12.41</span></p>
+                </div>
+
+                <div class="card p-6 rounded-lg relative overflow-hidden group">
+                    <div class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition"><i class="fa-solid fa-key text-6xl text-amber-400"></i></div>
+                    <p class="text-slate-400 text-xs uppercase tracking-widest font-bold text-amber-500">Visitas Agendadas</p>
+                    <h3 class="text-3xl font-bold text-white mt-2 brand-font" id="kpi-tours">22</h3>
+                    <p class="text-xs text-amber-500 mt-2">15% Tasa de conversión</p>
+                </div>
+
+                <div class="card p-6 rounded-lg border-amber-500/30 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent"></div>
+                    <div class="relative z-10">
+                        <p class="text-amber-200 text-xs uppercase tracking-widest font-bold">Comisión Generada (GCI)</p>
+                        <h3 class="text-4xl font-bold text-amber-400 mt-2 brand-font" id="kpi-gci">$6,750</h3>
+                        <div class="flex items-center gap-2 mt-2">
+                             <span class="text-xs text-white bg-green-900/50 px-2 py-0.5 rounded border border-green-800">ROAS: <span id="kpi-roas">3.75x</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                
+                <div class="card p-6 rounded-lg lg:col-span-2">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-lg text-white brand-font">Embudo de Ventas Inmobiliario</h3>
+                        <div class="flex gap-2 text-xs text-slate-400">
+                            <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-slate-500"></div> Prospectos</span>
+                            <span class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-amber-500"></div> Cierres</span>
+                        </div>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="realEstateChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-lg text-white brand-font mb-4">Fuentes de Calidad</h3>
+                    <div class="h-48 relative mb-4">
+                        <canvas id="sourceChart"></canvas>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-sm border-b border-slate-800 pb-2">
+                            <span class="text-slate-400"><i class="fa-brands fa-facebook text-blue-600 mr-2"></i>FB/IG Ads</span>
+                            <span class="text-white font-bold">65% <span class="text-xs text-slate-500 font-normal">(Volumen)</span></span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm border-b border-slate-800 pb-2">
+                            <span class="text-slate-400"><i class="fa-brands fa-google text-red-500 mr-2"></i>Google Ads</span>
+                            <span class="text-white font-bold">25% <span class="text-xs text-amber-500 font-normal">(Alta Calidad)</span></span>
+                        </div>
+                         <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-400"><i class="fa-solid fa-envelope text-slate-400 mr-2"></i>Referidos</span>
+                            <span class="text-white font-bold">10%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded-lg overflow-hidden">
+                <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+                    <h3 class="text-lg text-white brand-font">Pipeline de Oportunidades (Hot Leads)</h3>
+                    <button class="text-xs text-amber-500 border border-amber-500/50 px-3 py-1 rounded hover:bg-amber-500 hover:text-black transition">Ver CRM Completo</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-slate-400">
+                        <thead class="bg-[#0f172a] text-xs uppercase text-slate-500 font-bold tracking-wider">
+                            <tr>
+                                <th class="px-6 py-4">Cliente</th>
+                                <th class="px-6 py-4">Interés</th>
+                                <th class="px-6 py-4">Presupuesto</th>
+                                <th class="px-6 py-4">Estado</th>
+                                <th class="px-6 py-4 text-right">Potencial GCI</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800 text-sm">
+                            <tr class="hover:bg-slate-800/50 transition">
+                                <td class="px-6 py-4 font-medium text-white flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">JP</div>
+                                    Juan Pérez
+                                </td>
+                                <td class="px-6 py-4">Dpto. Miraflores (3 Dorm)</td>
+                                <td class="px-6 py-4">$280,000</td>
+                                <td class="px-6 py-4"><span class="bg-amber-500/10 text-amber-500 px-2 py-1 rounded text-xs border border-amber-500/20">Visita Agendada</span></td>
+                                <td class="px-6 py-4 text-right text-white font-bold">$8,400</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/50 transition">
+                                <td class="px-6 py-4 font-medium text-white flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">MA</div>
+                                    María Álvarez
+                                </td>
+                                <td class="px-6 py-4">Casa de Playa (Asia)</td>
+                                <td class="px-6 py-4">$450,000</td>
+                                <td class="px-6 py-4"><span class="bg-green-500/10 text-green-500 px-2 py-1 rounded text-xs border border-green-500/20">Oferta Enviada</span></td>
+                                <td class="px-6 py-4 text-right text-white font-bold">$13,500</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/50 transition">
+                                <td class="px-6 py-4 font-medium text-white flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs">CR</div>
+                                    Carlos Ruiz
+                                </td>
+                                <td class="px-6 py-4">Oficina Boutique</td>
+                                <td class="px-6 py-4">$180,000</td>
+                                <td class="px-6 py-4"><span class="bg-blue-500/10 text-blue-500 px-2 py-1 rounded text-xs border border-blue-500/20">Pre-calificando</span></td>
+                                <td class="px-6 py-4 text-right text-white font-bold">$5,400</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Configuración Global Chart.js
+        Chart.defaults.font.family = 'Lato';
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.scale.grid.color = '#334155';
+
+        let mainChart = null;
+        let pieChart = null;
+
+        // Base de Datos Simulada (Real Estate Logic)
+        // Comision promedio ~3% del valor de venta.
+        const dbEstate = {
+            mes: {
+                kpi: { spend: '$1,800', leads: 145, cpl: '$12.41', tours: 22, gci: '$6,750', roas: '3.75x' },
+                chartLabels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+                chartData: {
+                    leads: [30, 45, 35, 35],
+                    tours: [4, 7, 5, 6]
+                }
+            },
+            semana: {
+                kpi: { spend: '$450', leads: 35, cpl: '$12.85', tours: 6, gci: '$0', roas: 'PEND' }, // En una semana es difícil cerrar una venta, muestra realismo poner 0 o Pendiente
+                chartLabels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
+                chartData: {
+                    leads: [5, 8, 4, 6, 5, 7, 0],
+                    tours: [1, 2, 0, 1, 1, 1, 0]
+                }
+            }
+        };
+
+        function initEstateCharts() {
+            // 1. Gráfico Combinado (Leads vs Visitas)
+            const ctxMain = document.getElementById('realEstateChart').getContext('2d');
+            
+            // Gradiente Dorado
+            let gradientGold = ctxMain.createLinearGradient(0, 0, 0, 300);
+            gradientGold.addColorStop(0, 'rgba(251, 191, 36, 0.2)');
+            gradientGold.addColorStop(1, 'rgba(251, 191, 36, 0)');
+
+            mainChart = new Chart(ctxMain, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Visitas (Tours)',
+                            data: [],
+                            borderColor: '#fbbf24', // Gold
+                            backgroundColor: gradientGold,
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#fbbf24',
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Prospectos Nuevos',
+                            data: [],
+                            type: 'bar',
+                            backgroundColor: '#334155', // Slate bars
+                            borderRadius: 4,
+                            barThickness: 20,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top', align: 'end' } },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { position: 'right', grid: { display: false }, min: 0 },
+                        y1: { position: 'left', grid: { color: '#1e293b' }, min: 0 }
+                    }
+                }
+            });
+
+            // 2. Donut Chart (Fuentes)
+            const ctxPie = document.getElementById('sourceChart').getContext('2d');
+            pieChart = new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Meta Ads', 'Google Ads', 'Referidos'],
+                    datasets: [{
+                        data: [65, 25, 10],
+                        backgroundColor: ['#2563eb', '#ef4444', '#94a3b8'],
+                        borderColor: '#1e293b',
+                        borderWidth: 2,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateEstateData(period) {
+            // Estilos de botones
+            document.querySelectorAll('.btn-filter').forEach(b => b.classList.remove('active', 'bg-[#fbbf24]', 'text-[#0f172a]'));
+            const btn = document.getElementById('btn-' + period);
+            btn.classList.add('active');
+
+            const data = dbEstate[period];
+
+            // KPIs Update
+            document.getElementById('kpi-spend').innerText = data.kpi.spend;
+            document.getElementById('kpi-leads').innerText = data.kpi.leads;
+            document.getElementById('kpi-cpl').innerText = data.kpi.cpl;
+            document.getElementById('kpi-tours').innerText = data.kpi.tours;
+            document.getElementById('kpi-gci').innerText = data.kpi.gci;
+            document.getElementById('kpi-roas').innerText = data.kpi.roas;
+
+            // Chart Update
+            mainChart.data.labels = data.chartLabels;
+            mainChart.data.datasets[1].data = data.chartData.leads; // Barras
+            mainChart.data.datasets[0].data = data.chartData.tours; // Linea
+            mainChart.update();
+        }
+
+        window.onload = function() {
+            initEstateCharts();
+            updateEstateData('mes');
+        };
+
+    </script>
+</body>
+</html>
