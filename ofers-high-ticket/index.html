@@ -226,6 +226,54 @@
         
         .glass-box:hover::after { opacity: 1; }
 
+        /* RESULTADOS STYLES (OPTIMIZADO) */
+        .result-image-container {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: #000; /* Fondo negro para contraste */
+            display: flex; /* Centrado perfecto */
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .result-image-container img {
+            width: 100%;
+            height: auto;
+            max-width: 100%; /* Evita desbordamiento */
+            display: block;
+            object-fit: contain; /* Asegura que se vea completa */
+            transition: transform 0.5s ease;
+        }
+
+        .result-image-container:hover img {
+            transform: scale(1.05); /* Zoom sutil al hover */
+        }
+
+        .result-overlay {
+            position: absolute;
+            bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.95) 10%, transparent);
+            padding: 50px 20px 20px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .stat-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-block;
+            margin-bottom: 5px;
+            backdrop-filter: blur(4px);
+        }
+
         /* =========================================
            4. SECCIONES
            ========================================= */
@@ -403,24 +451,18 @@
             display: none;
         }
 
-        /* --- ESTILOS MEJORADOS PARA LA AGENDA CON SCROLL --- */
+        /* --- ESTILOS DE AGENDA (DESKTOP DEFAULT) --- */
         #embedded-agenda {
-            display: none; /* Asegura que inicie oculto */
+            display: none;
             opacity: 0;
             transition: opacity 0.8s ease;
             width: 100%;
-            
-            /* ALTURA OPTIMIZADA PARA DESKTOP */
-            height: 700px; 
-            
-            /* HABILITAR SCROLL */
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; 
-            
-            /* Scrollbar styling */
+            height: 700px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
             scrollbar-color: var(--accent-cyan-dark) rgba(255, 255, 255, 0.05);
-            padding-right: 5px; 
+            padding-right: 5px;
         }
 
         #embedded-agenda::-webkit-scrollbar { width: 6px; }
@@ -433,25 +475,63 @@
             opacity: 1;
         }
 
-        /* RESPONSIVE & MOBILE FIXES */
+        /* =========================================
+           6. OPTIMIZACIÓN FULL-WIDTH MÓVIL
+           ========================================= */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
             .hero-sub { font-size: 1.1rem; }
             .letter-style { padding-left: 20px; border-left-width: 2px; }
             .offer-grid { grid-template-columns: 1fr; }
             
-            /* Mostrar botón sticky */
+            /* Sticky y Footer ajustes */
             .mobile-sticky { display: block; }
-            /* Footer padding para que no lo tape el botón sticky */
             .footer-btn-container { padding-bottom: 120px; } 
             
             .mechanism-grid::before { left: 20px; transform: none; } 
 
-            /* --- ALTURA MEJORADA PARA MÓVIL --- */
+            /* --- MÁRGENES CERO EN FOOTER PARA LA AGENDA --- */
+            
+            /* 1. Quitamos padding lateral al contenedor del footer */
+            #audit.container {
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            /* 2. Mantener padding en el título y texto, pero no en la caja */
+            #audit h2, #audit p, #audit ul {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            /* 3. La caja de conversión (Form) ocupa el 100% */
+            #conversion-box {
+                margin-top: 30px;
+                border-radius: 0; /* Bordes cuadrados en móvil para full width */
+                border-left: none;
+                border-right: none;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+                width: 100vw; /* Ancho total de la ventana */
+                position: relative;
+                left: 50%;
+                right: 50%;
+                margin-left: -50vw;
+                margin-right: -50vw;
+                background: #0B0C10; /* Fondo sólido para que no se vea raro el glass */
+            }
+
+            /* 4. Padding para el texto inicial dentro de la caja */
+            #initial-offer-content {
+                padding: 0 20px; /* Recuperamos padding solo para el texto */
+            }
+
+            /* 5. Altura maximizada para la agenda en móvil */
             #embedded-agenda {
-                /* Más alto en móvil para ver mejor el calendario */
-                height: 800px; 
-                max-height: 85vh;
+                height: 85vh; /* Casi toda la pantalla */
+                padding-right: 0;
             }
         }
 
@@ -522,21 +602,21 @@
     </section>
 
     <section class="container reveal" style="padding: 100px 20px; text-align: center;">
-    <h2 style="margin-bottom: 10px;">NO CONFIAMOS EN LA TEORÍA <br><span class="text-gradient">CONFIAMOS EN EL RETORNO</span></h2>
-    <p style="text-align: center; max-width: 600px; margin: 0 auto 40px auto;">Esto es lo que sucede cuando conectas una oferta validada con nuestro sistema de tráfico.</p>
+        <h2 style="margin-bottom: 10px;">NO CONFIAMOS EN LA TEORÍA <br><span class="text-gradient">CONFIAMOS EN EL ROAS</span></h2>
+        <p style="text-align: center; max-width: 600px; margin: 0 auto 40px auto;">Esto es lo que sucede cuando conectas una oferta validada con nuestro sistema de tráfico.</p>
 
-    <div class="glass-box" style="padding: 10px !important;">
-        <div class="result-image-container">
-            <img src="./Resultado-1.webp" alt="Resultados ROAS 5.27" loading="lazy">
-            
-            <div class="result-overlay">
-                <span class="stat-badge"><i class="ph-fill ph-trend-up"></i> ROAS 5.27</span>
-                <p style="color: #fff; margin: 0; font-size: 0.9rem; font-weight: 500;">$197,354 generados con Tráfico Frío</p>
+        <div class="glass-box" style="padding: 0 !important; border: 1px solid rgba(255,255,255,0.1); overflow: hidden;">
+            <div class="result-image-container">
+                <img src="Resultado-1.webp" alt="Resultados ROAS 5.27" loading="lazy">
+                
+                <div class="result-overlay">
+                    <span class="stat-badge"><i class="ph-fill ph-trend-up"></i> ROAS 5.27</span>
+                    <p style="color: #fff; margin: 0; font-size: 0.9rem; font-weight: 500;">$197,354 generados con Tráfico Frío</p>
+                </div>
             </div>
         </div>
-    </div>
     </section>
-    
+
     <section class="container reveal">
         <h2 style="text-align: center; margin-bottom: 10px;">CÓMO FUNCIONA</h2>
         <p style="text-align: center; color: var(--accent-purple); font-weight: 600;">EL MECANISMO DE SEGURIDAD</p>
@@ -659,7 +739,7 @@
         const triggerBtn = document.getElementById('trigger-agenda-btn');
         const initialContent = document.getElementById('initial-offer-content');
         const agendaContent = document.getElementById('embedded-agenda');
-        const mobileSticky = document.querySelector('.mobile-sticky'); // Seleccionamos el botón sticky
+        const mobileSticky = document.querySelector('.mobile-sticky');
 
         function activateForm() {
             // 1. Desvanecer el contenido inicial
