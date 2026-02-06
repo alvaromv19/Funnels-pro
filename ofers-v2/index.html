@@ -227,12 +227,15 @@
         .glass-box:hover::after { opacity: 1; }
 
         /* RESULTADOS STYLES */
+        /* CONTENEDOR DE LA IMAGEN (SOLO IMAGEN) */
         .result-image-container {
             position: relative;
-            border-radius: 8px;
             overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            background: #000;
+            /* La imagen ocupa todo el espacio sin paddings */
+            display: flex;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255,255,255,0.08); /* Línea sutil separadora */
         }
         
         .result-image-container img {
@@ -242,43 +245,30 @@
             transition: transform 0.5s ease;
         }
 
-        .result-image-container:hover img {
+        /* EFECTO ZOOM AL PASAR MOUSE POR LA TARJETA COMPLETA */
+        .glass-box:hover .result-image-container img {
             transform: scale(1.03);
         }
 
-        .result-overlay {
-            position: absolute;
-            bottom: 20px; /* Lo despegamos del fondo */
-            left: 50%; 
-            transform: translateX(-50%); /* Centrado perfecto */
-            width: max-content; /* Se ajusta al tamaño del texto */
-            max-width: 90%;
-            
-            /* NUEVO ESTILO: Cápsula flotante en vez de gradiente */
-            background: rgba(11, 12, 16, 0.35); /* Fondo oscuro semitransparente */
-            backdrop-filter: blur(8px); /* Efecto borroso elegante */
-            padding: 10px 25px;
-            border-radius: 50px;
-            border: 1px solid rgba(102, 252, 241, 0.2); /* Borde sutil cyan */
-            
-            pointer-events: none;
-            z-index: 10;
+        /* NUEVA CAJA DE TEXTO DEBAJO DE LA IMAGEN */
+        .result-info-box {
+            padding: 25px 20px; /* Espacio para respirar */
             text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            background: rgba(255, 255, 255, 0.01); /* Fondo muy sutil */
         }
 
         .stat-badge {
-            background: rgba(16, 185, 129, 0.2);
+            background: rgba(16, 185, 129, 0.15);
             color: #10b981;
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            padding: 5px 12px;
+            border-radius: 50px; /* Más redondo */
+            font-size: 0.85rem;
             font-weight: 700;
             display: inline-block;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
         }
-
         /* =========================================
            4. SECCIONES
            ========================================= */
@@ -595,14 +585,21 @@
     </section>
 
     <section class="container reveal" style="padding: 100px 20px; text-align: center;">
-        <div class="glass-box">
-            <h2 style="margin-bottom: 10px;" class="text-gradient">LA NUEVA OPORTUNIDAD</h2>
-            <p style="text-transform: uppercase; font-size: 0.8rem; letter-spacing: 2px; margin-bottom: 30px; color: var(--accent-purple);">Cambio de Paradigma</p>
+        <h2 style="margin-bottom: 10px;">NO CONFIAMOS EN LA TEORÍA <br><span class="text-gradient">CONFIAMOS EN EL ROAS</span></h2>
+        <p style="text-align: center; max-width: 600px; margin: 0 auto 40px auto;">Esto es lo que sucede cuando conectas una oferta validada con nuestro sistema de tráfico.</p>
+
+        <div class="glass-box" style="padding: 0 !important; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; max-width: 800px; margin: 0 auto;">
             
-            <h3 style="margin-bottom: 20px;">La Verdad sobre tu Mercado:</h3>
-            <p>En este preciso momento, el <strong>3% de tu mercado</strong> está en lo que llamamos "Modo de Compra Inmediata". Tienen un dolor agudo, tienen el dinero y quieren la solución YA. No quieren leer tu ebook gratuito. Quieren pagarte para que les resuelvas el problema.</p>
-            <p>Si los obligas a pasar por un embudo lento, los pierdes.</p>
-            <p>En <strong>EVO LAUNCH</strong>, hemos desarrollado una metodología diferente. Nosotros no buscamos likes. No buscamos "engagement". Nosotros conectamos tu oferta más cara con tráfico frío de manera rentable.</p>
+            <div class="result-image-container">
+                <img src="Resultado-1.webp" alt="Resultados ROAS 5.27" loading="lazy">
+            </div>
+
+            <div class="result-info-box">
+                <span class="stat-badge"><i class="ph-fill ph-trend-up"></i> ROAS 5.27</span>
+                <h3 style="font-size: 1.2rem; margin-bottom: 5px; color: #fff;">$197,354 USD Generados</h3>
+                <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted);">Campaña de Tráfico Frío (Sin Retargeting)</p>
+            </div>
+
         </div>
     </section>
 
