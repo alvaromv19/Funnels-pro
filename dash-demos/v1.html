@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High Ticket Master Dashboard | Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #e2e8f0; }
+        .card { background-color: #1e293b; border: 1px solid #334155; transition: transform 0.2s; }
+        .card:hover { transform: translateY(-2px); border-color: #64748b; }
+        .gradient-text { background: linear-gradient(to right, #4ade80, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-filter.active { background-color: #3b82f6; color: white; border-color: #3b82f6; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex">
+
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 hidden md:flex flex-col">
+        <div class="h-16 flex items-center px-6 border-b border-slate-800">
+            <i class="fa-solid fa-rocket text-blue-500 text-xl mr-3"></i>
+            <span class="text-xl font-bold tracking-tight text-white">GROWTH <span class="text-blue-500">PARTNER</span></span>
+        </div>
+        <nav class="flex-1 px-4 py-6 space-y-2">
+            <a href="#" class="flex items-center px-4 py-3 bg-blue-600/10 text-blue-400 rounded-lg border border-blue-600/20">
+                <i class="fa-solid fa-chart-line w-6"></i> Dashboard General
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                <i class="fa-solid fa-filter w-6"></i> Funnel High Ticket
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                <i class="fa-solid fa-users w-6"></i> CRM & Leads
+            </a>
+            <a href="#" class="flex items-center px-4 py-3 text-slate-400 hover:bg-slate-800 hover:text-white rounded-lg transition">
+                <i class="fa-solid fa-sack-dollar w-6"></i> Facturación
+            </a>
+        </nav>
+        <div class="p-4 border-t border-slate-800">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500"></div>
+                <div>
+                    <p class="text-sm font-medium text-white">Admin Demo</p>
+                    <p class="text-xs text-slate-500">Media Buyer Senior</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden">
+        
+        <header class="h-16 bg-slate-900/50 backdrop-blur-md border-b border-slate-800 flex items-center justify-between px-8">
+            <h1 class="text-lg font-semibold text-slate-200">Visión General del Funnel</h1>
+            
+            <div class="flex items-center gap-4 bg-slate-800 p-1 rounded-lg border border-slate-700">
+                <button onclick="updateData('dias')" class="btn-filter px-4 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:text-white transition" id="btn-dia">Hoy</button>
+                <button onclick="updateData('semanas')" class="btn-filter px-4 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:text-white transition" id="btn-semana">Esta Semana</button>
+                <button onclick="updateData('mes')" class="btn-filter active px-4 py-1.5 text-xs font-medium rounded-md text-slate-400 hover:text-white transition" id="btn-mes">Este Mes</button>
+                <div class="h-4 w-px bg-slate-700 mx-1"></div>
+                <button class="px-3 py-1.5 text-xs text-slate-400 hover:text-white"><i class="fa-solid fa-calendar mr-2"></i>Personalizado</button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="card p-6 rounded-xl">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Ad Spend (Inversión)</p>
+                            <h3 class="text-2xl font-bold text-white mt-1" id="kpi-spend">$4,250.00</h3>
+                        </div>
+                        <div class="p-2 bg-red-500/10 rounded-lg text-red-400"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                    </div>
+                    <span class="text-xs text-slate-500">Presupuesto optimizado</span>
+                </div>
+
+                <div class="card p-6 rounded-xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-bl-full -mr-4 -mt-4"></div>
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Revenue (Facturación)</p>
+                            <h3 class="text-2xl font-bold text-emerald-400 mt-1" id="kpi-revenue">$35,800.00</h3>
+                        </div>
+                        <div class="p-2 bg-emerald-500/10 rounded-lg text-emerald-400"><i class="fa-solid fa-dollar-sign"></i></div>
+                    </div>
+                    <span class="text-xs text-emerald-500 flex items-center gap-1"><i class="fa-solid fa-arrow-up"></i> +12% vs mes anterior</span>
+                </div>
+
+                <div class="card p-6 rounded-xl border-blue-500/30">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">ROAS Total</p>
+                            <h3 class="text-3xl font-bold text-blue-400 mt-1" id="kpi-roas">8.42x</h3>
+                        </div>
+                        <div class="p-2 bg-blue-500/10 rounded-lg text-blue-400"><i class="fa-solid fa-chart-pie"></i></div>
+                    </div>
+                    <span class="text-xs text-slate-500">Objetivo KPI: >5.0x</span>
+                </div>
+
+                <div class="card p-6 rounded-xl">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Llamadas Agendadas</p>
+                            <h3 class="text-2xl font-bold text-white mt-1" id="kpi-calls">42</h3>
+                        </div>
+                        <div class="p-2 bg-purple-500/10 rounded-lg text-purple-400"><i class="fa-solid fa-phone"></i></div>
+                    </div>
+                    <div class="flex justify-between items-end">
+                        <span class="text-xs text-slate-500">Costo por Llamada: <span class="text-slate-300" id="kpi-cpl">$101</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="card p-6 rounded-xl lg:col-span-2">
+                    <h4 class="text-sm font-semibold text-slate-300 mb-6">Rentabilidad Diaria (Spend vs Revenue)</h4>
+                    <div class="h-72 w-full">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card p-6 rounded-xl">
+                    <h4 class="text-sm font-semibold text-slate-300 mb-6">Conversión del Funnel</h4>
+                    <div class="h-72 w-full flex items-center justify-center">
+                        <canvas id="funnelChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded-xl overflow-hidden">
+                <div class="px-6 py-4 border-b border-slate-800 flex justify-between items-center">
+                    <h4 class="text-sm font-semibold text-slate-300">Desglose por Fuente de Tráfico</h4>
+                    <button class="text-xs text-blue-400 hover:text-blue-300">Descargar CSV</button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left text-slate-400">
+                        <thead class="text-xs text-slate-500 uppercase bg-slate-800/50">
+                            <tr>
+                                <th class="px-6 py-3">Fuente</th>
+                                <th class="px-6 py-3">Inversión</th>
+                                <th class="px-6 py-3">Leads</th>
+                                <th class="px-6 py-3">CPL</th>
+                                <th class="px-6 py-3">Llamadas</th>
+                                <th class="px-6 py-3">Ventas</th>
+                                <th class="px-6 py-3 text-right">ROAS</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800">
+                            <tr class="hover:bg-slate-800/30 transition">
+                                <td class="px-6 py-4 font-medium text-white"><i class="fa-brands fa-facebook text-blue-500 mr-2"></i> Facebook/IG Ads</td>
+                                <td class="px-6 py-4">$2,100</td>
+                                <td class="px-6 py-4">350</td>
+                                <td class="px-6 py-4">$6.00</td>
+                                <td class="px-6 py-4">25</td>
+                                <td class="px-6 py-4">5</td>
+                                <td class="px-6 py-4 text-right text-emerald-400 font-bold">9.2x</td>
+                            </tr>
+                            <tr class="hover:bg-slate-800/30 transition">
+                                <td class="px-6 py-4 font-medium text-white"><i class="fa-brands fa-youtube text-red-500 mr-2"></i> YouTube Ads</td>
+                                <td class="px-6 py-4">$1,500</td>
+                                <td class="px-6 py-4">120</td>
+                                <td class="px-6 py-4">$12.50</td>
+                                <td class="px-6 py-4">15</td>
+                                <td class="px-6 py-4">4</td>
+                                <td class="px-6 py-4 text-right text-emerald-400 font-bold">7.5x</td>
+                            </tr>
+                             <tr class="hover:bg-slate-800/30 transition">
+                                <td class="px-6 py-4 font-medium text-white"><i class="fa-regular fa-envelope text-yellow-500 mr-2"></i> Email Remarketing</td>
+                                <td class="px-6 py-4">$150</td>
+                                <td class="px-6 py-4">--</td>
+                                <td class="px-6 py-4">--</td>
+                                <td class="px-6 py-4">8</td>
+                                <td class="px-6 py-4">3</td>
+                                <td class="px-6 py-4 text-right text-emerald-400 font-bold">25.0x</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Configuración Global de Gráficos
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = 'Inter';
+
+        // Variables de gráficos
+        let revenueChartInstance = null;
+        let funnelChartInstance = null;
+
+        // Data Mockup (Simulada)
+        const dataSimulation = {
+            mes: {
+                labels: ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'],
+                revenue: [5200, 7800, 12500, 10300],
+                spend: [800, 1200, 1500, 1100],
+                kpis: { spend: '$4,600', revenue: '$35,800', roas: '7.78x', calls: '48', cpl: '$95' }
+            },
+            semanas: {
+                labels: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
+                revenue: [1200, 1500, 800, 2200, 3100, 2800, 1900],
+                spend: [150, 200, 150, 300, 350, 300, 250],
+                kpis: { spend: '$1,700', revenue: '$13,500', roas: '7.94x', calls: '18', cpl: '$94' }
+            },
+            dias: {
+                labels: ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'],
+                revenue: [0, 500, 1500, 800, 1200, 2000, 500],
+                spend: [50, 80, 120, 100, 150, 200, 100],
+                kpis: { spend: '$800', revenue: '$6,500', roas: '8.12x', calls: '5', cpl: '$160' }
+            }
+        };
+
+        // Renderizado del Gráfico de Líneas (Revenue vs Spend)
+        function renderRevenueChart(labels, revenueData, spendData) {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            
+            if (revenueChartInstance) revenueChartInstance.destroy();
+
+            // Gradientes
+            let gradientRev = ctx.createLinearGradient(0, 0, 0, 400);
+            gradientRev.addColorStop(0, 'rgba(52, 211, 153, 0.5)'); // Emerald
+            gradientRev.addColorStop(1, 'rgba(52, 211, 153, 0)');
+
+            revenueChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Facturación ($)',
+                            data: revenueData,
+                            borderColor: '#34d399', // Emerald 400
+                            backgroundColor: gradientRev,
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#10b981'
+                        },
+                        {
+                            label: 'Inversión ($)',
+                            data: spendData,
+                            borderColor: '#f87171', // Red 400
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            pointRadius: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', align: 'end', labels: { usePointStyle: true, boxWidth: 8 } }
+                    },
+                    scales: {
+                        y: { grid: { color: '#334155', drawBorder: false }, beginAtZero: true },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Renderizado del Gráfico de Funnel (Barras Horizontales)
+        function renderFunnelChart() {
+            const ctx = document.getElementById('funnelChart').getContext('2d');
+            
+            if (funnelChartInstance) funnelChartInstance.destroy();
+
+            funnelChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Clicks (Tráfico)', 'Leads (Opt-in)', 'Llamadas Agendadas', 'Ventas (High Ticket)'],
+                    datasets: [{
+                        label: 'Conversión',
+                        data: [2500, 650, 45, 12],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.2)', // Blue
+                            'rgba(168, 85, 247, 0.4)', // Purple
+                            'rgba(234, 179, 8, 0.6)',  // Yellow
+                            'rgba(16, 185, 129, 0.8)'  // Emerald
+                        ],
+                        borderColor: [
+                            '#3b82f6',
+                            '#a855f7',
+                            '#eab308',
+                            '#10b981'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // Barra horizontal para efecto funnel
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { display: false },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Función para actualizar datos al hacer click en filtros
+        function updateData(periodo) {
+            // Actualizar botones
+            document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active', 'bg-blue-600', 'text-white', 'border-blue-600'));
+            const btnId = periodo === 'mes' ? 'btn-mes' : periodo === 'semanas' ? 'btn-semana' : 'btn-dia';
+            const activeBtn = document.getElementById(btnId);
+            activeBtn.classList.add('active');
+
+            // Obtener data simulada
+            const data = dataSimulation[periodo];
+
+            // Actualizar KPIs
+            document.getElementById('kpi-spend').innerText = data.kpis.spend;
+            document.getElementById('kpi-revenue').innerText = data.kpis.revenue;
+            document.getElementById('kpi-roas').innerText = data.kpis.roas;
+            document.getElementById('kpi-calls').innerText = data.kpis.calls;
+            document.getElementById('kpi-cpl').innerText = data.kpis.cpl;
+
+            // Actualizar Gráfico
+            renderRevenueChart(data.labels, data.revenue, data.spend);
+            
+            // Efecto visual de actualización (parpadeo sutil)
+            document.getElementById('revenueChart').style.opacity = 0.5;
+            setTimeout(() => document.getElementById('revenueChart').style.opacity = 1, 200);
+        }
+
+        // Inicialización
+        window.onload = function() {
+            renderFunnelChart();
+            updateData('mes'); // Cargar mes por defecto
+        };
+
+    </script>
+</body>
+</html>
