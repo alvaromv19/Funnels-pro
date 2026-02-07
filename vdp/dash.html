@@ -339,8 +339,8 @@
                 data.forEach(row => {
                     // Mapeo dinámico de columnas basado en los headers probables
                     // Buscamos columnas que contengan "Inversion" para el gasto
-                    const spendKey = Object.keys(row).find(k => k.includes('Inversion'));
-                    const revKey = Object.keys(row).find(k => k.includes('Recolectado'));
+                    const spendKey = Object.keys(row).find(k => k.includes('Inversion VSL'));
+                    const revKey = Object.keys(row).find(k => k.includes('Recolectado ADS'));
                     const salesKey = Object.keys(row).find(k => k.includes('Ventas ADS'));
 
                     spend += parseNum(row[spendKey] || 0);
@@ -352,7 +352,7 @@
                     leads += parseNum(row['Leads Form'] || 0);
                     calls += parseNum(row['Agendas Creadas'] || 0);
                     qual += parseNum(row['Agendas Calificadas'] || 0);
-                    shows += parseNum(row['Asistidas ADS'] || 0);
+                    shows += parseNum(row['Asistidas Totales'] || 0);
                 });
 
                 return { spend, rev, sales, clicks, leads, calls, qual, shows };
