@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Oferta Especial - No cierres</title>
+    
+    <style>
+        /* ESTILOS CSS - VISUAL / DOPAMINA */
+        body { font-family: 'Arial', sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; padding-bottom: 100px; }
+        
+        /* 1. BARRA DE URGENCIA SUPERIOR */
+        .urgent-bar {
+            background-color: #ff0000; color: white; text-align: center; padding: 10px; font-weight: bold;
+            position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        /* 2. VIDEO STICKY (Sigue al usuario al hacer scroll) */
+        .video-container {
+            width: 100%; max-width: 600px; margin: 20px auto; background: black; aspect-ratio: 16/9;
+            transition: all 0.3s ease;
+        }
+        /* Clase que se activa con JS al bajar */
+        .video-sticky {
+            position: fixed; bottom: 10px; right: 10px; width: 200px; z-index: 999;
+            border: 2px solid #ffcc00; box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        /* 3. COMENTARIOS FALSOS (Social Proof) */
+        .comments-section { background: white; max-width: 600px; margin: 20px auto; padding: 20px; border-radius: 8px; }
+        .comment { display: flex; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .avatar { width: 50px; height: 50px; background-color: #ddd; border-radius: 50%; margin-right: 15px; }
+        .name { color: #365899; font-weight: bold; font-size: 14px; }
+        .text { font-size: 14px; margin-top: 5px; }
+        .likes { color: #90949c; font-size: 12px; margin-top: 5px; }
+
+        /* 4. MODAL AGRESIVO (Exit Intent) */
+        #exitModal {
+            display: none; /* Oculto por defecto */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); z-index: 2000;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: white; padding: 30px; text-align: center; border-radius: 10px; max-width: 90%;
+            border: 5px solid #ff0000; animation: shake 0.5s;
+        }
+        .btn-stay { background: #28a745; color: white; padding: 15px 30px; border: none; font-size: 20px; cursor: pointer; font-weight: bold; border-radius: 5px; width: 100%; margin-top: 10px;}
+        .btn-leave { background: transparent; color: #666; border: none; margin-top: 10px; text-decoration: underline; cursor: pointer; }
+
+        /* Animaciones para Dopamina */
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.8; } 100% { opacity: 1; } }
+        @keyframes shake { 0% { transform: translateX(0); } 25% { transform: translateX(-10px); } 50% { transform: translateX(10px); } 75% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
+    </style>
+</head>
+<body>
+
+    <div class="urgent-bar">⚠️ ATENCIÓN: Esta oferta expira en <span id="timer">05:00</span></div>
+
+    <div style="text-align: center; padding: 20px;">
+        <h1>EL SECRETO QUE "ELLOS" NO QUIEREN QUE SEPAS</h1>
+        <p>Descubre cómo logré X resultados en Y tiempo...</p>
+    </div>
+
+    <div class="video-container" id="mainVideo">
+        <div style="color: white; padding-top: 20%; text-align: center;">VIDEO VSL AQUÍ</div>
+    </div>
+
+    <div style="text-align: center; margin: 40px 0;">
+        <button style="background: #ff9900; font-size: 24px; padding: 20px 40px; border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 5px 0 #cc7a00; font-weight: bold;">
+            SÍ, QUIERO ACCESO INMEDIATO >>
+        </button>
+    </div>
+
+    <div class="comments-section">
+        <h3>Comentarios recientes (142)</h3>
+        <div class="comment">
+            <img src="https://i.pravatar.cc/100?img=1" class="avatar">
+            <div>
+                <div class="name">Maria Gonzalez</div>
+                <div class="text">¡No puedo creer lo rápido que funcionó! Gracias Alvaro por compartir esto.</div>
+                <div class="likes">Responder · Me gusta · Seguir · Hace 2 min</div>
+            </div>
+        </div>
+        <div class="comment">
+            <img src="https://i.pravatar.cc/100?img=3" class="avatar">
+            <div>
+                <div class="name">Carlos Ruiz</div>
+                <div class="text">Estaba escéptico al principio, pero los resultados hablan por sí solos. Recomendado 100%.</div>
+                <div class="likes">Responder · Me gusta · Seguir · Hace 14 min</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="exitModal">
+        <div class="modal-content">
+            <h2 style="color: red; margin-top: 0;">🛑 ¡ESPERA! 🛑</h2>
+            <p style="font-size: 18px;">¿Te vas a ir con las manos vacías?</p>
+            <p>Tenemos un descuento especial del <strong>50% SOLO HOY</strong> si completas tu orden ahora.</p>
+            <button class="btn-stay" onclick="closeModal()">SÍ, QUIERO EL DESCUENTO</button>
+            <button class="btn-leave" onclick="reallyLeave()">No, prefiero perder la oportunidad</button>
+        </div>
+    </div>
+
+    <script>
+        // 1. VIDEO STICKY: El video te persigue si bajas
+        window.addEventListener('scroll', function() {
+            var video = document.getElementById('mainVideo');
+            var scrollPosition = window.scrollY;
+            
+            if (scrollPosition > 400) { // Si baja más de 400px
+                video.classList.add('video-sticky');
+            } else {
+                video.classList.remove('video-sticky');
+            }
+        });
+
+        // 2. BACK BUTTON HIJACK (RETENCIÓN DE NAVEGADOR)
+        // Esto crea un estado "falso" en el historial. Si le dan "Atrás", se quedan en la misma página o van a otra.
+        (function(window, location) {
+            history.replaceState(null, document.title, location.pathname + "#!/history");
+            history.pushState(null, document.title, location.pathname);
+
+            window.addEventListener("popstate", function() {
+                if(location.hash === "#!/history") {
+                    history.replaceState(null, document.title, location.pathname);
+                    setTimeout(function(){
+                        location.replace("https://google.com"); // CAMBIA ESTO POR TU OFERTA DOWNSELL
+                    },0);
+                }
+            }, false);
+        }(window, location));
+
+        // 3. EXIT INTENT (DETECTAR INTENCIÓN DE SALIDA EN PC)
+        let modalShown = false;
+        
+        // Detectar cuando el mouse sale de la ventana (hacia arriba)
+        document.addEventListener("mouseleave", function(e){
+            if(e.clientY < 0 && !modalShown) {
+                showModal();
+            }
+        });
+
+        function showModal() {
+            document.getElementById('exitModal').style.display = 'flex';
+            modalShown = true;
+            
+            // AGRESIVO: Vibrar celular si es posible (Android)
+            if (navigator.vibrate) {
+                navigator.vibrate([200, 100, 200]);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('exitModal').style.display = 'none';
+        }
+        
+        function reallyLeave() {
+            document.getElementById('exitModal').style.display = 'none';
+            // Aquí podrías dejarlo ir o redirigirlo a otra oferta
+        }
+
+        // 4. CUENTA REGRESIVA FAKE (DOPAMINA)
+        let time = 300; // 5 minutos en segundos
+        setInterval(function() {
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            seconds = seconds < 10 ? '0' + seconds : seconds;
+            document.getElementById('timer').innerText = `0${minutes}:${seconds}`;
+            if(time > 0) time--;
+        }, 1000);
+
+    </script>
+</body>
+</html>
