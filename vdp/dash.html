@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agus Q - VDP Dashboard</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#0f172a',
+                        card: '#1e293b',
+                        accent: '#3b82f6', // Azul principal
+                        success: '#10b981', // Verde Profit
+                        danger: '#ef4444', // Rojo Alerta
+                        vsl: '#8b5cf6', // Violeta
+                        social: '#ec4899', // Rosa
+                        webinar: '#f59e0b', // Naranja
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f172a; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .kpi-card { transition: all 0.3s ease; }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+        /* Animación de carga */
+        .loader { border-top-color: #3b82f6; -webkit-animation: spinner 1.5s linear infinite; animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="p-6">
+
+    <header class="flex justify-between items-center mb-8">
+        <div>
+            <h1 class="text-3xl font-bold text-white tracking-tight">Agus Q | VDP <span class="text-accent text-sm font-normal">| Vision Dashboard Panel</span></h1>
+            <p class="text-gray-400 text-sm">Actualizado: Febrero 2026</p>
+        </div>
+        <button onclick="openSettings()" class="bg-card hover:bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 flex items-center gap-2">
+            <i class="fa-solid fa-gear"></i> Configuración
+        </button>
+    </header>
+
+    <div id="loading" class="flex justify-center items-center h-64">
+        <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"></div>
+    </div>
+
+    <main id="dashboard" class="hidden space-y-8">
+
+        <section>
+            <h2 class="text-xl font-semibold mb-4 text-white border-l-4 border-accent pl-2">Global Performance</h2>
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div class="kpi-card bg-card p-4 rounded-xl border border-gray-700">
+                    <p class="text-gray-400 text-xs uppercase font-bold">Inversión Total</p>
+                    <h3 class="text-2xl font-bold text-white mt-1" id="total-spend">$0.00</h3>
+                    <div class="mt-3">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-gray-400">Presupuesto: <span id="lbl-budget-total"></span></span>
+                            <span class="text-accent font-bold" id="lbl-spend-perc">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div id="bar-spend" class="bg-accent h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card bg-card p-4 rounded-xl border border-gray-700">
+                    <p class="text-gray-400 text-xs uppercase font-bold">Revenue (Recolectado)</p>
+                    <h3 class="text-2xl font-bold text-success mt-1" id="total-revenue">$0.00</h3>
+                    <div class="mt-3">
+                        <div class="flex justify-between text-xs mb-1">
+                            <span class="text-gray-400">Meta: <span id="lbl-goal-total"></span></span>
+                            <span class="text-success font-bold" id="lbl-revenue-perc">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div id="bar-revenue" class="bg-success h-2 rounded-full" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="kpi-card bg-card p-4 rounded-xl border border-gray-700">
+                    <p class="text-gray-400 text-xs uppercase font-bold">Profit</p>
+                    <h3 class="text-2xl font-bold text-white mt-1" id="total-profit">$0.00</h3>
+                    <p class="text-xs text-gray-500 mt-2">Neto tras adspend</p>
+                </div>
+
+                <div class="kpi-card bg-card p-4 rounded-xl border border-gray-700">
+                    <p class="text-gray-400 text-xs uppercase font-bold">ROAS Global</p>
+                    <h3 class="text-2xl font-bold text-yellow-400 mt-1" id="total-roas">0.00x</h3>
+                    <p class="text-xs text-gray-500 mt-2">Retorno de inversión</p>
+                </div>
+
+                <div class="kpi-card bg-card p-4 rounded-xl border border-gray-700">
+                    <p class="text-gray-400 text-xs uppercase font-bold">Ventas Totales</p>
+                    <h3 class="text-2xl font-bold text-white mt-1" id="total-sales">0</h3>
+                    <p class="text-xs text-gray-500 mt-2">Unidades vendidas</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-xl font-semibold mb-4 text-white border-l-4 border-vsl pl-2">Performance por Funnel</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-card rounded-xl border-t-4 border-vsl p-4">
+                    <h3 class="text-lg font-bold text-vsl mb-4">VSL Funnel</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between"><span class="text-gray-400">Inversión:</span> <span class="text-white font-mono" id="vsl-spend">$0</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">Revenue:</span> <span class="text-white font-mono" id="vsl-rev">$0</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">ROAS:</span> <span class="text-yellow-400 font-bold font-mono" id="vsl-roas">0x</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">Profit:</span> <span class="text-success font-mono" id="vsl-profit">$0</span></div>
+                    </div>
+                </div>
+                <div class="bg-card rounded-xl border-t-4 border-social p-4">
+                    <h3 class="text-lg font-bold text-social mb-4">Social Funnel</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between"><span class="text-gray-400">Inversión:</span> <span class="text-white font-mono" id="social-spend">$0</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">Revenue:</span> <span class="text-white font-mono" id="social-rev">$0</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">ROAS:</span> <span class="text-yellow-400 font-bold font-mono" id="social-roas">0x</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">Profit:</span> <span class="text-success font-mono" id="social-profit">$0</span></div>
+                    </div>
+                </div>
+                <div class="bg-card rounded-xl border-t-4 border-webinar p-4">
+                    <h3 class="text-lg font-bold text-webinar mb-4">Webinar Funnel</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between"><span class="text-gray-400">Inversión:</span> <span class="text-white font-mono" id="web-spend">$0</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">Revenue:</span> <span class="text-white font-mono" id="web-rev">$0</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">ROAS:</span> <span class="text-yellow-400 font-bold font-mono" id="web-roas">0x</span></div>
+                        <div class="flex justify-between"><span class="text-gray-400">Profit:</span> <span class="text-success font-mono" id="web-profit">$0</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-xl font-semibold mb-4 text-white border-l-4 border-gray-500 pl-2">Conversión de Embudo</h2>
+            <div class="overflow-x-auto rounded-xl border border-gray-700">
+                <table class="w-full text-sm text-left text-gray-400">
+                    <thead class="text-xs text-gray-200 uppercase bg-gray-800">
+                        <tr>
+                            <th class="px-6 py-3">Funnel</th>
+                            <th class="px-6 py-3">Clicks / Visitas LP</th>
+                            <th class="px-6 py-3">Leads</th>
+                            <th class="px-6 py-3">Agendas Creadas</th>
+                            <th class="px-6 py-3">Agendas Calif.</th>
+                            <th class="px-6 py-3">Shows (Asist.)</th>
+                            <th class="px-6 py-3 text-right">Ventas</th>
+                        </tr>
+                    </thead>
+                    <tbody id="funnel-table-body">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-xl font-semibold mb-4 text-white border-l-4 border-indigo-500 pl-2">Tendencia Diaria (Electrocardiograma)</h2>
+            <div class="bg-card p-4 rounded-xl border border-gray-700 h-[400px]">
+                <canvas id="trendsChart"></canvas>
+            </div>
+        </section>
+
+        <section>
+            <div class="flex justify-between items-end mb-4">
+                <h2 class="text-xl font-semibold text-white border-l-4 border-green-500 pl-2">Control de Presupuesto</h2>
+                <div class="text-xs text-gray-400 text-right">
+                    Días restantes mes: <span id="days-remaining" class="text-white font-bold">0</span><br>
+                    Meta Facturación: <span id="lbl-goal-bottom" class="text-white font-bold"></span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-card rounded-xl p-5 border border-gray-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid fa-video text-6xl text-vsl"></i></div>
+                    <h3 class="font-bold text-white mb-2">VSL</h3>
+                    <div class="flex items-center gap-2 mb-4">
+                        <input type="number" id="input-vsl-perc" onchange="updateBudgetCalc()" value="33" class="bg-gray-800 border border-gray-600 text-white text-sm rounded focus:ring-vsl focus:border-vsl block w-16 p-1" placeholder="%">
+                        <span class="text-gray-400 text-sm">% Asignado</span>
+                    </div>
+                    
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between border-b border-gray-700 pb-1"><span>Total Atribuido:</span> <span class="text-white" id="vsl-alloc-total">$0</span></div>
+                        <div class="flex justify-between border-b border-gray-700 pb-1"><span>Gastado:</span> <span class="text-danger" id="vsl-alloc-spent">$0</span></div>
+                        <div class="flex justify-between border-b border-gray-700 pb-1"><span>Restante:</span> <span class="text-success" id="vsl-alloc-rem">$0</span></div>
+                        <div class="flex justify-between pt-1"><span class="font-bold text-accent">Sugerido Diario:</span> <span class="font-bold text-white text-lg" id="vsl-alloc-daily">$0</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl p-5 border border-gray-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid fa-users text-6xl text-social"></i></div>
+                    <h3 class="font-bold text-white mb-2">Social Funnel</h3>
+                    <div class="flex items-center gap-2 mb-4">
+                        <input type="number" id="input-social-perc" onchange="updateBudgetCalc()" value="33" class="bg-gray-800 border border-gray-600 text-white text-sm rounded focus:ring-social focus:border-social block w-16 p-1" placeholder="%">
+                        <span class="text-gray-400 text-sm">% Asignado</span>
+                    </div>
+                    
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between border-b border-gray-700 pb-1"><span>Total Atribuido:</span> <span class="text-white" id="social-alloc-total">$0</span></div>
+                        <div class="flex justify-between border-b border-gray-700 pb-1"><span>Gastado:</span> <span class="text-danger" id="social-alloc-spent">$0</span></div>
+                        <div class="flex justify-between border-b border-gray-700 pb-1"><span>Restante:</span> <span class="text-success" id="social-alloc-rem">$0</span></div>
+                        <div class="flex justify-between pt-1"><span class="font-bold text-accent">Sugerido Diario:</span> <span class="font-bold text-white text-lg" id="social-alloc-daily">$0</span></div>
+                    </div>
+                </div>
+
+                <div class="bg-card rounded-xl p-5 border border-gray-700 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 opacity-10"><i class="fa-solid fa-laptop text-6xl text-webinar"></i></div>
+                    <h3 class="font-bold text-white mb-2">Webinar</h3>
+                    <div class="flex items-center gap-2 mb-4">
+                        <input type="number" id="input-web-perc" onchange="updateBudgetCalc()" value="34" class="bg-gray-800 border border-gray-600 text-white text-sm rounded focus:ring-webinar focus:border-webinar block w-16 p-1" placeholder="%">
+                        <span class="text-gray-400 text-sm">% Asignado</span>
+                    </div>
+                    
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between border-b border-gray-700 pb-1"><span>Total Atribuido:</span> <span class="text-white" id="web-alloc-total">$0</span></div>
+                        <div class="flex justify-between border-b border-gray-700 pb-1"><span>Gastado:</span> <span class="text-danger" id="web-alloc-spent">$0</span></div>
+                        <div class="flex justify-between border-b border-gray-700 pb-1"><span>Restante:</span> <span class="text-success" id="web-alloc-rem">$0</span></div>
+                        <div class="flex justify-between pt-1"><span class="font-bold text-accent">Sugerido Diario:</span> <span class="font-bold text-white text-lg" id="web-alloc-daily">$0</span></div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-xs text-gray-500 mt-2 text-center">* Ajusta los porcentajes para que sumen 100%. Presupuesto total basado en la configuración.</p>
+        </section>
+
+    </main>
+
+    <div id="settings-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 z-50 flex justify-center items-center backdrop-blur-sm">
+        <div class="bg-card p-6 rounded-xl border border-gray-600 w-96 shadow-2xl">
+            <h3 class="text-xl font-bold text-white mb-4">Configuración General</h3>
+            
+            <div class="mb-4">
+                <label class="block text-gray-400 text-sm mb-2">Inversión Total Asignada (Mes)</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="text-gray-500">$</span></div>
+                    <input type="number" id="setting-total-budget" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-accent focus:border-accent block w-full pl-8 p-2.5" value="5000">
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-gray-400 text-sm mb-2">Meta de Facturación (Mes)</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><span class="text-gray-500">$</span></div>
+                    <input type="number" id="setting-revenue-goal" class="bg-gray-800 border border-gray-600 text-white text-sm rounded-lg focus:ring-accent focus:border-accent block w-full pl-8 p-2.5" value="15000">
+                </div>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <button onclick="closeSettings()" class="text-gray-400 hover:text-white text-sm px-4 py-2">Cancelar</button>
+                <button onclick="saveSettings()" class="bg-accent hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg">Guardar y Recalcular</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIG GLOBAL
+        const URLS = {
+            vsl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9RFOkjUIr2ffG-X6rHf2SlRH70HgeKaCZYZshyCx4i9IntsZC_tziV5FS5BntZFPrtDAa8MrXhOmU/pub?gid=1309284543&single=true&output=csv',
+            social: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9RFOkjUIr2ffG-X6rHf2SlRH70HgeKaCZYZshyCx4i9IntsZC_tziV5FS5BntZFPrtDAa8MrXhOmU/pub?gid=1789645537&single=true&output=csv',
+            webinar: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ9RFOkjUIr2ffG-X6rHf2SlRH70HgeKaCZYZshyCx4i9IntsZC_tziV5FS5BntZFPrtDAa8MrXhOmU/pub?gid=846184228&single=true&output=csv'
+        };
+
+        let DATA = { vsl: [], social: [], webinar: [] };
+        let SETTINGS = { budget: 5000, goal: 15000 };
+
+        // UTILS
+        const currency = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
+        const parseNum = (str) => {
+            if (typeof str === 'number') return str;
+            if (!str) return 0;
+            // Eliminar simbolos y parsear
+            let clean = str.replace(/[$,\s%]/g, '');
+            return parseFloat(clean) || 0;
+        };
+
+        // INICIALIZACIÓN
+        document.addEventListener('DOMContentLoaded', async () => {
+            await fetchAllData();
+        });
+
+        async function fetchAllData() {
+            const fetchCsv = (url) => new Promise((resolve) => {
+                Papa.parse(url, {
+                    download: true,
+                    header: true,
+                    complete: (results) => resolve(results.data),
+                    error: (err) => { console.error("Error fetching CSV", err); resolve([]); }
+                });
+            });
+
+            try {
+                const [vslData, socialData, webinarData] = await Promise.all([
+                    fetchCsv(URLS.vsl),
+                    fetchCsv(URLS.social),
+                    fetchCsv(URLS.webinar)
+                ]);
+
+                // Limpieza de datos básica (eliminar filas vacías)
+                DATA.vsl = vslData.filter(row => row['Fecha']);
+                DATA.social = socialData.filter(row => row['Fecha']);
+                DATA.webinar = webinarData.filter(row => row['Fecha']);
+
+                renderDashboard();
+                document.getElementById('loading').classList.add('hidden');
+                document.getElementById('dashboard').classList.remove('hidden');
+
+            } catch (error) {
+                alert("Error cargando los datos de Google Sheets. Verifica la consola.");
+                console.error(error);
+            }
+        }
+
+        function renderDashboard() {
+            // 1. Calcular Totales y KPIs
+            const metrics = calculateMetrics();
+            
+            // 2. Actualizar UI Principal
+            updateMainKPIs(metrics);
+            updateFunnelCards(metrics);
+            updateFunnelTable(metrics);
+            
+            // 3. Gráfico
+            renderChart(DATA);
+
+            // 4. Presupuesto
+            updateBudgetCalc();
+        }
+
+        function calculateMetrics() {
+            const processSheet = (data) => {
+                let spend = 0, rev = 0, sales = 0;
+                let clicks = 0, leads = 0, calls = 0, qual = 0, shows = 0;
+
+                data.forEach(row => {
+                    // Mapeo dinámico de columnas basado en los headers probables
+                    // Buscamos columnas que contengan "Inversion" para el gasto
+                    const spendKey = Object.keys(row).find(k => k.includes('Inversion'));
+                    const revKey = Object.keys(row).find(k => k.includes('Recolectado'));
+                    const salesKey = Object.keys(row).find(k => k.includes('Ventas ADS'));
+
+                    spend += parseNum(row[spendKey] || 0);
+                    rev += parseNum(row[revKey] || 0);
+                    sales += parseNum(row[salesKey] || 0);
+                    
+                    // Funnel Metrics
+                    clicks += parseNum(row['Clicks'] || row['Visitas LP'] || 0);
+                    leads += parseNum(row['Leads Form'] || 0);
+                    calls += parseNum(row['Agendas Creadas'] || 0);
+                    qual += parseNum(row['Agendas Calificadas'] || 0);
+                    shows += parseNum(row['Asistidas ADS'] || 0);
+                });
+
+                return { spend, rev, sales, clicks, leads, calls, qual, shows };
+            };
+
+            const vsl = processSheet(DATA.vsl);
+            const social = processSheet(DATA.social);
+            const web = processSheet(DATA.webinar);
+
+            return {
+                vsl, social, web,
+                total: {
+                    spend: vsl.spend + social.spend + web.spend,
+                    rev: vsl.rev + social.rev + web.rev,
+                    sales: vsl.sales + social.sales + web.sales,
+                    profit: (vsl.rev + social.rev + web.rev) - (vsl.spend + social.spend + web.spend)
+                }
+            };
+        }
+
+        function updateMainKPIs(metrics) {
+            const t = metrics.total;
+            const roas = t.spend > 0 ? (t.rev / t.spend) : 0;
+
+            document.getElementById('total-spend').innerText = currency(t.spend);
+            document.getElementById('total-revenue').innerText = currency(t.rev);
+            document.getElementById('total-profit').innerText = currency(t.profit);
+            document.getElementById('total-profit').className = `text-2xl font-bold mt-1 ${t.profit >= 0 ? 'text-success' : 'text-danger'}`;
+            document.getElementById('total-roas').innerText = roas.toFixed(2) + 'x';
+            document.getElementById('total-sales').innerText = t.sales;
+
+            // Barras de Progreso
+            const budgetPerc = Math.min((t.spend / SETTINGS.budget) * 100, 100);
+            const goalPerc = Math.min((t.rev / SETTINGS.goal) * 100, 100);
+
+            document.getElementById('lbl-budget-total').innerText = currency(SETTINGS.budget);
+            document.getElementById('lbl-spend-perc').innerText = budgetPerc.toFixed(1) + '%';
+            document.getElementById('bar-spend').style.width = budgetPerc + '%';
+            
+            document.getElementById('lbl-goal-total').innerText = currency(SETTINGS.goal);
+            document.getElementById('lbl-revenue-perc').innerText = goalPerc.toFixed(1) + '%';
+            document.getElementById('bar-revenue').style.width = goalPerc + '%';
+            
+            // Labels inferiores
+            document.getElementById('lbl-goal-bottom').innerText = currency(SETTINGS.goal);
+        }
+
+        function updateFunnelCards(metrics) {
+            const updateCard = (prefix, data) => {
+                const roas = data.spend > 0 ? (data.rev / data.spend) : 0;
+                const profit = data.rev - data.spend;
+                document.getElementById(`${prefix}-spend`).innerText = currency(data.spend);
+                document.getElementById(`${prefix}-rev`).innerText = currency(data.rev);
+                document.getElementById(`${prefix}-roas`).innerText = roas.toFixed(2) + 'x';
+                document.getElementById(`${prefix}-profit`).innerText = currency(profit);
+            };
+
+            updateCard('vsl', metrics.vsl);
+            updateCard('social', metrics.social);
+            updateCard('web', metrics.web);
+        }
+
+        function updateFunnelTable(metrics) {
+            const tbody = document.getElementById('funnel-table-body');
+            tbody.innerHTML = '';
+
+            const createRow = (name, data, colorClass) => {
+                return `
+                <tr class="bg-card border-b border-gray-700 hover:bg-gray-700">
+                    <td class="px-6 py-4 font-medium ${colorClass}">${name}</td>
+                    <td class="px-6 py-4">${data.clicks}</td>
+                    <td class="px-6 py-4">${data.leads}</td>
+                    <td class="px-6 py-4">${data.calls}</td>
+                    <td class="px-6 py-4">${data.qual}</td>
+                    <td class="px-6 py-4">${data.shows}</td>
+                    <td class="px-6 py-4 text-right font-bold text-white">${data.sales}</td>
+                </tr>`;
+            };
+
+            tbody.innerHTML += createRow('VSL', metrics.vsl, 'text-vsl');
+            tbody.innerHTML += createRow('Social Funnel', metrics.social, 'text-social');
+            tbody.innerHTML += createRow('Webinar', metrics.web, 'text-webinar');
+        }
+
+        // --- GRAFICOS ---
+        let chartInstance = null;
+        function renderChart(data) {
+            const ctx = document.getElementById('trendsChart').getContext('2d');
+            
+            // Asumimos que las 3 hojas tienen las mismas fechas alineadas, usamos VSL como base de fechas
+            const dates = data.vsl.map(row => row['Fecha']);
+
+            const getSeries = (dataset, keyword) => {
+                return dataset.map(row => {
+                    const key = Object.keys(row).find(k => k.includes(keyword));
+                    return parseNum(row[key]);
+                });
+            };
+
+            const vslSeries = getSeries(data.vsl, 'Inversion');
+            const socialSeries = getSeries(data.social, 'Inversion');
+            const webSeries = getSeries(data.webinar, 'Inversion');
+            
+            // Total Diario
+            const totalSeries = vslSeries.map((val, i) => val + (socialSeries[i]||0) + (webSeries[i]||0));
+
+            // Recomendado Diario (Dinámico)
+            // Lógica: (Budget Total - Gasto Acumulado hasta ayer) / Dias restantes
+            let cumulativeSpend = 0;
+            const recSeries = totalSeries.map((dailySpend, i) => {
+                cumulativeSpend += dailySpend;
+                const daysInMonth = 29; // Feb 2024
+                const currentDay = i + 1;
+                const daysLeft = daysInMonth - currentDay;
+                const budgetLeft = SETTINGS.budget - cumulativeSpend;
+                return daysLeft > 0 ? (budgetLeft / daysLeft) : 0;
+            });
+
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        { label: 'Inv. VSL', data: vslSeries, borderColor: '#8b5cf6', tension: 0.4, pointRadius: 2 },
+                        { label: 'Inv. Social', data: socialSeries, borderColor: '#ec4899', tension: 0.4, pointRadius: 2 },
+                        { label: 'Inv. Webinar', data: webSeries, borderColor: '#f59e0b', tension: 0.4, pointRadius: 2 },
+                        { label: 'Inv. Total', data: totalSeries, borderColor: '#3b82f6', borderWidth: 3, tension: 0.4, pointRadius: 0 },
+                        { label: 'Sugerido', data: recSeries, borderColor: '#10b981', borderDash: [5, 5], tension: 0.1, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: '#94a3b8' } }
+                    },
+                    scales: {
+                        y: { grid: { color: '#334155' }, ticks: { color: '#94a3b8' } },
+                        x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
+                    }
+                }
+            });
+        }
+
+        // --- PRESUPUESTO ---
+        function updateBudgetCalc() {
+            // Obtener inputs
+            const pVsl = parseFloat(document.getElementById('input-vsl-perc').value) / 100;
+            const pSocial = parseFloat(document.getElementById('input-social-perc').value) / 100;
+            const pWeb = parseFloat(document.getElementById('input-web-perc').value) / 100;
+
+            // Datos actuales gastados
+            const spentVsl = parseNum(document.getElementById('vsl-spend').innerText.replace('$','').replace(',',''));
+            const spentSocial = parseNum(document.getElementById('social-spend').innerText.replace('$','').replace(',',''));
+            const spentWeb = parseNum(document.getElementById('web-spend').innerText.replace('$','').replace(',',''));
+
+            // Calcular dias restantes (Asumiendo mes actual FEBRERO 2024)
+            const today = new Date();
+            const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            // Para demo usamos el día de los datos, pero aquí usamos fecha real
+            const daysLeft = Math.max(0, endOfMonth.getDate() - today.getDate()); 
+            document.getElementById('days-remaining').innerText = daysLeft;
+
+            const calcCard = (prefix, perc, spent) => {
+                const allocated = SETTINGS.budget * perc;
+                const remaining = allocated - spent;
+                const daily = daysLeft > 0 ? (remaining / daysLeft) : 0;
+
+                document.getElementById(`${prefix}-alloc-total`).innerText = currency(allocated);
+                document.getElementById(`${prefix}-alloc-spent`).innerText = currency(spent);
+                document.getElementById(`${prefix}-alloc-rem`).innerText = currency(remaining);
+                document.getElementById(`${prefix}-alloc-rem`).className = remaining >= 0 ? 'text-success' : 'text-danger';
+                document.getElementById(`${prefix}-alloc-daily`).innerText = currency(daily);
+            };
+
+            calcCard('vsl', pVsl, spentVsl);
+            calcCard('social', pSocial, spentSocial);
+            calcCard('web', pWeb, spentWeb);
+        }
+
+        // --- UI SETTINGS ---
+        function openSettings() { document.getElementById('settings-modal').classList.remove('hidden'); }
+        function closeSettings() { document.getElementById('settings-modal').classList.add('hidden'); }
+        function saveSettings() {
+            SETTINGS.budget = parseFloat(document.getElementById('setting-total-budget').value) || 5000;
+            SETTINGS.goal = parseFloat(document.getElementById('setting-revenue-goal').value) || 15000;
+            closeSettings();
+            renderDashboard(); // Re-renderizar con nuevos settings
+        }
+
+    </script>
+</body>
+</html>
