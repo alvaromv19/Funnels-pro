@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agus Q | VDP</title>
+    <title>Agus Q | VDP v5</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -56,6 +56,11 @@
         .loader { border-top-color: #00ff9d; filter: drop-shadow(0 0 5px #00ff9d); -webkit-animation: spinner 1s linear infinite; animation: spinner 1s linear infinite; }
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        /* Botones de Tabs */
+        .tab-btn { transition: all 0.3s; opacity: 0.6; border-bottom: 2px solid transparent; }
+        .tab-btn:hover { opacity: 1; color: #fff; }
+        .tab-btn.active { opacity: 1; color: #06b6d4; border-bottom-color: #06b6d4; text-shadow: 0 0 10px rgba(6,182,212,0.5); }
+
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #020617; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
@@ -79,7 +84,7 @@
 
     <div id="loading" class="flex flex-col justify-center items-center h-64">
         <div class="loader ease-linear rounded-full border-4 border-t-4 border-gray-800 h-16 w-16 mb-4"></div>
-        <p class="text-accent font-mono text-sm animate-pulse">Ingresando a la Matrix...</p>
+        <p class="text-accent font-mono text-sm animate-pulse">Cargando la matrix...</p>
     </div>
 
     <main id="dashboard" class="hidden space-y-8 pb-10">
@@ -149,7 +154,7 @@
                         <div class="flex justify-between items-center border-b border-white/5 pb-1"><span class="text-gray-400">Inversión</span> <span class="text-white font-mono font-bold text-lg" id="vsl-spend">$0</span></div>
                         <div class="flex justify-between items-center border-b border-white/5 pb-1"><span class="text-gray-400">Revenue</span> <span class="text-white font-mono text-lg" id="vsl-rev">$0</span></div>
                         <div class="flex justify-between items-center border-b border-white/5 pb-1"><span class="text-gray-400">ROAS</span> <span class="text-warning font-bold font-mono text-lg" id="vsl-roas">0x</span></div>
-                        <div class="flex justify-between items-center pt-1"><span class="text-gray-400">Profit</span> <span class="text-success font-mono text-lg" id="vsl-profit">$0</span></div>
+                        <div class="flex justify-between items-center pt-1"><span class="text-gray-400">Profit</span> <span class="font-mono text-lg" id="vsl-profit">$0</span></div>
                     </div>
                 </div>
 
@@ -160,7 +165,7 @@
                         <div class="flex justify-between items-center border-b border-white/5 pb-1"><span class="text-gray-400">Inversión</span> <span class="text-white font-mono font-bold text-lg" id="social-spend">$0</span></div>
                         <div class="flex justify-between items-center border-b border-white/5 pb-1"><span class="text-gray-400">Revenue</span> <span class="text-white font-mono text-lg" id="social-rev">$0</span></div>
                         <div class="flex justify-between items-center border-b border-white/5 pb-1"><span class="text-gray-400">ROAS</span> <span class="text-warning font-bold font-mono text-lg" id="social-roas">0x</span></div>
-                        <div class="flex justify-between items-center pt-1"><span class="text-gray-400">Profit</span> <span class="text-success font-mono text-lg" id="social-profit">$0</span></div>
+                        <div class="flex justify-between items-center pt-1"><span class="text-gray-400">Profit</span> <span class="font-mono text-lg" id="social-profit">$0</span></div>
                     </div>
                 </div>
 
@@ -171,9 +176,24 @@
                         <div class="flex justify-between items-center border-b border-white/5 pb-1"><span class="text-gray-400">Inversión</span> <span class="text-white font-mono font-bold text-lg" id="web-spend">$0</span></div>
                         <div class="flex justify-between items-center border-b border-white/5 pb-1"><span class="text-gray-400">Revenue</span> <span class="text-white font-mono text-lg" id="web-rev">$0</span></div>
                         <div class="flex justify-between items-center border-b border-white/5 pb-1"><span class="text-gray-400">ROAS</span> <span class="text-warning font-bold font-mono text-lg" id="web-roas">0x</span></div>
-                        <div class="flex justify-between items-center pt-1"><span class="text-gray-400">Profit</span> <span class="text-success font-mono text-lg" id="web-profit">$0</span></div>
+                        <div class="flex justify-between items-center pt-1"><span class="text-gray-400">Profit</span> <span class="font-mono text-lg" id="web-profit">$0</span></div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-lg font-semibold text-white flex items-center gap-2"><i class="fa-solid fa-money-bill-trend-up text-success"></i> Tendencia Financiera</h2>
+                <div class="flex bg-gray-900/50 rounded-lg p-1 border border-white/10">
+                    <button onclick="setFinTab('total')" id="tab-total" class="tab-btn active px-4 py-1 text-sm font-bold rounded-md">General</button>
+                    <button onclick="setFinTab('vsl')" id="tab-vsl" class="tab-btn px-4 py-1 text-sm font-bold rounded-md">VSL</button>
+                    <button onclick="setFinTab('social')" id="tab-social" class="tab-btn px-4 py-1 text-sm font-bold rounded-md">Social</button>
+                    <button onclick="setFinTab('webinar')" id="tab-webinar" class="tab-btn px-4 py-1 text-sm font-bold rounded-md">Webinar</button>
+                </div>
+            </div>
+            <div class="glass-panel p-4 rounded-xl h-[450px] relative">
+                <canvas id="financialChart"></canvas>
             </div>
         </section>
 
@@ -315,8 +335,8 @@
         const DAYS_IN_MONTH = 28;
 
         let DATA = { vsl: [], social: [], webinar: [] };
-        // Variables iniciales, se sobrescribirán si hay localStorage
         let SETTINGS = { budget: 5000, goal: 15000 };
+        let currentFinTab = 'total'; // Tab activo por defecto
         
         const currency = (num) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(num);
         const formatNum = (num) => new Intl.NumberFormat('en-US').format(num);
@@ -337,46 +357,32 @@
         }
 
         document.addEventListener('DOMContentLoaded', async () => { 
-            loadSettings(); // Cargar memoria antes de nada
+            loadSettings(); 
             await fetchAllData(); 
         });
 
-        // --- FUNCIONES DE MEMORIA (CACHE) ---
+        // --- MEMORIA ---
         function loadSettings() {
             const savedSettings = localStorage.getItem('vdp_settings');
             if (savedSettings) {
-                try {
-                    SETTINGS = JSON.parse(savedSettings);
-                    console.log("Configuración cargada desde memoria:", SETTINGS);
-                } catch (e) {
-                    console.error("Error leyendo memoria, usando defaults");
-                }
+                try { SETTINGS = JSON.parse(savedSettings); } catch (e) {}
             }
-            // Actualizar inputs del modal con los valores (guardados o default)
             document.getElementById('setting-total-budget').value = SETTINGS.budget;
             document.getElementById('setting-revenue-goal').value = SETTINGS.goal;
         }
 
         function saveSettings() {
-            // Obtener valores del input
             const newBudget = parseFloat(document.getElementById('setting-total-budget').value);
             const newGoal = parseFloat(document.getElementById('setting-revenue-goal').value);
-
             if (newBudget && newGoal) {
                 SETTINGS.budget = newBudget;
                 SETTINGS.goal = newGoal;
-                
-                // Guardar en LocalStorage
                 localStorage.setItem('vdp_settings', JSON.stringify(SETTINGS));
-                
                 closeSettings();
                 renderDashboard();
                 alert("Configuración guardada exitosamente.");
-            } else {
-                alert("Por favor ingresa valores numéricos válidos.");
             }
         }
-        // ------------------------------------
 
         async function fetchAllData() {
             const fetchCsv = (url) => new Promise((resolve) => {
@@ -408,6 +414,7 @@
             updateFunnelCards(metrics);
             updateFunnelTable(metrics);
             renderChart(DATA);
+            renderFinancialChart(DATA); // Nuevo Gráfico
             updateBudgetCalc();
         }
 
@@ -466,6 +473,7 @@
             document.getElementById('lbl-goal-bottom').innerText = currency(SETTINGS.goal);
         }
 
+        // --- PROFIT DINÁMICO ---
         function updateFunnelCards(metrics) {
             const updateCard = (prefix, data) => {
                 const roas = data.spend > 0 ? (data.rev / data.spend) : 0;
@@ -473,7 +481,13 @@
                 document.getElementById(`${prefix}-spend`).innerText = currency(data.spend);
                 document.getElementById(`${prefix}-rev`).innerText = currency(data.rev);
                 document.getElementById(`${prefix}-roas`).innerText = roas.toFixed(2) + 'x';
-                document.getElementById(`${prefix}-profit`).innerText = currency(profit);
+                
+                // Color Lógico para Profit
+                const profitEl = document.getElementById(`${prefix}-profit`);
+                profitEl.innerText = currency(profit);
+                if (profit > 0) profitEl.className = 'font-mono text-lg text-success';
+                else if (profit < 0) profitEl.className = 'font-mono text-lg text-danger';
+                else profitEl.className = 'font-mono text-lg text-warning';
             };
             updateCard('vsl', metrics.vsl);
             updateCard('social', metrics.social);
@@ -501,10 +515,8 @@
         let chartInstance = null;
         function renderChart(data) {
             const ctx = document.getElementById('trendsChart').getContext('2d');
-            
             const validData = data.vsl.length ? data.vsl : (data.social.length ? data.social : data.webinar);
             const dates = validData.map(row => findColumn(row, ['fecha']) || 'Día X');
-
             const getSeries = (dataset) => dataset.map(row => parseVal(findColumn(row, ['inversion', 'spend'])));
 
             const vslS = getSeries(data.vsl);
@@ -536,37 +548,86 @@
                     ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
+                    responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
                     plugins: {
                         legend: { labels: { color: '#cbd5e1', font: {family: 'Outfit', size: 12} } },
-                        tooltip: {
-                            backgroundColor: 'rgba(2, 6, 23, 0.95)',
-                            titleColor: '#06b6d4',
-                            titleFont: { size: 16, family: 'Outfit', weight: 'bold' },
-                            bodyColor: '#f8fafc',
-                            bodyFont: { size: 13, family: 'Outfit' },
-                            padding: 14,
-                            borderColor: 'rgba(255,255,255,0.1)',
-                            borderWidth: 1,
-                            cornerRadius: 8,
-                            displayColors: true,
-                            boxPadding: 4,
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) label += ': ';
-                                    if (context.parsed.y !== null) label += currency(context.parsed.y);
-                                    return label;
-                                }
-                            }
-                        }
+                        tooltip: { backgroundColor: 'rgba(2, 6, 23, 0.95)', titleColor: '#06b6d4', bodyColor: '#f8fafc', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 }
                     },
-                    scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: {family: 'Outfit'}, callback: (val) => '$' + val } },
-                        x: { grid: { display: false }, ticks: { color: '#64748b', font: {family: 'Outfit'}, maxTicksLimit: 10 } }
-                    }
+                    scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', callback: (val) => '$' + val } }, x: { grid: { display: false }, ticks: { color: '#64748b', maxTicksLimit: 10 } } }
+                }
+            });
+        }
+
+        // --- NUEVO CHART FINANCIERO (CON TABS) ---
+        let finChartInstance = null;
+
+        function setFinTab(tab) {
+            currentFinTab = tab;
+            // Update UI
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            renderFinancialChart(DATA);
+        }
+
+        function renderFinancialChart(data) {
+            const ctx = document.getElementById('financialChart').getContext('2d');
+            const validData = data.vsl.length ? data.vsl : (data.social.length ? data.social : data.webinar);
+            const dates = validData.map(row => findColumn(row, ['fecha']) || 'Día X');
+
+            let revData = [], spendData = [], profitData = [];
+
+            // Helper to get series arrays from a single dataset
+            const extract = (dataset) => {
+                const r = dataset.map(row => parseVal(findColumn(row, ['recolectado', 'revenue'])));
+                const s = dataset.map(row => parseVal(findColumn(row, ['inversion', 'spend'])));
+                const p = r.map((val, i) => val - s[i]);
+                return { r, s, p };
+            };
+
+            if (currentFinTab === 'total') {
+                // Agregar datos de los 3 funnels
+                const vsl = extract(data.vsl);
+                const social = extract(data.social);
+                const web = extract(data.webinar);
+                const len = Math.max(vsl.r.length, social.r.length, web.r.length);
+                
+                for(let i=0; i<len; i++) {
+                    revData.push((vsl.r[i]||0) + (social.r[i]||0) + (web.r[i]||0));
+                    spendData.push((vsl.s[i]||0) + (social.s[i]||0) + (web.s[i]||0));
+                    profitData.push((vsl.p[i]||0) + (social.p[i]||0) + (web.p[i]||0));
+                }
+            } else {
+                // Tab Específico
+                let targetData = [];
+                if (currentFinTab === 'vsl') targetData = data.vsl;
+                else if (currentFinTab === 'social') targetData = data.social;
+                else if (currentFinTab === 'webinar') targetData = data.webinar;
+                
+                const extracted = extract(targetData);
+                revData = extracted.r;
+                spendData = extracted.s;
+                profitData = extracted.p;
+            }
+
+            if (finChartInstance) finChartInstance.destroy();
+
+            finChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [
+                        { label: 'Revenue', data: revData, borderColor: '#00ff9d', borderWidth: 2, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#00ff9d' },
+                        { label: 'Inversión', data: spendData, borderColor: '#ff2a6d', borderWidth: 2, tension: 0.4, pointRadius: 3, pointBackgroundColor: '#ff2a6d' },
+                        { label: 'Profit', data: profitData, borderColor: '#ffffff', borderWidth: 2, borderDash: [5, 5], tension: 0.4, pointRadius: 0 } // Profit blanco/dash
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { labels: { color: '#cbd5e1', font: {family: 'Outfit', size: 12} } },
+                        tooltip: { backgroundColor: 'rgba(2, 6, 23, 0.95)', titleColor: '#fff', bodyColor: '#cbd5e1', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 }
+                    },
+                    scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', callback: (val) => '$' + val } }, x: { grid: { display: false }, ticks: { color: '#64748b', maxTicksLimit: 10 } } }
                 }
             });
         }
