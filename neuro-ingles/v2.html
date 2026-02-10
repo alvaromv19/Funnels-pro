@@ -105,18 +105,6 @@
             background: #000;
         }
 
-        /* TRIGGER INVISIBLE PARA MÓVIL */
-        #fullscreen-trigger {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            cursor: pointer;
-            background: transparent;
-        }
-
         /* FOOTER */
         footer {
             width: 100%;
@@ -135,26 +123,27 @@
             .sub-headline { font-size: 1rem; line-height: 1.5; padding: 0 10px;}
         }
     </style>
-<script>
-  !function(f,b,e,v,n,t,s)
-  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-  
-  // Tu ID
-  fbq('init', '3225869564382107');
-  
-  // Evento PageView (Visita a la página)
-  fbq('track', 'PageView');
-</script>
-<noscript><img height="1" width="1" style="display:none"
-  src="https://www.facebook.com/tr?id=3225869564382107&ev=PageView&noscript=1"
-/></noscript>
-</head>
+
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      
+      // Tu ID
+      fbq('init', '3225869564382107');
+      
+      // Evento PageView
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=3225869564382107&ev=PageView&noscript=1"
+    /></noscript>
+    </head>
 <body>
 
     <div class="main-container">
@@ -169,8 +158,6 @@
         </p>
 
         <div class="video-container" id="video-wrapper-dom">
-            <div id="fullscreen-trigger"></div>
-            
             <vturb-smartplayer id="vid-698a8ecaaa8949c7cb338434" style="display: block; margin: 0 auto; width: 100%;"></vturb-smartplayer>
         </div>
     </div>
@@ -190,15 +177,15 @@
 
     <script>
         // -----------------------------------------------------------------------
-        // 🚨 CONFIGURACIÓN DE RUTAS Y TIEMPO (PÁGINA 2) 🚨
+        // 🚨 CONFIGURACIÓN DE RUTAS Y TIEMPO 🚨
         // -----------------------------------------------------------------------
         var URL_RESCATE = "https://evo-launch.agency/neuro-ingles/redirec"; // Si se sale ANTES
         var URL_OFERTA  = "https://evo-launch.agency/neuro-ingles/oferta-redirec"; // Si se sale DESPUÉS
-        var MINUTO_CORTE = 450; // 7 Min y 30 Seg = 450 segundos
+        var MINUTO_CORTE = 450; // 7:30 min = 450 segundos
         // -----------------------------------------------------------------------
 
         var hacksArmados = false;
-        var tiempoActualVideo = 0; // Variable global para rastrear el tiempo
+        var tiempoActualVideo = 0; 
         var smartPlayerInstance = null;
 
         // 1. OBTENER INSTANCIA DEL PLAYER Y RASTREAR TIEMPO
@@ -211,23 +198,15 @@
         }, 200);
 
         function initPlayerListeners() {
-            // Escuchar cada actualización de tiempo del video
+            // Escuchar cada actualización de tiempo para la redirección
             smartPlayerInstance.on('timeupdate', () => {
                 if(smartPlayerInstance.video) {
                     tiempoActualVideo = smartPlayerInstance.video.currentTime;
                 }
             });
-
-            // Lógica de Fullscreen Sincronizada
-            smartPlayerInstance.on('play', () => {
-                if (!document.fullscreenElement) enterFull(document.getElementById('video-wrapper-dom'));
-            });
-            smartPlayerInstance.on('pause', () => { exitFull(); });
-            smartPlayerInstance.on('ended', () => { exitFull(); });
         }
 
-
-        // 2. LÓGICA DE REDIRECCIÓN CONDICIONAL
+        // 2. LÓGICA DE REDIRECCIÓN CONDICIONAL (BOTÓN ATRÁS)
         function armarTrampa() {
             if (hacksArmados) return;
             hacksArmados = true;
@@ -240,10 +219,8 @@
                 window.onpopstate = function(event) {
                     // AQUÍ TOMAMOS LA DECISIÓN BASADA EN EL TIEMPO
                     if (tiempoActualVideo >= MINUTO_CORTE) {
-                        // Si vio más de 7:30 min -> Oferta directa
                         window.location.href = URL_OFERTA;
                     } else {
-                        // Si vio menos -> Rescate
                         window.location.href = URL_RESCATE;
                     }
                 };
@@ -257,69 +234,40 @@
             };
         }
 
-        // 3. ACTIVADORES DE INTERACCIÓN (TRIGGER)
+        // 3. ACTIVADORES DE INTERACCIÓN
+        // Cualquier clic en la página armará la trampa, pero NO forzará fullscreen
         document.addEventListener('click', armarTrampa);
         document.addEventListener('touchstart', armarTrampa);
 
-        // Activador específico sobre el video (Capa Transparente)
-        const triggerVideo = document.getElementById('fullscreen-trigger');
-        const wrapperVideo = document.getElementById('video-wrapper-dom');
-
-        triggerVideo.addEventListener('click', function() {
-            enterFull(wrapperVideo);
-            triggerVideo.style.display = 'none';
-            if (smartPlayerInstance) smartPlayerInstance.play();
-        });
-
-
-        // HELPERS
-        function enterFull(elem) {
-            if (elem.requestFullscreen) elem.requestFullscreen().catch(e=>{});
-            else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-            else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-        }
-        function exitFull() {
-            if (document.fullscreenElement || document.webkitFullscreenElement) {
-                if (document.exitFullscreen) document.exitFullscreen();
-                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-            }
-        }
     </script>
-<script>
-    // CONFIGURACIÓN
-    // 7 minutos y 56 segundos = (7 * 60) + 56 = 476 segundos
-    var SEGUNDOS_OBJETIVO = 476; 
-    var eventoYaDisparado = false; // Candado para que no se dispare 100 veces
 
-    // Buscamos al reproductor Vturb
-    var checkVturbTracker = setInterval(function() {
-        if (window.smartplayer && window.smartplayer.instances && window.smartplayer.instances.length > 0) {
-            clearInterval(checkVturbTracker); // Dejamos de buscar
-            var playerInstance = window.smartplayer.instances[0];
+    <script>
+        var SEGUNDOS_OBJETIVO = 476; 
+        var eventoYaDisparado = false; 
 
-            // Escuchamos el avance del video
-            playerInstance.on('timeupdate', function() {
-                // Verificamos si cruzó la marca de tiempo
-                if (playerInstance.video.currentTime >= SEGUNDOS_OBJETIVO && !eventoYaDisparado) {
-                    
-                    eventoYaDisparado = true; // Cerramos el candado
-                    
-                    // 🚀 DISPARAMOS EL EVENTO AL PIXEL
-                    if(typeof fbq === 'function') {
-                        fbq('track', 'ViewContent', {
-                            content_name: 'VSL_Offer_Revealed', // Para que lo identifiques en el Admin
-                            content_ids: ['VSL_NEURO_01'],
-                            content_type: 'product',
-                            value: 0.00, // Le damos un valor simbólico para ayudar al algoritmo
-                            currency: 'USD'
-                        });
+        var checkVturbTracker = setInterval(function() {
+            if (window.smartplayer && window.smartplayer.instances && window.smartplayer.instances.length > 0) {
+                clearInterval(checkVturbTracker); 
+                var playerInstance = window.smartplayer.instances[0];
+
+                playerInstance.on('timeupdate', function() {
+                    if (playerInstance.video.currentTime >= SEGUNDOS_OBJETIVO && !eventoYaDisparado) {
+                        eventoYaDisparado = true; 
                         
-                        console.log("✅ Pixel Event Fired: ViewContent (Minuto 7:56 alcanzado)");
+                        if(typeof fbq === 'function') {
+                            fbq('track', 'ViewContent', {
+                                content_name: 'VSL_Offer_Revealed', 
+                                content_ids: ['VSL_NEURO_01'],
+                                content_type: 'product',
+                                value: 0.00, 
+                                currency: 'USD'
+                            });
+                            console.log("✅ Pixel Event Fired: ViewContent");
+                        }
                     }
-                }
-            });
-        }
-    }, 500); // Revisa cada medio segundo hasta encontrar el video
-</script>
+                });
+            }
+        }, 500); 
+    </script>
 </body>
 </html>
