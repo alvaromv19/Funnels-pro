@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Espera! Una última cosa...</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* RESET */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #1a1a1a; /* Fondo oscuro exterior */
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* TARJETA TIPO "CARTA" */
+        .paper-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            overflow: hidden;
+            position: relative;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* CABECERA ALERTA */
+        .alert-header {
+            background: #D8000C;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .icon-stop { font-size: 1.8rem; animation: shake 1s infinite; }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+        /* CUERPO DEL TEXTO */
+        .content-body {
+            padding: 40px 30px;
+            color: #333;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .content-body p { margin-bottom: 20px; }
+
+        .highlight-text {
+            background: #fff8e1; /* Amarillo muy suave */
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        /* METÁFORA PIZZA */
+        .pizza-visual {
+            display: flex;
+            align-items: center;
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .pizza-icon { font-size: 3rem; margin-right: 20px; }
+        
+        .pizza-text strong {
+            display: block;
+            color: #D8000C;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+        }
+
+        /* SECCIÓN GARANTÍA */
+        .guarantee-box {
+            border: 2px dashed #27ae60;
+            background: #e8f8f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+        }
+
+        .shield-icon {
+            font-size: 2.5rem;
+            color: #27ae60;
+            flex-shrink: 0;
+        }
+
+        .guarantee-title {
+            color: #27ae60;
+            font-weight: 900;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* BOTÓN GIGANTE */
+        .cta-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(to bottom, #2ecc71 0%, #27ae60 100%);
+            border: 1px solid #219150;
+            padding: 20px;
+            text-align: center;
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.3rem;
+            text-decoration: none;
+            border-radius: 8px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 0 #1e8449, 0 10px 20px rgba(0,0,0,0.2);
+            transition: transform 0.1s;
+            line-height: 1.3;
+        }
+
+        .cta-button:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #1e8449;
+        }
+        
+        .cta-subtext {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-top: 5px;
+            opacity: 0.9;
+            text-transform: none;
+        }
+
+        /* MÓVIL */
+        @media (max-width: 600px) {
+            .alert-header { font-size: 1.1rem; }
+            .content-body { padding: 25px 20px; font-size: 1rem; }
+            .pizza-icon { font-size: 2.5rem; }
+            .guarantee-box { flex-direction: column; text-align: center; align-items: center; }
+            .cta-button { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="paper-card">
+        <div class="alert-header">
+            <span class="icon-stop">🛑</span> ¡ESPERA! ¿Es por los $27 dólares?
+        </div>
+
+        <div class="content-body">
+            <p>Sé honesto contigo mismo. Te estás yendo porque tu cerebro te está diciendo: <em>"Mejor guardo este dinero"</em>.</p>
+            
+            <p>Pero piénsalo un segundo:</p>
+
+            <div class="pizza-visual">
+                <div class="pizza-icon">🍕</div>
+                <div class="pizza-text">
+                    <strong>$27 dólares...</strong>
+                    Es lo que gastas en una pizza y una gaseosa un viernes por la noche.
+                </div>
+            </div>
+
+            <p>Esa pizza desaparece en <strong>20 minutos</strong>.</p>
+            
+            <p class="highlight-text">El "Neural English Habit" es una habilidad que te acompañará el resto de tu vida.</p>
+
+            <p>¿De verdad vas a dejar que el precio de una cena rápida te impida acceder a <strong>mejores trabajos, viajes y oportunidades</strong>?</p>
+
+            <p>No dejes que tu "Cerebro de Supervivencia" gane esta batalla por una cantidad tan pequeña.</p>
+
+            <div class="guarantee-box">
+                <div class="shield-icon">🛡️</div>
+                <div>
+                    <span class="guarantee-title">Recuerda: NO TIENES RIESGO</span>
+                    Tienes 7 días completos. Si no estás hablando inglés o si simplemente no te gusta mi voz, <strong>te devuelvo los $27. Sin preguntas.</strong>
+                </div>
+            </div>
+
+            <a href="https://go.hotmart.com/U98312104O?ap=e09c" class="cta-button">
+                👉 SÍ, QUIERO CAMBIAR MI VIDA <br>
+                <span class="cta-subtext">POR EL PRECIO DE UNA PIZZA (Acceso Inmediato)</span>
+            </a>
+            
+            <div style="text-align:center; margin-top:15px; font-size:0.8rem; color:#999;">
+                <img src="https://img.icons8.com/color/48/000000/visa.png" width="30" style="vertical-align:middle; opacity:0.6">
+                <img src="https://img.icons8.com/color/48/000000/mastercard.png" width="30" style="vertical-align:middle; opacity:0.6">
+                <img src="https://img.icons8.com/color/48/000000/amex.png" width="30" style="vertical-align:middle; opacity:0.6">
+                <br>Pago 100% Seguro vía Hotmart
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Aquí no hacemos redirección de historial para no crear un bucle infinito molesto
+        // Solo activamos el popup de confirmación por si intentan cerrar la ventana
+        let hasInteracted = false;
+        document.body.addEventListener('click', () => { hasInteracted = true; });
+        document.body.addEventListener('touchstart', () => { hasInteracted = true; });
+
+        window.addEventListener('beforeunload', function (e) {
+            if (hasInteracted) {
+                e.preventDefault();
+                e.returnValue = '¿Estás seguro de rechazar esta oportunidad?';
+            }
+        });
+    </script>
+
+</body>
+</html>
