@@ -24,7 +24,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            /* 4. MEJORA DE FONDO: Radial Gradient tipo "Spotlight" */
             background: radial-gradient(circle at top center, #1a1f25 0%, #000000 80%);
             color: #ffffff;
             font-family: 'Roboto', sans-serif;
@@ -75,21 +74,18 @@
             border: 1px solid rgba(0, 255, 157, 0.2);
         }
 
-        /* 3. MEJORA DEL TITULAR */
         h1.headline {
             font-family: 'Montserrat', sans-serif;
             font-size: 2.5rem;
-            font-weight: 900; /* Extra Bold */
+            font-weight: 900;
             line-height: 1.15;
             margin-bottom: 25px;
             color: #ffffff;
-            text-wrap: balance; /* Equilibra las líneas automáticamente */
+            text-wrap: balance;
             text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
-        h1.headline span {
-            color: #ffffff; 
-        }
+        h1.headline span { color: #ffffff; }
 
         .sub-headline {
             font-size: 1.15rem;
@@ -100,31 +96,27 @@
             letter-spacing: 0.5px;
         }
         
-        .sub-headline strong {
-            color: #fff;
-            font-weight: 600;
-        }
+        .sub-headline strong { color: #fff; font-weight: 600; }
 
-        /* VIDEO WRAPPER & OVERLAY SYSTEM */
+        /* VIDEO WRAPPER */
         .video-container {
             position: relative;
             width: 100%;
             margin-bottom: 40px;
             border-radius: 12px;
             overflow: hidden;
-            /* Animación de brillo suave en el borde */
             animation: pulseGlow 3s infinite;
             background: #000;
         }
 
-        /* Esta capa invisible asegura el primer clic para fullscreen */
+        /* TRIGGER INVISIBLE PARA MÓVIL */
         #fullscreen-trigger {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 10; /* Encima del video */
+            z-index: 10;
             cursor: pointer;
             background: transparent;
         }
@@ -138,12 +130,8 @@
             border-top: 1px solid #1a1a1a;
         }
         
-        .copyright {
-            color: #444;
-            font-size: 0.75rem;
-        }
+        .copyright { color: #444; font-size: 0.75rem; }
 
-        /* RESPONSIVE MOBILE */
         @media (max-width: 600px) {
             .main-container { padding-top: 30px; }
             .pre-headline { font-size: 0.7rem; letter-spacing: 1.5px; }
@@ -186,56 +174,85 @@
     </script>
 
     <script>
-        // --- 1. SCRIPT DE FULLSCREEN AGRESIVO (OVERLAY METHOD) ---
+        // -----------------------------------------------------------------------
+        // 🚨 CONFIGURACIÓN: PEGA TU URL DE REDIRECCIÓN AQUÍ ABAJO 🚨
+        // -----------------------------------------------------------------------
+        const URL_REDIRECCION = "https://evo-launch.agency/neuro-ingles/redirec"; // <--- ¡AQUÍ!
+        // -----------------------------------------------------------------------
+
+
+        // --- 1. FULLSCREEN INTELIGENTE (Detecta Play/Pause) ---
         const trigger = document.getElementById('fullscreen-trigger');
         const wrapper = document.getElementById('video-wrapper-dom');
+        let smartPlayerInstance = null;
 
-        trigger.addEventListener('click', function(e) {
-            // A. Solicitar Fullscreen al contenedor principal
-            requestFull(wrapper);
-            
-            // B. Ocultar el trigger para que los siguientes clics vayan al video (pausa/play)
-            trigger.style.display = 'none';
+        // Esperar a que Vturb cargue
+        const findVturb = setInterval(() => {
+            if (window.smartplayer && window.smartplayer.instances && window.smartplayer.instances.length > 0) {
+                clearInterval(findVturb);
+                smartPlayerInstance = window.smartplayer.instances[0];
+                initListeners();
+            }
+        }, 200);
 
-            // C. Intentar auto-play (Vturb a veces requiere esto si el click fue interceptado)
-            // Nota: El overlay permite pasar el "gesto" del usuario si se hace rápido, 
-            // pero si no, el usuario tendrá que hacer clic una segunda vez para play.
-            // Para UX, forzamos el click debajo:
-            
-            // Truco: Simular clic en el elemento debajo (el player)
-            // Esto es experimental dependiendo de cómo Vturb maneje el ShadowDOM
+        // A. Clic inicial en la capa transparente
+        trigger.addEventListener('click', function() {
+            enterFull(wrapper); // Forzar pantalla completa
+            trigger.style.display = 'none'; // Quitar la capa
+            if (smartPlayerInstance) smartPlayerInstance.play(); // Dar play
         });
 
-        function requestFull(elem) {
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen().catch(err => console.log(err));
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
-                elem.msRequestFullscreen();
+        // B. Listeners del Player (Sincronización)
+        function initListeners() {
+            smartPlayerInstance.on('play', () => {
+                if (!document.fullscreenElement) enterFull(wrapper);
+            });
+            smartPlayerInstance.on('pause', () => {
+                exitFull();
+            });
+            smartPlayerInstance.on('ended', () => {
+                exitFull();
+            });
+        }
+
+        // Helpers
+        function enterFull(elem) {
+            if (elem.requestFullscreen) elem.requestFullscreen().catch(e=>{});
+            else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+            else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
+        }
+        function exitFull() {
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) document.exitFullscreen();
+                else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
             }
         }
 
-        // Listener para salir de fullscreen si pausan (Opcional, puede ser molesto si pausan para leer)
-        // Lo dejaremos manual para no interrumpir la experiencia.
 
-        // --- 2. SCRIPT "EXIT INTENT" (ANTI-ABANDONO) ---
-        // Nota: Los navegadores modernos bloquean el mensaje personalizado.
-        // Solo mostrarán "¿Es posible que los cambios no se guarden?"
-        
-        // Activamos el flag solo si el usuario ha interactuado con la página (requisito de Chrome)
+        // --- 2. BACK-BUTTON HIJACK (Redirección al ir atrás) ---
+        // Inyectamos un estado falso en el historial. Al dar atrás, saltamos a la URL.
+        (function(window, location) {
+            history.pushState(null, document.title, location.href);
+            window.addEventListener('popstate', function(event) {
+                history.pushState(null, document.title, location.href);
+                // ¡AQUÍ OCURRE LA MAGIA!
+                location.href = URL_REDIRECCION;
+            });
+        })(window, location);
+
+
+        // --- 3. EXIT INTENT (Confirmación al cerrar pestaña) ---
         let hasInteracted = false;
         document.body.addEventListener('click', () => { hasInteracted = true; });
         document.body.addEventListener('touchstart', () => { hasInteracted = true; });
 
         window.addEventListener('beforeunload', function (e) {
             if (hasInteracted) {
-                // Cancelar el evento según el estándar
                 e.preventDefault();
-                // Chrome requiere que returnValue sea un string vacío
-                e.returnValue = '';
+                e.returnValue = ''; // Muestra la alerta nativa del navegador
             }
         });
+
     </script>
 </body>
 </html>
