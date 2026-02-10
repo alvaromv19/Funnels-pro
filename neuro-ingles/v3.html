@@ -317,9 +317,9 @@
         const MINUTO_CORTE = 450; // Redirección condicional (7:30)
         
         // 2. CONFIGURACIÓN DE URGENCIA
-        const MINUTO_APARICION_BOTON = 476; // 7:56 (Cuando sale el botón)
-        let totalSpots = 89; // Empezamos en 89
-        const maxSpots = 96; // Tope de la simulación
+        const MINUTO_APARICION_BOTON = 526; // 7:56 (Cuando sale el botón)
+        let totalSpots = 84; // Empezamos en 89
+        const maxSpots = 93; // Tope de la simulación
         let userCountryCode = null; // Se llenará con API
         let userFlagEmoji = "🌎"; // Por defecto
 
@@ -422,14 +422,14 @@
 
             // 2. Iniciar bucle de compras falsas
             // Primera compra a los 3 segundos de aparecer
-            setTimeout(triggerSocialProof, 3000);
+            setTimeout(triggerSocialProof, 1000);
             
             // Siguientes compras cada 8-15 segundos aleatorios
             setInterval(() => {
                 if(totalSpots < maxSpots) {
                     triggerSocialProof();
                 }
-            }, Math.floor(Math.random() * (15000 - 8000 + 1) + 8000)); 
+            }, Math.floor(Math.random() * (2000 - 3000 + 1) + 3000)); 
         }
 
 
