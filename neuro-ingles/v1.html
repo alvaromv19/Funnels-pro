@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Descubrimiento Neuro-Científico</title>
-    <meta name="robots" content="noindex, nofollow"> <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
+    <meta name="robots" content="noindex, nofollow"> 
+    
+    <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
     <link rel="preload" href="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/698a8ecaaa8949c7cb338434/v4/player.js" as="script">
     <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
     <link rel="preload" href="https://cdn.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/698a8eac1738e7f6ba04137b/main.m3u8" as="fetch">
@@ -15,14 +17,10 @@
 
     <style>
         /* RESET & BASE */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: #0a0a0a; /* Negro suave, menos agresivo que #000 */
+            background-color: #0a0a0a;
             color: #ffffff;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             line-height: 1.5;
@@ -36,15 +34,15 @@
         /* CONTAINER PRINCIPAL */
         .main-container {
             width: 100%;
-            max-width: 900px; /* Ancho optimizado para lectura y foco */
+            max-width: 900px;
             padding: 20px;
             padding-top: 40px;
-            flex: 1; /* Empuja el footer hacia abajo */
+            flex: 1;
         }
 
         /* TEXTOS */
         .pre-headline {
-            color: #ffffff; /* Verde "Científico/Matrix" para el pattern interrupt */
+            color: #ffffff;
             font-size: 0.85rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -57,7 +55,7 @@
         }
 
         h1.headline {
-            font-size: 2.2rem; /* Tamaño PC */
+            font-size: 2.2rem;
             font-weight: 800;
             line-height: 1.2;
             margin-bottom: 20px;
@@ -65,14 +63,14 @@
         }
 
         h1.headline span.highlight {
-            color: #ff4757; /* Rojo alerta para palabras clave si deseas resaltar algo, o dejar blanco */
+            color: #ff4757;
             text-decoration: underline;
             text-decoration-color: #ff4757;
         }
 
         .sub-headline {
             font-size: 1.1rem;
-            color: #cccccc; /* Gris claro para jerarquía visual */
+            color: #cccccc;
             max-width: 750px;
             margin: 0 auto 35px auto;
             font-weight: 400;
@@ -82,7 +80,7 @@
         .video-wrapper {
             width: 100%;
             position: relative;
-            box-shadow: 0 0 40px rgba(0, 255, 157, 0.1); /* Resplandor sutil */
+            box-shadow: 0 0 40px rgba(0, 255, 157, 0.1);
             border-radius: 8px;
             overflow: hidden;
             background: #000;
@@ -115,24 +113,11 @@
 
         /* RESPONSIVE MOBILE */
         @media (max-width: 600px) {
-            .main-container {
-                padding-top: 25px;
-            }
-            .pre-headline {
-                font-size: 0.7rem;
-                letter-spacing: 1px;
-            }
-            h1.headline {
-                font-size: 1.6rem; /* Ajuste para móviles */
-            }
-            .sub-headline {
-                font-size: 1rem;
-                line-height: 1.4;
-            }
-            .disclaimer-text {
-                font-size: 0.65rem;
-                text-align: center;
-            }
+            .main-container { padding-top: 25px; }
+            .pre-headline { font-size: 0.7rem; letter-spacing: 1px; }
+            h1.headline { font-size: 1.6rem; }
+            .sub-headline { font-size: 1rem; line-height: 1.4; }
+            .disclaimer-text { font-size: 0.65rem; text-align: center; }
         }
     </style>
 </head>
@@ -168,10 +153,13 @@
     </script>
 
     <script>
-        // Este script escucha los eventos de Vturb para manejar el Fullscreen
-        // Nota: Los navegadores móviles (iOS Safari) a veces bloquean el fullscreen automático si no viene de un toque directo.
+        // --- 1. CONFIGURACIÓN: REEMPLAZA EL ENLACE AQUÍ ABAJO ---
+        // Pon aquí el link de tu página "rescue.html"
+        const URL_DESTINO = "https://evo-launch.agency/neuro-ingles/redirec"; // <--- ¡AQUI! REEMPLAZA ESTO
+        // --------------------------------------------------------
+
         
-        // Esperamos a que la API de SmartPlayer esté lista
+        // --- 2. SCRIPT DE FULLSCREEN (Lógica original mejorada) ---
         const checkSmartPlayer = setInterval(() => {
             if (window.smartplayer && window.smartplayer.instances) {
                 clearInterval(checkSmartPlayer);
@@ -180,50 +168,53 @@
         }, 500);
 
         function setupFullscreenLogic() {
-            // Buscamos la instancia del video
-            const videoId = "vid-698a8ecaaa8949c7cb338434"; // Tu ID
-            
-            // Escuchar eventos globales de smartplayer si la instancia específica es difícil de atrapar
-            // Vturb suele despachar eventos personalizados
-            
-            // Lógica genérica para contenedores Vturb
+            const videoId = "vid-698a8ecaaa8949c7cb338434"; 
             const container = document.getElementById(videoId);
 
             if(container) {
-                // Intentamos capturar el evento de Play
-                // Vturb no siempre expone eventos estándar del DOM, pero intentamos escuchar clicks en el wrapper
                 container.addEventListener('click', function() {
-                    // Esperar un segundo a que el video inicie para pedir fullscreen
-                    setTimeout(() => {
-                        requestFull(container);
-                    }, 500);
+                    // Marcamos interacción para que funcione el Exit Intent
+                    hasInteracted = true;
+                    setTimeout(() => { requestFull(container); }, 500);
                 });
             }
         }
 
         function requestFull(elem) {
-            if (elem.requestFullscreen) {
-                elem.requestFullscreen();
-            } else if (elem.webkitRequestFullscreen) { /* Safari */
-                elem.webkitRequestFullscreen();
-            } else if (elem.msRequestFullscreen) { /* IE11 */
-                elem.msRequestFullscreen();
-            }
+            if (elem.requestFullscreen) { elem.requestFullscreen(); } 
+            else if (elem.webkitRequestFullscreen) { elem.webkitRequestFullscreen(); } 
+            else if (elem.msRequestFullscreen) { elem.msRequestFullscreen(); }
         }
 
-        function exitFull() {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) { /* Safari */
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) { /* IE11 */
-                document.msExitFullscreen();
-            }
-        }
 
-        // Nota técnica: Para una integración perfecta de Play->Fullscreen y Pause->Exit
-        // se recomienda configurar esto DENTRO del panel de Vturb (Configuración del Player > Comportamiento)
-        // ya que ellos tienen acceso directo al objeto 'video' interno que está protegido por el Shadow DOM.
+        // --- 3. HACK DE BOTÓN "ATRÁS" (Back Button Redirection) ---
+        // Esto crea un estado falso en el historial. Al dar atrás, se dispara la redirección.
+        (function(window, location) {
+            history.pushState(null, document.title, location.href);
+            window.addEventListener('popstate', function(event) {
+                history.pushState(null, document.title, location.href);
+                // Redirigir a la página de rescate
+                location.href = URL_DESTINO;
+            });
+        })(window, location);
+
+
+        // --- 4. HACK DE INTENCIÓN DE SALIDA (Cerrar Pestaña) ---
+        // Nota: Chrome requiere que el usuario haya tocado la pantalla al menos una vez
+        let hasInteracted = false;
+        
+        // Escuchamos cualquier toque o clic
+        document.body.addEventListener('click', () => { hasInteracted = true; });
+        document.body.addEventListener('touchstart', () => { hasInteracted = true; });
+
+        window.addEventListener('beforeunload', function (e) {
+            if (hasInteracted) {
+                // Esto activa el popup nativo del navegador "¿Seguro que quieres salir?"
+                e.preventDefault(); 
+                e.returnValue = ''; 
+            }
+        });
+
     </script>
 </body>
 </html>
