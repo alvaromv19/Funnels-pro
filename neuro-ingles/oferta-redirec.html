@@ -225,20 +225,5 @@
         </div>
     </div>
 
-    <script>
-        // Aquí no hacemos redirección de historial para no crear un bucle infinito molesto
-        // Solo activamos el popup de confirmación por si intentan cerrar la ventana
-        let hasInteracted = false;
-        document.body.addEventListener('click', () => { hasInteracted = true; });
-        document.body.addEventListener('touchstart', () => { hasInteracted = true; });
-
-        window.addEventListener('beforeunload', function (e) {
-            if (hasInteracted) {
-                e.preventDefault();
-                e.returnValue = '¿Estás seguro de rechazar esta oportunidad?';
-            }
-        });
-    </script>
-
 </body>
 </html>
