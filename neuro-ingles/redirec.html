@@ -214,6 +214,41 @@
             }
         }, 500);
     </script>
+<script>
+    // CONFIGURACIÓN
+    // 7 minutos y 56 segundos = (7 * 60) + 56 = 476 segundos
+    var SEGUNDOS_OBJETIVO = 476; 
+    var eventoYaDisparado = false; // Candado para que no se dispare 100 veces
 
+    // Buscamos al reproductor Vturb
+    var checkVturbTracker = setInterval(function() {
+        if (window.smartplayer && window.smartplayer.instances && window.smartplayer.instances.length > 0) {
+            clearInterval(checkVturbTracker); // Dejamos de buscar
+            var playerInstance = window.smartplayer.instances[0];
+
+            // Escuchamos el avance del video
+            playerInstance.on('timeupdate', function() {
+                // Verificamos si cruzó la marca de tiempo
+                if (playerInstance.video.currentTime >= SEGUNDOS_OBJETIVO && !eventoYaDisparado) {
+                    
+                    eventoYaDisparado = true; // Cerramos el candado
+                    
+                    // 🚀 DISPARAMOS EL EVENTO AL PIXEL
+                    if(typeof fbq === 'function') {
+                        fbq('track', 'ViewContent', {
+                            content_name: 'VSL_Offer_Revealed', // Para que lo identifiques en el Admin
+                            content_ids: ['VSL_NEURO_01'],
+                            content_type: 'product',
+                            value: 0.00, // Le damos un valor simbólico para ayudar al algoritmo
+                            currency: 'USD'
+                        });
+                        
+                        console.log("✅ Pixel Event Fired: ViewContent (Minuto 7:56 alcanzado)");
+                    }
+                }
+            });
+        }
+    }, 500); // Revisa cada medio segundo hasta encontrar el video
+</script>
 </body>
 </html>
