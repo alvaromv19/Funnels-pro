@@ -225,5 +225,16 @@
         </div>
     </div>
 
+    <script>
+        // Configuración
+        const CHECKOUT_URL = "https://go.hotmart.com/U98312104O?ap=e09c";
+        const TIEMPO_ESPERA = 120000; // 2 minutos (120,000 milisegundos)
+
+        // Temporizador: Si no han hecho clic en 2 minutos, los llevamos igual
+        setTimeout(() => {
+            window.location.href = CHECKOUT_URL;
+        }, TIEMPO_ESPERA);
+    </script>
+
 </body>
 </html>
