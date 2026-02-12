@@ -4,326 +4,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agency Command Center 🚀</title><link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,
-<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'>
-  <path d='M20 60 L50 20 L80 60 L55 55 L50 80 L45 55 Z'
-        fill='none'
-        stroke='%2300e5ff'
-        stroke-width='12'
-        stroke-linejoin='round'
-        stroke-linecap='round'/>
-</svg>">
-
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <title>Agency Command Center v3 🚀</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         :root {
-            /* --- PALETA DE COLORES --- */
-            --bg-body: #050b14;
-            --bg-panel: rgba(17, 24, 39, 0.7);
-            --bg-sidebar: #0b1121;
-            --glass-border: rgba(255, 255, 255, 0.05);
+            /* --- PALETA DE COLORES (Estilo Cyberpunk/Moderno) --- */
+            --bg-body: #020617;
+            --bg-panel: rgba(15, 23, 42, 0.6); /* Más oscuro y azulado */
+            --bg-sidebar: #0f172a;
+            --glass-border: rgba(255, 255, 255, 0.08);
 
-            --neon-blue: #3b82f6;
-            --neon-purple: #8b5cf6;
-            --neon-green: #10b981;
-            --neon-red: #ef4444;
-            --neon-orange: #f59e0b;
+            --neon-blue: #06b6d4;   /* Cyan */
+            --neon-purple: #8b5cf6; /* Violet */
+            --neon-green: #00ff9d;  /* Spring Green */
+            --neon-red: #ff2a6d;    /* Radical Red */
+            --neon-orange: #fbbf24; /* Amber */
 
-            --text-main: #f1f5f9;
-            --text-muted: #64748b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
 
-            /* --- DIMENSIONES --- */
-            --sidebar-width: 280px;
+            --sidebar-width: 260px;
             --sidebar-width-collapsed: 80px;
-            --transition-speed: 0.4s;
+            --transition-speed: 0.3s;
         }
 
         body {
             background-color: var(--bg-body);
-            background-image:
-                radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.15), transparent 40%),
-                radial-gradient(circle at 100% 0%, rgba(139, 92, 246, 0.1), transparent 40%),
-                radial-gradient(circle at 100% 100%, rgba(16, 185, 129, 0.05), transparent 40%);
+            /* Patrón de fondo sutil */
+            background-image: radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.08), transparent 25%), 
+                              radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
             margin: 0;
             overflow-x: hidden;
         }
 
-        /* --- LAYOUT & TRANSITIONS --- */
-        .wrapper {
-            display: flex;
-            width: 100%;
-            transition: all var(--transition-speed) ease;
-        }
+        /* --- LAYOUT --- */
+        .wrapper { display: flex; width: 100%; transition: all var(--transition-speed) ease; }
 
-        /* SIDEBAR ESTILOS */
         .sidebar {
             width: var(--sidebar-width);
             height: 100vh;
             background: var(--bg-sidebar);
             border-right: 1px solid var(--glass-border);
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             z-index: 1000;
-            padding: 20px;
-            overflow-y: auto;
-            transition: width var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
+            padding: 24px;
+            display: flex; flex-direction: column;
+            transition: width var(--transition-speed);
         }
 
         .main-content {
             margin-left: var(--sidebar-width);
             width: calc(100% - var(--sidebar-width));
             padding: 40px;
-            transition: margin-left var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1), width var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+            transition: margin-left var(--transition-speed), width var(--transition-speed);
         }
 
-        /* ESTADO CONTRAÍDO (COLLAPSED) */
-        body.collapsed .sidebar {
-            width: var(--sidebar-width-collapsed);
-            padding: 20px 10px;
-        }
+        /* Colapso */
+        body.collapsed .sidebar { width: var(--sidebar-width-collapsed); padding: 24px 10px; }
+        body.collapsed .sidebar .hide-on-collapse { display: none !important; }
+        body.collapsed .sidebar .sidebar-header { justify-content: center; }
+        body.collapsed .main-content { margin-left: var(--sidebar-width-collapsed); width: calc(100% - var(--sidebar-width-collapsed)); }
 
-        body.collapsed .sidebar .hide-on-collapse {
-            display: none !important;
-            opacity: 0;
-        }
-
-        body.collapsed .sidebar .sidebar-header {
-            justify-content: center;
-        }
-
-        body.collapsed .main-content {
-            margin-left: var(--sidebar-width-collapsed);
-            width: calc(100% - var(--sidebar-width-collapsed));
-        }
-
-        /* --- PANELES DE CRISTAL (GLASSMORPHISM) --- */
+        /* --- GLASS PANELS --- */
         .glass-panel {
             background: var(--bg-panel);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
-            position: relative;
-            overflow: hidden;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, border-color 0.3s;
+        }
+        
+        .glass-panel:hover {
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
         }
 
-        /* Línea superior degradada en paneles */
-        .glass-panel::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        }
+        /* --- TEXTOS --- */
+        h1, h2, h3, h4, h5 { color: white; font-weight: 700; letter-spacing: -0.01em; }
+        .metric-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--text-muted); font-weight: 600; margin-bottom: 6px; display: block; }
+        .metric-value { font-size: 2.2rem; font-weight: 800; color: white; line-height: 1.1; }
 
-        /* --- TIPOGRAFÍA Y ELEMENTOS --- */
-        h1, h2, h3, h4, h5 {
-            color: white;
-            font-weight: 800;
-            letter-spacing: -0.02em;
-        }
-
-        .text-muted {
-            color: var(--text-muted) !important;
-        }
-
-        .metric-label {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-muted);
-            font-weight: 700;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .metric-value {
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: white;
-            line-height: 1;
-            background: -webkit-linear-gradient(90deg, #fff, #94a3b8);
-            -webkit-background-clip: text;
-        }
-
-        /* INPUTS Y SELECTS */
+        /* --- CONTROLES --- */
         select, input {
-            background: rgba(255, 255, 255, 0.03) !important;
+            background: rgba(0, 0, 0, 0.3) !important;
             border: 1px solid var(--glass-border) !important;
             color: white !important;
-            border-radius: 12px !important;
-            padding: 12px !important;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+            border-radius: 8px !important;
+            padding: 10px 12px !important;
+            font-size: 0.85rem;
         }
-
-        select:focus, input:focus {
-            border-color: var(--neon-blue) !important;
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3) !important;
-            outline: none;
-            background: rgba(255, 255, 255, 0.05) !important;
-        }
-
-        /* BOTONES */
-        .btn-toggle {
-            background: transparent;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            margin-bottom: 20px;
-            transition: 0.3s;
-        }
-
-        .btn-toggle:hover {
-            color: var(--neon-blue);
-            transform: scale(1.1);
-        }
+        select:focus, input:focus { border-color: var(--neon-blue) !important; outline: none; box-shadow: 0 0 10px rgba(6, 182, 212, 0.2) !important; }
 
         .btn-glow {
             background: linear-gradient(135deg, var(--neon-blue), #2563eb);
-            border: none;
-            color: white;
-            padding: 14px;
-            border-radius: 12px;
-            font-weight: 700;
-            width: 100%;
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.4);
-            transition: all 0.3s;
+            border: none; color: white; padding: 12px; border-radius: 8px; font-weight: 600; width: 100%;
+            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3); transition: 0.3s;
         }
-
-        .btn-glow:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 25px rgba(59, 130, 246, 0.6);
-        }
+        .btn-glow:hover { box-shadow: 0 6px 20px rgba(6, 182, 212, 0.5); transform: translateY(-1px); }
 
         .btn-outline {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--glass-border);
-            color: var(--text-muted);
-            width: 100%;
-            padding: 10px;
-            border-radius: 10px;
-            font-size: 0.9rem;
-            transition: all 0.2s;
+            background: transparent; border: 1px solid var(--glass-border); color: var(--text-muted); width: 100%; padding: 8px; border-radius: 8px; transition: 0.2s;
         }
+        .btn-outline:hover { border-color: var(--text-main); color: white; background: rgba(255,255,255,0.03); }
 
-        .btn-outline:hover {
-            border-color: var(--text-main);
-            color: white;
-            background: rgba(255, 255, 255, 0.05);
-        }
+        /* --- TABLA CUSTOM --- */
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 4px; }
+        .table-custom th { text-align: left; padding: 12px 16px; color: var(--text-muted); font-size: 0.75rem; text-transform: uppercase; font-weight: 600; border-bottom: 1px solid var(--glass-border); }
+        .table-custom td { background: rgba(255, 255, 255, 0.015); padding: 16px; font-size: 0.9rem; border-top: 1px solid transparent; border-bottom: 1px solid transparent; }
+        .table-custom tr td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+        .table-custom tr td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
+        .table-custom tr:hover td { background: rgba(255, 255, 255, 0.05); }
 
-        /* TABLA PERSONALIZADA */
-        .table-custom {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 10px;
-        }
+        /* Badge Status */
+        .status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; }
 
-        .table-custom th {
-            text-align: left;
-            padding: 15px;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid var(--glass-border);
-        }
+        /* Loader */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.5s; }
+        .loader-spin { width: 50px; height: 50px; border: 3px solid rgba(6, 182, 212, 0.2); border-top: 3px solid var(--neon-blue); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .table-custom td {
-            background: rgba(255, 255, 255, 0.02);
-            padding: 20px 15px;
-            font-weight: 500;
-            border-top: 1px solid rgba(255, 255, 255, 0.02);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
-        }
-
-        .table-custom tr td:first-child {
-            border-top-left-radius: 12px;
-            border-bottom-left-radius: 12px;
-            border-left: 1px solid rgba(255, 255, 255, 0.02);
-        }
-
-        .table-custom tr td:last-child {
-            border-top-right-radius: 12px;
-            border-bottom-right-radius: 12px;
-            border-right: 1px solid rgba(255, 255, 255, 0.02);
-        }
-
-        .table-custom tr:hover td {
-            background: rgba(255, 255, 255, 0.06);
-            transform: translateY(-2px);
-            transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        /* LOADER (ANIMACIÓN DE CARGA) */
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-body);
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .loader-ring {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(59, 130, 246, 0.2);
-            border-top: 4px solid var(--neon-blue);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* SCROLLBAR */
-        ::-webkit-scrollbar { width: 8px; }
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-body); }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-        /* ANIMACIONES DE ENTRADA */
-        .fade-up {
-            animation: fadeUp 0.6s ease forwards;
-            opacity: 0;
-            transform: translateY(20px);
-        }
-
-        @keyframes fadeUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
     </style>
 
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
 </head>
@@ -331,31 +148,31 @@
 <body>
 
     <div id="loader">
-        <div class="loader-ring"></div>
-        <h4 style="letter-spacing: 4px; font-weight: 300;">AGENCY Creamos Negocios</h4>
+        <div class="loader-spin"></div>
+        <h5 style="letter-spacing: 2px; font-weight: 300; color: var(--neon-blue);">CARGANDO DATA...</h5>
     </div>
 
     <div class="wrapper d-none" id="main-app">
 
         <nav class="sidebar">
-            <div class="d-flex justify-content-between align-items-center mb-4 sidebar-header">
+            <div class="d-flex justify-content-between align-items-center mb-5 sidebar-header">
                 <div class="d-flex align-items-center hide-on-collapse">
-                    <div style="width: 32px; height: 32px; background: var(--neon-blue); border-radius: 8px; display:flex; align-items:center; justify-content:center; margin-right: 12px; box-shadow: 0 0 15px var(--neon-blue);">
-                        <i class="fas fa-rocket text-white" style="font-size: 14px;"></i>
+                    <div style="width: 32px; height: 32px; background: var(--neon-blue); border-radius: 8px; display:flex; align-items:center; justify-content:center; margin-right: 12px; box-shadow: 0 0 15px rgba(6,182,212,0.4);">
+                        <i class="fas fa-bolt text-white" style="font-size: 14px;"></i>
                     </div>
-                    <span style="font-weight: 700; letter-spacing: 1px;">CN</span>
+                    <span style="font-weight: 800; font-size: 1.2rem; letter-spacing: 0.5px;">AGENCY<span style="color:var(--neon-blue);">.</span></span>
                 </div>
-                <button class="btn-toggle" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+                <button class="btn btn-sm text-white" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
             </div>
 
             <div class="hide-on-collapse">
                 <label class="metric-label">Panel de Control</label>
                 <button class="btn-outline mb-4" onclick="location.reload()">
-                    <i class="fas fa-sync-alt me-2"></i> Refrescar Data
+                    <i class="fas fa-sync-alt me-2"></i> Actualizar
                 </button>
 
-                <label class="metric-label">Filtros de Tiempo</label>
-                <select id="filtroTiempo" class="form-select mb-4">
+                <label class="metric-label">Filtros</label>
+                <select id="filtroTiempo" class="form-select mb-3">
                     <option value="mes_actual">📅 Este Mes</option>
                     <option value="mes_anterior">⏮️ Mes Anterior</option>
                     <option value="hoy">🔥 Hoy</option>
@@ -365,211 +182,170 @@
                     <option value="historico">💾 Todo el Histórico</option>
                 </select>
 
-                <label class="metric-label">Equipo</label>
                 <select id="filtroCloser" class="form-select mb-4">
                     <option value="Todos">👤 Todos los Closers</option>
                 </select>
 
                 <hr style="border-color: var(--glass-border); margin: 20px 0;">
 
-                <label class="metric-label">Metas ($)</label>
-                <div class="mb-2">
-                    <input type="number" id="metaFact" class="form-control" value="30000" placeholder="Meta Facturación">
-                </div>
-                <div class="mb-4">
-                    <input type="number" id="metaAds" class="form-control" value="3500" placeholder="Budget Ads">
-                </div>
-                <button class="btn-glow" onclick="updateDashboard()">
-                    APLICAR METAS
-                </button>
+                <label class="metric-label">Objetivos ($)</label>
+                <input type="number" id="metaFact" class="form-control mb-2" value="30000" placeholder="Meta Facturación">
+                <input type="number" id="metaAds" class="form-control mb-4" value="3500" placeholder="Budget Ads">
+                
+                <button class="btn-glow" onclick="updateDashboard()">APLICAR METAS</button>
 
                 <div class="mt-auto pt-5 text-center text-muted" style="font-size: 0.7rem;">
-                    v2.0.4 PRO
+                    v3.0.1 PRO <br> Powered by Alvaro MV
                 </div>
             </div>
         </nav>
 
         <main class="main-content">
-
-            <div class="d-flex justify-content-between align-items-end mb-5 fade-up" style="animation-delay: 0.1s;">
+            
+            <div class="d-flex justify-content-between align-items-end mb-5">
                 <div>
-                    <h1 class="display-5 mb-1">Dashboard Creamos Negocios</h1>
-                    <p class="text-muted mb-0" style="font-family: monospace;" id="rangoFechasTexto">Iniciando sistema...</p>
+                    <h1 class="mb-1">Agency Command Center</h1>
+                    <p class="text-muted mb-0 font-monospace" id="rangoFechasTexto" style="font-size: 0.9rem;">Cargando...</p>
                 </div>
                 <div>
-                    <span class="badge" style="background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid rgba(16, 185, 129, 0.2); padding: 8px 16px; border-radius: 20px;">
-                        <i class="fas fa-dot-circle me-2 fa-beat-fade"></i> LIVE FEED
+                    <span class="badge" style="background: rgba(0, 255, 157, 0.1); color: var(--neon-green); border: 1px solid rgba(0, 255, 157, 0.2); padding: 8px 16px; border-radius: 20px;">
+                        <i class="fas fa-circle me-2 fa-beat-fade" style="font-size: 8px;"></i> SISTEMA ONLINE
                     </span>
                 </div>
             </div>
 
-            <div id="proyeccionesContainer" class="row mb-4 fade-up" style="animation-delay: 0.2s;"></div>
+            <div id="proyeccionesContainer" class="row mb-4"></div>
 
-            <div class="glass-panel fade-up" style="animation-delay: 0.3s; padding: 40px;">
-                <h4 class="mb-4"><i class="fas fa-chart-line me-2" style="color: var(--neon-blue);"></i>Performance Financiero</h4>
-                <div class="row g-4">
-                    <div class="col-md-2" style="width: 20%;">
+            <div class="glass-panel">
+                <h5 class="mb-4 text-muted"><i class="fas fa-chart-pie me-2"></i>Performance General</h5>
+                <div class="row g-4 text-center">
+                    <div class="col">
                         <span class="metric-label">Facturación</span>
-                        <div class="metric-value" id="kpi-facturacion">$0</div>
-                        <small class="text-muted"><i class="fas fa-arrow-up text-success"></i> Buen Revenue</small>
+                        <div class="metric-value text-white" id="kpi-facturacion">$0</div>
                     </div>
-                    <div class="col-md-2" style="width: 20%;">
-                        <span class="metric-label">Profit (Neto)</span>
-                        <div class="metric-value" style="background: -webkit-linear-gradient(90deg, #4ade80, #22c55e); -webkit-background-clip: text;" id="kpi-profit">$0</div>
-                        <small class="text-muted">Liquid Cash</small>
+                    <div class="col">
+                        <span class="metric-label">Inversión (Ads)</span>
+                        <div class="metric-value" style="color: var(--neon-red);" id="kpi-ads">$0</div>
                     </div>
-                    <div class="col-md-2" style="width: 20%;">
+                    <div class="col">
+                        <span class="metric-label">Profit Neto</span>
+                        <div class="metric-value" style="color: var(--neon-green);" id="kpi-profit">$0</div>
+                    </div>
+                    <div class="col">
                         <span class="metric-label">ROAS</span>
-                        <div class="metric-value" id="kpi-roas">0.00x</div>
-                        <small class="text-muted">META: 5x</small>
+                        <div class="metric-value" style="color: var(--neon-orange);" id="kpi-roas">0.00x</div>
                     </div>
-                    <div class="col-md-2" style="width: 20%;">
-                        <span class="metric-label">Clientes</span>
-                        <div class="metric-value" id="kpi-ventas">0</div>
-                        <small class="text-muted">Ventas cerradas</small>
-                    </div>
-                    <div class="col-md-2" style="width: 20%;">
-                        <span class="metric-label">Inversión</span>
-                        <div class="metric-value" style="background: -webkit-linear-gradient(90deg, #f87171, #ef4444); -webkit-background-clip: text;" id="kpi-ads">$0</div>
-                        <small class="text-muted">Ad spend</small>
+                    <div class="col">
+                        <span class="metric-label">Ventas</span>
+                        <div class="metric-value text-white" id="kpi-ventas">0</div>
                     </div>
                 </div>
             </div>
 
-            <div class="row mb-4 fade-up" style="animation-delay: 0.4s;">
-                <div class="col-md-3">
-                    <div class="glass-panel d-flex justify-content-between align-items-center h-100">
-                        <div>
-                            <span class="metric-label">Leads Únicos</span>
-                            <div class="h2 text-white mb-0" id="kpi-leads">0</div>
+            <div class="row mb-4">
+                <div class="col-12 mb-4">
+                    <div class="glass-panel h-100">
+                        <div class="d-flex justify-content-between mb-2">
+                            <h5 class="mb-0">💸 Tendencia Financiera (Cashflow)</h5>
+                            <span class="text-muted small"><i class="fas fa-info-circle me-1"></i>Ingreso vs Gasto vs Profit</span>
                         </div>
-                        <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.05); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
-                            <i class="fas fa-users text-muted"></i>
+                        <div id="chart-finance" style="height: 400px;"></div>
+                    </div>
+                </div>
+
+                <div class="col-12 mb-4">
+                    <div class="glass-panel h-100">
+                        <div class="d-flex justify-content-between mb-2">
+                            <h5 class="mb-0">📊 Flujo de Leads y Conversión Diaria</h5>
+                            <span class="text-muted small">Volumen diario por estado</span>
+                        </div>
+                        <div id="chart-daily-status" style="height: 400px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-7 mb-4">
+                    <div class="glass-panel h-100">
+                        <h5 class="mb-4">📅 Desglose Diario de Métricas</h5>
+                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                            <table class="table-custom" id="tabla-diaria">
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th class="text-center">Leads</th>
+                                        <th class="text-center">Asistencias</th>
+                                        <th class="text-center">No Shows</th>
+                                        <th class="text-center">Ventas</th>
+                                        <th class="text-end">Cierre %</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
-                    <div class="glass-panel d-flex justify-content-between align-items-center h-100">
-                        <div>
-                            <span class="metric-label">Asistencias</span>
-                            <div class="h2 text-white mb-0" id="kpi-asistencias">0</div>
-                        </div>
-                        <div style="width: 50px; height: 50px; background: rgba(255,255,255,0.05); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
-                            <i class="fas fa-handshake text-muted"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="glass-panel d-flex justify-content-between align-items-center h-100">
-                        <div>
-                            <span class="metric-label">Tasa Asistencia</span>
-                            <div class="h2 text-white mb-0" id="kpi-tasa-asistencia">0%</div>
-                        </div>
-                        <div style="width: 50px; height: 50px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
-                            <i class="fas fa-percent" style="color: var(--neon-blue);"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="glass-panel d-flex justify-content-between align-items-center h-100">
-                        <div>
-                            <span class="metric-label">Tasa Cierre</span>
-                            <div class="h2 text-white mb-0" id="kpi-tasa-cierre">0%</div>
-                        </div>
-                        <div style="width: 50px; height: 50px; background: rgba(16, 185, 129, 0.1); border-radius: 50%; display:flex; align-items:center; justify-content:center;">
-                            <i class="fas fa-check" style="color: var(--neon-green);"></i>
+
+                <div class="col-lg-5 mb-4">
+                    <div class="glass-panel h-100">
+                        <h5 class="mb-4">🏆 Top Performers</h5>
+                        <div class="table-responsive">
+                            <table class="table-custom" id="tabla-ranking">
+                                <thead>
+                                    <tr>
+                                        <th>Closer</th>
+                                        <th class="text-end">Revenue</th>
+                                        <th class="text-center">Ventas</th>
+                                        <th class="text-end">CR %</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="glass-panel fade-up" style="animation-delay: 0.5s;">
-                <div class="d-flex justify-content-between mb-4">
-                    <h5 class="mb-0">🌊 Flujo Diario de Leads</h5>
-                    <button class="btn btn-sm btn-outline-secondary" style="border:1px solid var(--glass-border); color: var(--text-muted);"><i class="fas fa-expand"></i></button>
-                </div>
-                <div id="chart-daily-status" style="height: 400px; width: 100%;"></div>
-            </div>
-
-            <div class="glass-panel fade-up" style="animation-delay: 0.6s;">
-                <div class="d-flex justify-content-between mb-4">
-                    <h5 class="mb-0">💸 Dinámica Financiera (Ingreso vs Gasto)</h5>
-                    <span class="badge bg-dark border border-secondary text-muted">Estado Financiero</span>
-                </div>
-                <div id="chart-finance" style="height: 400px; width: 100%;"></div>
-            </div>
-
-            <div class="glass-panel fade-up" style="animation-delay: 0.7s;">
-                <h5 class="mb-4">🏆 Top Closers</h5>
-                <div class="table-responsive">
-                    <table class="table-custom" id="tabla-ranking">
-                        <thead>
-                            <tr>
-                                <th>Closer</th>
-                                <th>Facturación</th>
-                                <th>Asistencias</th>
-                                <th>Ventas</th>
-                                <th>Closed rate</th>
-                            </tr>
-                        </thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <footer class="text-center text-muted mt-5 mb-3 fade-up" style="animation-delay: 0.8s; opacity: 0.5; font-size: 0.8rem;">
-                Agency Creamos Negocios • By Alvaro MV
+            <footer class="text-center text-muted mt-5 opacity-50 small">
+                Agency Command Center • 2026
             </footer>
 
         </main>
     </div>
 
     <script>
-        // --- A. CONFIGURACIÓN DE URLS (EDITAR AQUÍ LOS LINKS) ---
+        // --- 1. CONFIGURACIÓN ---
         const URL_VENTAS = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv";
         const URL_GASTOS_DIC = "https://docs.google.com/spreadsheets/d/e/2PACX-1vGOLgPTDLie5gEbkViCbpebWfN9S_eb2h2GGlpWLjmfVgzfnwR_ncVTs4IqmKgmAFfxZTQHJlMBrIi/pub?gid=0&single=true&output=csv";
         const URL_GASTOS_ANUAL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?gid=692917105&single=true&output=csv";
 
-        // --- B. VARIABLES DE ESTADO ---
         let rawDataVentas = [], rawDataGastos = [], filteredVentas = [], filteredGastos = [];
 
-        // --- C. FUNCIONES DE INTERFAZ (UI) ---
-        
-        // Colapsar Sidebar
+        // --- 2. FUNCIONES UI ---
         function toggleSidebar() {
             document.body.classList.toggle('collapsed');
-            // Redimensionar gráficos de Plotly al cambiar el ancho
-            setTimeout(() => {
-                window.dispatchEvent(new Event('resize'));
-            }, 450);
+            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 350);
         }
 
-        // Animación de números
-        function animateValue(obj, start, end, duration, isMoney = false, isPercent = false) {
+        const fmtMoney = (val) => "$" + val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        
+        function animateValue(obj, start, end, duration, isMoney = false) {
             let startTimestamp = null;
             const step = (timestamp) => {
                 if (!startTimestamp) startTimestamp = timestamp;
                 const progress = Math.min((timestamp - startTimestamp) / duration, 1);
                 let currentVal = Math.floor(progress * (end - start) + start);
-
-                if (isMoney) obj.innerHTML = fmtMoney(currentVal);
-                else if (isPercent) obj.innerHTML = (progress * (end - start) + start).toFixed(1) + "%";
-                else obj.innerHTML = currentVal.toLocaleString();
-
+                obj.innerHTML = isMoney ? fmtMoney(currentVal) : currentVal.toLocaleString();
                 if (progress < 1) window.requestAnimationFrame(step);
-                else {
-                    if (isMoney) obj.innerHTML = fmtMoney(end);
-                    else if (isPercent) obj.innerHTML = end.toFixed(1) + "%";
-                    else obj.innerHTML = end.toLocaleString();
-                }
+                else obj.innerHTML = isMoney ? fmtMoney(end) : end.toLocaleString();
             };
             window.requestAnimationFrame(step);
         }
 
-        // --- D. INICIALIZACIÓN Y CARGA DE DATOS ---
+        // --- 3. INIT & DATA ---
         async function init() {
             try {
-                const ts = Date.now(); // Cache busting para obligar actualización
+                const ts = Date.now();
                 const [resVentas, resG1, resG2] = await Promise.all([
                     fetch(URL_VENTAS + "&t=" + ts).then(r => r.text()),
                     fetch(URL_GASTOS_DIC + "&t=" + ts).then(r => r.text()),
@@ -581,36 +357,26 @@
                 populateClosers();
                 updateDashboard();
 
-                // Ocultar Loader
-                const loader = document.getElementById('loader');
-                loader.style.opacity = '0';
-                loader.style.transition = 'opacity 0.5s ease';
+                document.getElementById('loader').style.opacity = '0';
                 setTimeout(() => {
-                    loader.classList.add('d-none');
+                    document.getElementById('loader').classList.add('d-none');
                     document.getElementById('main-app').classList.remove('d-none');
                 }, 500);
-
             } catch (error) {
                 console.error(error);
-                alert("Error crítico conectando a la base de datos.");
+                alert("Error cargando datos. Revisa la consola.");
             }
         }
 
-        // --- E. PROCESAMIENTO DE DATOS ---
-
         function processVentas(csvText) {
             const results = Papa.parse(csvText, { header: true, skipEmptyLines: true });
-            let data = results.data;
-            const keys = results.meta.fields;
-
-            // Reparación de filas desplazadas (Bug GHL)
-            data = data.map(row => {
-                const primerCol = row[keys[0]];
-                if (!primerCol || primerCol.trim() === "") {
-                    let values = keys.map(k => row[k]);
-                    let fixedValues = values.slice(8).concat(new Array(8).fill(""));
+            // Fix para filas desplazadas (GHL Bug)
+            let data = results.data.map(row => {
+                const keys = Object.keys(row);
+                if (!row[keys[0]] || row[keys[0]].trim() === "") {
+                    let vals = Object.values(row);
                     let newRow = {};
-                    keys.forEach((k, i) => newRow[k] = fixedValues[i]);
+                    keys.forEach((k, i) => newRow[k] = vals[i+8] || ""); // Ajuste heurístico
                     return newRow;
                 }
                 return row;
@@ -619,24 +385,24 @@
             rawDataVentas = data.map(row => {
                 let fecha = moment(row['Fecha'], "DD/MM/YYYY");
                 if (!fecha.isValid()) fecha = moment(row['Fecha']);
+                
                 let monto = parseFloat((row['Monto ($)'] || "0").toString().replace(/[$,]/g, '')) || 0;
                 let res = (row['Resultado'] || "Pendiente").toLowerCase();
 
-                let estadoSimple = "Otro/Pendiente";
-                if (res.includes("venta")) estadoSimple = "✅ Venta";
-                else if (res.includes("no show")) estadoSimple = "❌ No Show";
-                else if (res.includes("descalificado")) estadoSimple = "🚫 Descalificado";
-                else if (res.includes("seguimiento")) estadoSimple = "👀 Seguimiento";
-                else if (res.includes("re-agendado") || res.includes("reagendado")) estadoSimple = "📅 Re-Agendado";
+                let estadoSimple = "Otro";
+                if (res.includes("venta")) estadoSimple = "Venta";
+                else if (res.includes("no show")) estadoSimple = "No Show";
+                else if (res.includes("descalificado")) estadoSimple = "Descalificado";
+                else if (res.includes("seguimiento")) estadoSimple = "Seguimiento";
+                else if (res.includes("re-agendado") || res.includes("reagendado")) estadoSimple = "Re-Agendado";
 
-                let esAsistencia = false;
-                if (res.includes("venta") || res.includes("seguimiento") || res.includes("descalificado") || (res.includes("asistió") && !res.includes("no show"))) esAsistencia = true;
+                let esAsistencia = (res.includes("venta") || res.includes("seguimiento") || res.includes("descalificado") || (res.includes("asistió") && !res.includes("no show")));
 
                 return {
                     fecha: fecha,
                     monto: monto,
                     closer: (row['Closer'] || "Sin Asignar").trim(),
-                    email: (row['Email'] || row['Lead Name'] || Math.random()).toString().trim().toLowerCase(),
+                    email: (row['Email'] || row['Lead Name'] || Math.random()).toString(),
                     estadoSimple: estadoSimple,
                     esAsistencia: esAsistencia
                 };
@@ -644,356 +410,305 @@
         }
 
         function processGastos(csv1, csv2) {
-            const p1 = Papa.parse(csv1, { header: true, skipEmptyLines: true }).data;
-            const p2 = Papa.parse(csv2, { header: false, skipEmptyLines: true }).data;
             let allGastos = [];
+            const addGasto = (fStr, gStr) => {
+                let f = moment(fStr, "DD/MM/YYYY");
+                if (!f.isValid()) f = moment(fStr);
+                let g = parseFloat((gStr || "0").toString().replace(/[$,]/g, '')) || 0;
+                if (f.isValid()) allGastos.push({ fecha: f, gasto: g });
+            };
 
-            p1.forEach(r => {
-                let f = moment(r['Fecha'], "DD/MM/YYYY");
-                let g = parseFloat((r['Gasto'] || "0").toString().replace(/[$,]/g, '')) || 0;
-                if (f.isValid()) allGastos.push({ fecha: f, gasto: g });
-            });
-            p2.forEach(r => {
-                if (r[0] === 'Fecha') return;
-                let f = moment(r[0]);
-                if (!f.isValid()) f = moment(r[0], "DD/MM/YYYY");
-                let g = parseFloat((r[1] || "0").toString().replace(/[$,]/g, '')) || 0;
-                if (f.isValid()) allGastos.push({ fecha: f, gasto: g });
-            });
+            Papa.parse(csv1, { header: true }).data.forEach(r => addGasto(r['Fecha'], r['Gasto']));
+            Papa.parse(csv2, { header: false }).data.forEach(r => { if(r[0] !== 'Fecha') addGasto(r[0], r[1]); });
+            
             rawDataGastos = allGastos.sort((a, b) => a.fecha - b.fecha);
         }
 
-        // Llenar select de Closers
         function populateClosers() {
             const closers = [...new Set(rawDataVentas.map(v => v.closer))].sort();
             const sel = document.getElementById('filtroCloser');
             closers.forEach(c => {
                 if (c) {
                     let opt = document.createElement('option');
-                    opt.value = c;
-                    opt.innerText = c;
+                    opt.value = c; opt.innerText = c;
                     sel.appendChild(opt);
                 }
             });
         }
 
-        // Obtener rango de fechas según filtro
-        function getDates(filterVal) {
-            const hoy = moment();
-            let inicio, fin;
-            switch (filterVal) {
-                case 'hoy': inicio = moment(); fin = moment(); break;
-                case 'ayer': inicio = moment().subtract(1, 'days'); fin = moment().subtract(1, 'days'); break;
-                case 'semana': inicio = moment().startOf('isoWeek'); fin = moment(); break;
-                case 'mes_actual': inicio = moment().startOf('month'); fin = moment(); break;
-                case 'mes_anterior': inicio = moment().subtract(1, 'month').startOf('month'); fin = moment().subtract(1, 'month').endOf('month'); break;
-                case '30dias': inicio = moment().subtract(30, 'days'); fin = moment(); break;
-                case 'historico': inicio = moment('2000-01-01'); fin = moment(); break;
-                default: inicio = moment().startOf('month'); fin = moment();
-            }
-            return { inicio, fin };
-        }
-
-        // --- F. ACTUALIZACIÓN DEL DASHBOARD (CÁLCULOS) ---
+        // --- 4. CÁLCULOS Y RENDER ---
         function updateDashboard() {
             const filtroTiempo = document.getElementById('filtroTiempo').value;
             const filtroCloser = document.getElementById('filtroCloser').value;
             const metaFact = parseFloat(document.getElementById('metaFact').value) || 0;
-            const presAds = parseFloat(document.getElementById('metaAds').value) || 0;
+            const metaAds = parseFloat(document.getElementById('metaAds').value) || 0;
 
-            const { inicio, fin } = getDates(filtroTiempo);
-            document.getElementById('rangoFechasTexto').innerText = `DATA RANGE: ${inicio.format("MMM DD").toUpperCase()} - ${fin.format("MMM DD").toUpperCase()}`;
+            // Fechas
+            const hoy = moment();
+            let inicio, fin;
+            switch (filtroTiempo) {
+                case 'hoy': inicio = moment(); fin = moment(); break;
+                case 'ayer': inicio = moment().subtract(1, 'days'); fin = moment().subtract(1, 'days'); break;
+                case 'semana': inicio = moment().startOf('isoWeek'); fin = moment(); break;
+                case 'mes_anterior': inicio = moment().subtract(1, 'month').startOf('month'); fin = moment().subtract(1, 'month').endOf('month'); break;
+                case '30dias': inicio = moment().subtract(30, 'days'); fin = moment(); break;
+                case 'historico': inicio = moment('2000-01-01'); fin = moment(); break;
+                default: inicio = moment().startOf('month'); fin = moment(); // mes_actual
+            }
+            document.getElementById('rangoFechasTexto').innerText = `${inicio.format("DD MMM")} - ${fin.format("DD MMM YYYY")}`.toUpperCase();
 
             // Filtrado
             filteredVentas = rawDataVentas.filter(v => v.fecha.isSameOrAfter(inicio, 'day') && v.fecha.isSameOrBefore(fin, 'day'));
             if (filtroCloser !== "Todos") filteredVentas = filteredVentas.filter(v => v.closer === filtroCloser);
+            
             filteredGastos = rawDataGastos.filter(g => g.fecha.isSameOrAfter(inicio, 'day') && g.fecha.isSameOrBefore(fin, 'day'));
 
-            let totalGasto = (filtroCloser === "Todos") ? filteredGastos.reduce((sum, g) => sum + g.gasto, 0) : 0;
-            let totalFacturacion = filteredVentas.reduce((sum, v) => sum + v.monto, 0);
+            // KPIs
+            let totalFact = filteredVentas.reduce((acc, v) => acc + v.monto, 0);
+            let totalGasto = (filtroCloser === "Todos") ? filteredGastos.reduce((acc, g) => acc + g.gasto, 0) : 0;
+            let profit = totalFact - totalGasto;
+            let roas = totalGasto > 0 ? (totalFact / totalGasto) : 0;
+            let ventasCount = filteredVentas.filter(v => v.estadoSimple === "Venta").length;
 
-            // Cálculos de KPIs
-            const uniqueEmails = [...new Set(filteredVentas.map(v => v.email))];
-            const asistenciasSet = new Set(filteredVentas.filter(v => v.esAsistencia).map(v => v.email));
-            const ventasSet = new Set(filteredVentas.filter(v => v.estadoSimple === "✅ Venta").map(v => v.email));
+            animateValue(document.getElementById('kpi-facturacion'), 0, totalFact, 800, true);
+            animateValue(document.getElementById('kpi-ads'), 0, totalGasto, 800, true);
+            animateValue(document.getElementById('kpi-profit'), 0, profit, 800, true);
+            document.getElementById('kpi-roas').innerText = roas.toFixed(2) + "x";
+            animateValue(document.getElementById('kpi-ventas'), 0, ventasCount, 800);
 
-            const profit = totalFacturacion - totalGasto;
-            const roas = totalGasto > 0 ? (totalFacturacion / totalGasto) : 0;
-
-            // Renderizar Números
-            animateValue(document.getElementById('kpi-facturacion'), 0, totalFacturacion, 1000, true);
-            animateValue(document.getElementById('kpi-profit'), 0, profit, 1000, true);
-            document.getElementById('kpi-roas').innerHTML = `${roas.toFixed(2)}x`;
-            animateValue(document.getElementById('kpi-ventas'), 0, ventasSet.size, 1000);
-            animateValue(document.getElementById('kpi-ads'), 0, totalGasto, 1000, true);
-
-            animateValue(document.getElementById('kpi-leads'), 0, uniqueEmails.length, 800);
-            animateValue(document.getElementById('kpi-asistencias'), 0, asistenciasSet.size, 800);
-            const tasaAsist = uniqueEmails.length > 0 ? (asistenciasSet.size / uniqueEmails.length * 100) : 0;
-            const tasaCierre = asistenciasSet.size > 0 ? (ventasSet.size / asistenciasSet.size * 100) : 0;
-            animateValue(document.getElementById('kpi-tasa-asistencia'), 0, tasaAsist, 800, false, true);
-            animateValue(document.getElementById('kpi-tasa-cierre'), 0, tasaCierre, 800, false, true);
-
-            // Llamar a renderizadores visuales
-            renderProjections(filtroTiempo, totalFacturacion, metaFact, presAds, totalGasto);
-            renderCharts(filteredVentas, filteredGastos, filtroCloser);
-            renderTable(filteredVentas);
+            // Proyecciones (Solo mes actual)
+            renderProjections(filtroTiempo, totalFact, metaFact, metaAds, totalGasto);
+            
+            // Gráficos
+            renderFinancialChart(filteredVentas, filteredGastos, filtroCloser);
+            renderStatusChart(filteredVentas); // Nuevo Stacked Bar
+            
+            // Tablas
+            renderDailyTable(filteredVentas); // Nueva tabla diaria
+            renderRankingTable(filteredVentas);
         }
 
-        // --- G. RENDERIZADORES DE GRÁFICOS Y TABLAS ---
-
-        // Renderizar Proyecciones
-        function renderProjections(filtro, fact, meta, presAds, gasto) {
+        function renderProjections(filtro, fact, meta, budget, gasto) {
             const div = document.getElementById('proyeccionesContainer');
-            if (filtro !== "mes_actual") { div.innerHTML = ""; return; }
-
+            if (filtro !== 'mes_actual') { div.innerHTML = ''; return; }
+            
             const hoy = moment();
             const diasMes = hoy.daysInMonth();
-            const diaHoy = hoy.date();
-            const restante = diasMes - diaHoy;
-
-            const proy = (diaHoy > 0) ? (fact / diaHoy) * diasMes : 0;
-            const budgetRest = Math.max(presAds - gasto, 0);
-            const pace = restante > 0 ? budgetRest / restante : 0;
-
+            const diaActual = hoy.date();
+            const restante = diasMes - diaActual;
+            
+            const projected = diaActual > 0 ? (fact / diaActual) * diasMes : 0;
+            const pace = restante > 0 ? Math.max(0, budget - gasto) / restante : 0;
+            
             div.innerHTML = `
                 <div class="col-md-4">
-                    <div class="glass-panel" style="background: rgba(59, 130, 246, 0.05); border-color: rgba(59, 130, 246, 0.2);">
-                        <h6 class="text-white">PROJECTED REVENUE</h6>
-                        <div class="d-flex justify-content-between align-items-end">
-                            <h2 class="mb-0 text-white">${fmtMoney(proy)}</h2>
-                            <small class="text-muted">Meta: ${fmtMoney(meta)}</small>
-                        </div>
-                        <div class="progress mt-3" style="height: 6px; background: rgba(0,0,0,0.3);">
-                            <div class="progress-bar bg-primary" style="width: ${Math.min((fact/meta)*100, 100)}%"></div>
+                    <div class="glass-panel py-3">
+                        <span class="metric-label">Proyección Fin de Mes</span>
+                        <h3 class="mb-0 text-white">${fmtMoney(projected)}</h3>
+                        <div class="progress mt-2" style="height:4px; background:rgba(255,255,255,0.1)">
+                            <div class="progress-bar bg-primary" style="width:${Math.min((fact/meta)*100, 100)}%"></div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="glass-panel">
-                        <h6 class="text-white">POR FACTURAR</h6>
-                        <h2 class="mb-0 text-warning">${fmtMoney(Math.max(meta - fact, 0))}</h2>
-                        <small class="text-muted">Push required for last ${restante} days</small>
+                    <div class="glass-panel py-3">
+                        <span class="metric-label">Gap para Meta</span>
+                        <h3 class="mb-0 text-warning">${fmtMoney(Math.max(0, meta - fact))}</h3>
+                        <small class="text-muted">Faltan ${restante} días</small>
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <div class="glass-panel">
-                        <h6 class="text-white">Inversión ADS(DAILY)</h6>
-                        <h2 class="mb-0 text-info">${fmtMoney(pace)}</h2>
-                        <small class="text-muted">Por Invertir: ${fmtMoney(budgetRest)}</small>
+                    <div class="glass-panel py-3">
+                        <span class="metric-label">Pace Diario Ads Sugerido</span>
+                        <h3 class="mb-0" style="color:var(--neon-blue);">${fmtMoney(pace)}</h3>
+                        <small class="text-muted">Para no exceder budget</small>
                     </div>
                 </div>
             `;
         }
 
-        // Renderizar Gráficos (Plotly)
-        function renderCharts(ventas, gastos, closerSel) {
-          // GRÁFICO 1: FLUJO LEADS (ESTILO NEÓN & NODOS)
-            let statusData = {};
+        // --- GRÁFICO 1: FINANZAS (Estilo Curvo + Area) ---
+        function renderFinancialChart(ventas, gastos, closer) {
+            let dataMap = {};
             
-            // 1. Agrupar datos por fecha
+            // Unificar fechas
             ventas.forEach(v => {
                 let d = v.fecha.format("YYYY-MM-DD");
-                if (!statusData[d]) statusData[d] = {};
-                if (!statusData[d][v.estadoSimple]) statusData[d][v.estadoSimple] = 0;
-                statusData[d][v.estadoSimple]++;
+                if (!dataMap[d]) dataMap[d] = { rev: 0, ads: 0 };
+                dataMap[d].rev += v.monto;
             });
-
-            // 2. Generar Rango Continuo (Para evitar cortes en la línea)
-            // Tomamos todas las fechas disponibles y rellenamos huecos
-            let rawDates = Object.keys(statusData).sort();
-            let fullDates = [];
             
-            if (rawDates.length > 0) {
-                let current = moment(rawDates[0]); // Fecha inicio datos
-                let end = moment(rawDates[rawDates.length - 1]); // Fecha fin datos
-                
-                // Si quieres forzar que muestre TODO el mes (ej: 1 al 30), 
-                // necesitaríamos pasar las variables 'inicio' y 'fin' a esta función.
-                // Por ahora, esto rellena perfectamente los huecos entre tu primera y última venta.
-                while (current <= end) {
-                    fullDates.push(current.format("YYYY-MM-DD"));
-                    current.add(1, 'days');
-                }
-            }
-
-            let datasets = [];
-            
-            // Paleta de Colores Neón
-            const colors = {
-                "✅ Venta": "#10b981",        // Verde Neón
-                "❌ No Show": "#ef4444",      // Rojo Intenso
-                "🚫 Descalificado": "#f59e0b",// Naranja
-                "👀 Seguimiento": "#3b82f6",  // Azul Electrico
-                "📅 Re-Agendado": "#8b5cf6",  // Violeta
-                "Otro/Pendiente": "#64748b"   // Gris
-            };
-
-            Object.keys(colors).forEach(status => {
-                // Mapeamos usando 'fullDates' para asegurar que si un día es 0, la línea baje a 0 y no se corte
-                let y = fullDates.map(d => (statusData[d] && statusData[d][status]) ? statusData[d][status] : 0);
-                
-                datasets.push({
-                    x: fullDates,
-                    y: y,
-                    name: status,
-                    mode: 'lines+markers', // Líneas + Puntos (Nodos)
-                    line: { 
-                        width: 3,           // Línea gruesa estilo neón
-                        color: colors[status],
-                        shape: 'spline',    // Curvas suaves
-                        smoothing: 1.3
-                    },
-                    marker: {
-                        size: 7,
-                        symbol: 'circle',
-                        color: '#0b1121',   // Fondo oscuro (truco para "nodo no relleno")
-                        line: {
-                            color: colors[status],
-                            width: 2
-                        }
-                    },
-                    type: 'scatter',
-                    // Tooltip limpio HTML
-                    hovertemplate: `<b>${status}</b>: %{y}<extra></extra>` 
-                });
-            });
-
-            // Layout Minimalista y Oscuro
-            const layoutPro = {
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                font: { family: 'Inter', color: '#94a3b8', size: 11 },
-                margin: { t: 30, l: 30, r: 20, b: 40 },
-                showlegend: true,
-                legend: { 
-                    orientation: 'h', // Leyenda horizontal arriba
-                    y: 1.1, x: 0.5, 
-                    xanchor: 'center',
-                    font: { size: 10 }
-                },
-                xaxis: { 
-                    gridcolor: 'rgba(255,255,255,0.04)', 
-                    showgrid: true,
-                    zeroline: false,
-                    tickformat: '%d %b' // Ej: "20 Ene"
-                },
-                yaxis: { 
-                    gridcolor: 'rgba(255,255,255,0.04)', 
-                    showgrid: true,
-                    zeroline: false
-                },
-                // Hover unificado (Línea vertical que cruza todos los puntos)
-                hovermode: 'x unified',
-                hoverlabel: {
-                    bgcolor: '#1e293b',
-                    bordercolor: 'rgba(255,255,255,0.1)',
-                    font: { color: '#fff', family: 'Inter' }
-                }
-            };
-
-            Plotly.newPlot('chart-daily-status', datasets, layoutPro, { 
-                responsive: true, 
-                displayModeBar: false // Sin barra de herramientas fea
-            });
-
-            // GRÁFICO 2: FINANZAS
-            let finData = {};
-            ventas.forEach(v => {
-                let d = v.fecha.format("YYYY-MM-DD");
-                if (!finData[d]) finData[d] = { fact: 0, ads: 0 };
-                finData[d].fact += v.monto;
-            });
-            if (closerSel === "Todos") {
+            if (closer === "Todos") {
                 gastos.forEach(g => {
                     let d = g.fecha.format("YYYY-MM-DD");
-                    if (!finData[d]) finData[d] = { fact: 0, ads: 0 };
-                    finData[d].ads += g.gasto;
+                    if (!dataMap[d]) dataMap[d] = { rev: 0, ads: 0 };
+                    dataMap[d].ads += g.gasto;
                 });
             }
 
-            let datesF = Object.keys(finData).sort();
-            let traceFact = {
-                x: datesF,
-                y: datesF.map(d => finData[d].fact),
-                name: 'Facturación',
-                mode: 'lines',
-                line: { color: '#10b981', width: 3, shape: 'spline' },
-                fill: 'tozeroy',
-                fillcolor: 'rgba(16, 185, 129, 0.1)'
-            };
-            let traceAds = {
-                x: datesF,
-                y: datesF.map(d => finData[d].ads),
-                name: 'Ads',
-                mode: 'lines',
-                line: { color: '#ef4444', width: 2, shape: 'spline' },
-                fill: 'tozeroy',
-                fillcolor: 'rgba(239, 68, 68, 0.05)'
+            let dates = Object.keys(dataMap).sort();
+            let revs = dates.map(d => dataMap[d].rev);
+            let ads = dates.map(d => dataMap[d].ads);
+            let profit = dates.map(d => dataMap[d].rev - dataMap[d].ads);
+
+            let traceRev = {
+                x: dates, y: revs, name: 'Revenue',
+                type: 'scatter', mode: 'lines',
+                line: { color: '#00ff9d', width: 3, shape: 'spline' },
+                fill: 'tozeroy', fillcolor: 'rgba(0, 255, 157, 0.1)'
             };
 
-            Plotly.newPlot('chart-finance', [traceFact, traceAds], {
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                font: { family: 'Inter', color: '#64748b' },
-                margin: { t: 10, l: 40, r: 10, b: 30 },
-                hovermode: 'x unified',
+            let traceAds = {
+                x: dates, y: ads, name: 'Ad Spend',
+                type: 'scatter', mode: 'lines',
+                line: { color: '#ff2a6d', width: 2, shape: 'spline' },
+                fill: 'tozeroy', fillcolor: 'rgba(255, 42, 109, 0.05)'
+            };
+            
+            let traceProfit = {
+                x: dates, y: profit, name: 'Profit',
+                type: 'scatter', mode: 'lines',
+                line: { color: '#ffffff', width: 1, dash: 'dot', shape: 'spline' },
+                opacity: 0.5
+            };
+
+            const layout = {
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                font: { family: 'Outfit', color: '#94a3b8' },
+                margin: { t: 20, l: 40, r: 20, b: 40 },
+                xaxis: { showgrid: false, tickformat: '%d %b' },
+                yaxis: { gridcolor: 'rgba(255,255,255,0.05)' },
+                showlegend: true,
                 legend: { orientation: 'h', y: 1.1 },
-                xaxis: { showgrid: false },
-                yaxis: { gridcolor: 'rgba(255,255,255,0.05)' }
-            }, { responsive: true, displayModeBar: false });
+                hovermode: 'x unified'
+            };
+
+            Plotly.newPlot('chart-finance', [traceRev, traceAds, traceProfit], layout, {displayModeBar: false, responsive: true});
         }
 
-        // Renderizar Tabla
-        function renderTable(ventas) {
-            let ranking = {};
+        // --- GRÁFICO 2: ESTADO DIARIO (STACKED BAR - Solución al cruce) ---
+        function renderStatusChart(ventas) {
+            let dataMap = {};
+            // Estados a trackear
+            const statuses = ["Venta", "No Show", "Descalificado", "Seguimiento", "Re-Agendado"];
+            const colors = { 
+                "Venta": "#00ff9d", 
+                "No Show": "#ff2a6d", 
+                "Descalificado": "#fbbf24", 
+                "Seguimiento": "#06b6d4",
+                "Re-Agendado": "#8b5cf6" 
+            };
+
             ventas.forEach(v => {
-                let c = v.closer;
-                if (!ranking[c]) ranking[c] = { fact: 0, asist: new Set(), ventas: new Set() };
-                ranking[c].fact += v.monto;
-                if (v.esAsistencia) ranking[c].asist.add(v.email);
-                if (v.estadoSimple === "✅ Venta") ranking[c].ventas.add(v.email);
+                let d = v.fecha.format("YYYY-MM-DD");
+                if (!dataMap[d]) {
+                    dataMap[d] = {};
+                    statuses.forEach(s => dataMap[d][s] = 0);
+                }
+                if (statuses.includes(v.estadoSimple)) dataMap[d][v.estadoSimple]++;
             });
 
-            let rows = Object.keys(ranking).map(k => {
-                let r = ranking[k];
-                let pct = r.asist.size > 0 ? (r.ventas.size / r.asist.size * 100) : 0;
-                return { name: k, fact: r.fact, asist: r.asist.size, ventas: r.ventas.size, pct };
-            }).sort((a, b) => b.fact - a.fact);
+            let dates = Object.keys(dataMap).sort();
+            
+            let traces = statuses.map(status => {
+                return {
+                    x: dates,
+                    y: dates.map(d => dataMap[d][status]),
+                    name: status,
+                    type: 'bar',
+                    marker: { color: colors[status] }
+                };
+            });
 
-            let tbody = document.querySelector("#tabla-ranking tbody");
-            tbody.innerHTML = "";
-            rows.forEach(r => {
-                let color = r.pct > 20 ? 'bg-success' : 'bg-warning';
-                tbody.innerHTML += `
+            const layout = {
+                barmode: 'stack', // ESTO EVITA QUE SE CRUCEN, LOS APILA
+                paper_bgcolor: 'transparent',
+                plot_bgcolor: 'transparent',
+                font: { family: 'Outfit', color: '#94a3b8' },
+                margin: { t: 20, l: 30, r: 20, b: 40 },
+                xaxis: { showgrid: false, tickformat: '%d %b' },
+                yaxis: { gridcolor: 'rgba(255,255,255,0.05)' },
+                showlegend: true,
+                legend: { orientation: 'h', y: 1.1 },
+                hovermode: 'x unified'
+            };
+
+            Plotly.newPlot('chart-daily-status', traces, layout, {displayModeBar: false, responsive: true});
+        }
+
+        // --- TABLA 1: RANKING CLOSERS ---
+        function renderRankingTable(ventas) {
+            let data = {};
+            ventas.forEach(v => {
+                let c = v.closer;
+                if (!data[c]) data[c] = { rev: 0, sales: 0, asist: 0 };
+                data[c].rev += v.monto;
+                if (v.estadoSimple === "Venta") data[c].sales++;
+                if (v.esAsistencia) data[c].asist++;
+            });
+
+            let sorted = Object.keys(data).sort((a,b) => data[b].rev - data[a].rev);
+            let html = "";
+            sorted.forEach(c => {
+                let d = data[c];
+                let cr = d.asist > 0 ? (d.sales / d.asist * 100).toFixed(1) : "0.0";
+                html += `
                     <tr>
-                        <td class="text-white fw-bold">${r.name}</td>
-                        <td style="color: #4ade80;">${fmtMoney(r.fact)}</td>
-                        <td class="text-white">${r.asist}</td>
-                        <td class="text-white">${r.ventas}</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <span class="me-2 text-white">${r.pct.toFixed(1)}%</span>
-                                <div class="progress flex-grow-1" style="height: 4px; background: rgba(255,255,255,0.1);">
-                                    <div class="progress-bar ${color}" style="width: ${Math.min(r.pct, 100)}%"></div>
-                                </div>
-                            </div>
-                        </td>
+                        <td class="fw-bold text-white">${c}</td>
+                        <td class="text-end" style="color:var(--neon-green)">${fmtMoney(d.rev)}</td>
+                        <td class="text-center text-white">${d.sales}</td>
+                        <td class="text-end text-muted">${cr}%</td>
                     </tr>
                 `;
             });
+            document.querySelector("#tabla-ranking tbody").innerHTML = html;
         }
 
-        const fmtMoney = (val) => "$" + val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+        // --- TABLA 2: DESGLOSE DIARIO (NUEVA) ---
+        function renderDailyTable(ventas) {
+            let data = {};
+            ventas.forEach(v => {
+                let d = v.fecha.format("YYYY-MM-DD");
+                if (!data[d]) data[d] = { leads: 0, asist: 0, noshow: 0, ventas: 0 };
+                
+                // Asumimos 1 lead único por email/fecha en esta vista simplificada
+                data[d].leads++; 
+                if (v.esAsistencia) data[d].asist++;
+                if (v.estadoSimple === "No Show") data[d].noshow++;
+                if (v.estadoSimple === "Venta") data[d].ventas++;
+            });
 
-        // --- H. EVENT LISTENERS (ESCUCHA DE EVENTOS) ---
+            // Ordenar fecha descendente (más reciente arriba)
+            let sortedDates = Object.keys(data).sort().reverse();
+            let html = "";
+
+            sortedDates.forEach(d => {
+                let stats = data[d];
+                let cr = stats.asist > 0 ? (stats.ventas / stats.asist * 100).toFixed(1) : "0.0";
+                let fechaFmt = moment(d).format("DD MMM, ddd");
+                
+                html += `
+                    <tr>
+                        <td class="text-white">${fechaFmt}</td>
+                        <td class="text-center text-muted">${stats.leads}</td>
+                        <td class="text-center text-white">${stats.asist}</td>
+                        <td class="text-center" style="color:var(--neon-red)">${stats.noshow}</td>
+                        <td class="text-center" style="color:var(--neon-green)">${stats.ventas}</td>
+                        <td class="text-end fw-bold">${cr}%</td>
+                    </tr>
+                `;
+            });
+            document.querySelector("#tabla-diaria tbody").innerHTML = html;
+        }
+
+        // Listeners
         document.getElementById('filtroTiempo').addEventListener('change', updateDashboard);
         document.getElementById('filtroCloser').addEventListener('change', updateDashboard);
-        
-        // Iniciar App
+
+        // Start
         init();
 
     </script>
 </body>
-
 </html>
