@@ -236,6 +236,12 @@
                 </div>
             </div>
 
+            <div class="flex justify-end mb-3">
+                <button onclick="saveBudgetDistribution()" class="text-xs flex items-center gap-2 bg-gray-800 hover:bg-accent hover:text-black text-gray-300 border border-white/10 hover:border-accent px-4 py-2 rounded transition-all shadow-md">
+                    <i class="fa-solid fa-floppy-disk"></i> Guardar Distribución
+                </button>
+            </div>
+
             <div id="budget-alert" class="hidden mb-6 p-4 rounded-lg bg-danger/10 border border-danger text-danger text-sm font-bold text-center flex items-center justify-center gap-3 shadow-[0_0_15px_rgba(255,42,109,0.2)]">
                 <i class="fa-solid fa-triangle-exclamation text-xl"></i>
                 <span id="budget-alert-text">Alerta</span>
@@ -358,6 +364,7 @@
 
         document.addEventListener('DOMContentLoaded', async () => { 
             loadSettings(); 
+            loadBudgetDistribution(); // CARGAR DISTRIBUCIÓN AL INICIO
             await fetchAllData(); 
         });
 
@@ -381,6 +388,30 @@
                 closeSettings();
                 renderDashboard();
                 alert("Configuración guardada exitosamente.");
+            }
+        }
+
+        // --- NUEVA FUNCIÓN PARA GUARDAR DISTRIBUCIÓN (COOKIES/LOCALSTORAGE) ---
+        function saveBudgetDistribution() {
+            const distribution = {
+                vsl: document.getElementById('input-vsl-perc').value,
+                social: document.getElementById('input-social-perc').value,
+                web: document.getElementById('input-web-perc').value
+            };
+            localStorage.setItem('vdp_budget_dist', JSON.stringify(distribution));
+            alert("Distribución de presupuesto guardada correctamente.");
+        }
+
+        // --- NUEVA FUNCIÓN PARA CARGAR DISTRIBUCIÓN ---
+        function loadBudgetDistribution() {
+            const savedDist = localStorage.getItem('vdp_budget_dist');
+            if (savedDist) {
+                try {
+                    const dist = JSON.parse(savedDist);
+                    if(dist.vsl) document.getElementById('input-vsl-perc').value = dist.vsl;
+                    if(dist.social) document.getElementById('input-social-perc').value = dist.social;
+                    if(dist.web) document.getElementById('input-web-perc').value = dist.web;
+                } catch (e) { console.error("Error loading budget distribution"); }
             }
         }
 
