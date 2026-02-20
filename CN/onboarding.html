@@ -9,16 +9,16 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-       
-    /* --- carga rápida de vturb --- */
+        
     <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
-<link rel="preload" href="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/6998bf9b7d7b375b25ebc606/v4/player.js" as="script">
-<link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
-<link rel="preload" href="https://cdn.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/6998bf555a977d332e043b57/main.m3u8" as="fetch">
-<link rel="dns-prefetch" href="https://cdn.converteai.net">
-<link rel="dns-prefetch" href="https://scripts.converteai.net">
-<link rel="dns-prefetch" href="https://images.converteai.net">
-<link rel="dns-prefetch" href="https://api.vturb.com.br">
+    <link rel="preload" href="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/6998bf9b7d7b375b25ebc606/v4/player.js" as="script">
+    <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+    <link rel="preload" href="https://cdn.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/6998bf555a977d332e043b57/main.m3u8" as="fetch">
+    <link rel="dns-prefetch" href="https://cdn.converteai.net">
+    <link rel="dns-prefetch" href="https://scripts.converteai.net">
+    <link rel="dns-prefetch" href="https://images.converteai.net">
+    <link rel="dns-prefetch" href="https://api.vturb.com.br">
+    
     <style>
         /* --- DESIGN TOKENS --- */
         :root {
@@ -136,73 +136,19 @@
             line-height: 1.6;
         }
 
-        /* --- CONTENEDOR DE VIDEO VTURB --- */
+        /* --- CONTENEDOR DE VIDEO --- */
         .video-wrapper {
             width: 100%;
             max-width: 850px;
-            background: var(--bg-glass);
+            background: var(--bg-body); /* Fondo oscuro liso para que no haya marcos raros */
             border: 1px solid var(--border-glass);
-            border-radius: 24px;
-            padding: 10px;
+            border-radius: 16px; /* Borde más sutil ajustado al de VTurb */
+            padding: 0; /* Quitamos el padding para que el video llene el contenedor */
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.15);
             position: relative;
             z-index: 5;
             animation: float 6s ease-in-out infinite;
-        }
-
-        /* Proporción 16:9 responsiva para el reproductor */
-        .vturb-container {
-            position: relative;
-            width: 100%;
-            padding-bottom: 56.25%; /* Ratio 16:9 */
-            border-radius: 16px;
-            overflow: hidden;
-            background-color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Mensaje temporal (Se ocultará cuando pongas el video) */
-        .vturb-placeholder {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            border: 2px dashed rgba(255,255,255,0.1);
-            border-radius: 16px;
-        }
-
-        /* --- BOTÓN DE ACCIÓN --- */
-        .action-section {
-            margin-top: 50px;
-        }
-
-        .btn-primary {
-            padding: 16px 36px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: white;
-            background: linear-gradient(135deg, var(--primary), var(--accent-cyan));
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            box-shadow: 0 10px 20px -5px var(--primary-glow);
-            font-family: inherit;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 25px -5px rgba(6, 182, 212, 0.5);
+            overflow: hidden; /* Corta bordes si VTurb se pasa */
         }
 
         /* Elemento de brillo detrás del video */
@@ -242,14 +188,13 @@
         </p>
 
         <div class="video-wrapper animate-up delay-3">
-            <div class="vturb-container">
-                
-                <div class="vturb-placeholder">
-                    <i class="fa-solid fa-video" style="font-size: 2rem; margin-bottom: 10px; color: var(--primary)"></i>
-                    <p><vturb-smartplayer id="vid-6998bf9b7d7b375b25ebc606" style="display: block; margin: 0 auto; width: 100%; "></vturb-smartplayer> <script type="text/javascript"> var s=document.createElement("script"); s.src="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/6998bf9b7d7b375b25ebc606/v4/player.js", s.async=!0,document.head.appendChild(s); </script></p>
-                </div>
-
-                </div>
+            <vturb-smartplayer id="vid-6998bf9b7d7b375b25ebc606" style="display: block; margin: 0 auto; width: 100%; "></vturb-smartplayer> 
+            <script type="text/javascript"> 
+                var s=document.createElement("script"); 
+                s.src="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/6998bf9b7d7b375b25ebc606/v4/player.js"; 
+                s.async=!0; 
+                document.head.appendChild(s); 
+            </script>
         </div>
 
     </main>
