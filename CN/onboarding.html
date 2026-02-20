@@ -54,12 +54,6 @@
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
 
         .animate-up {
             opacity: 0;
@@ -68,7 +62,6 @@
         
         .delay-1 { animation-delay: 0.2s; }
         .delay-2 { animation-delay: 0.4s; }
-        .delay-3 { animation-delay: 0.6s; }
 
         /* --- HEADER --- */
         header {
@@ -132,23 +125,25 @@
             font-size: 1.1rem;
             color: var(--text-muted);
             max-width: 600px;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
             line-height: 1.6;
         }
 
         /* --- CONTENEDOR DE VIDEO --- */
+        /* Nota: Se eliminó la animación de entrada de este contenedor para no interferir con el renderizado de VTurb */
         .video-wrapper {
             width: 100%;
             max-width: 850px;
-            background: var(--bg-body); /* Fondo oscuro liso para que no haya marcos raros */
+            background: #000; /* Fondo negro puro detrás del video */
             border: 1px solid var(--border-glass);
-            border-radius: 16px; /* Borde más sutil ajustado al de VTurb */
-            padding: 0; /* Quitamos el padding para que el video llene el contenedor */
+            border-radius: 12px;
+            padding: 0; 
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.15);
             position: relative;
             z-index: 5;
-            animation: float 6s ease-in-out infinite;
-            overflow: hidden; /* Corta bordes si VTurb se pasa */
+            overflow: hidden; /* Asegura que los bordes redondeados se respeten */
+            /* Añadimos un ratio por defecto por si VTurb tarda un segundo en cargar, para que la página no salte */
+            aspect-ratio: 16 / 9; 
         }
 
         /* Elemento de brillo detrás del video */
@@ -187,14 +182,8 @@
             Por favor, mira este video de principio a fin sin interrupciones. Aquí explicamos exactamente cómo funcionará nuestro ecosistema y los próximos pasos para tu proyecto.
         </p>
 
-        <div class="video-wrapper animate-up delay-3">
-            <vturb-smartplayer id="vid-6998bf9b7d7b375b25ebc606" style="display: block; margin: 0 auto; width: 100%; "></vturb-smartplayer> 
-            <script type="text/javascript"> 
-                var s=document.createElement("script"); 
-                s.src="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/6998bf9b7d7b375b25ebc606/v4/player.js"; 
-                s.async=!0; 
-                document.head.appendChild(s); 
-            </script>
+        <div class="video-wrapper">
+            <vturb-smartplayer id="vid-6998bf9b7d7b375b25ebc606" style="display: block; margin: 0 auto; width: 100%; "></vturb-smartplayer> <script type="text/javascript"> var s=document.createElement("script"); s.src="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/6998bf9b7d7b375b25ebc606/v4/player.js", s.async=!0,document.head.appendChild(s); </script>
         </div>
 
     </main>
