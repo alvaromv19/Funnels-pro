@@ -3,419 +3,469 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Placer Oral - La Técnica Secreta</title>
+    <title>Placer Oral - Método Exclusivo</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;800;900&family=Mulish:wght@300;400;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- VARIABLES DE DISEÑO --- */
+        /* --- VARIABLES DE DISEÑO (PALETA "DOPAMINA") --- */
         :root {
-            --primary: #c2185b;      /* Color principal (Magenta oscuro) */
-            --primary-light: #fce4ec; /* Fondo suave */
-            --accent: #00c853;       /* Color de acción (Verde venta) */
-            --text-main: #333333;
-            --text-light: #666666;
-            --white: #ffffff;
-            --gray-bg: #f5f7fa;
+            --primary: #D81B60;       /* Magenta Profundo (Pasión/Acción) */
+            --primary-gradient: linear-gradient(135deg, #ec407a 0%, #d81b60 100%);
+            --secondary: #2C3E50;     /* Azul Noche (Confianza) */
+            --accent: #00E676;        /* Verde Neón Suave (Venta/Éxito) */
+            --bg-body: #F9FAFC;       /* Blanco Humo (Limpieza) */
+            --bg-card: #FFFFFF;
+            --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.08);
+            --shadow-hover: 0 20px 50px -10px rgba(216, 27, 96, 0.2);
+            --radius: 20px;
         }
 
-        /* --- RESET Y BASE --- */
+        /* --- BASE Y RESET --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
         
         body {
-            font-family: 'Lato', sans-serif;
-            background-color: var(--gray-bg);
-            color: var(--text-main);
-            line-height: 1.6;
-            font-size: 18px; /* Texto base grande para móvil */
+            font-family: 'Mulish', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--secondary);
+            line-height: 1.7;
+            font-size: 18px;
+            overflow-x: hidden;
         }
 
-        h1, h2, h3, h4 {
+        h1, h2, h3 {
             font-family: 'Montserrat', sans-serif;
-            line-height: 1.2;
-            color: #b71c1c; /* Rojo oscuro para títulos */
+            line-height: 1.15;
+            margin-bottom: 1rem;
         }
 
-        /* --- CONTENEDOR CENTRAL --- */
-        .container {
-            max-width: 700px; /* Ancho tipo carta de ventas */
-            margin: 0 auto;
-            background: var(--white);
-            box-shadow: 0 0 25px rgba(0,0,0,0.05);
+        /* --- CONTENEDOR FLUIDO --- */
+        .wrapper {
+            max-width: 100%;
             overflow: hidden;
         }
+        
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
 
-        /* --- PLACEHOLDERS DE IMÁGENES (MAQUETACIÓN) --- */
-        /* Esto te permite ver dónde va la imagen y qué tamaño ocupa */
-        .img-placeholder {
-            background-color: #e0e0e0;
-            border: 3px dashed #9e9e9e;
-            color: #616161;
+        /* --- PLACEHOLDERS DE IMAGEN (WIREFRAME TÉCNICO) --- */
+        .visual-placeholder {
+            background: #f0f2f5;
+            border: 2px dashed #cfd8dc;
+            border-radius: var(--radius);
+            color: #78909c;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            margin: 30px auto;
-            font-weight: bold;
-            font-family: monospace;
-            padding: 10px;
-            border-radius: 8px;
-        }
-        .img-placeholder span {
-            display: block;
-            margin-top: 5px;
-            font-size: 0.8rem;
-            color: #757575;
-            font-weight: normal;
-        }
-
-        /* --- SECCIONES --- */
-        section {
-            padding: 40px 25px;
-            border-bottom: 1px solid #eeeeee;
-        }
-
-        /* --- HERO (ENCABEZADO) --- */
-        .hero {
-            text-align: center;
-            background: linear-gradient(to bottom, #fff0f6, #ffffff);
-            padding-top: 50px;
-        }
-        .pre-headline {
-            color: var(--text-light);
-            text-transform: uppercase;
-            font-size: 0.9rem;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            display: block;
-            font-weight: 700;
-        }
-        .hero h1 {
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-            font-weight: 800;
-            color: #880e4f;
-        }
-        .hero-sub {
-            font-size: 1.2rem;
-            color: var(--text-main);
-            margin-bottom: 25px;
-        }
-
-        /* --- BOTONES (CTA) --- */
-        .btn-container {
-            text-align: center;
-            margin: 30px 0;
-        }
-        .cta-button {
-            display: inline-block;
-            background-color: var(--accent);
-            color: white;
-            padding: 20px 30px;
-            font-size: 1.3rem;
-            font-weight: 800;
-            text-decoration: none;
-            border-radius: 50px;
-            box-shadow: 0 4px 15px rgba(0, 200, 83, 0.4);
-            transition: transform 0.2s;
-            width: 100%;
-            max-width: 450px;
-            text-transform: uppercase;
-            animation: pulse 2s infinite; /* Animación de latido */
-        }
-        .cta-button:hover {
-            transform: scale(1.02);
-            background-color: #009624;
+            margin: 40px auto;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
         }
         
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(0, 200, 83, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 200, 83, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 200, 83, 0); }
+        .visual-placeholder::after {
+            content: 'ESPACIO RESERVADO';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1px;
+            background: #cfd8dc;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
         }
 
-        /* --- CAJAS DE PRECIO Y TEXTO --- */
-        .price-highlight {
-            background-color: #fff8e1;
-            border: 2px dashed #ffc107;
-            color: #333;
-            padding: 15px;
-            font-weight: 700;
+        .visual-placeholder:hover {
+            border-color: var(--primary);
+            background: #fce4ec;
+            color: var(--primary);
+        }
+
+        .visual-data {
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            opacity: 0.7;
+        }
+
+        /* --- ANIMACIONES DE ENTRADA (SCROLL REVEAL) --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- HERO SECTION (IMPACTO VISUAL) --- */
+        header {
+            background: #fff;
+            padding: 60px 0 40px;
             text-align: center;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-size: 1.1rem;
+            position: relative;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            background: linear-gradient(180deg, #fff0f6 0%, #ffffff 100%);
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 40px;
         }
 
-        .testimonial-box {
-            background-color: #fce4ec;
-            border-left: 5px solid var(--primary);
-            padding: 25px;
-            font-style: italic;
-            border-radius: 0 10px 10px 0;
-            margin: 30px 0;
+        .tagline {
+            display: inline-block;
+            background: #ffebee;
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            margin-bottom: 20px;
         }
 
-        /* --- LISTAS Y MÓDULOS --- */
-        ul.check-list {
+        h1 {
+            font-size: 2.5rem;
+            background: -webkit-linear-gradient(45deg, #2c3e50, #d81b60);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+        }
+
+        /* --- BOTONES "DOPAMINA" --- */
+        .btn-pulse {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 450px;
+            padding: 22px;
+            background: var(--accent);
+            color: #064e28;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(0, 230, 118, 0.4);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+            animation: pulse-green 2s infinite;
+        }
+
+        .btn-pulse:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 230, 118, 0.5);
+            background: #00c853;
+            color: white;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(0, 230, 118, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0); }
+        }
+
+        /* --- TARJETAS Y SECCIONES --- */
+        section { padding: 50px 0; }
+        
+        .section-dark {
+            background-color: #263238;
+            color: white;
+            border-radius: 30px;
+            margin: 20px 10px;
+            padding: 60px 20px;
+        }
+        .section-dark h2 { color: #fff; }
+        .section-dark p { color: #cfd8dc; }
+
+        .card {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-soft);
+            margin-bottom: 20px;
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* --- LISTAS ESTILIZADAS --- */
+        ul.benefits-list {
             list-style: none;
             padding: 0;
         }
-        ul.check-list li {
-            padding-left: 30px;
+        ul.benefits-list li {
+            padding-left: 35px;
             position: relative;
             margin-bottom: 15px;
         }
-        ul.check-list li::before {
-            content: '✖';
+        ul.benefits-list li::before {
+            content: '✦'; /* Estrella simple */
             position: absolute;
             left: 0;
-            color: #d32f2f;
-            font-weight: bold;
-        }
-        ul.check-list.positive li::before {
-            content: '✔';
-            color: #2e7d32;
-        }
-
-        .module-item {
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-        .module-item strong {
+            top: 0;
             color: var(--primary);
-            display: block;
-            margin-bottom: 5px;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
         }
-
-        /* --- GARANTÍA --- */
-        .guarantee-section {
-            background-color: #f1f8e9;
+        
+        /* --- CAJA DE PRECIO --- */
+        .price-box {
+            background: #fff;
+            border: 3px solid var(--primary);
+            border-radius: 20px;
+            padding: 30px;
             text-align: center;
+            position: relative;
+            margin: 40px 0;
+            box-shadow: 0 15px 40px rgba(216, 27, 96, 0.15);
+        }
+        .price-tag {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+        .price-old {
+            text-decoration: line-through;
+            color: #90a4ae;
+            font-size: 1.2rem;
         }
 
-        /* --- OPTIMIZACIÓN MÓVIL --- */
+        /* --- MÓDULOS GRID --- */
+        .module-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .module-item {
+            background: white;
+            padding: 20px;
+            border-left: 5px solid var(--primary);
+            border-radius: 0 15px 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: center;
+        }
+        .module-number {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #eceff1;
+            margin-right: 15px;
+            line-height: 1;
+        }
+
+        /* --- RESPONSIVE --- */
         @media (max-width: 600px) {
-            .hero h1 { font-size: 1.8rem; }
-            section { padding: 30px 20px; }
-            .cta-button { font-size: 1.1rem; padding: 18px; }
-            body { font-size: 17px; }
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.6rem; }
+            .visual-placeholder { width: 100%; }
+            .btn-pulse { font-size: 1.1rem; padding: 18px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="wrapper">
+        
+        <header>
+            <div class="container reveal active">
+                <span class="tagline">Martha y su producto presentan</span>
+                <h1>La técnica secreta que no está en Google</h1>
+                <p style="font-size: 1.1rem; color: #546e7a; margin-bottom: 25px;">Conviértete en una experta esta misma noche y disfruta sin sentirte vulgar.</p>
+                
+                <div class="visual-placeholder" style="height: 300px; max-width: 600px;">
+                    <div style="font-size: 2rem;">▶</div>
+                    <div style="font-weight: bold; margin-top: 10px;">VIDEO CARTA DE VENTAS (VSL)</div>
+                    <div class="visual-data">Formato: 16:9 (Video o Imagen Fija)<br>Objetivo: Retención inmediata</div>
+                </div>
 
-        <header class="hero">
-            <span class="pre-headline">Martha y su producto</span>
-            <h1>La técnica secreta que no está en Google y que te convertirá en una experta en sexo oral esta misma noche.</h1>
-            
-            <div class="img-placeholder" style="height: 250px; max-width: 100%;">
-                IMAGEN PRINCIPAL / VIDEO
-                <span>(Sugerido: 600x350px - Foto de producto o Video Sales Letter)</span>
-            </div>
+                <div style="background: #e8f5e9; color: #2e7d32; display: inline-block; padding: 10px 20px; border-radius: 10px; font-weight: bold; margin-bottom: 20px;">
+                    OFERTA FLASH: SOLO $5 USD
+                </div>
 
-            <p class="hero-sub">Y te permitirá disfrutarlo también sin sentirte vulgar ni torpe al practicar</p>
-            
-            <div class="price-highlight">
-                Por solo $5 USD - Y si no te gusta, NO pagas.
-            </div>
-
-            <div class="btn-container">
-                <a href="#checkout" class="cta-button">OBTÉN ACCESO INMEDIATO</a>
+                <div>
+                    <a href="#checkout" class="btn-pulse">OBTÉN ACCESO INMEDIATO</a>
+                </div>
             </div>
         </header>
 
-        <section>
-            <h2>¿Alguna vez te has preguntado si lo estás haciendo bien?</h2>
-            <p>Muchas mujeres se sienten inseguras, se comparan con las ex de su pareja y creen que el sexo oral es solo para complacerlo a él. Fingir que lo disfrutas, sentirte mecánica o torpe… no es tu culpa.</p>
-            <p>El problema es que nadie te enseñó la verdad sobre el placer mutuo.</p>
+        <div class="container reveal">
+            <section>
+                <h2 style="text-align: center; color: var(--primary);">¿Alguna vez te has preguntado si lo estás haciendo bien?</h2>
+                <div class="card">
+                    <p>Muchas mujeres se sienten inseguras, se comparan con las ex de su pareja y creen que el sexo oral es solo para complacerlo a él. <strong>Fingir que lo disfrutas, sentirte mecánica o torpe… no es tu culpa.</strong></p>
+                    <p style="margin-top: 15px;">El problema es que nadie te enseñó la verdad sobre el placer mutuo.</p>
+                </div>
 
-            <h3>La mentira que te contaron sobre el sexo oral</h3>
-            <p>Nos hicieron creer que:</p>
-            <ul class="check-list">
-                <li>El sexo oral es solo para él.</li>
-                <li>Disfrutarlo te hace vulgar.</li>
-                <li>Si no vas “hasta el fondo”, no eres buena.</li>
-            </ul>
+                <div class="visual-placeholder" style="height: 200px; max-width: 400px;">
+                    <div style="font-size: 2rem;">😔 ➡️ 😊</div>
+                    <div style="font-weight: bold; margin-top: 10px;">IMAGEN DE TRANSFORMACIÓN</div>
+                    <div class="visual-data">Mujer pensativa vs. Mujer feliz<br>Estilo: Fotografía cálida</div>
+                </div>
 
-            <div class="img-placeholder" style="height: 180px; max-width: 300px;">
-                IMAGEN ILUSTRATIVA
-                <span>(Sugerido: Gráfico simple de anatomía o mujer pensativa)</span>
-            </div>
+                <h3>La mentira que nos contaron:</h3>
+                <ul class="benefits-list">
+                    <li>Que es solo para él.</li>
+                    <li>Que disfrutarlo te hace vulgar.</li>
+                    <li>Que si no vas "hasta el fondo", no eres buena.</li>
+                </ul>
+                
+                <p><strong>La realidad científica:</strong> El glande tiene más terminaciones nerviosas. No necesitas ir profundo para crear una experiencia inolvidable.</p>
+            </section>
+        </div>
 
-            <p>Pero la ciencia dice otra cosa: el glande es donde hay más terminaciones nerviosas. No necesitas ir profundo para crear una experiencia inolvidable. Las técnicas más efectivas se centran ahí.</p>
-            <p>Cuando sabes qué hacer, tú también puedes disfrutar, sentirte segura y conectada.</p>
-            
-            <div class="btn-container">
-                <a href="#checkout" class="cta-button">OBTÉN ACCESO INMEDIATO</a>
-            </div>
-        </section>
+        <div class="section-dark reveal">
+            <div class="container">
+                <h2 style="text-align: center;">La Técnica 10/10 que lo cambió todo</h2>
+                <p style="text-align: center; max-width: 600px; margin: 0 auto 30px;">Una metodología creada por una mujer para mujeres, probada por más de un millón de alumnas.</p>
+                
+                <div class="visual-placeholder" style="height: 250px; background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: white;">
+                    <div style="font-size: 2rem;">⚙️</div>
+                    <div style="font-weight: bold; margin-top: 10px;">INFOGRAFÍA "TÉCNICA 10/10"</div>
+                    <div class="visual-data">3 Pilares: Anatomía, Ritmo, Conexión</div>
+                </div>
 
-        <section>
-            <h2>La Técnica 10/10 que lo cambió todo</h2>
-            <p>Después de trabajar con más de un millón de mujeres, desarrollé la <strong>Técnica 10/10</strong>: una metodología creada por una mujer para mujeres, para maximizar el placer masculino mientras tú también disfrutas.</p>
-            
-            <p>Se basa en tres principios:</p>
-            <ul class="check-list positive">
-                <li>Entender la anatomía real y las zonas que de verdad importan.</li>
-                <li>Dominar el ritmo y la presión correctos para cada momento.</li>
-                <li>Conectar emocionalmente durante la práctica para que ambas partes disfruten.</li>
-            </ul>
+                <div style="background: white; color: #333; padding: 20px; border-radius: 10px; margin-top: 30px;">
+                    <p><em>«¡Hola, Martha! Me encantó el curso. Fantástico contenido. Ya probé algunos tips y ha sido un éxito total, mi esposo está feliz.»</em></p>
+                    <div style="color: #fbc02d; margin-top: 5px;">★★★★★</div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="#checkout" class="btn-pulse" style="background: white; color: var(--primary);">QUIERO APRENDER LA TÉCNICA</a>
+                </div>
+            </div>
+        </div>
 
-            <div class="testimonial-box">
-                <p>Una alumna me escribió:</p>
-                <p>«¡Hola, Martha! Me encantó el curso de Placer Oral. Fantástico en contenido y presentación. Me encanta la profesionalidad con la que hablas de sexo, sin que se sienta vulgar ni tonto. Ya probé algunos tips y ha sido un éxito total, mi esposo está feliz. jaja».</p>
-            </div>
-            
-            <p>Cuando aprendes las técnicas correctas, tu seguridad se dispara y tu conexión con tu pareja se profundiza.</p>
+        <div class="container reveal">
+            <section style="display: flex; flex-direction: column; align-items: center;">
+                
+                <div class="visual-placeholder" style="height: 200px; width: 200px; border-radius: 50%;">
+                    <div>👩🏻‍🏫</div>
+                    <div style="font-weight: bold; margin-top: 10px;">FOTO DE MARTHA</div>
+                    <div class="visual-data">Close-up amigable<br>Genera confianza</div>
+                </div>
 
-            <div class="btn-container">
-                <a href="#checkout" class="cta-button">OBTÉN ACCESO INMEDIATO</a>
-            </div>
-        </section>
+                <h2 style="text-align: center;">Por qué creé este curso</h2>
+                <p>Soy <strong>Martha Escobar</strong>. He visto a miles de mujeres inseguras y comparándose. Creé "Placer Oral" para darte herramientas sin juicios.</p>
+            </section>
+        </div>
 
-        <section>
-            <h2>Por qué creé este curso</h2>
-            
-            <div class="img-placeholder" style="height: 200px; width: 200px; border-radius: 50%;">
-                FOTO DE MARTHA
-                <span>(Sugerido: Retrato circular de confianza)</span>
+        <div class="container reveal">
+            <h2 style="text-align: center; margin-bottom: 30px;">Lo que incluye tu transformación</h2>
+            <div class="module-grid">
+                <div class="module-item">
+                    <span class="module-number">01</span>
+                    <div><strong>Historia y errores comunes:</strong> Por qué fallan las técnicas tradicionales.</div>
+                </div>
+                <div class="module-item">
+                    <span class="module-number">02</span>
+                    <div><strong>Reglas de oro y mitos:</strong> Desmontamos lo que te frena.</div>
+                </div>
+                <div class="module-item">
+                    <span class="module-number">03</span>
+                    <div><strong>Anatomía del pene:</strong> Dónde están realmente las zonas sensibles.</div>
+                </div>
+                <div class="module-item" style="border-left-color: var(--accent); background: #e8f5e9;">
+                    <span class="module-number" style="color: #c8e6c9;">04</span>
+                    <div><strong>La Técnica 10/10:</strong> Paso a paso mi metodología exclusiva.</div>
+                </div>
+                <div class="module-item">
+                    <span class="module-number">05</span>
+                    <div><strong>La Caja de Pandora:</strong> Herramientas avanzadas.</div>
+                </div>
             </div>
+        </div>
 
-            <p>Soy <strong>Martha Escobar</strong> y he dedicado mi vida a empoderar sexualmente a las mujeres. He visto a miles de mujeres:</p>
-            <ul class="check-list">
-                <li>Inseguras en la intimidad.</li>
-                <li>Comparándose todo el tiempo.</li>
-                <li>Amando a su pareja, pero sintiéndose torpes en la cama.</li>
-            </ul>
-            <p>Por eso creé el curso “Placer Oral”: para darte herramientas claras, sin juicios, que te permitan disfrutar y convertirte en la amante segura que siempre quisiste ser.</p>
-        </section>
+        <div class="container reveal">
+            <div class="price-box">
+                <h3>Oferta por Tiempo Limitado</h3>
+                <p>Valor real: $59 USD</p>
+                <div class="price-old">Precio normal: $59 USD</div>
+                <div class="price-tag">$5 USD</div>
+                <p style="color: var(--accent); font-weight: bold; margin-top: 10px;">¡Ahorras $54 USD hoy!</p>
+                
+                <hr style="border: 0; border-top: 1px dashed #eee; margin: 20px 0;">
+                
+                <h4 style="color: #fbc02d;">🎁 BONOS INCLUIDOS GRATIS</h4>
+                <p>Módulo "Caja de Pandora" + Preguntas Frecuentes</p>
+                
+                <div class="visual-placeholder" style="height: 150px; max-width: 300px; border-color: #fbc02d; background: #fffde7;">
+                    <div>📚 + 🎁</div>
+                    <div style="font-weight: bold; margin-top: 10px;">MOCKUP DEL PACK</div>
+                    <div class="visual-data">Imagen de Caja Digital + Bonos</div>
+                </div>
 
-        <section style="background-color: #fafafa;">
-            <h2>Lo que incluye tu transformación</h2>
-            
-            <div class="module-item">
-                <strong>Módulo 1: Historia y errores comunes</strong>
-                Por qué las técnicas tradicionales fallan y cómo evitar los errores más comunes.
+                <a href="#checkout" class="btn-pulse" style="width: 100%;">OBTÉN ACCESO POR $5</a>
             </div>
-            
-            <div class="module-item">
-                <strong>Módulo 2: Reglas de oro y mitos</strong>
-                Desmontamos mitos dañinos y establecemos reglas que sí funcionan.
-            </div>
-            
-            <div class="module-item">
-                <strong>Módulo 3: Anatomía del pene y zonas olvidadas</strong>
-                Dónde están las zonas más sensibles y cómo estimularlas.
-            </div>
-            
-            <div class="module-item">
-                <strong>Módulo 4: La Técnica 10/10</strong>
-                Paso a paso mi técnica exclusiva.
-            </div>
-            
-            <div class="module-item" style="border-left: 4px solid #ffc107;">
-                <strong>Módulo 5: La Caja de Pandora</strong>
-                Herramientas avanzadas para llevar el placer al siguiente nivel.
-            </div>
-            
-            <div class="module-item">
-                <strong>Módulo Extra: Preguntas frecuentes</strong>
-                Respuestas a las dudas más comunes para que practiques sin inseguridad.
-            </div>
-        </section>
+        </div>
 
-        <section>
-            <h2>Tu inversión en confianza y placer</h2>
-            <p>Una consulta privada conmigo cuesta 200 dólares. Pero hoy puedes acceder a toda mi metodología por solo 59 dólares.</p>
-            
-            <div class="price-highlight" style="font-size: 1.3rem; border-color: var(--accent); background: #e8f5e9;">
-                Y por tiempo limitado, tienes acceso completo por solo <span style="font-size: 1.8rem; color: #d32f2f;">$5 DÓLARES</span>.
-                <br><small style="font-weight: normal;">Ahorra 54 dólares y empieza hoy mismo.</small>
-            </div>
+        <div class="container reveal" style="text-align: center; margin-bottom: 50px;">
+            <div style="background: #e3f2fd; padding: 30px; border-radius: 20px;">
+                
+                <div class="visual-placeholder" style="height: 100px; width: 100px; margin: 0 auto 20px; border-radius: 50%; border-color: #2196f3;">
+                    <div>🛡️</div>
+                    <div style="font-size: 0.7rem; font-weight: bold;">SELLO 7 DÍAS</div>
+                </div>
 
-            <div class="btn-container">
-                <a href="#checkout" class="cta-button">OBTÉN ACCESO INMEDIATO</a>
+                <h3>Garantía de Satisfacción Total</h3>
+                <p>Tienes 7 días para probar el curso. Si no estás satisfecha, te devuelvo el 100% de tu dinero. Sin preguntas.</p>
             </div>
+        </div>
 
-            <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
-
-            <h3 style="text-align: center;">Tu Caja de Pandora incluida</h3>
-            
-            <div class="img-placeholder" style="height: 150px; max-width: 250px;">
-                IMG BONO "CAJA PANDORA"
-                <span>(Sugerido: Mockup de regalo o libro digital)</span>
+        <div class="section-dark reveal" style="margin-bottom: 0; border-radius: 30px 30px 0 0; text-align: center;">
+            <div class="container">
+                <h2>Tu momento de decisión</h2>
+                <p>Tienes dos caminos: Seguir con las dudas o invertir $5 en tu seguridad.</p>
+                <p>Únete a las miles de mujeres que ya transformaron su vida íntima.</p>
+                
+                <div style="margin-top: 40px;">
+                    <a href="#checkout" class="btn-pulse" style="background: var(--accent); color: white;">SÍ, QUIERO ACCESO INMEDIATO</a>
+                </div>
+                <p style="font-size: 0.8rem; margin-top: 30px; opacity: 0.6;">Pago seguro • Acceso Inmediato al Email</p>
             </div>
-
-            <p style="text-align: center;">Al entrar hoy, te llevas el módulo “Caja de Pandora” y el módulo de Preguntas Frecuentes sin costo extra. Valorados en 37,90 dólares, incluidos en tu acceso de 5 dólares.</p>
-            
-            <div class="btn-container">
-                <a href="#checkout" class="cta-button" style="background-color: #fbc02d; color: #333;">OBTÉN GRATIS LOS BONOS</a>
-            </div>
-        </section>
-
-        <section class="guarantee-section">
-            <h2>Tu garantía de satisfacción total</h2>
-            
-            <div class="img-placeholder" style="height: 120px; width: 120px; border-radius: 50%; border-color: #2e7d32;">
-                SELLO 100% GARANTÍA
-                <span>(Icono de escudo o medalla)</span>
-            </div>
-            
-            <p>Tienes 7 días para probar el curso. Si no estás completamente satisfecha, te devuelvo tu dinero. Sin preguntas.</p>
-        </section>
-
-        <section>
-            <h2>Tus resultados empiezan esta noche</h2>
-            <p>La primera noche que apliques las técnicas notarás:</p>
-            <ul class="check-list positive">
-                <li>Una reacción diferente en tu pareja.</li>
-                <li>Un aumento inmediato en tu seguridad.</li>
-            </ul>
-            <p>En pocas semanas, te sentirás empoderada, con una conexión más profunda y placer mutuo real.</p>
-            <p>El curso combina educación clara con un enfoque emocional y psicológico, usando un lenguaje cercano, respetuoso y sin tabúes, con herramientas prácticas que puedes aplicar de inmediato.</p>
-            
-            <div class="btn-container">
-                <a href="#checkout" class="cta-button">OBTÉN ACCESO INMEDIATO</a>
-            </div>
-        </section>
-
-        <section style="background-color: #fff0f6; text-align: center;">
-            <h2>Tu momento de decisión</h2>
-            <p>Tienes dos opciones:</p>
-            <ul style="text-align: left; max-width: 400px; margin: 0 auto 20px auto;">
-                <li>Seguir con las mismas inseguridades.</li>
-                <li>O invertir 5 dólares en una metodología probada que ha transformado la vida íntima de miles de mujeres.</li>
-            </ul>
-            <p>Puedes convertirte en esa mujer segura, deseada y admirada, cuya pareja valora profundamente su intimidad y a la que sus amigas acuden por consejo.</p>
-            <p>Esta oferta de 5 dólares es por tiempo limitado. Cada día que pasa es un día más cargando inseguridades que ya no necesitas.</p>
-            
-            <p style="font-weight: bold; margin-top: 20px;">Haz clic en el botón de abajo ahora. Únete a las miles de mujeres que ya transformaron su vida íntima.</p>
-            
-            <div class="price-highlight" style="background: transparent; border: none; font-size: 2rem; color: #c2185b;">
-                POR SOLO 5 DÓLARES
-            </div>
-            
-            <div class="btn-container">
-                <a href="#checkout" class="cta-button">OBTÉN ACCESO INMEDIATO</a>
-            </div>
-            
-            <p style="font-size: 0.8rem; color: #888; margin-top: 30px;">
-                Garantía de 7 días - Acceso inmediato - Resultados desde la primera noche
-            </p>
-        </section>
+        </div>
 
     </div>
+
+    <script>
+        // Esta pequeña función detecta cuando bajas con el mouse y activa las animaciones
+        window.addEventListener('scroll', reveal);
+
+        function reveal(){
+            var reveals = document.querySelectorAll('.reveal');
+
+            for(var i = 0; i < reveals.length; i++){
+                var windowheight = window.innerHeight;
+                var revealtop = reveals[i].getBoundingClientRect().top;
+                var revealpoint = 150;
+
+                if(revealtop < windowheight - revealpoint){
+                    reveals[i].classList.add('active');
+                }
+            }
+        }
+    </script>
 
 </body>
 </html>
