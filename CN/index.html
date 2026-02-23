@@ -116,7 +116,7 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        /* --- 5. WELCOME SCREEN (NUEVO) --- */
+        /* --- 5. WELCOME SCREEN --- */
         .welcome-container {
             text-align: center; position: relative; z-index: 10;
             display: flex; flex-direction: column; align-items: center;
@@ -316,6 +316,59 @@
         .check-item i { color: var(--accent-green); font-size: 1.1rem; }
         .check-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
 
+        /* --- 9. CHECKLIST VIEW (NUEVO) --- */
+        .checklist-container {
+            width: 100%; max-width: 800px; height: 70vh; overflow-y: auto;
+            padding: 20px 20px 60px 20px; margin-top: 60px;
+            display: flex; flex-direction: column; gap: 16px;
+        }
+        .checklist-container::-webkit-scrollbar { width: 4px; }
+        
+        .task-card {
+            background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-glass);
+            border-radius: 16px; padding: 20px 24px; display: flex; align-items: center; gap: 20px;
+            transition: all 0.3s var(--ease-smooth); position: relative; overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        .task-card:hover { transform: translateX(8px); background: rgba(30, 41, 59, 0.7); }
+
+        .task-icon {
+            font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
+            width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+        }
+        .task-content { flex: 1; }
+        .task-title { font-weight: 700; font-size: 1.1rem; color: #fff; margin-bottom: 4px; }
+        .task-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; }
+        
+        .task-status {
+            font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: 20px;
+            text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;
+        }
+
+        /* Estado: Hecho por la Agencia (Completado) */
+        .task-card.done { border-left: 4px solid var(--accent-green); }
+        .task-card.done .task-icon { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); }
+        .task-card.done .task-status { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        /* Estado: Pendiente del Cliente (Acción requerida) */
+        .task-card.pending { 
+            border-left: 4px solid var(--accent-cyan); 
+            background: linear-gradient(90deg, rgba(6, 182, 212, 0.08), rgba(30, 41, 59, 0.4));
+        }
+        .task-card.pending .task-icon { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); box-shadow: 0 0 15px rgba(6, 182, 212, 0.4); }
+        .task-card.pending .task-status { background: rgba(6, 182, 212, 0.15); color: #fff; border: 1px solid rgba(6, 182, 212, 0.5); }
+
+        /* Estado: Bloqueado (Futuro) */
+        .task-card.locked { opacity: 0.4; border-left: 4px solid var(--text-muted); pointer-events: none; }
+        .task-card.locked .task-icon { background: rgba(148, 163, 184, 0.1); color: var(--text-muted); }
+        .task-card.locked .task-status { background: rgba(148, 163, 184, 0.1); color: var(--text-muted); border: 1px solid rgba(148, 163, 184, 0.3); }
+
+        /* Títulos separadores en la checklist */
+        .checklist-divider {
+            font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;
+            font-weight: 700; margin-top: 20px; margin-bottom: 5px; padding-left: 10px;
+        }
+
     </style>
 </head>
 <body>
@@ -333,6 +386,10 @@
         
         <div class="nav-item" onclick="switchView('roadmap', this)" data-tooltip="Project Roadmap">
             <i class="fa-regular fa-calendar-check"></i>
+        </div>
+
+        <div class="nav-item" onclick="switchView('checklist', this)" data-tooltip="Checklist de Implementación">
+            <i class="fa-solid fa-list-check"></i>
         </div>
     </aside>
 
@@ -404,7 +461,6 @@
             </div>
 
             <div class="roadmap-container">
-                
                 <div class="phase-item" onclick="openPanel('phase1')">
                     <div class="phase-line"></div>
                     <div class="phase-dot"></div>
@@ -462,6 +518,94 @@
                         </div>
                         <div class="p-desc">Activación por el Trafficker. Soporte directo activo.</div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-checklist" class="view-wrapper">
+            <div class="section-header">
+                <span class="section-tag">Fase 2: Conexión</span>
+                <h1 class="section-title">Checklist de Implementación</h1>
+            </div>
+
+            <div class="checklist-container">
+                
+                <div class="checklist-divider">✅ Tareas Completadas (Agencia)</div>
+
+                <div class="task-card done">
+                    <div class="task-icon"><i class="fa-brands fa-google-drive"></i></div>
+                    <div class="task-content">
+                        <div class="task-title">Carpeta de Drive Entregada</div>
+                        <div class="task-desc">Material de tu negocio listo y compartido contigo.</div>
+                    </div>
+                    <div class="task-status"><i class="fa-solid fa-check"></i> Listo</div>
+                </div>
+
+                <div class="task-card done">
+                    <div class="task-icon"><i class="fa-solid fa-fire"></i></div>
+                    <div class="task-content">
+                        <div class="task-title">Producto en Hotmart</div>
+                        <div class="task-desc">Producto subido en la cuenta de la agencia y vinculado a tu correo.</div>
+                    </div>
+                    <div class="task-status"><i class="fa-solid fa-check"></i> Listo</div>
+                </div>
+
+                <div class="task-card done">
+                    <div class="task-icon"><i class="fa-solid fa-hashtag"></i></div>
+                    <div class="task-content">
+                        <div class="task-title">Redes Sociales Activas</div>
+                        <div class="task-desc">Facebook e Instagram listos, donde ya hemos corrido tráfico previamente.</div>
+                    </div>
+                    <div class="task-status"><i class="fa-solid fa-check"></i> Listo</div>
+                </div>
+
+                <div class="task-card done">
+                    <div class="task-icon"><i class="fa-solid fa-globe"></i></div>
+                    <div class="task-content">
+                        <div class="task-title">Ecosistema Web</div>
+                        <div class="task-desc">Página web creada e integrada con el Pixel de seguimiento configurado.</div>
+                    </div>
+                    <div class="task-status"><i class="fa-solid fa-check"></i> Listo</div>
+                </div>
+
+                <div class="checklist-divider" style="color: var(--accent-cyan);">⏳ Tu Turno (Acción Requerida)</div>
+
+                <div class="task-card pending">
+                    <div class="task-icon"><i class="fa-solid fa-briefcase"></i></div>
+                    <div class="task-content">
+                        <div class="task-title">Crear Business Manager</div>
+                        <div class="task-desc">Crea tu Portafolio Comercial nuevo y vincúlalo como SOCIO a la agencia. Te transferiremos la Fanpage, Instagram y el Pixel.</div>
+                    </div>
+                    <div class="task-status">Pendiente</div>
+                </div>
+
+                <div class="task-card pending">
+                    <div class="task-icon"><i class="fa-regular fa-credit-card"></i></div>
+                    <div class="task-content">
+                        <div class="task-title">Crear Cuenta Publicitaria</div>
+                        <div class="task-desc">Crea la cuenta dentro de tu BM y agrégale tu método de pago preferido.</div>
+                    </div>
+                    <div class="task-status">Pendiente</div>
+                </div>
+
+                <div class="task-card pending">
+                    <div class="task-icon"><i class="fa-solid fa-user-shield"></i></div>
+                    <div class="task-content">
+                        <div class="task-title">Asignar Accesos al Trafficker</div>
+                        <div class="task-desc">Danos acceso mediante el correo proporcionado para que nuestro equipo pueda lanzar y gestionar las campañas.</div>
+                    </div>
+                    <div class="task-status">Pendiente</div>
+                </div>
+
+                <div class="checklist-divider">🔒 Próximos Pasos</div>
+
+                <div class="task-card locked">
+                    <div class="task-icon"><i class="fa-solid fa-lock"></i></div>
+                    <div class="task-content">
+                        <div class="task-title">Lanzamiento de Campañas</div>
+                        <div class="task-desc">Despegue oficial. Esta etapa se desbloqueará automáticamente al completar las tareas pendientes.</div>
+                    </div>
+                    <div class="task-status"><i class="fa-solid fa-lock"></i> Bloqueado</div>
                 </div>
 
             </div>
