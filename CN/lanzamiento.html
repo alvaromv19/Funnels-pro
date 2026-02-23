@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fase 3: Lanzamiento | Creamos Negocios</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+    <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
+    <link rel="preload" href="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/v4/player.js" as="script">
+    <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+    <link rel="dns-prefetch" href="https://cdn.converteai.net">
+    <link rel="dns-prefetch" href="https://scripts.converteai.net">
+    <link rel="dns-prefetch" href="https://images.converteai.net">
+    <link rel="dns-prefetch" href="https://api.vturb.com.br">
+    
+    <style>
+        /* --- DESIGN TOKENS --- */
+        :root {
+            --bg-body: #030712;       
+            --bg-glass: rgba(17, 24, 39, 0.7); 
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;       
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --accent-cyan: #06b6d4;   
+            --accent-green: #10b981;  /* Verde de lanzamiento */
+            --green-glow: rgba(16, 185, 129, 0.4);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        /* --- GLOBAL RESET --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            /* Fondo con acento más verde para esta fase */
+            background-image: 
+                radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 85% 90%, rgba(16, 185, 129, 0.08) 0%, transparent 40%);
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animate-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.3s; }
+        .delay-3 { animation-delay: 0.5s; }
+        .delay-4 { animation-delay: 0.7s; }
+
+        /* --- HEADER --- */
+        header {
+            width: 100%; padding: 25px 20px; display: flex; justify-content: center;
+            align-items: center; border-bottom: 1px solid var(--border-glass);
+            background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(15px);
+            position: sticky; top: 0; z-index: 50;
+        }
+
+        .brand-text {
+            font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        main {
+            width: 100%; max-width: 900px; padding: 60px 20px 100px 20px;
+            display: flex; flex-direction: column; align-items: center; flex: 1; text-align: center;
+            position: relative;
+        }
+
+        /* Elemento de brillo detrás del video */
+        .video-glow {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80%; height: 60%; background: var(--green-glow); filter: blur(100px);
+            z-index: 0; border-radius: 50%; opacity: 0.6; pointer-events: none;
+        }
+
+        .page-badge {
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px;
+            color: var(--accent-green); font-weight: 700;
+            background: rgba(16, 185, 129, 0.1); padding: 8px 24px;
+            border-radius: 30px; border: 1px solid rgba(16, 185, 129, 0.3);
+            display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .page-title { font-size: 3.5rem; font-weight: 800; margin-bottom: 15px; line-height: 1.1; letter-spacing: -1px; }
+        .page-subtitle { font-size: 1.15rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 50px auto; line-height: 1.6; }
+
+        /* --- CONTENEDOR DE VIDEO VTURB --- */
+        .video-wrapper {
+            width: 100%; max-width: 850px; background: #000; border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 16px; padding: 0; 
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(16, 185, 129, 0.15);
+            position: relative; z-index: 5; overflow: hidden; aspect-ratio: 16 / 9; 
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* --- BOTÓN DE ACCIÓN --- */
+        .action-section { margin-top: 50px; z-index: 5; }
+        
+        .btn-action {
+            padding: 18px 40px; font-size: 1.1rem; font-weight: 600; color: white;
+            background: linear-gradient(135deg, var(--primary), var(--accent-cyan));
+            border: none; border-radius: 14px; cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; gap: 12px; text-decoration: none;
+            box-shadow: 0 10px 25px -5px var(--primary-glow); font-family: inherit;
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-4px); box-shadow: 0 15px 30px -5px rgba(6, 182, 212, 0.5);
+        }
+        .btn-action i { transition: transform 0.3s; }
+        .btn-action:hover i { transform: translateX(-5px); } /* Flecha se mueve a la izquierda para "volver" */
+
+    </style>
+</head>
+<body>
+
+    <header class="animate-up">
+        <div class="brand-text">
+            <i class="fa-solid fa-bolt"></i> Creamos Negocios
+        </div>
+    </header>
+
+    <main>
+        <div class="video-glow"></div>
+
+        <span class="page-badge animate-up delay-1">
+            <i class="fa-solid fa-rocket"></i> Fase 3 de 3: GO LIVE
+        </span>
+        
+        <h1 class="page-title animate-up delay-1">Plan de Tráfico</h1>
+        
+        <p class="page-subtitle animate-up delay-2">
+            Conoce la estrategia exacta que implementará nuestro equipo de media buying para escalar tus resultados. A partir de aquí, nosotros tomamos el volante.
+        </p>
+
+        <div class="video-wrapper animate-up delay-3">
+            
+            <vturb-smartplayer id="AQUI_VA_EL_ID_DE_TU_VIDEO" style="display: block; margin: 0 auto; width: 100%; "></vturb-smartplayer> 
+            <script type="text/javascript"> 
+                var s=document.createElement("script"); 
+                s.src="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/AQUI_VA_EL_ID_DE_TU_VIDEO/v4/player.js", 
+                s.async=!0,document.head.appendChild(s); 
+            </script>
+            
+            </div>
+
+        <div class="action-section animate-up delay-4">
+            <a href="index.html" class="btn-action">
+                <i class="fa-solid fa-arrow-left"></i> Volver al Dashboard General
+            </a>
+        </div>
+
+    </main>
+
+</body>
+</html>
