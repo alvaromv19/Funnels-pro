@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fase 2: Importación | Creamos Negocios</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        
+    <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
+    <link rel="preload" href="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/6998bf9b7d7b375b25ebc606/v4/player.js" as="script">
+    <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+    <link rel="preload" href="https://cdn.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/6998bf555a977d332e043b57/main.m3u8" as="fetch">
+    <link rel="dns-prefetch" href="https://cdn.converteai.net">
+    <link rel="dns-prefetch" href="https://scripts.converteai.net">
+    <link rel="dns-prefetch" href="https://images.converteai.net">
+    <link rel="dns-prefetch" href="https://api.vturb.com.br">
+    
+    <style>
+        /* --- DESIGN TOKENS --- */
+        :root {
+            --bg-body: #030712;       
+            --bg-glass: rgba(17, 24, 39, 0.7); 
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;       
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            --accent-cyan: #06b6d4;   
+            --accent-green: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        /* --- GLOBAL RESET --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 85% 90%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-up {
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.3s; }
+        .delay-3 { animation-delay: 0.5s; }
+
+        /* --- HEADER --- */
+        header {
+            width: 100%; padding: 25px 20px; display: flex; justify-content: center;
+            align-items: center; border-bottom: 1px solid var(--border-glass);
+            background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(15px);
+            position: sticky; top: 0; z-index: 50;
+        }
+
+        .brand-text {
+            font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 50%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* --- CONTENIDO PRINCIPAL --- */
+        main {
+            width: 100%; max-width: 900px; padding: 60px 20px 100px 20px;
+            display: flex; flex-direction: column; align-items: center; flex: 1;
+        }
+
+        .header-section { text-align: center; margin-bottom: 60px; }
+
+        .page-badge {
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px;
+            color: var(--accent-cyan); font-weight: 700;
+            background: rgba(6, 182, 212, 0.1); padding: 8px 20px;
+            border-radius: 20px; border: 1px solid rgba(6, 182, 212, 0.2);
+            display: inline-block; margin-bottom: 20px;
+        }
+
+        .page-title { font-size: 3rem; font-weight: 800; margin-bottom: 15px; line-height: 1.2; }
+        .page-subtitle { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.6; }
+
+        /* --- SECCIONES DE VIDEO (PASOS) --- */
+        .step-container {
+            width: 100%; margin-bottom: 80px; position: relative;
+        }
+
+        /* Línea conectora entre videos */
+        .step-container:not(:last-child)::after {
+            content: ''; position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%);
+            width: 2px; height: 40px; background: linear-gradient(to bottom, var(--primary), transparent); opacity: 0.3;
+        }
+
+        .step-header {
+            display: flex; align-items: center; gap: 15px; margin-bottom: 20px;
+        }
+
+        .step-number {
+            width: 40px; height: 40px; border-radius: 50%;
+            background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.3);
+            color: var(--primary); display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 1.2rem; flex-shrink: 0; box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .step-info h2 { font-size: 1.5rem; font-weight: 700; margin-bottom: 4px; }
+        .step-info p { font-size: 0.95rem; color: var(--text-muted); }
+
+        /* --- CONTENEDOR DE VIDEO VTURB --- */
+        .video-wrapper {
+            width: 100%; background: #000; border: 1px solid var(--border-glass);
+            border-radius: 12px; padding: 0; 
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.4);
+            position: relative; overflow: hidden; aspect-ratio: 16 / 9; 
+            transition: transform 0.3s ease;
+        }
+        
+        .video-wrapper:hover { transform: translateY(-5px); border-color: rgba(255,255,255,0.2); }
+
+        /* --- BOTÓN DE ACCIÓN --- */
+        .action-btn-container {
+            display: flex; justify-content: center; margin-top: 30px;
+        }
+        
+        .btn-action {
+            padding: 16px 36px; font-size: 1.1rem; font-weight: 600; color: white;
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            border: none; border-radius: 12px; cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; gap: 10px; text-decoration: none;
+            box-shadow: 0 10px 20px -5px rgba(16, 185, 129, 0.4); font-family: inherit;
+        }
+        
+        .btn-action:hover {
+            transform: translateY(-3px); box-shadow: 0 15px 25px -5px rgba(16, 185, 129, 0.6); color: white;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header class="animate-up">
+        <div class="brand-text">
+            <i class="fa-solid fa-bolt"></i> Creamos Negocios
+        </div>
+    </header>
+
+    <main>
+        
+        <div class="header-section">
+            <span class="page-badge animate-up delay-1">Fase 2 de 3</span>
+            <h1 class="page-title animate-up delay-1">Importación del Negocio</h1>
+            <p class="page-subtitle animate-up delay-2">
+                Sigue estos 3 pasos cuidadosamente para configurar los activos comerciales y dejarnos todo listo para el lanzamiento.
+            </p>
+        </div>
+
+        <div class="step-container animate-up delay-2">
+            <div class="step-header">
+                <div class="step-number">1</div>
+                <div class="step-info">
+                    <h2>Contenido del Negocio</h2>
+                    <p>Revisión de la carpeta Drive y activos entregados por la agencia.</p>
+                </div>
+            </div>
+            
+            <div class="<vturb-smartplayer id="vid-699c99aea036c88a251a2a70" style="display: block; margin: 0 auto; width: 100%; "></vturb-smartplayer> <script type="text/javascript"> var s=document.createElement("script"); s.src="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/699c99aea036c88a251a2a70/v4/player.js", s.async=!0,document.head.appendChild(s); </script>">
+                </div>
+        </div>
+
+
+        <div class="step-container animate-up delay-3">
+            <div class="step-header">
+                <div class="step-number" style="color: var(--accent-cyan); border-color: rgba(6,182,212,0.3); background: rgba(6,182,212,0.1); box-shadow: 0 0 15px rgba(6,182,212,0.3);">2</div>
+                <div class="step-info">
+                    <h2>Checklist y Tareas</h2>
+                    <p>Qué hemos hecho nosotros y qué necesitamos que hagas tú ahora.</p>
+                </div>
+            </div>
+            
+            <div class="<vturb-smartplayer id="vid-699ca20e7d7b375b25f356b5" style="display: block; margin: 0 auto; width: 100%; "></vturb-smartplayer> <script type="text/javascript"> var s=document.createElement("script"); s.src="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/699ca20e7d7b375b25f356b5/v4/player.js", s.async=!0,document.head.appendChild(s); </script>">
+                </div>
+        </div>
+
+
+        <div class="step-container animate-up delay-3">
+            <div class="step-header">
+                <div class="step-number" style="color: var(--accent-green); border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.1); box-shadow: 0 0 15px rgba(16,185,129,0.3);">3</div>
+                <div class="step-info">
+                    <h2>Implementación Práctica</h2>
+                    <p>Tutorial paso a paso para realizar tus tareas pendientes.</p>
+                </div>
+            </div>
+            
+            <div class="<vturb-smartplayer id="vid-699cac24c21948fd235a5663" style="display: block; margin: 0 auto; width: 100%; "></vturb-smartplayer> <script type="text/javascript"> var s=document.createElement("script"); s.src="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/699cac24c21948fd235a5663/v4/player.js", s.async=!0,document.head.appendChild(s); </script>">
+                </div>
+            
+            <div class="action-btn-container">
+                <a href="https://business.facebook.com/" target="_blank" class="btn-action">
+                    <i class="fa-brands fa-meta"></i> Ir a Business Manager
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>
