@@ -149,27 +149,20 @@
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             display: inline-block;
         }
-        .w-subtitle {
-            font-size: 1.25rem; color: var(--text-muted); line-height: 1.6; max-width: 600px; margin: 0;
-        }
+        .w-subtitle { font-size: 1.25rem; color: var(--text-muted); line-height: 1.6; max-width: 600px; margin: 0; }
         .btn-start {
             margin-top: 20px; padding: 18px 40px; font-size: 1.1rem; font-weight: 600; color: white;
-            background: linear-gradient(135deg, var(--primary), var(--accent-cyan));
-            border: none; border-radius: 16px; cursor: pointer; transition: all 0.3s;
-            display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px -5px var(--primary-glow);
-            font-family: inherit;
+            background: linear-gradient(135deg, var(--primary), var(--accent-cyan)); border: none; border-radius: 16px; cursor: pointer; transition: all 0.3s;
+            display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px -5px var(--primary-glow); font-family: inherit;
         }
-        .btn-start:hover {
-            transform: translateY(-3px); box-shadow: 0 15px 30px -5px rgba(6, 182, 212, 0.5);
-        }
+        .btn-start:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -5px rgba(6, 182, 212, 0.5); }
         .btn-start i { transition: transform 0.3s; }
         .btn-start:hover i { transform: translateX(5px); }
 
 
         /* --- 6. FUNNEL CARDS --- */
         .funnel-grid {
-            display: flex; gap: 24px; align-items: center; width: 100%;
-            overflow-x: auto; padding: 60px 40px;
+            display: flex; gap: 24px; align-items: center; width: 100%; overflow-x: auto; padding: 60px 40px;
             transition: padding-right 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .funnel-grid::-webkit-scrollbar { height: 6px; }
@@ -177,27 +170,17 @@
         .funnel-grid::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
         .glass-card {
-            flex-shrink: 0; width: 180px; height: 220px;
-            background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-glass);
-            border-radius: 24px; padding: 24px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 15px; cursor: pointer;
-            transition: all 0.4s var(--ease-elastic); position: relative; overflow: hidden;
-            backdrop-filter: blur(10px);
+            flex-shrink: 0; width: 180px; height: 220px; background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-glass);
+            border-radius: 24px; padding: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 15px; cursor: pointer;
+            transition: all 0.4s var(--ease-elastic); position: relative; overflow: hidden; backdrop-filter: blur(10px);
         }
         .glass-card::after {
-            content: ''; position: absolute; inset: 0;
-            background: linear-gradient(125deg, rgba(255,255,255,0.1) 0%, transparent 50%);
-            opacity: 0; transition: opacity 0.4s;
+            content: ''; position: absolute; inset: 0; background: linear-gradient(125deg, rgba(255,255,255,0.1) 0%, transparent 50%); opacity: 0; transition: opacity 0.4s;
         }
-        .glass-card:hover {
-            transform: translateY(-12px); background: rgba(30, 41, 59, 0.6);
-            border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5);
-        }
+        .glass-card:hover { transform: translateY(-12px); background: rgba(30, 41, 59, 0.6); border-color: rgba(255,255,255,0.2); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); }
         .glass-card:hover::after { opacity: 1; }
-
         .card-icon { font-size: 2.5rem; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3)); transition: transform 0.4s; }
         .glass-card:hover .card-icon { transform: scale(1.1); }
-
         .card-meta { text-align: center; z-index: 2; }
         .card-title { font-weight: 600; font-size: 1rem; color: white; margin-bottom: 4px; }
         .card-sub { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; }
@@ -211,54 +194,26 @@
         .connector::after { content: '>'; font-family: monospace; position: absolute; right: 0; top: -7px; color: var(--text-muted); opacity: 0.3; }
 
         /* --- 7. ROADMAP TIMELINE --- */
-        .roadmap-container {
-            width: 100%; max-width: 650px; height: 75vh; overflow-y: auto;
-            padding-right: 20px; padding-left: 20px; margin-top: 60px;
-        }
-
-        .phase-item {
-            position: relative; padding-left: 40px; margin-bottom: 40px;
-            opacity: 0; animation: fadeSlideUp 0.5s forwards;
-        }
+        .roadmap-container { width: 100%; max-width: 650px; height: 75vh; overflow-y: auto; padding-right: 20px; padding-left: 20px; margin-top: 60px; }
+        .phase-item { position: relative; padding-left: 40px; margin-bottom: 40px; opacity: 0; animation: fadeSlideUp 0.5s forwards; }
         .phase-item:nth-child(1) { animation-delay: 0.1s; }
         .phase-item:nth-child(2) { animation-delay: 0.2s; }
         .phase-item:nth-child(3) { animation-delay: 0.3s; }
         .phase-item:nth-child(4) { animation-delay: 0.4s; }
         .phase-item:nth-child(5) { animation-delay: 0.5s; }
 
-        @keyframes fadeSlideUp {
-            to { opacity: 1; transform: translateY(0); }
-            from { opacity: 0; transform: translateY(20px); }
-        }
+        @keyframes fadeSlideUp { to { opacity: 1; transform: translateY(0); } from { opacity: 0; transform: translateY(20px); } }
 
         .phase-line { position: absolute; left: 11px; top: 25px; bottom: -65px; width: 2px; background: var(--border-glass); }
         .phase-item:last-child .phase-line { display: none; }
-
-        .phase-dot {
-            position: absolute; left: 0; top: 0; width: 24px; height: 24px;
-            border-radius: 50%; background: var(--bg-body); border: 2px solid var(--text-muted);
-            box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.5); transition: all 0.3s;
-        }
-        
-        .phase-card {
-            background: linear-gradient(145deg, rgba(30,41,59,0.4), rgba(15,23,42,0.4));
-            border: 1px solid var(--border-glass); border-radius: 16px; padding: 20px;
-            cursor: pointer; transition: all 0.3s;
-        }
-        .phase-card:hover {
-            border-color: var(--primary); background: rgba(30, 41, 59, 0.7); transform: translateX(5px);
-        }
-
-        .phase-item:hover .phase-dot {
-            border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); background: var(--primary);
-        }
+        .phase-dot { position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--bg-body); border: 2px solid var(--text-muted); box-shadow: 0 0 0 4px rgba(30, 41, 59, 0.5); transition: all 0.3s; }
+        .phase-card { background: linear-gradient(145deg, rgba(30,41,59,0.4), rgba(15,23,42,0.4)); border: 1px solid var(--border-glass); border-radius: 16px; padding: 20px; cursor: pointer; transition: all 0.3s; }
+        .phase-card:hover { border-color: var(--primary); background: rgba(30, 41, 59, 0.7); transform: translateX(5px); }
+        .phase-item:hover .phase-dot { border-color: var(--primary); box-shadow: 0 0 15px var(--primary-glow); background: var(--primary); }
 
         .p-header { display: flex; justify-content: space-between; margin-bottom: 8px; }
         .p-title { font-weight: 700; font-size: 1.1rem; color: #fff; }
-        .p-badge { 
-            font-size: 0.75rem; padding: 4px 10px; border-radius: 20px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass);
-        }
+        .p-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); }
         .p-desc { font-size: 0.9rem; color: var(--text-muted); }
 
         .phase-item.video-phase .phase-dot { border-color: var(--accent-cyan); }
@@ -268,105 +223,139 @@
 
         /* --- 8. DETAILS PANEL --- */
         .panel-overlay {
-            position: fixed; top: 0; right: 0; bottom: 0; width: 450px;
-            background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-            border-left: 1px solid var(--border-glass); transform: translateX(100%);
-            transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-            z-index: 100; display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.5);
+            position: fixed; top: 0; right: 0; bottom: 0; width: 450px; background: rgba(10, 10, 12, 0.85); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border-left: 1px solid var(--border-glass); transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1); z-index: 100; display: flex; flex-direction: column; box-shadow: -20px 0 50px rgba(0,0,0,0.5);
         }
         .panel-overlay.active { transform: translateX(0); }
-
-        .panel-header {
-            padding: 30px; border-bottom: 1px solid var(--border-glass);
-            display: flex; justify-content: space-between; align-items: flex-start;
-        }
-
-        .btn-close {
-            background: rgba(255,255,255,0.05); border: none; color: var(--text-muted);
-            width: 32px; height: 32px; border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-        }
+        .panel-header { padding: 30px; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: flex-start; }
+        .btn-close { background: rgba(255,255,255,0.05); border: none; color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
         .btn-close:hover { background: rgba(255,255,255,0.1); color: #fff; transform: rotate(90deg); }
-
         .panel-body { padding: 30px; overflow-y: auto; flex: 1; }
 
-        .detail-icon {
-            font-size: 2.5rem; margin-bottom: 20px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02));
-            width: 80px; height: 80px; border-radius: 20px; display: flex; align-items: center;
-            justify-content: center; border: 1px solid var(--border-glass); color: var(--primary);
-        }
-        
+        .detail-icon { font-size: 2.5rem; margin-bottom: 20px; background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)); width: 80px; height: 80px; border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 1px solid var(--border-glass); color: var(--primary); }
         .detail-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; line-height: 1.1; }
         .detail-desc { font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 30px; }
         
         .check-list { list-style: none; padding: 0; }
-        .check-item {
-            display: flex; align-items: center; gap: 15px; padding: 16px; margin-bottom: 10px;
-            background: rgba(255,255,255,0.02); border: 1px solid transparent; border-radius: 12px;
-            font-size: 0.95rem; opacity: 0; transform: translateX(20px); transition: all 0.3s;
-        }
-        
+        .check-item { display: flex; align-items: center; gap: 15px; padding: 16px; margin-bottom: 10px; background: rgba(255,255,255,0.02); border: 1px solid transparent; border-radius: 12px; font-size: 0.95rem; opacity: 0; transform: translateX(20px); transition: all 0.3s; }
         .panel-overlay.active .check-item { opacity: 1; transform: translateX(0); }
         .panel-overlay.active .check-item:nth-child(1) { transition-delay: 0.3s; }
         .panel-overlay.active .check-item:nth-child(2) { transition-delay: 0.4s; }
         .panel-overlay.active .check-item:nth-child(3) { transition-delay: 0.5s; }
         .panel-overlay.active .check-item:nth-child(4) { transition-delay: 0.6s; }
-
         .check-item i { color: var(--accent-green); font-size: 1.1rem; }
         .check-item:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }
 
-        /* --- 9. CHECKLIST VIEW (NUEVO) --- */
+        /* --- 9. CHECKLIST VIEW --- */
         .checklist-container {
-            width: 100%; max-width: 800px; height: 70vh; overflow-y: auto;
-            padding: 20px 20px 60px 20px; margin-top: 60px;
-            display: flex; flex-direction: column; gap: 20px;
+            width: 100%; max-width: 800px; height: 70vh; overflow-y: auto; padding: 20px 20px 60px 20px; margin-top: 60px; display: flex; flex-direction: column; gap: 20px;
         }
         .checklist-container::-webkit-scrollbar { width: 4px; }
         
         .task-card {
-            background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-glass);
-            border-radius: 16px; padding: 30px 24px; min-height: 120px; display: flex; align-items: center; gap: 20px;
-            transition: all 0.3s var(--ease-smooth); position: relative; overflow: hidden;
-            backdrop-filter: blur(10px);
+            background: rgba(30, 41, 59, 0.4); border: 1px solid var(--border-glass); border-radius: 16px; padding: 30px 24px; min-height: 120px; display: flex; align-items: center; gap: 20px; transition: all 0.3s var(--ease-smooth); position: relative; overflow: hidden; backdrop-filter: blur(10px);
         }
         .task-card:hover { transform: translateX(8px); background: rgba(30, 41, 59, 0.7); }
-
-        .task-icon {
-            font-size: 1.5rem; display: flex; align-items: center; justify-content: center;
-            width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
-        }
+        .task-icon { font-size: 1.5rem; display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0; }
         .task-content { flex: 1; }
         .task-title { font-weight: 700; font-size: 1.15rem; color: #fff; margin-bottom: 4px; }
         .task-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; }
-        
-        .task-status {
-            font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: 20px;
-            text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0;
-        }
+        .task-status { font-size: 0.75rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; flex-shrink: 0; }
 
-        /* Estado: Hecho por la Agencia (Completado) */
         .task-card.done { border-left: 4px solid var(--accent-green); }
         .task-card.done .task-icon { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); }
         .task-card.done .task-status { background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
 
-        /* Estado: Pendiente del Cliente (Acción requerida) */
-        .task-card.pending { 
-            border-left: 4px solid var(--accent-cyan); 
-            background: linear-gradient(90deg, rgba(6, 182, 212, 0.08), rgba(30, 41, 59, 0.4));
-        }
+        .task-card.pending { border-left: 4px solid var(--accent-cyan); background: linear-gradient(90deg, rgba(6, 182, 212, 0.08), rgba(30, 41, 59, 0.4)); }
         .task-card.pending .task-icon { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); box-shadow: 0 0 15px rgba(6, 182, 212, 0.4); }
         .task-card.pending .task-status { background: rgba(6, 182, 212, 0.15); color: #fff; border: 1px solid rgba(6, 182, 212, 0.5); }
 
-        /* Estado: Bloqueado (Futuro) */
         .task-card.locked { opacity: 0.4; border-left: 4px solid var(--text-muted); pointer-events: none; }
         .task-card.locked .task-icon { background: rgba(148, 163, 184, 0.1); color: var(--text-muted); }
         .task-card.locked .task-status { background: rgba(148, 163, 184, 0.1); color: var(--text-muted); border: 1px solid rgba(148, 163, 184, 0.3); }
 
-        /* Títulos separadores en la checklist */
-        .checklist-divider {
-            font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;
-            font-weight: 700; margin-top: 20px; margin-bottom: 5px; padding-left: 10px;
+        .checklist-divider { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; font-weight: 700; margin-top: 20px; margin-bottom: 5px; padding-left: 10px; }
+
+        /* --- 10. TRAFFIC PLAN VIEW (NUEVO) --- */
+        .traffic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            width: 100%;
+            max-width: 1100px;
+            height: 70vh;
+            overflow-y: auto;
+            padding: 20px 20px 60px 20px;
+            margin-top: 60px;
+        }
+        .traffic-grid::-webkit-scrollbar { width: 4px; }
+        
+        .t-card {
+            background: rgba(30, 41, 59, 0.4);
+            border: 1px solid var(--border-glass);
+            border-radius: 20px;
+            padding: 30px 24px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            transition: transform 0.4s var(--ease-elastic);
+            opacity: 0;
+            animation: fadeSlideUp 0.6s forwards;
+        }
+        .t-card:nth-child(1) { animation-delay: 0.1s; }
+        .t-card:nth-child(2) { animation-delay: 0.3s; }
+        .t-card:nth-child(3) { animation-delay: 0.5s; }
+
+        .t-card:hover { transform: translateY(-8px); background: rgba(30, 41, 59, 0.6); }
+
+        /* Estilo de los Números Gigantes de Fondo */
+        .t-step-bg {
+            position: absolute;
+            top: -20px;
+            right: -10px;
+            font-size: 8rem;
+            font-weight: 800;
+            color: rgba(255,255,255,0.02);
+            line-height: 1;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .t-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; z-index: 1; }
+        .t-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .t-title { font-size: 1.25rem; font-weight: 700; margin: 0; color: #fff; }
+        .t-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 25px; z-index: 1; flex: 1; }
+        
+        .t-metrics { display: flex; flex-direction: column; gap: 12px; z-index: 1; }
+        .t-metric {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 16px; background: rgba(0,0,0,0.2); border-radius: 12px;
+            font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .t-metric span:first-child { color: var(--text-muted); }
+        .t-metric span:last-child { font-weight: 700; color: #fff; text-align: right; }
+
+        .t-highlight {
+            margin-top: 20px; padding: 16px; border-radius: 12px;
+            font-size: 0.85rem; text-align: center; border: 1px dashed;
+            font-weight: 600; line-height: 1.5; z-index: 1;
+        }
+
+        /* Colores por Fase */
+        .t-card.phase-warmup { border-top: 4px solid var(--accent-cyan); }
+        .t-card.phase-warmup .t-icon { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
+        
+        .t-card.phase-testing { border-top: 4px solid var(--primary); }
+        .t-card.phase-testing .t-icon { background: rgba(99, 102, 241, 0.15); color: var(--primary); }
+        
+        .t-card.phase-scale { border-top: 4px solid var(--accent-green); }
+        .t-card.phase-scale .t-icon { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+        .t-card.phase-scale .t-highlight { 
+            border-color: var(--accent-green); color: var(--accent-green); 
+            background: rgba(16, 185, 129, 0.05);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.1);
         }
 
     </style>
@@ -391,6 +380,10 @@
         <div class="nav-item" onclick="switchView('checklist', this)" data-tooltip="Checklist de Implementación">
             <i class="fa-solid fa-list-check"></i>
         </div>
+
+        <div class="nav-item" onclick="switchView('traffic', this)" data-tooltip="Plan de Tráfico">
+            <i class="fa-solid fa-chart-line"></i>
+        </div>
     </aside>
 
     <main class="stage">
@@ -412,44 +405,25 @@
                 <span class="section-tag">Funnel de ventas</span>
                 <h1 class="section-title">Motor de Conversión</h1>
             </div>
-
             <div class="funnel-grid">
                 <div class="glass-card" data-type="ads" onclick="openPanel('ads')">
                     <div class="card-icon"><i class="fa-brands fa-meta"></i></div>
-                    <div class="card-meta">
-                        <div class="card-title">Meta ADS</div>
-                        <div class="card-sub">Facebook / Instagram</div>
-                    </div>
+                    <div class="card-meta"><div class="card-title">Meta ADS</div><div class="card-sub">Facebook / Instagram</div></div>
                 </div>
-
                 <div class="connector"></div>
-
                 <div class="glass-card" data-type="fire" onclick="openPanel('winners')">
                     <div class="card-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
-                    <div class="card-meta">
-                        <div class="card-title">ADS Ganadores</div>
-                        <div class="card-sub">Validación</div>
-                    </div>
+                    <div class="card-meta"><div class="card-title">ADS Ganadores</div><div class="card-sub">Validación</div></div>
                 </div>
-
                 <div class="connector"></div>
-
                 <div class="glass-card" data-type="web" onclick="openPanel('page')">
                     <div class="card-icon"><i class="fa-solid fa-laptop-code"></i></div>
-                    <div class="card-meta">
-                        <div class="card-title">Landing Page</div>
-                        <div class="card-sub">Conversión</div>
-                    </div>
+                    <div class="card-meta"><div class="card-title">Landing Page</div><div class="card-sub">Conversión</div></div>
                 </div>
-
                 <div class="connector"></div>
-
                 <div class="glass-card" data-type="money" onclick="openPanel('sale')">
                     <div class="card-icon"><i class="fa-solid fa-sack-dollar"></i></div>
-                    <div class="card-meta">
-                        <div class="card-title">Venta</div>
-                        <div class="card-sub">Hotmart Checkout</div>
-                    </div>
+                    <div class="card-meta"><div class="card-title">Venta</div><div class="card-sub">Hotmart Checkout</div></div>
                 </div>
             </div>
         </div>
@@ -459,63 +433,39 @@
                 <span class="section-tag">Cronograma de ejecución</span>
                 <h1 class="section-title">Hoja de Ruta</h1>
             </div>
-
             <div class="roadmap-container">
                 <div class="phase-item" onclick="openPanel('phase1')">
-                    <div class="phase-line"></div>
-                    <div class="phase-dot"></div>
+                    <div class="phase-line"></div><div class="phase-dot"></div>
                     <div class="phase-card">
-                        <div class="p-header">
-                            <span class="p-title">Fase 1: Preparación (Exportación)</span>
-                            <span class="p-badge">Entrega</span>
-                        </div>
+                        <div class="p-header"><span class="p-title">Fase 1: Preparación (Exportación)</span><span class="p-badge">Entrega</span></div>
                         <div class="p-desc">Entrega total del material y producto en Drive y Hotmart.</div>
                     </div>
                 </div>
-
                 <div class="phase-item video-phase" onclick="openPanel('video1')">
-                    <div class="phase-line"></div>
-                    <div class="phase-dot"></div>
+                    <div class="phase-line"></div><div class="phase-dot"></div>
                     <div class="phase-card">
-                        <div class="p-header">
-                            <span class="p-title" style="color:var(--accent-cyan)">📽️ VID: Estructura y Escalamiento</span>
-                            <span class="p-badge" style="border-color:var(--accent-cyan)">Estratégico</span>
-                        </div>
+                        <div class="p-header"><span class="p-title" style="color:var(--accent-cyan)">📽️ VID: Estructura y Escalamiento</span><span class="p-badge" style="border-color:var(--accent-cyan)">Estratégico</span></div>
                         <div class="p-desc">Conoce la distribución del presupuesto y la ruta al éxito.</div>
                     </div>
                 </div>
-
                 <div class="phase-item" onclick="openPanel('phase2')">
-                    <div class="phase-line"></div>
-                    <div class="phase-dot"></div>
+                    <div class="phase-line"></div><div class="phase-dot"></div>
                     <div class="phase-card">
-                        <div class="p-header">
-                            <span class="p-title">Fase 2: Conexión (Importación)</span>
-                            <span class="p-badge">Acción</span>
-                        </div>
+                        <div class="p-header"><span class="p-title">Fase 2: Conexión (Importación)</span><span class="p-badge">Acción</span></div>
                         <div class="p-desc">Configuración de tu Business Manager y Cuenta Publicitaria.</div>
                     </div>
                 </div>
-
                 <div class="phase-item video-phase" onclick="openPanel('video2')">
-                    <div class="phase-line"></div>
-                    <div class="phase-dot"></div>
+                    <div class="phase-line"></div><div class="phase-dot"></div>
                     <div class="phase-card">
-                        <div class="p-header">
-                            <span class="p-title" style="color:var(--accent-cyan)">📽️ VID: Plan de Acción ADS</span>
-                        </div>
+                        <div class="p-header"><span class="p-title" style="color:var(--accent-cyan)">📽️ VID: Plan de Acción ADS</span></div>
                         <div class="p-desc">Video explicativo con los próximos pasos del equipo de tráfico.</div>
                     </div>
                 </div>
-
                 <div class="phase-item launch" onclick="openPanel('launch')">
-                    <div class="phase-line"></div>
-                    <div class="phase-dot"></div>
+                    <div class="phase-line"></div><div class="phase-dot"></div>
                     <div class="phase-card">
-                        <div class="p-header">
-                            <span class="p-title" style="color:var(--accent-green)">🚀 Fase 3: Lanzamiento</span>
-                            <span class="p-badge" style="background:var(--accent-green); color:#000; font-weight:700;">GO LIVE</span>
-                        </div>
+                        <div class="p-header"><span class="p-title" style="color:var(--accent-green)">🚀 Fase 3: Lanzamiento</span><span class="p-badge" style="background:var(--accent-green); color:#000; font-weight:700;">GO LIVE</span></div>
                         <div class="p-desc">Activación por el Trafficker. Soporte directo activo.</div>
                     </div>
                 </div>
@@ -527,85 +477,104 @@
                 <span class="section-tag">Fase 2: Conexión</span>
                 <h1 class="section-title">Checklist de Implementación</h1>
             </div>
-
             <div class="checklist-container">
-                
                 <div class="checklist-divider">✅ Tareas Completadas (Agencia)</div>
-
                 <div class="task-card done">
                     <div class="task-icon"><i class="fa-brands fa-google-drive"></i></div>
-                    <div class="task-content">
-                        <div class="task-title">Carpeta de Drive Entregada</div>
-                        <div class="task-desc">Material de tu negocio listo y compartido contigo.</div>
-                    </div>
+                    <div class="task-content"><div class="task-title">Carpeta de Drive Entregada</div><div class="task-desc">Material de tu negocio listo y compartido.</div></div>
                     <div class="task-status"><i class="fa-solid fa-check"></i> Listo</div>
                 </div>
-
                 <div class="task-card done">
                     <div class="task-icon"><i class="fa-solid fa-fire"></i></div>
-                    <div class="task-content">
-                        <div class="task-title">Producto en Hotmart</div>
-                        <div class="task-desc">Producto subido en la cuenta de la agencia y vinculado a tu correo.</div>
-                    </div>
+                    <div class="task-content"><div class="task-title">Producto en Hotmart</div><div class="task-desc">Producto subido en cuenta agencia y vinculado.</div></div>
                     <div class="task-status"><i class="fa-solid fa-check"></i> Listo</div>
                 </div>
-
                 <div class="task-card done">
                     <div class="task-icon"><i class="fa-solid fa-hashtag"></i></div>
-                    <div class="task-content">
-                        <div class="task-title">Redes Sociales Activas</div>
-                        <div class="task-desc">Facebook e Instagram listos, donde ya hemos corrido tráfico previamente.</div>
-                    </div>
+                    <div class="task-content"><div class="task-title">Redes Sociales Activas</div><div class="task-desc">FB/IG listos con tráfico previo.</div></div>
                     <div class="task-status"><i class="fa-solid fa-check"></i> Listo</div>
                 </div>
-
                 <div class="task-card done">
                     <div class="task-icon"><i class="fa-solid fa-globe"></i></div>
-                    <div class="task-content">
-                        <div class="task-title">Ecosistema Web</div>
-                        <div class="task-desc">Página web creada e integrada con el Pixel de seguimiento configurado.</div>
-                    </div>
+                    <div class="task-content"><div class="task-title">Ecosistema Web</div><div class="task-desc">Página creada e integrada con Pixel.</div></div>
                     <div class="task-status"><i class="fa-solid fa-check"></i> Listo</div>
                 </div>
-
                 <div class="checklist-divider" style="color: var(--accent-cyan);">⏳ Tu Turno (Acción Requerida)</div>
-
                 <div class="task-card pending">
                     <div class="task-icon"><i class="fa-solid fa-briefcase"></i></div>
-                    <div class="task-content">
-                        <div class="task-title">Crear Business Manager</div>
-                        <div class="task-desc">Crea tu Portafolio Comercial nuevo y vincúlalo como SOCIO a la agencia. Te transferiremos la Fanpage, Instagram y el Pixel.</div>
-                    </div>
+                    <div class="task-content"><div class="task-title">Crear Business Manager</div><div class="task-desc">Crea tu Portafolio y vincúlalo como SOCIO.</div></div>
                     <div class="task-status">Pendiente</div>
                 </div>
-
                 <div class="task-card pending">
                     <div class="task-icon"><i class="fa-regular fa-credit-card"></i></div>
-                    <div class="task-content">
-                        <div class="task-title">Crear Cuenta Publicitaria</div>
-                        <div class="task-desc">Crea la cuenta dentro de tu BM y agrégale tu método de pago preferido.</div>
-                    </div>
+                    <div class="task-content"><div class="task-title">Crear Cuenta Publicitaria</div><div class="task-desc">Configura la cuenta y el método de pago.</div></div>
                     <div class="task-status">Pendiente</div>
                 </div>
-
                 <div class="task-card pending">
                     <div class="task-icon"><i class="fa-solid fa-user-shield"></i></div>
-                    <div class="task-content">
-                        <div class="task-title">Asignar Accesos al Trafficker</div>
-                        <div class="task-desc">Danos acceso mediante el correo proporcionado para que nuestro equipo pueda lanzar y gestionar las campañas.</div>
-                    </div>
+                    <div class="task-content"><div class="task-title">Asignar Accesos</div><div class="task-desc">Danos acceso para gestionar campañas.</div></div>
                     <div class="task-status">Pendiente</div>
                 </div>
-
                 <div class="checklist-divider">🔒 Próximos Pasos</div>
-
                 <div class="task-card locked">
                     <div class="task-icon"><i class="fa-solid fa-lock"></i></div>
-                    <div class="task-content">
-                        <div class="task-title">Lanzamiento de Campañas</div>
-                        <div class="task-desc">Despegue oficial. Esta etapa se desbloqueará automáticamente al completar las tareas pendientes.</div>
-                    </div>
+                    <div class="task-content"><div class="task-title">Lanzamiento de Campañas</div><div class="task-desc">Despegue oficial automático.</div></div>
                     <div class="task-status"><i class="fa-solid fa-lock"></i> Bloqueado</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-traffic" class="view-wrapper">
+            <div class="section-header">
+                <span class="section-tag">Fase 3: Lanzamiento</span>
+                <h1 class="section-title">Plan de Tráfico Oficial</h1>
+            </div>
+
+            <div class="traffic-grid">
+                
+                <div class="t-card phase-warmup">
+                    <div class="t-step-bg">1</div>
+                    <div class="t-header">
+                        <div class="t-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                        <h2 class="t-title">Calentamiento</h2>
+                    </div>
+                    <p class="t-desc">Blindamos los activos y generamos confianza en la cuenta publicitaria antes de escalar agresivamente.</p>
+                    <div class="t-metrics">
+                        <div class="t-metric"><span>Inversión</span><span>$10 - $15 Total</span></div>
+                        <div class="t-metric"><span>Duración</span><span>2 a 3 días</span></div>
+                        <div class="t-metric"><span>Objetivo</span><span>Calentar Activos</span></div>
+                    </div>
+                </div>
+
+                <div class="t-card phase-testing">
+                    <div class="t-step-bg">2</div>
+                    <div class="t-header">
+                        <div class="t-icon"><i class="fa-solid fa-vial-circle-check"></i></div>
+                        <h2 class="t-title">Testing</h2>
+                    </div>
+                    <p class="t-desc">Ponemos a competir los anuncios producidos para encontrar a nuestros "Top 3" campeones de ventas.</p>
+                    <div class="t-metrics">
+                        <div class="t-metric"><span>Estructura</span><span>1 - 1 - 3</span></div>
+                        <div class="t-metric"><span>Presupuesto</span><span>$3 por Ad ($9/día)</span></div>
+                        <div class="t-metric"><span>Duración</span><span>3 a 5 días</span></div>
+                    </div>
+                </div>
+
+                <div class="t-card phase-scale">
+                    <div class="t-step-bg">3</div>
+                    <div class="t-header">
+                        <div class="t-icon"><i class="fa-solid fa-rocket"></i></div>
+                        <h2 class="t-title">Escala</h2>
+                    </div>
+                    <p class="t-desc">Distribución inteligente del presupuesto para mantener rentabilidad mientras buscamos nuevos ángulos.</p>
+                    <div class="t-metrics">
+                        <div class="t-metric"><span>Presupuesto Top 3</span><span>70% Inversión</span></div>
+                        <div class="t-metric"><span>Testeo Nuevos</span><span>30% Inversión</span></div>
+                        <div class="t-metric"><span>ROAS Objetivo</span><span>2x Mínimo</span></div>
+                    </div>
+                    <div class="t-highlight">
+                        🔥 ROAS sostenido de 2.5x =<br>Escalamiento Infinito (Sin límites)
+                    </div>
                 </div>
 
             </div>
@@ -618,12 +587,10 @@
             <span style="font-weight:600; color:var(--text-muted); font-size:0.9rem;">DETALLES</span>
             <button class="btn-close" onclick="closePanel()"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div class="panel-body" id="panelBody">
-            </div>
+        <div class="panel-body" id="panelBody"></div>
     </aside>
 
     <script>
-        // Database Modificada
         const dataDB = {
             'ads': {
                 icon: '<i class="fa-brands fa-meta"></i>',
@@ -649,7 +616,6 @@
                 desc: "Infraestructura automatizada de cobro y entrega del producto digital.",
                 items: ["<b>Hotmart:</b> Procesador de pagos internacional", "<b>Order Bumps:</b> Tickets adicionales en la misma oferta", "<b>Entrega:</b> Acceso inmediato por email"]
             },
-            
             'phase1': {
                 icon: '<i class="fa-solid fa-box-open"></i>',
                 title: "Fase 1: Preparación (Exportación)",
@@ -712,22 +678,15 @@
                     ${listHtml}
                 </ul>
             `;
-
             panel.classList.add('active');
-
             const grid = document.querySelector('.funnel-grid');
-            if(grid) {
-                grid.style.paddingRight = '500px'; 
-            }
+            if(grid) grid.style.paddingRight = '500px'; 
         }
 
         function closePanel() {
             document.getElementById('detailPanel').classList.remove('active');
-            
             const grid = document.querySelector('.funnel-grid');
-            if(grid) {
-                grid.style.paddingRight = '40px';
-            }
+            if(grid) grid.style.paddingRight = '40px';
         }
     </script>
 </body>
