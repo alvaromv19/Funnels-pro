@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ads & Sales Dashboard | Pro Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
+        .card { background-color: #1e293b; border: 1px solid #334155; }
+        .table-header { background-color: #334155; color: #94a3b8; }
+        .table-row:hover { background-color: #334155; transition: background-color 0.2s; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+    </style>
+</head>
+<body class="p-6">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-white tracking-tight">Ads & Sales Analytics</h1>
+                <p class="text-slate-400 mt-1">Monitoreo de leads, agendas y ventas en tiempo real.</p>
+            </div>
+            <div>
+                <button onclick="loadData()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded shadow-lg font-medium transition flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Actualizar Datos
+                </button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8" id="kpi-container">
+            <div class="card p-5 rounded-lg shadow">
+                <p class="text-sm text-slate-400 font-semibold mb-1">Total Leads</p>
+                <h3 class="text-3xl font-bold text-white" id="kpi-leads">0</h3>
+            </div>
+            <div class="card p-5 rounded-lg shadow">
+                <p class="text-sm text-slate-400 font-semibold mb-1">Leads Calificados</p>
+                <h3 class="text-3xl font-bold text-blue-400" id="kpi-calificados">0</h3>
+            </div>
+            <div class="card p-5 rounded-lg shadow">
+                <p class="text-sm text-slate-400 font-semibold mb-1">Agendas Asistidas</p>
+                <h3 class="text-3xl font-bold text-yellow-400" id="kpi-agendas">0</h3>
+            </div>
+            <div class="card p-5 rounded-lg shadow">
+                <p class="text-sm text-slate-400 font-semibold mb-1">Ventas Cerradas</p>
+                <h3 class="text-3xl font-bold text-green-400" id="kpi-ventas">0</h3>
+            </div>
+            <div class="card p-5 rounded-lg shadow">
+                <p class="text-sm text-slate-400 font-semibold mb-1">Ingresos Generados</p>
+                <h3 class="text-3xl font-bold text-emerald-400" id="kpi-ingresos">$0</h3>
+            </div>
+        </div>
+
+        <div class="mb-4 flex gap-4 items-center">
+            <input type="text" id="searchInput" placeholder="Filtrar por Campaña o Anuncio..." 
+                   class="w-full md:w-1/3 bg-[#1e293b] border border-slate-600 text-white rounded px-4 py-2 focus:outline-none focus:border-blue-500"
+                   onkeyup="renderTable()">
+        </div>
+
+        <div class="card rounded-lg overflow-hidden shadow-xl border border-slate-700">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead>
+                        <tr class="table-header text-xs uppercase tracking-wider">
+                            <th class="px-6 py-4 font-semibold">Campaña (UTM)</th>
+                            <th class="px-6 py-4 font-semibold">Anuncio (Ad Content)</th>
+                            <th class="px-6 py-4 font-semibold text-right">Volumen Leads</th>
+                            <th class="px-6 py-4 font-semibold text-right">Calificados</th>
+                            <th class="px-6 py-4 font-semibold text-right">Agendas Total</th>
+                            <th class="px-6 py-4 font-semibold text-right">Asistieron</th>
+                            <th class="px-6 py-4 font-semibold text-right">Ventas</th>
+                            <th class="px-6 py-4 font-semibold text-right">Ingresos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body" class="text-sm divide-y divide-slate-700">
+                        <tr>
+                            <td colspan="8" class="text-center py-8 text-slate-400">Cargando datos desde Google Sheets...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // URls de tus documentos CSV Publicados
+        const URL_LEADS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=0&single=true&output=csv';
+        const URL_CALIFICADOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv';
+        const URL_AGENDAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv';
+
+        let consolidatedData = [];
+
+        function parseCSV(url) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(url, {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        resolve(results.data);
+                    },
+                    error: function(err) {
+                        reject(err);
+                    }
+                });
+            });
+        }
+
+        async function loadData() {
+            document.getElementById('table-body').innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-400">Leyendo bases de datos...</td></tr>';
+            
+            try {
+                // Leer las 3 bases de datos al mismo tiempo
+                const [leads, calificados, agendas] = await Promise.all([
+                    parseCSV(URL_LEADS),
+                    parseCSV(URL_CALIFICADOS),
+                    parseCSV(URL_AGENDAS)
+                ]);
+
+                // Diccionario para agrupar (Llave: Campaña + Anuncio)
+                let campaignStats = {};
+
+                // 1. Procesar Volumen de Leads
+                leads.forEach(row => {
+                    let camp = (row['Campaña (UTM)'] || row['Campaña'] || 'Desconocida').trim();
+                    let ad = (row['Ad Content'] || row['Anuncio'] || 'Desconocido').trim();
+                    if (!camp && !ad) return;
+
+                    let key = `${camp}___${ad}`;
+                    if(!campaignStats[key]) initCampaignRow(campaignStats, key, camp, ad);
+                    campaignStats[key].leads++;
+                });
+
+                // 2. Procesar Leads Calificados
+                calificados.forEach(row => {
+                    let camp = (row['Campaña (UTM)'] || row['Campaña'] || 'Desconocida').trim();
+                    let ad = (row['Ad Content'] || row['Anuncio'] || 'Desconocido').trim();
+                    if (!camp && !ad) return;
+
+                    let key = `${camp}___${ad}`;
+                    if(!campaignStats[key]) initCampaignRow(campaignStats, key, camp, ad);
+                    campaignStats[key].calificados++;
+                });
+
+                // 3. Procesar Ventas y Agendas
+                agendas.forEach(row => {
+                    let camp = (row['Origen Campaña'] || 'Desconocida').trim();
+                    let ad = (row['Nombre del Ad'] || 'Desconocido').trim();
+                    let resultado = (row['Resultado'] || '').trim();
+                    let monto = parseFloat(row['Monto ($)'] || 0);
+                    
+                    if (!camp && !ad) return;
+
+                    let key = `${camp}___${ad}`;
+                    if(!campaignStats[key]) initCampaignRow(campaignStats, key, camp, ad);
+                    
+                    campaignStats[key].agendas_total++;
+
+                    // Analizar Resultado
+                    if(resultado.includes('✅ Venta Cerrada')) {
+                        campaignStats[key].ventas++;
+                        campaignStats[key].asistieron++; // Si compró, obviamente asistió
+                        campaignStats[key].ingresos += monto;
+                    } 
+                    else if (!resultado.includes('❌ No Show')) {
+                        // Si no es un No Show, contamos como asistencia (Reprogramados, seguimiento, etc)
+                        campaignStats[key].asistieron++;
+                    }
+                });
+
+                // Convertir el diccionario a un Array para poder renderizarlo
+                consolidatedData = Object.values(campaignStats).sort((a, b) => b.ingresos - a.ingresos || b.ventas - a.ventas || b.leads - a.leads);
+                
+                updateKPIs();
+                renderTable();
+
+            } catch (error) {
+                console.error("Error cargando datos:", error);
+                document.getElementById('table-body').innerHTML = '<tr><td colspan="8" class="text-center py-8 text-red-400">Error al cargar los datos. Revisa la consola para más detalles.</td></tr>';
+            }
+        }
+
+        function initCampaignRow(obj, key, camp, ad) {
+            obj[key] = {
+                campana: camp,
+                anuncio: ad,
+                leads: 0,
+                calificados: 0,
+                agendas_total: 0,
+                asistieron: 0,
+                ventas: 0,
+                ingresos: 0
+            };
+        }
+
+        function updateKPIs() {
+            let tLeads = 0, tCalif = 0, tAsist = 0, tVentas = 0, tIngresos = 0;
+            consolidatedData.forEach(r => {
+                tLeads += r.leads;
+                tCalif += r.calificados;
+                tAsist += r.asistieron;
+                tVentas += r.ventas;
+                tIngresos += r.ingresos;
+            });
+
+            document.getElementById('kpi-leads').innerText = tLeads.toLocaleString();
+            document.getElementById('kpi-calificados').innerText = tCalif.toLocaleString();
+            document.getElementById('kpi-agendas').innerText = tAsist.toLocaleString();
+            document.getElementById('kpi-ventas').innerText = tVentas.toLocaleString();
+            document.getElementById('kpi-ingresos').innerText = `$${tIngresos.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits:2})}`;
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+            
+            const filterText = document.getElementById('searchInput').value.toLowerCase();
+
+            consolidatedData.forEach(row => {
+                // Filtro de búsqueda
+                if(filterText && !row.campana.toLowerCase().includes(filterText) && !row.anuncio.toLowerCase().includes(filterText)) {
+                    return;
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = 'table-row border-b border-slate-700/50 text-slate-300';
+                
+                tr.innerHTML = `
+                    <td class="px-6 py-4 font-medium text-white">${row.campana}</td>
+                    <td class="px-6 py-4 text-slate-400">${row.anuncio}</td>
+                    <td class="px-6 py-4 text-right">${row.leads}</td>
+                    <td class="px-6 py-4 text-right text-blue-400 font-semibold">${row.calificados}</td>
+                    <td class="px-6 py-4 text-right">${row.agendas_total}</td>
+                    <td class="px-6 py-4 text-right text-yellow-400">${row.asistieron}</td>
+                    <td class="px-6 py-4 text-right text-green-400 font-bold">${row.ventas}</td>
+                    <td class="px-6 py-4 text-right text-emerald-400 font-bold">$${row.ingresos.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits:2})}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            if(tbody.innerHTML === '') {
+                tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-400">No se encontraron resultados para la búsqueda.</td></tr>';
+            }
+        }
+
+        // Cargar datos al iniciar
+        window.onload = loadData;
+    </script>
+</body>
+</html>
