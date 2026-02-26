@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Inteligente - Creamos Negocios</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #3b82f6;
+            --alert-red: #ef4444;
+            --alert-yellow: #eab308;
+            --success: #22c55e;
+            --border: #334155;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .header-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        /* Contenedor de Filtros */
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .filters select, .filters input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid var(--border);
+            background: var(--bg-color);
+            color: var(--text-main);
+            box-sizing: border-box;
+        }
+
+        /* Tarjetas KPI */
+        .kpi-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .kpi-value { font-size: 32px; font-weight: bold; margin: 10px 0; }
+        .kpi-title { color: var(--text-muted); font-size: 14px; text-transform: uppercase; }
+
+        /* Contenedor Principal de Clientes */
+        #clientes-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .cliente-card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .cliente-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+        }
+
+        .cliente-nombre { font-size: 18px; font-weight: bold; margin: 0; }
+        .cliente-trafficker { 
+            font-size: 12px; 
+            color: var(--accent); 
+            background: rgba(59, 130, 246, 0.1); 
+            padding: 4px 8px; 
+            border-radius: 4px; 
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .status-badge {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: bold;
+        }
+        
+        .bg-red { background: rgba(239, 68, 68, 0.2); color: var(--alert-red); border: 1px solid var(--alert-red);}
+        .bg-yellow { background: rgba(234, 179, 8, 0.2); color: var(--alert-yellow); border: 1px solid var(--alert-yellow);}
+        .bg-green { background: rgba(34, 197, 94, 0.2); color: var(--success); border: 1px solid var(--success);}
+
+        /* Línea de Tiempo */
+        .timeline {
+            border-left: 2px solid var(--border);
+            padding-left: 15px;
+            margin-top: 15px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -21px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .timeline-date { font-size: 12px; color: var(--text-muted); }
+        .timeline-estado { font-weight: bold; font-size: 14px; margin: 2px 0; }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">Creamos Negocios - Inteligencia de Tráfico</div>
+
+    <div class="filters">
+        <select id="filtro-tiempo">
+            <option value="todos">Todo el Historial</option>
+            <option value="hoy">Hoy</option>
+            <option value="ayer">Ayer</option>
+            <option value="7dias">Últimos 7 días</option>
+            <option value="esteMes">Este Mes</option>
+        </select>
+
+        <select id="filtro-trafficker">
+            <option value="todos">Todos los Traffickers</option>
+            </select>
+
+        <input type="text" id="buscador-cliente" placeholder="Buscar cliente por nombre...">
+    </div>
+
+    <div class="kpi-container">
+        <div class="kpi-card">
+            <div class="kpi-title">Clientes Activos (Filtro)</div>
+            <div class="kpi-value" id="kpi-total">0</div>
+        </div>
+        <div class="kpi-card" style="border-bottom: 3px solid var(--alert-yellow);">
+            <div class="kpi-title">Alerta Estancamiento (>5d Testing)</div>
+            <div class="kpi-value" id="kpi-yellow" style="color: var(--alert-yellow);">0</div>
+        </div>
+        <div class="kpi-card" style="border-bottom: 3px solid var(--alert-red);">
+            <div class="kpi-title">Alerta Crítica (>3d Apagado)</div>
+            <div class="kpi-value" id="kpi-red" style="color: var(--alert-red);">0</div>
+        </div>
+    </div>
+
+    <div id="clientes-container">
+        </div>
+
+    <script>
+        // Tu URL exacta del CSV
+        const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRci7-x8FSCzNeyzd7tm4PRVTVuHU-FFnmbAS6ECChvV-K0dEBxYGmv6IhJxhOdmBIviCxcNh7sFq7I/pub?gid=310336411&single=true&output=csv";
+        
+        let datosGlobales = [];
+
+        // Iniciar la carga y configuración inicial
+        document.addEventListener('DOMContentLoaded', () => {
+            Papa.parse(CSV_URL, {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    datosGlobales = results.data.filter(row => row.Cliente && row.Fecha_Hora);
+                    inicializarFiltros();
+                    renderizarDashboard();
+                }
+            });
+
+            // Listeners para los filtros
+            document.getElementById('filtro-tiempo').addEventListener('change', renderizarDashboard);
+            document.getElementById('filtro-trafficker').addEventListener('change', renderizarDashboard);
+            document.getElementById('buscador-cliente').addEventListener('input', renderizarDashboard);
+        });
+
+        function inicializarFiltros() {
+            const traffickers = [...new Set(datosGlobales.map(d => d.Trafficker))].filter(Boolean);
+            const select = document.getElementById('filtro-trafficker');
+            traffickers.forEach(t => {
+                select.innerHTML += `<option value="${t}">${t}</option>`;
+            });
+        }
+
+        function parsearFecha(fechaStr) {
+            // Asume formato DD/MM/YYYY o similar de Google Sheets
+            let parts = fechaStr.split(/[\/\-\s:]/);
+            if(parts.length >= 3) {
+                // Ajusta esto dependiendo de cómo escupe el CSV tu Google Sheet
+                // Estándar latino: partes[0]=Dia, partes[1]=Mes, partes[2]=Año
+                return new Date(parts[2], parts[1] - 1, parts[0]); 
+            }
+            return new Date(fechaStr); // Fallback
+        }
+
+        function renderizarDashboard() {
+            const filtroTiempo = document.getElementById('filtro-tiempo').value;
+            const filtroTrafficker = document.getElementById('filtro-trafficker').value;
+            const busqueda = document.getElementById('buscador-cliente').value.toLowerCase();
+
+            // 1. Agrupar por Cliente
+            let clientesMap = {};
+            datosGlobales.forEach(row => {
+                const nombre = row.Cliente;
+                if(!clientesMap[nombre]) {
+                    clientesMap[nombre] = {
+                        nombre: nombre,
+                        trafficker: row.Trafficker,
+                        historial: []
+                    };
+                }
+                clientesMap[nombre].historial.push({
+                    fechaObj: parsearFecha(row.Fecha_Hora),
+                    fechaStr: row.Fecha_Hora,
+                    estado: row.Estado
+                });
+            });
+
+            // Ordenar historial de más reciente a más antiguo
+            Object.values(clientesMap).forEach(c => {
+                c.historial.sort((a, b) => b.fechaObj - a.fechaObj);
+            });
+
+            const hoy = new Date();
+            let html = "";
+            let kpiTotal = 0, kpiYellow = 0, kpiRed = 0;
+
+            // 2. Filtrar y Renderizar
+            Object.values(clientesMap).forEach(cliente => {
+                // Aplicar Filtro Trafficker (La opción "todos" la maneja esto)
+                if(filtroTrafficker !== 'todos' && cliente.trafficker !== filtroTrafficker) return;
+                
+                // Aplicar Búsqueda
+                if(busqueda && !cliente.nombre.toLowerCase().includes(busqueda)) return;
+
+                const ultimoRegistro = cliente.historial[0];
+                if(!ultimoRegistro) return;
+
+                // Lógica del Estratega: Alertas basadas en el último estado
+                const diasDesdeUltimo = Math.floor((hoy - ultimoRegistro.fechaObj) / (1000 * 60 * 60 * 24));
+                let estadoBadge = "bg-green";
+                let textoAlerta = "Estable";
+
+                if (ultimoRegistro.estado.toLowerCase().includes("apagado") && diasDesdeUltimo >= 3) {
+                    estadoBadge = "bg-red";
+                    textoAlerta = "¡Alerta Crítica! >3 días apagado";
+                    kpiRed++;
+                } else if (ultimoRegistro.estado.toLowerCase().includes("testing") && diasDesdeUltimo >= 5) {
+                    estadoBadge = "bg-yellow";
+                    textoAlerta = "Cuello de botella en Testing";
+                    kpiYellow++;
+                } else if (ultimoRegistro.estado.toLowerCase().includes("apagado")) {
+                    estadoBadge = "bg-red";
+                    textoAlerta = "Apagado Recientemente";
+                }
+
+                kpiTotal++;
+
+                // Construir Tarjeta del Cliente
+                let timelineHTML = "";
+                cliente.historial.forEach(h => {
+                    // Aquí se aplicaría el filtro de fechas (Simplificado para el render de la línea de tiempo)
+                    timelineHTML += `
+                        <div class="timeline-item">
+                            <div class="timeline-date">${h.fechaStr}</div>
+                            <div class="timeline-estado">${h.estado}</div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                    <div class="cliente-card">
+                        <div class="cliente-header">
+                            <div>
+                                <div class="cliente-nombre">${cliente.nombre}</div>
+                                <div class="cliente-trafficker">👤 Trafficker: ${cliente.trafficker}</div>
+                            </div>
+                            <div class="status-badge ${estadoBadge}">${textoAlerta}</div>
+                        </div>
+                        <div class="timeline">
+                            ${timelineHTML}
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Actualizar DOM
+            document.getElementById('clientes-container').innerHTML = html;
+            document.getElementById('kpi-total').innerText = kpiTotal;
+            document.getElementById('kpi-yellow').innerText = kpiYellow;
+            document.getElementById('kpi-red').innerText = kpiRed;
+        }
+    </script>
+</body>
+</html>
