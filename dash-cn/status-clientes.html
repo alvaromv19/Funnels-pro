@@ -44,6 +44,7 @@
             padding: 15px;
             border-radius: 8px;
             border: 1px solid var(--border);
+            align-items: center;
         }
 
         .filters select, .filters input {
@@ -54,6 +55,13 @@
             background: var(--bg-color);
             color: var(--text-main);
             box-sizing: border-box;
+            color-scheme: dark; /* Para que el calendario nativo sea oscuro */
+        }
+
+        .rango-fechas-container {
+            display: none; /* Se oculta por defecto, se activa con JS */
+            gap: 10px;
+            grid-column: span 1;
         }
 
         /* Tarjetas KPI */
@@ -146,6 +154,12 @@
 
         .timeline-date { font-size: 12px; color: var(--text-muted); }
         .timeline-estado { font-weight: bold; font-size: 14px; margin: 2px 0; }
+        
+        .empty-state {
+            font-size: 13px;
+            color: var(--text-muted);
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -159,11 +173,18 @@
             <option value="ayer">Ayer</option>
             <option value="7dias">Últimos 7 días</option>
             <option value="esteMes">Este Mes</option>
+            <option value="mesPasado">Mes Pasado</option>
+            <option value="personalizado">Personalizado...</option>
         </select>
+
+        <div class="rango-fechas-container" id="contenedor-fechas">
+            <input type="date" id="fecha-inicio" title="Fecha Inicio">
+            <input type="date" id="fecha-fin" title="Fecha Fin">
+        </div>
 
         <select id="filtro-trafficker">
             <option value="todos">Todos los Traffickers</option>
-            </select>
+        </select>
 
         <input type="text" id="buscador-cliente" placeholder="Buscar cliente por nombre...">
     </div>
@@ -187,12 +208,9 @@
         </div>
 
     <script>
-        // Tu URL exacta del CSV
         const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRci7-x8FSCzNeyzd7tm4PRVTVuHU-FFnmbAS6ECChvV-K0dEBxYGmv6IhJxhOdmBIviCxcNh7sFq7I/pub?gid=310336411&single=true&output=csv";
-        
         let datosGlobales = [];
 
-        // Iniciar la carga y configuración inicial
         document.addEventListener('DOMContentLoaded', () => {
             Papa.parse(CSV_URL, {
                 download: true,
@@ -204,8 +222,18 @@
                 }
             });
 
-            // Listeners para los filtros
-            document.getElementById('filtro-tiempo').addEventListener('change', renderizarDashboard);
+            // Listeners
+            document.getElementById('filtro-tiempo').addEventListener('change', (e) => {
+                const contenedorFechas = document.getElementById('contenedor-fechas');
+                if(e.target.value === 'personalizado') {
+                    contenedorFechas.style.display = 'flex';
+                } else {
+                    contenedorFechas.style.display = 'none';
+                    renderizarDashboard();
+                }
+            });
+            document.getElementById('fecha-inicio').addEventListener('change', renderizarDashboard);
+            document.getElementById('fecha-fin').addEventListener('change', renderizarDashboard);
             document.getElementById('filtro-trafficker').addEventListener('change', renderizarDashboard);
             document.getElementById('buscador-cliente').addEventListener('input', renderizarDashboard);
         });
@@ -219,31 +247,65 @@
         }
 
         function parsearFecha(fechaStr) {
-            // Asume formato DD/MM/YYYY o similar de Google Sheets
             let parts = fechaStr.split(/[\/\-\s:]/);
             if(parts.length >= 3) {
-                // Ajusta esto dependiendo de cómo escupe el CSV tu Google Sheet
-                // Estándar latino: partes[0]=Dia, partes[1]=Mes, partes[2]=Año
                 return new Date(parts[2], parts[1] - 1, parts[0]); 
             }
-            return new Date(fechaStr); // Fallback
+            return new Date(fechaStr);
+        }
+
+        function obtenerRangoFechas() {
+            const tipo = document.getElementById('filtro-tiempo').value;
+            const hoy = new Date();
+            hoy.setHours(23, 59, 59, 999);
+            
+            let inicio = new Date('2000-01-01');
+            let fin = new Date('2100-01-01');
+
+            if (tipo === 'hoy') {
+                inicio = new Date(hoy); inicio.setHours(0,0,0,0);
+                fin = hoy;
+            } else if (tipo === 'ayer') {
+                inicio = new Date(hoy); inicio.setDate(inicio.getDate() - 1); inicio.setHours(0,0,0,0);
+                fin = new Date(inicio); fin.setHours(23,59,59,999);
+            } else if (tipo === '7dias') {
+                inicio = new Date(hoy); inicio.setDate(inicio.getDate() - 7); inicio.setHours(0,0,0,0);
+                fin = hoy;
+            } else if (tipo === 'esteMes') {
+                inicio = new Date(hoy.getFullYear(), hoy.getMonth(), 1);
+                fin = hoy;
+            } else if (tipo === 'mesPasado') {
+                inicio = new Date(hoy.getFullYear(), hoy.getMonth() - 1, 1);
+                fin = new Date(hoy.getFullYear(), hoy.getMonth(), 0, 23, 59, 59);
+            } else if (tipo === 'personalizado') {
+                const inputInicio = document.getElementById('fecha-inicio').value;
+                const inputFin = document.getElementById('fecha-fin').value;
+                
+                if(inputInicio) {
+                    let p = inputInicio.split('-');
+                    inicio = new Date(p[0], p[1]-1, p[2]);
+                    inicio.setHours(0,0,0,0);
+                }
+                if(inputFin) {
+                    let p = inputFin.split('-');
+                    fin = new Date(p[0], p[1]-1, p[2]);
+                    fin.setHours(23,59,59,999);
+                }
+            }
+            return { inicio, fin };
         }
 
         function renderizarDashboard() {
-            const filtroTiempo = document.getElementById('filtro-tiempo').value;
             const filtroTrafficker = document.getElementById('filtro-trafficker').value;
             const busqueda = document.getElementById('buscador-cliente').value.toLowerCase();
+            const rango = obtenerRangoFechas();
 
-            // 1. Agrupar por Cliente
+            // 1. Agrupar
             let clientesMap = {};
             datosGlobales.forEach(row => {
                 const nombre = row.Cliente;
                 if(!clientesMap[nombre]) {
-                    clientesMap[nombre] = {
-                        nombre: nombre,
-                        trafficker: row.Trafficker,
-                        historial: []
-                    };
+                    clientesMap[nombre] = { nombre: nombre, trafficker: row.Trafficker, historial: [] };
                 }
                 clientesMap[nombre].historial.push({
                     fechaObj: parsearFecha(row.Fecha_Hora),
@@ -252,7 +314,7 @@
                 });
             });
 
-            // Ordenar historial de más reciente a más antiguo
+            // Ordenar
             Object.values(clientesMap).forEach(c => {
                 c.historial.sort((a, b) => b.fechaObj - a.fechaObj);
             });
@@ -263,39 +325,35 @@
 
             // 2. Filtrar y Renderizar
             Object.values(clientesMap).forEach(cliente => {
-                // Aplicar Filtro Trafficker (La opción "todos" la maneja esto)
                 if(filtroTrafficker !== 'todos' && cliente.trafficker !== filtroTrafficker) return;
-                
-                // Aplicar Búsqueda
                 if(busqueda && !cliente.nombre.toLowerCase().includes(busqueda)) return;
 
-                const ultimoRegistro = cliente.historial[0];
-                if(!ultimoRegistro) return;
+                // Extraemos el historial que cae estrictamente dentro del rango de fechas
+                const historialFiltrado = cliente.historial.filter(h => h.fechaObj >= rango.inicio && h.fechaObj <= rango.fin);
+                
+                // Si el cliente no tuvo NINGÚN movimiento en esas fechas, no lo mostramos para mantener el panel limpio
+                if(historialFiltrado.length === 0) return;
 
-                // Lógica del Estratega: Alertas basadas en el último estado
-                const diasDesdeUltimo = Math.floor((hoy - ultimoRegistro.fechaObj) / (1000 * 60 * 60 * 24));
+                // Las alertas siempre se basan en el ÚLTIMO registro absoluto del cliente (el estado actual real)
+                const ultimoRegistroAbsoluto = cliente.historial[0];
+                const diasDesdeUltimo = Math.floor((hoy - ultimoRegistroAbsoluto.fechaObj) / (1000 * 60 * 60 * 24));
+                
                 let estadoBadge = "bg-green";
                 let textoAlerta = "Estable";
 
-                if (ultimoRegistro.estado.toLowerCase().includes("apagado") && diasDesdeUltimo >= 3) {
-                    estadoBadge = "bg-red";
-                    textoAlerta = "¡Alerta Crítica! >3 días apagado";
-                    kpiRed++;
-                } else if (ultimoRegistro.estado.toLowerCase().includes("testing") && diasDesdeUltimo >= 5) {
-                    estadoBadge = "bg-yellow";
-                    textoAlerta = "Cuello de botella en Testing";
-                    kpiYellow++;
-                } else if (ultimoRegistro.estado.toLowerCase().includes("apagado")) {
-                    estadoBadge = "bg-red";
-                    textoAlerta = "Apagado Recientemente";
+                if (ultimoRegistroAbsoluto.estado.toLowerCase().includes("apagado") && diasDesdeUltimo >= 3) {
+                    estadoBadge = "bg-red"; textoAlerta = "¡Alerta Crítica! >3 días apagado"; kpiRed++;
+                } else if (ultimoRegistroAbsoluto.estado.toLowerCase().includes("testing") && diasDesdeUltimo >= 5) {
+                    estadoBadge = "bg-yellow"; textoAlerta = "Cuello de botella en Testing"; kpiYellow++;
+                } else if (ultimoRegistroAbsoluto.estado.toLowerCase().includes("apagado")) {
+                    estadoBadge = "bg-red"; textoAlerta = "Apagado Recientemente";
                 }
 
                 kpiTotal++;
 
-                // Construir Tarjeta del Cliente
+                // Construir la línea de tiempo SOLO con los eventos del rango de fechas seleccionado
                 let timelineHTML = "";
-                cliente.historial.forEach(h => {
-                    // Aquí se aplicaría el filtro de fechas (Simplificado para el render de la línea de tiempo)
+                historialFiltrado.forEach(h => {
                     timelineHTML += `
                         <div class="timeline-item">
                             <div class="timeline-date">${h.fechaStr}</div>
@@ -321,7 +379,7 @@
             });
 
             // Actualizar DOM
-            document.getElementById('clientes-container').innerHTML = html;
+            document.getElementById('clientes-container').innerHTML = html || `<div class="empty-state">No se encontraron movimientos en este rango de fechas.</div>`;
             document.getElementById('kpi-total').innerText = kpiTotal;
             document.getElementById('kpi-yellow').innerText = kpiYellow;
             document.getElementById('kpi-red').innerText = kpiRed;
