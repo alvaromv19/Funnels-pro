@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f6f9;}
+    .container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+    select, button { width: 100%; padding: 10px; margin-top: 10px; border-radius: 4px; border: 1px solid #ccc; font-size: 16px; }
+    button { background-color: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; margin-top: 20px;}
+    button:hover { background-color: #0056b3; }
+    .cliente-row { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+    .cliente-row select { width: 50%; margin-top: 0; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Actualización Diaria</h2>
+    
+    <label><b>1. Selecciona tu perfil:</b></label>
+    <select id="trafficker-select" onchange="cargarClientes()">
+      <option value="">Cargando traffickers...</option>
+    </select>
+
+    <div id="area-clientes" style="display:none; margin-top: 20px;">
+      <label><b>2. Actualiza SOLO los que cambiaron hoy:</b></label>
+      <div id="lista-clientes"></div>
+      
+      <button onclick="guardarDatos()" id="btn-guardar">Guardar Reporte</button>
+      <p id="mensaje-exito" style="color: green; text-align: center; display: none;"></p>
+    </div>
+  </div>
+
+  <script>
+    // Al cargar la página, traemos los traffickers
+    window.onload = function() {
+      google.script.run.withSuccessHandler(llenarSelectTraffickers).obtenerTraffickers();
+    };
+
+    function llenarSelectTraffickers(traffickers) {
+      const select = document.getElementById('trafficker-select');
+      select.innerHTML = '<option value="">Elige tu nombre...</option>';
+      traffickers.forEach(t => {
+        select.innerHTML += `<option value="${t}">${t}</option>`;
+      });
+    }
+
+    function cargarClientes() {
+      const trafficker = document.getElementById('trafficker-select').value;
+      if (!trafficker) {
+        document.getElementById('area-clientes').style.display = 'none';
+        return;
+      }
+      
+      document.getElementById('area-clientes').style.display = 'block';
+      document.getElementById('lista-clientes').innerHTML = '<i>Cargando tus clientes...</i>';
+      
+      google.script.run.withSuccessHandler(mostrarClientes).obtenerClientes(trafficker);
+    }
+
+    function mostrarClientes(clientes) {
+      const contenedor = document.getElementById('lista-clientes');
+      contenedor.innerHTML = ''; // Limpiar
+      
+      clientes.forEach(cliente => {
+        contenedor.innerHTML += `
+          <div class="cliente-row">
+            <span>${cliente}</span>
+            <select class="estado-select" data-cliente="${cliente}">
+              <option value="">Sin cambios hoy</option>
+              <option value="Testing">Testing</option>
+              <option value="Campañas encendidas">Campañas encendidas</option>
+              <option value="Problema técnico">Problema técnico</option>
+              <option value="Apagado temporal">Apagado temporal</option>
+              <option value="Escalando">Escalando</option>
+            </select>
+          </div>
+        `;
+      });
+    }
+
+    function guardarDatos() {
+      const btn = document.getElementById('btn-guardar');
+      btn.innerText = 'Guardando...';
+      btn.disabled = true;
+
+      const trafficker = document.getElementById('trafficker-select').value;
+      const selects = document.querySelectorAll('.estado-select');
+      let actualizaciones = [];
+
+      selects.forEach(select => {
+        actualizaciones.push({
+          cliente: select.getAttribute('data-cliente'),
+          estado: select.value
+        });
+      });
+
+      google.script.run.withSuccessHandler(function(mensaje) {
+        document.getElementById('mensaje-exito').innerText = mensaje;
+        document.getElementById('mensaje-exito').style.display = 'block';
+        btn.innerText = 'Guardar Reporte';
+        btn.disabled = false;
+        
+        // Limpiar formulario tras 2 segundos
+        setTimeout(() => {
+          document.getElementById('trafficker-select').value = "";
+          document.getElementById('area-clientes').style.display = 'none';
+          document.getElementById('mensaje-exito').style.display = 'none';
+        }, 2000);
+        
+      }).guardarActualizaciones(trafficker, actualizaciones);
+    }
+  </script>
+</body>
+</html>
