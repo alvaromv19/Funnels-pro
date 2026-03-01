@@ -328,39 +328,57 @@
         }
 
         // --- LÓGICA DE CONEXIÓN CON EL BACKEND (PYTHON) ---
-async function generarCreativos() {
-    const btn = document.getElementById('btn-generar');
-    
-    // 1. Cambiamos el botón para mostrar que está pensando
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Generando...';
-    btn.disabled = true;
+// --- LÓGICA DE CONEXIÓN CON EL BACKEND (PYTHON) ---
+        async function generarCreativos() {
+            const btn = document.getElementById('btn-generar');
+            const promptInput = document.getElementById('prompt-instruccion').value;
+            const volumenInput = document.getElementById('volumen-tanda').value;
+            const formatoInput = document.getElementById('formato-tanda').value;
 
-    try {
-        // 2. Disparamos la petición a tu computadora (FastAPI)
-        // Por ahora le pasamos datos fijos para la prueba (volumen=10, formato=1080)
-        const response = await fetch('http://127.0.0.1:8000/api/laboratorio/generar?volumen=10&formato=1080', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json'
+            // Validación de seguridad
+            if (!promptInput.trim()) {
+                alert("⚠️ Escribe las instrucciones para el Director Creativo antes de generar.");
+                return;
             }
-        });
-        
-        // 3. Recibimos la respuesta de Python
-        const data = await response.json();
-        
-        // Mostramos el mensaje de éxito en pantalla
-        alert("¡Éxito! 🧠 Respuesta de Python: " + data.mensaje);
-        
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Error de conexión. ¿Está encendido el servidor uvicorn en tu terminal?");
-    } finally {
-        // 4. Restauramos el botón a la normalidad
-        btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generar Tanda con IA';
-        btn.disabled = false;
-    }
+            
+            // Cambiamos el botón para mostrar que la IA está trabajando
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Generando con IA... (10-15s)';
+            btn.disabled = true;
 
-}
+            try {
+                // Disparamos la petición enviando el texto real
+                const response = await fetch('http://127.0.0.1:8000/api/laboratorio/generar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: promptInput,
+                        volumen: parseInt(volumenInput),
+                        formato: formatoInput
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if(data.status === "success") {
+                    console.log("🔥 RESULTADO DE LA IA:", data);
+                    alert("¡Éxito! 🧠 La IA ha generado tu tanda. Abre la consola del navegador (F12) para ver la URL de la imagen y los textos generados.");
+                } else {
+                    alert("Error: " + JSON.stringify(data));
+                }
+                
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error de conexión. Revisa que tu servidor local esté corriendo.");
+            } finally {
+                // Restauramos el botón
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generar Tanda con IA';
+                btn.disabled = false;
+            }
+        }
+
     </script>
     
 </body>
