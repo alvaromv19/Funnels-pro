@@ -14,18 +14,20 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .neon-text { text-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
         .template-card.selected { border-color: #38bdf8; background-color: rgba(56, 189, 248, 0.1); }
+        /* Efecto drag and drop */
+        .drag-over { border-color: #38bdf8 !important; background-color: rgba(56, 189, 248, 0.05) !important; }
     </style>
 </head>
-<body class="flex h-screen overflow-hidden selection:bg-sky-500 selection:text-white">
+<body class="flex h-screen overflow-hidden selection:bg-sky-500 selection:text-white" onload="cargarBoveda()">
 
-    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between">
+    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between z-10">
         <div>
             <div class="p-6 border-b border-slate-800">
                 <h1 class="text-2xl font-bold text-sky-400 tracking-wider neon-text">EVO LAUNCH</h1>
                 <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">By Alvaro MV</p>
             </div>
             
-            <nav class="p-4 space-y-2">
+            <nav class="p-4 space-y-2 overflow-y-auto">
                 <button onclick="switchTab('ingesta')" id="btn-ingesta" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
                     <i class="fa-solid fa-brain w-5"></i><span class="font-semibold">1. Estrategia IA</span>
                 </button>
@@ -38,8 +40,12 @@
                 <button onclick="switchTab('lanzamiento')" id="btn-lanzamiento" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
                     <i class="fa-solid fa-rocket w-5"></i><span class="font-semibold">4. Lanzamiento</span>
                 </button>
-                <button onclick="switchTab('analitica')" id="btn-analitica" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-sky-600 text-white transition-all mt-4 border-t border-slate-700/50 pt-4">
+                <button onclick="switchTab('analitica')" id="btn-analitica" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
                     <i class="fa-solid fa-chart-line w-5"></i><span class="font-semibold">5. Analítica & Reglas</span>
+                </button>
+                
+                <button onclick="switchTab('boveda')" id="btn-boveda" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-amber-400 hover:bg-slate-800 transition-all mt-4 border-t border-slate-700/50 pt-4">
+                    <i class="fa-solid fa-vault w-5"></i><span class="font-semibold">6. Mi Bóveda</span>
                 </button>
             </nav>
         </div>
@@ -52,7 +58,7 @@
         </div>
     </aside>
 
-    <main class="flex-1 overflow-y-auto bg-slate-950 p-8">
+    <main class="flex-1 overflow-y-auto bg-slate-950 p-8 relative">
         
         <section id="ingesta" class="tab-content">
             <h2 class="text-3xl font-bold mb-2 text-white">1. Ingesta y Estrategia</h2>
@@ -68,31 +74,28 @@
             </div>
         </section>
 
-        <section id="laboratorio" class="tab-content">
+        <section id="laboratorio" class="tab-content active">
             <h2 class="text-3xl font-bold mb-2 text-white">2. Laboratorio Creativo</h2>
-            <p class="text-slate-400 mb-6">Generación masiva de copys y fondos visuales. Define el estilo, revisa y aprueba la tanda antes de inyectar.</p>
+            <p class="text-slate-400 mb-6">Generación masiva de copys y fondos visuales. Arrastra referencias, define el estilo y genera.</p>
             
             <div class="mb-8 bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg flex flex-col space-y-5">
                 
                 <div class="w-full">
                     <label class="block text-xs font-semibold text-sky-400 mb-2 uppercase tracking-wider"><i class="fa-solid fa-terminal mr-2"></i>Director Creativo (Instrucciones IA)</label>
-                    <div class="flex items-start bg-slate-800 border border-slate-700 rounded-lg overflow-hidden focus-within:border-sky-500 transition-colors shadow-inner">
+                    
+                    <div class="flex flex-col bg-slate-800 border border-slate-700 rounded-lg overflow-hidden focus-within:border-sky-500 transition-colors shadow-inner">
                         
-                        <input type="file" id="ref-image-upload" accept="image/*" class="hidden" onchange="previewReferencia(event)">
-                        
-                        <button onclick="document.getElementById('ref-image-upload').click()" class="relative p-4 text-slate-400 hover:text-sky-400 hover:bg-slate-700/50 transition border-r border-slate-700 flex flex-col items-center justify-center h-full min-w-[80px] min-h-[90px] overflow-hidden group cursor-pointer" title="Cargar imagen de referencia">
+                        <div id="drop-zone" class="border-b border-slate-700 p-4 relative flex flex-col items-center justify-center transition-all min-h-[80px]" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                            <input type="file" id="ref-image-upload" multiple accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" onchange="handleFileSelect(event)">
                             
-                            <div id="ref-icon-container" class="flex flex-col items-center transition-all">
-                                <i class="fa-solid fa-image text-xl mb-1"></i>
-                                <span class="text-[10px] font-semibold uppercase tracking-widest">Ref.</span>
+                            <div id="drop-instruction" class="text-slate-400 text-sm flex items-center pointer-events-none">
+                                <i class="fa-solid fa-images mr-2 text-xl"></i> Arrastra hasta 5 referencias aquí o haz clic
                             </div>
                             
-                            <img id="ref-preview-img" src="" class="absolute inset-0 w-full h-full object-cover hidden opacity-40 group-hover:opacity-20 transition-opacity">
-                            
-                            <i id="ref-delete-icon" onclick="borrarReferencia(event)" class="fa-solid fa-trash-can absolute text-rose-500 hidden z-10 hover:scale-125 transition drop-shadow-md cursor-pointer text-lg"></i>
-                        </button>
+                            <div id="thumbnails-container" class="flex flex-wrap gap-3 mt-3 w-full justify-center relative z-10"></div>
+                        </div>
                         
-                        <textarea id="prompt-instruccion" class="w-full bg-transparent text-white p-4 min-h-[90px] focus:outline-none resize-y text-sm leading-relaxed" placeholder="Ej: Genera un fondo para anuncio de marketing. Escenario de oficina moderna, iluminación de neón sutil. Estilo hiperrealista y limpio. Deja espacio negativo en el centro..."></textarea>
+                        <textarea id="prompt-instruccion" class="w-full bg-transparent text-white p-4 min-h-[90px] focus:outline-none resize-y text-sm leading-relaxed" placeholder="Ej: Escenario de oficina moderna, iluminación de neón sutil. Estilo hiperrealista. Usa los colores de las referencias..."></textarea>
                     </div>
                 </div>
 
@@ -100,7 +103,7 @@
                     <div class="flex space-x-6">
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 mb-2">Cant. de Anuncios</label>
-                            <input type="number" id="volumen-tanda" min="1" max="100" value="3" class="bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500 min-w-[150px]" placeholder="Ej: 5">
+                            <input type="number" id="volumen-tanda" min="1" max="100" value="2" class="bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500 min-w-[150px]">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 mb-2">Formato Visual</label>
@@ -123,325 +126,130 @@
             </div>
         </section>
 
+        <section id="boveda" class="tab-content">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold mb-2 text-amber-400"><i class="fa-solid fa-vault mr-3"></i>Mi Bóveda Creativa</h2>
+                    <p class="text-slate-400">Historial de anuncios aprobados. Úsalos para iterar o escalar campañas ganadoras.</p>
+                </div>
+                <button onclick="limpiarBoveda()" class="bg-rose-900/30 text-rose-500 hover:bg-rose-600 hover:text-white border border-rose-800 py-2 px-4 rounded text-sm transition font-bold">Limpiar Bóveda</button>
+            </div>
+            
+            <div id="grilla-boveda" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+                </div>
+        </section>
+
         <section id="setup" class="tab-content">
             <h2 class="text-3xl font-bold mb-2 text-white">3. Setup Estratégico</h2>
-            <p class="text-slate-400 mb-6">Selecciona el objetivo de tu funnel para adaptar las reglas y la estructura de Meta.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                <div onclick="selectTemplate(this, 'low_ticket')" class="template-card cursor-pointer bg-slate-900 border border-slate-700 p-5 rounded-xl hover:border-sky-500 transition-all shadow-lg">
-                    <i class="fa-solid fa-cart-shopping text-2xl text-sky-400 mb-3"></i>
-                    <h3 class="font-bold text-white mb-1">Venta Low Ticket</h3>
-                    <p class="text-xs text-slate-400">Obj: Ventas. CPA objetivo bajo. Optimiza rápido por ROAS.</p>
-                </div>
-                <div onclick="selectTemplate(this, 'high_ticket')" class="template-card cursor-pointer bg-slate-900 border border-slate-700 p-5 rounded-xl hover:border-sky-500 transition-all shadow-lg">
-                    <i class="fa-solid fa-gem text-2xl text-purple-400 mb-3"></i>
-                    <h3 class="font-bold text-white mb-1">Venta High Ticket</h3>
-                    <p class="text-xs text-slate-400">Obj: Leads. CPA alto. Optimiza por CPL y calidad.</p>
-                </div>
-                <div onclick="selectTemplate(this, 'whatsapp')" class="template-card cursor-pointer bg-slate-900 border border-slate-700 p-5 rounded-xl hover:border-sky-500 transition-all shadow-lg">
-                    <i class="fa-brands fa-whatsapp text-2xl text-emerald-400 mb-3"></i>
-                    <h3 class="font-bold text-white mb-1">Mensajes a WhatsApp</h3>
-                    <p class="text-xs text-slate-400">Obj: Interacción. Ideal para cierre manual rápido.</p>
-                </div>
-                <div onclick="selectTemplate(this, 'visitas_perfil')" class="template-card cursor-pointer bg-slate-900 border border-slate-700 p-5 rounded-xl hover:border-sky-500 transition-all shadow-lg">
-                    <i class="fa-brands fa-instagram text-2xl text-pink-500 mb-3"></i>
-                    <h3 class="font-bold text-white mb-1">Visitas al Perfil</h3>
-                    <p class="text-xs text-slate-400">Obj: Tráfico. Escalar seguidores y alcance orgánico.</p>
-                </div>
-            </div>
-
-            <div id="injection-params" class="hidden bg-slate-900 p-8 rounded-xl border border-slate-800 max-w-4xl opacity-0 transition-opacity duration-500 shadow-xl">
-                <h3 class="text-lg font-bold text-white mb-6 border-b border-slate-800 pb-3"><i class="fa-solid fa-gears text-sky-400 mr-2"></i>Parámetros de Inyección</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-300 mb-1">Cuenta Publicitaria</label>
-                            <select class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-3 focus:outline-none focus:border-sky-500">
-                                <option>Act Ad Account 1 (ACT_123456789)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-300 mb-1">Página de Facebook</label>
-                            <input type="text" placeholder="Ej: Evo Launch Oficial" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-3 focus:outline-none focus:border-sky-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-300 mb-1">Cuenta de Instagram</label>
-                            <input type="text" placeholder="Ej: @evolaunch" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-3 focus:outline-none focus:border-sky-500">
-                        </div>
-                    </div>
-                    <div class="space-y-5">
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-300 mb-1">Presupuesto Diario Total (USD)</label>
-                            <input type="number" value="40" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-3 focus:outline-none focus:border-sky-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-300 mb-1">Pixel ID (API de Conversiones)</label>
-                            <input type="text" placeholder="Ej: 9876543210" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-3 focus:outline-none focus:border-sky-500">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-slate-300 mb-1">Segmentación Inyectada</label>
-                            <input type="text" value="Abierto (Broad) - Sin Intereses" disabled class="w-full bg-slate-800/50 border border-slate-700 text-slate-500 rounded-lg p-3 cursor-not-allowed">
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <p class="text-slate-400 mb-6">Selecciona el objetivo de tu funnel...</p>
         </section>
 
         <section id="lanzamiento" class="tab-content">
-            <h2 class="text-3xl font-bold mb-2 text-white">4. Lanzamiento y Preview</h2>
-            <p class="text-slate-400 mb-6">Verifica el Payload estructural antes de conectarte a la Graph API de Meta.</p>
-            
-            <div class="bg-slate-900 border border-slate-700 p-6 rounded-xl mb-6 shadow-lg">
-                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-eye text-sky-400 mr-2"></i>Preview de Inyección (Modelo 1-1-1)</h3>
-                <div class="bg-slate-950 p-5 rounded-lg border border-slate-800 font-mono text-sm text-slate-300 overflow-x-auto">
-                    <p class="text-sky-400 font-bold mb-3">📦 CAMPAÑA: [Venta Low Ticket] CBO - Tanda 1 (USD $40/día)</p>
-                    <div class="ml-6 border-l-2 border-slate-800 pl-4 space-y-4">
-                        <div>
-                            <p class="text-emerald-400 font-bold">↳ 🎯 AD SET 1: Broad - Dynamic Limit</p>
-                            <p class="ml-6 text-slate-400">↳ 🖼️ AD: T1-SC1-Hook_Dolor (Img_01.png)</p>
-                        </div>
-                        <div>
-                            <p class="text-emerald-400 font-bold">↳ 🎯 AD SET 2: Broad - Dynamic Limit</p>
-                            <p class="ml-6 text-slate-400">↳ 🖼️ AD: T1-SC2-Hook_Deseo (Img_02.png)</p>
-                        </div>
-                        <p class="text-slate-500 italic mt-2">... (Continúa hasta completar los Ad Sets aprobados)</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex space-x-4">
-                <button class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg shadow-sky-500/30 transition-all flex items-center text-lg">
-                    <i class="fa-solid fa-power-off mr-3"></i> Inyectar como ACTIVE
-                </button>
-                <button class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-3 px-8 rounded-lg transition-all flex items-center text-lg shadow-lg">
-                    <i class="fa-solid fa-pause mr-3"></i> Inyectar como PAUSED
-                </button>
-            </div>
+            <h2 class="text-3xl font-bold mb-2 text-white">4. Lanzamiento</h2>
+            <p class="text-slate-400 mb-6">En construcción...</p>
         </section>
 
-        <section id="analitica" class="tab-content active">
-            <h2 class="text-3xl font-bold mb-2 text-white">5. Analítica & Reglas de Escalado</h2>
-            <p class="text-slate-400 mb-6">El motor IA evalúa el rendimiento en tiempo real y te dicta la siguiente acción táctica.</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
-                    <h3 class="text-slate-400 text-sm font-semibold mb-2">Gasto de Hoy</h3>
-                    <p class="text-3xl font-bold text-white">$145.20</p>
-                </div>
-                <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg relative overflow-hidden">
-                    <div class="absolute right-0 top-0 h-full w-2 bg-emerald-500"></div>
-                    <h3 class="text-slate-400 text-sm font-semibold mb-2">ROAS Global</h3>
-                    <p class="text-3xl font-bold text-white">2.8x</p>
-                </div>
-                <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
-                    <h3 class="text-slate-400 text-sm font-semibold mb-2">CPA Promedio</h3>
-                    <p class="text-3xl font-bold text-sky-400">$12.50</p>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 rounded-xl border border-slate-800 shadow-xl p-6">
-                <h3 class="text-lg font-bold mb-4 border-b border-slate-800 pb-3 flex items-center">
-                    <i class="fa-solid fa-robot text-sky-400 mr-2"></i> Decisiones Estratégicas Sugeridas
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="text-slate-400 text-sm border-b border-slate-800">
-                                <th class="pb-3 px-2">Activo Evaluado</th>
-                                <th class="pb-3 px-2">Métricas de Alerta</th>
-                                <th class="pb-3 px-2">Acción Sugerida</th>
-                                <th class="pb-3 px-2">Ejecutar</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-sm">
-                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/40 transition">
-                                <td class="py-4 px-2 font-mono text-sky-300">T1-LowTicket<br><span class="text-xs text-slate-500">Ad Set: Broad 04</span></td>
-                                <td class="py-4 px-2">Gasto: $45.00<br>ROAS: <span class="text-rose-400 font-bold">0.8x</span></td>
-                                <td class="py-4 px-2 text-rose-400 font-semibold"><i class="fa-solid fa-power-off mr-1"></i> Apagar de Inmediato</td>
-                                <td class="py-4 px-2">
-                                    <div class="flex space-x-2">
-                                        <button class="bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white px-3 py-1.5 rounded border border-rose-500/30 transition font-bold shadow-md">APLICAR</button>
-                                        <button class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded transition shadow-md"><i class="fa-solid fa-xmark"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/40 transition">
-                                <td class="py-4 px-2 font-mono text-sky-300">T1-HighTicket<br><span class="text-xs text-slate-500">Ad Set: Broad 01</span></td>
-                                <td class="py-4 px-2">Gasto: $25.00<br>ROAS: <span class="text-emerald-400 font-bold">4.5x</span></td>
-                                <td class="py-4 px-2 text-emerald-400 font-semibold"><i class="fa-solid fa-arrow-trend-up mr-1"></i> Duplicar Presupuesto (Escalar)</td>
-                                <td class="py-4 px-2">
-                                    <div class="flex space-x-2">
-                                        <button class="bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white px-3 py-1.5 rounded border border-emerald-500/30 transition font-bold shadow-md">APLICAR</button>
-                                        <button class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded transition shadow-md"><i class="fa-solid fa-xmark"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/40 transition">
-                                <td class="py-4 px-2 font-mono text-sky-300">T2-WhatsApp<br><span class="text-xs text-slate-500">Ad Set: Broad 08</span></td>
-                                <td class="py-4 px-2">CTR: <span class="text-sky-400 font-bold">3.2%</span><br>Conversión: <span class="text-rose-400">Baja</span></td>
-                                <td class="py-4 px-2 text-amber-400 font-semibold"><i class="fa-solid fa-clone mr-1"></i> Sacar Variaciones (Buen Hook, Falla Oferta)</td>
-                                <td class="py-4 px-2">
-                                    <div class="flex space-x-2">
-                                        <button class="bg-amber-600/20 text-amber-400 hover:bg-amber-600 hover:text-white px-3 py-1.5 rounded border border-amber-500/30 transition font-bold shadow-md">CREAR VARIANTE</button>
-                                        <button class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1.5 rounded transition shadow-md"><i class="fa-solid fa-xmark"></i></button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <section id="analitica" class="tab-content">
+            <h2 class="text-3xl font-bold mb-2 text-white">5. Analítica & Reglas</h2>
+            <p class="text-slate-400 mb-6">En construcción...</p>
         </section>
 
     </main>
 
+    <div id="image-modal" class="fixed inset-0 z-[100] hidden bg-slate-950/95 backdrop-blur-md flex items-center justify-center p-6 opacity-0 transition-opacity duration-300">
+        <button onclick="cerrarModal()" class="absolute top-6 right-8 text-slate-400 hover:text-white text-4xl transition transform hover:scale-110"><i class="fa-solid fa-xmark"></i></button>
+        <img id="modal-img" src="" class="max-w-full max-h-[90vh] rounded-xl shadow-[0_0_50px_rgba(56,189,248,0.3)] border border-slate-700 object-contain">
+    </div>
+
     <script>
-        // Lógica de Pestañas
+        // --- NAVEGACIÓN ---
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('bg-sky-600', 'text-white');
-                btn.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
+                btn.classList.remove('bg-sky-600', 'bg-amber-600', 'text-white');
+                if(btn.id !== 'btn-boveda') btn.classList.add('text-slate-400');
             });
             document.getElementById(tabId).classList.add('active');
+            
             const activeBtn = document.getElementById('btn-' + tabId);
-            activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-800');
-            activeBtn.classList.add('bg-sky-600', 'text-white');
-        }
-
-        // Lógica de Selección de Plantilla en Setup
-        function selectTemplate(element, type) {
-            document.querySelectorAll('.template-card').forEach(card => card.classList.remove('selected'));
-            element.classList.add('selected');
-            
-            const paramsDiv = document.getElementById('injection-params');
-            paramsDiv.classList.remove('hidden');
-            setTimeout(() => { paramsDiv.classList.remove('opacity-0'); }, 50);
-        }
-
-        // --- LÓGICA DEL BOTÓN DE REFERENCIA VISUAL ---
-        let referenciaBase64 = null; // Aquí vivirá la foto convertida a código
-
-        function previewReferencia(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                referenciaBase64 = e.target.result; // Guardamos el código Base64 de la imagen
-                
-                // Magia Visual: Ocultamos el ícono y mostramos la foto
-                document.getElementById('ref-icon-container').classList.add('hidden');
-                const imgPreview = document.getElementById('ref-preview-img');
-                imgPreview.src = referenciaBase64;
-                imgPreview.classList.remove('hidden');
-                document.getElementById('ref-delete-icon').classList.remove('hidden');
-            };
-            reader.readAsDataURL(file); // Convierte la foto a Base64
-        }
-
-        function borrarReferencia(event) {
-            event.stopPropagation(); // Evita que al hacer clic en borrar, se vuelva a abrir la ventana de subir archivo
-            referenciaBase64 = null;
-            document.getElementById('ref-image-upload').value = '';
-            
-            // Restauramos la UI al estado original
-            document.getElementById('ref-icon-container').classList.remove('hidden');
-            document.getElementById('ref-preview-img').classList.add('hidden');
-            document.getElementById('ref-preview-img').src = '';
-            document.getElementById('ref-delete-icon').classList.add('hidden');
-        }
-        
-        // --- LÓGICA DE CONEXIÓN CON EL BACKEND (PYTHON) ---
-        async function generarCreativos() {
-            const btn = document.getElementById('btn-generar');
-            const promptInput = document.getElementById('prompt-instruccion').value;
-            const volumenInput = document.getElementById('volumen-tanda').value;
-            const formatoInput = document.getElementById('formato-tanda').value;
-
-            // Validación de texto vacío
-            if (!promptInput.trim()) {
-                alert("⚠️ Escribe las instrucciones para el Director Creativo antes de generar.");
-                return;
+            activeBtn.classList.remove('text-slate-400');
+            if(tabId === 'boveda') {
+                activeBtn.classList.add('bg-amber-600', 'text-white');
+                cargarBoveda(); // Cargar base de datos al abrir
+            } else {
+                activeBtn.classList.add('bg-sky-600', 'text-white');
             }
+        }
 
-            let cantidad = parseInt(volumenInput);
-            if (isNaN(cantidad) || cantidad < 1) {
-                alert("⚠️ Por favor ingresa un número válido de variaciones (mínimo 1).");
-                return;
-            }
+        // --- SISTEMA DE DRAG & DROP MULTIPLE ---
+        let referenciasArray = []; // Hasta 5 imágenes
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('drop-zone').classList.add('drag-over');
+        }
+        function handleDragLeave(e) {
+            e.preventDefault();
+            document.getElementById('drop-zone').classList.remove('drag-over');
+        }
+        function handleDrop(e) {
+            e.preventDefault();
+            document.getElementById('drop-zone').classList.remove('drag-over');
+            procesarArchivos(e.dataTransfer.files);
+        }
+        function handleFileSelect(e) {
+            procesarArchivos(e.target.files);
+        }
+
+        function procesarArchivos(files) {
+            if (!files || files.length === 0) return;
             
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Generando con IA... (10-15s)';
-            btn.disabled = true;
+            // Límite de 5 imágenes totales
+            const archivosDisponibles = 5 - referenciasArray.length;
+            const archivosAProcesar = Array.from(files).slice(0, archivosDisponibles);
 
-            try {
-                const response = await fetch('http://127.0.0.1:8000/api/laboratorio/generar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({
-                        prompt: promptInput,
-                        volumen: cantidad,
-                        formato: formatoInput,
-                        imagen_referencia: referenciaBase64 // Aquí viaja la imagen al backend
-                    })
-                });
+            archivosAProcesar.forEach(file => {
+                if (!file.type.match('image.*')) return;
                 
-                const data = await response.json();
-                
-                if(data.status === "success") {
-                    console.log("🔥 RESULTADO DE LA IA:", data);
-                    
-                    const grilla = document.getElementById('grilla-resultados');
-                    grilla.innerHTML = ''; 
-                    
-                    // --- EL CAMBIO CLAVE: Leer data.resultados en lugar de data.copys ---
-                    data.resultados.forEach((res, index) => {
-                        const copy = res.copy_data;
-                        const imgRenderizada = res.imagen_renderizada;
-                        const num = index + 1;
-                        
-                        const cardHTML = `
-                            <div class="bg-slate-900 rounded-xl border border-sky-500/30 overflow-hidden shadow-lg shadow-sky-900/20 transform transition hover:scale-[1.02] flex flex-col">
-                                <div class="h-56 bg-slate-800 relative border-b border-slate-800 overflow-hidden group">
-                                    <img src="${imgRenderizada}" alt="Ad Creative" class="w-full h-full object-cover">
-                                    <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center backdrop-blur-sm">
-                                        <button onclick="abrirModal('${imgRenderizada}')" class="bg-sky-600 hover:bg-sky-500 text-white w-12 h-12 rounded-full shadow-lg transform scale-75 group-hover:scale-100 transition duration-300 flex items-center justify-center text-lg">
-                                            <i class="fa-solid fa-expand"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div class="p-5 flex-1 flex flex-col">
-                                    <div class="flex justify-between items-start mb-2">
-                                        <p class="text-xs text-sky-400 font-mono font-bold">T1-SC${num}-IA</p>
-                                        <span class="text-[10px] bg-emerald-900/50 px-2 py-1 rounded text-emerald-400 border border-emerald-500/30">Render + Copy</span>
-                                    </div>
-                                    <h4 class="text-sm font-bold text-white mb-2"><i class="fa-solid fa-quote-left text-sky-500 text-xs mr-1"></i> ${copy.hook || copy.headline}</h4>
-                                    <p class="text-sm text-slate-300 line-clamp-3 mb-4 leading-relaxed">${copy.primary_text}</p>
-                                    
-                                    <div class="flex space-x-2 mt-auto">
-                                        <button class="flex-1 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 py-2 rounded text-sm font-bold transition">Aprobar</button>
-                                        <button class="flex-1 bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white border border-rose-500/30 py-2 rounded text-sm font-bold transition"><i class="fa-solid fa-trash-can"></i></button>
-                                    </div>
-                                </div>
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    referenciasArray.push(e.target.result);
+                    renderizarMiniaturas();
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderizarMiniaturas() {
+            const container = document.getElementById('thumbnails-container');
+            const instruction = document.getElementById('drop-instruction');
+            
+            container.innerHTML = '';
+            if (referenciasArray.length > 0) {
+                instruction.classList.add('hidden');
+                referenciasArray.forEach((b64, index) => {
+                    container.innerHTML += `
+                        <div class="relative w-16 h-16 rounded border border-slate-600 overflow-hidden group">
+                            <img src="${b64}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition cursor-pointer" onclick="eliminarReferencia(event, ${index})">
+                                <i class="fa-solid fa-trash text-rose-500"></i>
                             </div>
-                        `;
-                        grilla.innerHTML += cardHTML;
-                    });
-                    
-                } else {
-                    alert("Error: " + JSON.stringify(data));
-                }
-                
-            } catch (error) {
-                console.error("Error procesando JS:", error);
-                alert("Error de lectura en el navegador. Revisa la consola F12.");
-            } finally {
-                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generar Tanda con IA';
-                btn.disabled = false;
+                        </div>
+                    `;
+                });
+            } else {
+                instruction.classList.remove('hidden');
             }
         }
 
-        // --- FUNCIONES DEL MODAL DE PREVISUALIZACIÓN ---
+        function eliminarReferencia(e, index) {
+            e.stopPropagation(); // Evita que se abra el selector de archivos
+            referenciasArray.splice(index, 1);
+            renderizarMiniaturas();
+            document.getElementById('ref-image-upload').value = '';
+        }
+
+        // --- MODAL Y DESCARGAS ---
         function abrirModal(imgSrc) {
             const modal = document.getElementById('image-modal');
             document.getElementById('modal-img').src = imgSrc;
@@ -454,7 +262,169 @@
             modal.classList.add('opacity-0');
             setTimeout(() => { modal.classList.add('hidden'); }, 300);
         }
+
+        function descargarImagen(imgSrc, hook) {
+            const a = document.createElement('a');
+            a.href = imgSrc;
+            const safeName = hook.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            a.download = `EVO_${safeName}.jpg`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        // --- BASE DE DATOS LOCAL (LOCALSTORAGE) ---
+        function guardarEnBoveda(b64Image, copyText, hook) {
+            const item = {
+                id: Date.now(),
+                imagen: b64Image,
+                texto: copyText,
+                titulo: hook,
+                fecha: new Date().toLocaleDateString()
+            };
+            
+            let boveda = JSON.parse(localStorage.getItem('evo_boveda') || '[]');
+            boveda.unshift(item); // Agrega al principio
+            localStorage.setItem('evo_boveda', JSON.stringify(boveda));
+            
+            alert("✅ ¡Aprobado y guardado en tu Bóveda!");
+        }
+
+        function cargarBoveda() {
+            const grilla = document.getElementById('grilla-boveda');
+            let boveda = JSON.parse(localStorage.getItem('evo_boveda') || '[]');
+            
+            grilla.innerHTML = '';
+            if(boveda.length === 0) {
+                grilla.innerHTML = '<p class="text-slate-500 col-span-full">Tu bóveda está vacía. Genera y aprueba creativos en el Laboratorio.</p>';
+                return;
+            }
+
+            boveda.forEach(item => {
+                grilla.innerHTML += `
+                    <div class="bg-slate-900 rounded-xl border border-amber-500/30 overflow-hidden shadow-lg">
+                        <div class="h-40 relative group">
+                            <img src="${item.imagen}" class="w-full h-full object-cover cursor-pointer" onclick="abrirModal('${item.imagen}')">
+                            <button onclick="descargarImagen('${item.imagen}', '${item.titulo}')" class="absolute top-2 right-2 bg-slate-900/80 hover:bg-sky-600 text-white p-2 rounded text-xs transition backdrop-blur-sm shadow"><i class="fa-solid fa-download"></i></button>
+                        </div>
+                        <div class="p-4">
+                            <div class="flex justify-between text-xs text-slate-500 mb-1">
+                                <span>${item.fecha}</span>
+                            </div>
+                            <h4 class="text-sm font-bold text-amber-400 line-clamp-1 mb-1">${item.titulo}</h4>
+                            <p class="text-xs text-slate-400 line-clamp-3">${item.texto}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function limpiarBoveda() {
+            if(confirm("¿Seguro que quieres borrar todo el historial? Esto no se puede deshacer.")) {
+                localStorage.removeItem('evo_boveda');
+                cargarBoveda();
+            }
+        }
+
+
+        // --- CONEXIÓN CON PYTHON ---
+        async function generarCreativos() {
+            const btn = document.getElementById('btn-generar');
+            const promptInput = document.getElementById('prompt-instruccion').value;
+            const volumenInput = document.getElementById('volumen-tanda').value;
+            const formatoInput = document.getElementById('formato-tanda').value;
+
+            if (!promptInput.trim()) {
+                alert("⚠️ Escribe las instrucciones para el Director Creativo.");
+                return;
+            }
+
+            let cantidad = parseInt(volumenInput);
+            if (isNaN(cantidad) || cantidad < 1) {
+                alert("⚠️ Ingresa un número válido de variaciones.");
+                return;
+            }
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Generando con IA... (10-20s)';
+            btn.disabled = true;
+
+            try {
+                // Preparamos el payload. Mandamos el array completo de referencias,
+                // PERO también la primera por separado por si tu Python actual solo lee una.
+                const payload = {
+                    prompt: promptInput,
+                    volumen: cantidad,
+                    formato: formatoInput,
+                    imagen_referencia: referenciasArray.length > 0 ? referenciasArray[0] : null,
+                    referencias_multiples: referenciasArray // Para la futura mejora del backend
+                };
+
+                const response = await fetch('http://127.0.0.1:8000/api/laboratorio/generar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                
+                if(data.status === "success") {
+                    const grilla = document.getElementById('grilla-resultados');
+                    grilla.innerHTML = ''; 
+                    
+                    data.resultados.forEach((res, index) => {
+                        const copy = res.copy_data;
+                        const imgRenderizada = res.imagen_renderizada;
+                        const tituloHook = copy.hook || copy.headline;
+                        const num = index + 1;
+                        
+                        // NOTA: Limpiamos las comillas dobles para que no rompan el HTML del onclick
+                        const textoSeguro = copy.primary_text.replace(/"/g, '&quot;');
+                        const tituloSeguro = tituloHook.replace(/"/g, '&quot;');
+                        
+                        const cardHTML = `
+                            <div class="bg-slate-900 rounded-xl border border-sky-500/30 overflow-hidden shadow-lg flex flex-col group">
+                                <div class="h-56 bg-slate-800 relative border-b border-slate-800 overflow-hidden">
+                                    <img src="${imgRenderizada}" alt="Ad Creative" class="w-full h-full object-cover">
+                                    
+                                    <div class="absolute inset-0 bg-slate-950/70 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center space-x-4 backdrop-blur-sm">
+                                        <button onclick="abrirModal('${imgRenderizada}')" class="bg-sky-600 hover:bg-sky-500 text-white w-12 h-12 rounded-full shadow-lg transform scale-75 group-hover:scale-100 transition duration-300 flex items-center justify-center text-lg" title="Ver Ampliado">
+                                            <i class="fa-solid fa-expand"></i>
+                                        </button>
+                                        <button onclick="descargarImagen('${imgRenderizada}', '${tituloSeguro}')" class="bg-emerald-600 hover:bg-emerald-500 text-white w-12 h-12 rounded-full shadow-lg transform scale-75 group-hover:scale-100 transition duration-300 flex items-center justify-center text-lg" title="Descargar">
+                                            <i class="fa-solid fa-download"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="p-5 flex-1 flex flex-col">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <p class="text-xs text-sky-400 font-mono font-bold">T1-SC${num}-IA</p>
+                                    </div>
+                                    <h4 class="text-sm font-bold text-white mb-2 line-clamp-2"><i class="fa-solid fa-quote-left text-sky-500 text-xs mr-1"></i> ${tituloHook}</h4>
+                                    <p class="text-sm text-slate-400 line-clamp-3 mb-4 leading-relaxed">${copy.primary_text}</p>
+                                    
+                                    <div class="flex space-x-2 mt-auto">
+                                        <button onclick="guardarEnBoveda('${imgRenderizada}', '${textoSeguro}', '${tituloSeguro}')" class="flex-1 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 py-2 rounded text-sm font-bold transition">Aprobar (Guardar)</button>
+                                        
+                                        <button onclick="this.closest('div.bg-slate-900').remove()" class="bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white border border-rose-500/30 px-4 py-2 rounded text-sm font-bold transition" title="Descartar"><i class="fa-solid fa-trash-can"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        grilla.innerHTML += cardHTML;
+                    });
+                    
+                } else {
+                    alert("Error: " + JSON.stringify(data));
+                }
+                
+            } catch (error) {
+                console.error(error);
+                alert("Error de red. Verifica la terminal F12.");
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generar Tanda con IA';
+                btn.disabled = false;
+            }
+        }
     </script>
-    
 </body>
 </html>
