@@ -164,6 +164,19 @@
         .data-row { margin-bottom: 1rem; }
         .data-row label { display: block; font-size: 0.75rem; color: #64748b; margin-bottom: 4px; }
         .data-row span { font-size: 0.95rem; font-weight: 500; }
+
+        .btn-fathom {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: rgba(99, 102, 241, 0.1); color: var(--accent-primary);
+            border: 1px solid var(--accent-primary);
+            padding: 12px; border-radius: 8px; font-weight: 700; text-decoration: none;
+            margin-top: 1.5rem; transition: all 0.3s;
+            text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem;
+        }
+        .btn-fathom:hover {
+            background: var(--accent-primary); color: white;
+            box-shadow: 0 4px 15px var(--accent-glow); transform: translateY(-2px);
+        }
         
         .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-content: start; }
         .ai-card { background: rgba(99, 102, 241, 0.03); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 12px; padding: 1.5rem; }
@@ -297,7 +310,7 @@
                         <label>Campaña / Origen</label>
                         <span id="m-utm"></span>
                     </div>
-                    <a id="m-fathom" href="#" target="_blank" style="display:block; margin-top:10px; text-align:center; padding:10px; background:rgba(255,255,255,0.05); color:white; border-radius:6px; text-decoration:none; font-size:0.85rem; border: 1px solid rgba(255,255,255,0.1);">▶ Ver en Fathom</a>
+                    <a id="m-fathom" href="#" target="_blank" class="btn-fathom">▶ Ver Grabación en Fathom</a>
                 </div>
 
                 <div class="data-card">
@@ -654,8 +667,9 @@
         document.getElementById('m-utm').innerText = item.utm;
         
         const fBtn = document.getElementById('m-fathom');
-        if(item.fathom && item.fathom.includes('http')) {
-            fBtn.style.display = 'block'; fBtn.href = item.fathom;
+        if(item.fathom && item.fathom.trim().includes('http')) {
+            fBtn.style.display = 'flex';  // Cambiado a flex para centrar el icono
+            fBtn.href = item.fathom.trim();
         } else {
             fBtn.style.display = 'none';
         }
