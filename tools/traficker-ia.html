@@ -12,8 +12,8 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        /* Efecto neon para el logo */
         .neon-text { text-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+        .template-card.selected { border-color: #38bdf8; background-color: rgba(56, 189, 248, 0.1); }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden selection:bg-sky-500 selection:text-white">
@@ -24,35 +24,26 @@
                 <h1 class="text-2xl font-bold text-sky-400 tracking-wider neon-text">EVO LAUNCH</h1>
                 <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest">By Alvaro MV</p>
             </div>
-
             <nav class="p-4 space-y-2">
                 <button onclick="switchTab('dashboard')" id="btn-dashboard" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-sky-600 text-white transition-all">
-                    <i class="fa-solid fa-chart-line"></i>
-                    <span class="font-semibold">Dashboard</span>
+                    <i class="fa-solid fa-chart-line w-5"></i><span class="font-semibold">Dashboard</span>
                 </button>
                 <button onclick="switchTab('ingesta')" id="btn-ingesta" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
-                    <i class="fa-solid fa-brain"></i>
-                    <span class="font-semibold">1. Estrategia IA</span>
+                    <i class="fa-solid fa-brain w-5"></i><span class="font-semibold">1. Estrategia IA</span>
                 </button>
                 <button onclick="switchTab('laboratorio')" id="btn-laboratorio" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
-                    <i class="fa-solid fa-flask"></i>
-                    <span class="font-semibold">2. Lab Creativo</span>
+                    <i class="fa-solid fa-flask w-5"></i><span class="font-semibold">2. Lab Creativo</span>
                 </button>
                 <button onclick="switchTab('setup')" id="btn-setup" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span class="font-semibold">3. Setup Trafficker</span>
+                    <i class="fa-solid fa-sliders w-5"></i><span class="font-semibold">3. Setup Trafficker</span>
                 </button>
                 <button onclick="switchTab('lanzamiento')" id="btn-lanzamiento" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white transition-all">
-                    <i class="fa-solid fa-rocket"></i>
-                    <span class="font-semibold">4. Lanzamiento</span>
+                    <i class="fa-solid fa-rocket w-5"></i><span class="font-semibold">4. Lanzamiento</span>
                 </button>
             </nav>
         </div>
-        
         <div class="p-4 border-t border-slate-800 flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center font-bold">
-                AM
-            </div>
+            <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center font-bold">AM</div>
             <div>
                 <p class="text-sm font-semibold">Alvaro Maza</p>
                 <p class="text-xs text-emerald-400"><i class="fa-solid fa-circle text-[8px] mr-1"></i>Sistema Online</p>
@@ -64,50 +55,29 @@
         
         <section id="dashboard" class="tab-content active">
             <h2 class="text-3xl font-bold mb-6 text-white">Monitor de Optimización</h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
-                    <h3 class="text-slate-400 text-sm font-semibold mb-2">Gasto Total (Hoy)</h3>
-                    <p class="text-3xl font-bold text-white">$145.20</p>
-                </div>
-                <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg relative overflow-hidden">
-                    <div class="absolute right-0 top-0 h-full w-2 bg-emerald-500"></div>
-                    <h3 class="text-slate-400 text-sm font-semibold mb-2">ROAS Global</h3>
-                    <p class="text-3xl font-bold text-white">2.8x</p>
-                </div>
-                <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg">
-                    <h3 class="text-slate-400 text-sm font-semibold mb-2">Acciones Sugeridas</h3>
-                    <p class="text-3xl font-bold text-rose-400">2 Apagar</p>
-                </div>
-            </div>
-
             <div class="bg-slate-900 rounded-xl border border-slate-800 shadow-lg p-6">
-                <h3 class="text-lg font-bold mb-4 border-b border-slate-800 pb-2">Motor de Reglas (ROAS & Spend)</h3>
+                <h3 class="text-lg font-bold mb-4 border-b border-slate-800 pb-2">Asistente de Reglas Inteligentes</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
                             <tr class="text-slate-400 text-sm border-b border-slate-800">
-                                <th class="pb-3">Campaña / Nomenclatura</th>
-                                <th class="pb-3">Gasto</th>
-                                <th class="pb-3">ROAS</th>
-                                <th class="pb-3">Estado Sugerido</th>
-                                <th class="pb-3">Acción</th>
+                                <th class="pb-3">Campaña / Objetivo</th>
+                                <th class="pb-3">Métricas Clave</th>
+                                <th class="pb-3">Sugerencia del IA</th>
+                                <th class="pb-3">Aprobar Acción</th>
                             </tr>
                         </thead>
                         <tbody class="text-sm">
-                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/30 transition-colors">
-                                <td class="py-4 font-mono text-sky-300">T1-SC1-TG_Dolor-OS_Hook</td>
-                                <td class="py-4">$45.00</td>
-                                <td class="py-4 text-rose-400 font-bold">0.8x</td>
-                                <td class="py-4"><span class="bg-rose-500/20 text-rose-400 px-2 py-1 rounded text-xs font-bold border border-rose-500/30">APAGAR</span></td>
-                                <td class="py-4"><button class="bg-slate-700 hover:bg-slate-600 px-3 py-1 rounded text-white transition">Ejecutar</button></td>
-                            </tr>
-                            <tr class="hover:bg-slate-800/30 transition-colors">
-                                <td class="py-4 font-mono text-sky-300">T1-SC2-TG_Deseo-OS_Demo</td>
-                                <td class="py-4">$20.50</td>
-                                <td class="py-4 text-emerald-400 font-bold">3.2x</td>
-                                <td class="py-4"><span class="bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded text-xs font-bold border border-emerald-500/30">ESCALAR</span></td>
-                                <td class="py-4"><button class="bg-sky-600 hover:bg-sky-500 px-3 py-1 rounded text-white transition">Duplicar</button></td>
+                            <tr class="border-b border-slate-800/50 hover:bg-slate-800/30">
+                                <td class="py-4 font-mono text-sky-300">T1-LowTicket-Ventas<br><span class="text-xs text-slate-500">Plantilla: Venta Low Ticket</span></td>
+                                <td class="py-4">Gasto: $45.00<br>ROAS: <span class="text-rose-400 font-bold">0.8x</span></td>
+                                <td class="py-4 text-rose-400 font-semibold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Apagar Ad Set (ROAS < 1)</td>
+                                <td class="py-4">
+                                    <div class="flex space-x-2">
+                                        <button class="bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white px-3 py-1 rounded border border-emerald-500/30 transition">SÍ</button>
+                                        <button class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-1 rounded transition">NO</button>
+                                    </div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -115,94 +85,93 @@
             </div>
         </section>
 
-        <section id="ingesta" class="tab-content">
-            <h2 class="text-3xl font-bold mb-2 text-white">1. Ingesta y Estrategia</h2>
-            <p class="text-slate-400 mb-6">Sube tu investigación. El Cerebro IA (GPT-4o) extraerá los ángulos de venta.</p>
-            
-            <div class="bg-slate-900 p-8 rounded-xl border border-slate-800 shadow-lg border-dashed text-center">
-                <i class="fa-solid fa-cloud-arrow-up text-5xl text-sky-500 mb-4"></i>
-                <h3 class="text-xl font-bold text-white mb-2">Sube tus documentos base</h3>
-                <p class="text-slate-400 text-sm mb-6">PDF, TXT o DOCX con avatares y promesas del producto.</p>
-                <button class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-2 px-6 rounded-lg border border-slate-700 transition-all">Seleccionar Archivo</button>
-            </div>
-        </section>
-
-        <section id="laboratorio" class="tab-content">
-            <h2 class="text-3xl font-bold mb-2 text-white">2. Laboratorio Creativo</h2>
-            <p class="text-slate-400 mb-6">Generación masiva de copys (GPT) y fondos visuales (DALL-E 3 + Pillow).</p>
-            
-            <div class="mb-6 flex justify-between items-center bg-slate-900 p-4 rounded-xl border border-slate-800">
-                <div>
-                    <label class="block text-xs text-slate-400 mb-1">Cantidad de Anuncios</label>
-                    <select class="bg-slate-800 border border-slate-700 text-white rounded p-2 focus:outline-none focus:border-sky-500">
-                        <option>Tanda de 10</option>
-                        <option>Tanda de 20</option>
-                        <option>Tanda de 50</option>
-                    </select>
-                </div>
-                <button class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2 px-6 rounded-lg shadow-lg shadow-sky-500/30 transition-all">
-                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generar Creativos
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden">
-                    <div class="h-48 bg-slate-800 flex items-center justify-center relative">
-                        <span class="text-slate-500 text-sm"><i class="fa-regular fa-image text-3xl mb-2 block text-center"></i>Preview Pillow (1080x1080)</span>
-                    </div>
-                    <div class="p-4">
-                        <p class="text-xs text-sky-400 font-mono mb-2">SC_01 - Hook_Agresivo</p>
-                        <p class="text-sm text-slate-300 line-clamp-2">Primary Text generado por la IA va aquí. Debería ser un texto persuasivo basado en el dolor del avatar...</p>
-                        <div class="mt-4 flex space-x-2">
-                            <button class="flex-1 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 py-1 rounded transition">Aprobar</button>
-                            <button class="flex-1 bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white border border-rose-500/30 py-1 rounded transition">Descartar</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+        <section id="ingesta" class="tab-content"><h2 class="text-3xl font-bold mb-2 text-white">1. Ingesta y Estrategia</h2><p class="text-slate-400 mb-6">Sube tu investigación. El Cerebro IA extraerá los ángulos.</p></section>
+        <section id="laboratorio" class="tab-content"><h2 class="text-3xl font-bold mb-2 text-white">2. Laboratorio Creativo</h2><p class="text-slate-400 mb-6">Generación masiva de copys y fondos visuales.</p></section>
 
         <section id="setup" class="tab-content">
-            <h2 class="text-3xl font-bold mb-2 text-white">3. Configuración del Trafficker</h2>
-            <p class="text-slate-400 mb-6">Define los parámetros de inyección para Meta Ads.</p>
+            <h2 class="text-3xl font-bold mb-2 text-white">3. Setup Estratégico</h2>
+            <p class="text-slate-400 mb-6">Selecciona el objetivo de tu funnel para adaptar las reglas y la estructura de Meta.</p>
             
-            <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 max-w-2xl">
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-300 mb-1">Cuenta Publicitaria</label>
-                        <select class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-3 focus:outline-none focus:border-sky-500">
-                            <option>Act Ad Account 1 (ACT_123456789)</option>
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div onclick="selectTemplate(this, 'low_ticket')" class="template-card cursor-pointer bg-slate-900 border border-slate-700 p-5 rounded-xl hover:border-sky-500 transition-all">
+                    <i class="fa-solid fa-cart-shopping text-2xl text-sky-400 mb-3"></i>
+                    <h3 class="font-bold text-white mb-1">Venta Low Ticket</h3>
+                    <p class="text-xs text-slate-400">Obj: Ventas. CPA objetivo bajo. Optimiza rápido por ROAS.</p>
+                </div>
+                <div onclick="selectTemplate(this, 'high_ticket')" class="template-card cursor-pointer bg-slate-900 border border-slate-700 p-5 rounded-xl hover:border-sky-500 transition-all">
+                    <i class="fa-solid fa-gem text-2xl text-purple-400 mb-3"></i>
+                    <h3 class="font-bold text-white mb-1">Venta High Ticket</h3>
+                    <p class="text-xs text-slate-400">Obj: Clientes Potenciales. CPA alto. Optimiza por CPL y calidad.</p>
+                </div>
+                <div onclick="selectTemplate(this, 'whatsapp')" class="template-card cursor-pointer bg-slate-900 border border-slate-700 p-5 rounded-xl hover:border-sky-500 transition-all">
+                    <i class="fa-brands fa-whatsapp text-2xl text-emerald-400 mb-3"></i>
+                    <h3 class="font-bold text-white mb-1">Mensajes a WhatsApp</h3>
+                    <p class="text-xs text-slate-400">Obj: Interacción (Mensajes). Ideal para cierre manual rápido.</p>
+                </div>
+                <div onclick="selectTemplate(this, 'visitas_perfil')" class="template-card cursor-pointer bg-slate-900 border border-slate-700 p-5 rounded-xl hover:border-sky-500 transition-all">
+                    <i class="fa-brands fa-instagram text-2xl text-pink-500 mb-3"></i>
+                    <h3 class="font-bold text-white mb-1">Visitas al Perfil</h3>
+                    <p class="text-xs text-slate-400">Obj: Tráfico. Escalar seguidores y alcance orgánico.</p>
+                </div>
+            </div>
+
+            <div id="injection-params" class="hidden bg-slate-900 p-6 rounded-xl border border-slate-800 max-w-4xl opacity-0 transition-opacity duration-500">
+                <h3 class="text-lg font-bold text-white mb-4 border-b border-slate-800 pb-2">Parámetros de la Cuenta</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="space-y-4">
                         <div>
-                            <label class="block text-sm font-semibold text-slate-300 mb-1">Presupuesto Diario (USD)</label>
-                            <input type="number" value="20" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-3 focus:outline-none focus:border-sky-500">
+                            <label class="block text-sm font-semibold text-slate-300 mb-1">Cuenta Publicitaria</label>
+                            <select class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500">
+                                <option>Act Ad Account 1 (ACT_123456789)</option>
+                            </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-slate-300 mb-1">Público</label>
-                            <input type="text" value="Abierto (Broad)" disabled class="w-full bg-slate-800/50 border border-slate-700 text-slate-500 rounded-lg p-3 cursor-not-allowed">
+                            <label class="block text-sm font-semibold text-slate-300 mb-1">Página de Facebook</label>
+                            <input type="text" placeholder="Ej: Mi Negocio FB" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-300 mb-1">Cuenta de Instagram</label>
+                            <input type="text" placeholder="Ej: @minegocio" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500">
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-slate-300 mb-1">Pixel ID</label>
-                        <input type="text" placeholder="Ej: 9876543210" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-3 focus:outline-none focus:border-sky-500">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-300 mb-1">Presupuesto Diario Total (USD)</label>
+                            <input type="number" value="20" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-300 mb-1">Pixel ID (Opcional según plantilla)</label>
+                            <input type="text" placeholder="Ej: 9876543210" class="w-full bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-300 mb-1">Segmentación</label>
+                            <input type="text" value="Abierto (Broad)" disabled class="w-full bg-slate-800/50 border border-slate-700 text-slate-500 rounded-lg p-2.5 cursor-not-allowed">
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="lanzamiento" class="tab-content">
-            <h2 class="text-3xl font-bold mb-2 text-white">4. Lanzamiento (Meta API)</h2>
-            <p class="text-slate-400 mb-6">Inyección estructural modelo 1-1-1 automatizada.</p>
+            <h2 class="text-3xl font-bold mb-2 text-white">4. Lanzamiento y Preview</h2>
+            <p class="text-slate-400 mb-6">Revisa la estructura que se inyectará en Meta Ads antes de enviar el Payload.</p>
             
-            <div class="bg-indigo-900/30 border border-indigo-500/50 p-6 rounded-xl mb-6">
-                <h3 class="text-lg font-bold text-indigo-300 mb-2"><i class="fa-solid fa-layer-group mr-2"></i>Resumen de Inyección</h3>
-                <ul class="text-slate-300 space-y-2 text-sm">
-                    <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> 10 Campañas CBO preparadas</li>
-                    <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> 10 Ad Sets (Broad)</li>
-                    <li><i class="fa-solid fa-check text-emerald-500 mr-2"></i> Nomenclatura Dinámica aplicada</li>
-                </ul>
+            <div class="bg-slate-900 border border-slate-700 p-6 rounded-xl mb-6">
+                <h3 class="text-lg font-bold text-white mb-4"><i class="fa-solid fa-eye text-sky-400 mr-2"></i>Preview de Inyección (Modelo 1-1-1)</h3>
+                <div class="bg-slate-950 p-4 rounded-lg border border-slate-800 font-mono text-sm text-slate-300 overflow-x-auto">
+                    <p class="text-sky-400 font-bold mb-2">📦 CAMPAÑA: [Venta Low Ticket] ABO - Tanda 1</p>
+                    <div class="ml-6 border-l-2 border-slate-800 pl-4 space-y-4">
+                        <div>
+                            <p class="text-emerald-400 font-bold">↳ 🎯 AD SET 1: Broad - $2/día</p>
+                            <p class="ml-6 text-slate-400">↳ 🖼️ AD: T1-SC1-TG_Dolor (Img_01.png)</p>
+                        </div>
+                        <div>
+                            <p class="text-emerald-400 font-bold">↳ 🎯 AD SET 2: Broad - $2/día</p>
+                            <p class="ml-6 text-slate-400">↳ 🖼️ AD: T1-SC2-TG_Deseo (Img_02.png)</p>
+                        </div>
+                        <p class="text-slate-500 italic">... (Continúa hasta completar la tanda)</p>
+                    </div>
+                </div>
             </div>
 
             <div class="flex space-x-4">
@@ -218,21 +187,33 @@
     </main>
 
     <script>
+        // Lógica de Pestañas
         function switchTab(tabId) {
-            // Ocultar todos los contenidos
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            // Resetear estilos de todos los botones
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('bg-sky-600', 'text-white');
                 btn.classList.add('text-slate-400', 'hover:bg-slate-800', 'hover:text-white');
             });
-            
-            // Mostrar el contenido seleccionado
             document.getElementById(tabId).classList.add('active');
-            // Resaltar el botón activo
             const activeBtn = document.getElementById('btn-' + tabId);
             activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-800');
             activeBtn.classList.add('bg-sky-600', 'text-white');
+        }
+
+        // Lógica de Selección de Plantilla en Setup
+        function selectTemplate(element, type) {
+            // Quitar clase selected de todas las tarjetas
+            document.querySelectorAll('.template-card').forEach(card => card.classList.remove('selected'));
+            // Agregar clase selected a la tarjeta clickeada
+            element.classList.add('selected');
+            
+            // Mostrar los parámetros de inyección con una pequeña animación
+            const paramsDiv = document.getElementById('injection-params');
+            paramsDiv.classList.remove('hidden');
+            setTimeout(() => { paramsDiv.classList.remove('opacity-0'); }, 50);
+
+            // Aquí en el futuro puedes guardar la variable 'type' para enviarla a Python
+            console.log("Plantilla seleccionada: " + type);
         }
     </script>
 </body>
