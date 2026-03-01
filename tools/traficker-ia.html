@@ -62,18 +62,50 @@
         
         <section id="ingesta" class="tab-content">
             <h2 class="text-3xl font-bold mb-2 text-white">1. Ingesta y Estrategia</h2>
-            <p class="text-slate-400 mb-6">Sube tu investigación de mercado. El Cerebro IA (GPT-4o) extraerá los ángulos de venta, dolores y deseos del avatar.</p>
+            <p class="text-slate-400 mb-6">Pega aquí la información cruda del cliente, textos de su web, o tu investigación. La IA extraerá la médula estratégica.</p>
             
-            <div class="bg-slate-900 p-10 rounded-xl border border-slate-800 shadow-lg border-dashed text-center max-w-3xl">
-                <i class="fa-solid fa-file-pdf text-5xl text-rose-500 mb-4 drop-shadow-lg"></i>
-                <h3 class="text-xl font-bold text-white mb-2">Sube el documento de la Oferta</h3>
-                <p class="text-slate-400 text-sm mb-6">Archivos soportados: PDF, TXT, DOCX. La IA procesará el contexto al instante.</p>
-                <button class="bg-slate-800 hover:bg-slate-700 text-white font-semibold py-3 px-8 rounded-lg border border-slate-700 transition-all">
-                    <i class="fa-solid fa-cloud-arrow-up mr-2"></i> Explorar Archivos
-                </button>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg flex flex-col">
+                    <label class="block text-xs font-semibold text-sky-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-database mr-2"></i>Data del Proyecto / Cliente</label>
+                    <textarea id="texto-ingesta" class="w-full bg-slate-800 border border-slate-700 text-slate-300 p-4 rounded-lg focus:outline-none focus:border-sky-500 resize-y flex-1 min-h-[250px] text-sm leading-relaxed shadow-inner" placeholder="Ej: El cliente es una clínica dental. Venden implantes. Su público son adultos mayores que perdieron dientes y les da vergüenza sonreír..."></textarea>
+                    
+                    <button id="btn-analizar" onclick="analizarContexto()" class="mt-4 bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-sky-500/30 transition-all flex justify-center items-center">
+                        <i class="fa-solid fa-brain mr-2"></i> Extraer Estrategia
+                    </button>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg relative overflow-hidden">
+                    <div id="estrategia-vacia" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 z-10 transition-opacity duration-300">
+                        <i class="fa-solid fa-microchip text-5xl text-slate-700 mb-4"></i>
+                        <p class="text-slate-500 text-sm">Esperando data para procesar...</p>
+                    </div>
+
+                    <div id="estrategia-resultados" class="space-y-4 overflow-y-auto h-full pr-2">
+                        <div>
+                            <h4 class="text-xs font-bold text-sky-400 uppercase mb-1 border-b border-slate-800 pb-1"><i class="fa-solid fa-user-target mr-1"></i> Avatar (Buyer Persona)</h4>
+                            <p id="res-avatar" class="text-sm text-slate-300 bg-slate-800/50 p-3 rounded border border-slate-700/50"></p>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <h4 class="text-xs font-bold text-rose-400 uppercase mb-1 border-b border-slate-800 pb-1"><i class="fa-solid fa-heart-crack mr-1"></i> Dolores</h4>
+                                <ul id="res-dolores" class="text-sm text-slate-300 list-disc pl-4 space-y-1 bg-slate-800/50 p-3 rounded border border-slate-700/50"></ul>
+                            </div>
+                            <div>
+                                <h4 class="text-xs font-bold text-emerald-400 uppercase mb-1 border-b border-slate-800 pb-1"><i class="fa-solid fa-star mr-1"></i> Deseos</h4>
+                                <ul id="res-deseos" class="text-sm text-slate-300 list-disc pl-4 space-y-1 bg-slate-800/50 p-3 rounded border border-slate-700/50"></ul>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-xs font-bold text-amber-400 uppercase mb-1 border-b border-slate-800 pb-1"><i class="fa-solid fa-bullseye mr-1"></i> Ángulos de Venta Sugeridos</h4>
+                            <ul id="res-angulos" class="text-sm text-slate-300 list-disc pl-4 space-y-1 bg-slate-800/50 p-3 rounded border border-slate-700/50"></ul>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
-
+        
         <section id="laboratorio" class="tab-content active">
             <h2 class="text-3xl font-bold mb-2 text-white">2. Laboratorio Creativo</h2>
             <p class="text-slate-400 mb-6">Generación masiva de copys y fondos visuales. Arrastra referencias, define el estilo y genera.</p>
@@ -409,7 +441,60 @@
             }
         }
 
+        // --- LÓGICA DE INGESTA (PASO 1) ---
+        async function analizarContexto() {
+            const texto = document.getElementById('texto-ingesta').value;
+            const btn = document.getElementById('btn-analizar');
 
+            if(!texto.trim()) {
+                alert("⚠️ Pega algo de información antes de analizar.");
+                return;
+            }
+
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Procesando...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/estrategia/analizar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contexto: texto })
+                });
+
+                const jsonResponse = await response.json();
+
+                if(jsonResponse.status === "success") {
+                    const data = jsonResponse.data;
+                    
+                    // Ocultar estado vacío
+                    document.getElementById('estrategia-vacia').classList.add('opacity-0');
+                    setTimeout(() => { document.getElementById('estrategia-vacia').classList.add('hidden'); }, 300);
+
+                    // Llenar datos
+                    document.getElementById('res-avatar').innerText = data.avatar;
+                    
+                    document.getElementById('res-dolores').innerHTML = '';
+                    data.dolores.forEach(d => document.getElementById('res-dolores').innerHTML += `<li>${d}</li>`);
+                    
+                    document.getElementById('res-deseos').innerHTML = '';
+                    data.deseos.forEach(d => document.getElementById('res-deseos').innerHTML += `<li>${d}</li>`);
+                    
+                    document.getElementById('res-angulos').innerHTML = '';
+                    data.angulos.forEach(a => document.getElementById('res-angulos').innerHTML += `<li>${a}</li>`);
+                    
+                } else {
+                    alert("Error: " + jsonResponse.mensaje);
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert("Error de conexión al analizar.");
+            } finally {
+                btn.innerHTML = '<i class="fa-solid fa-brain mr-2"></i> Extraer Estrategia';
+                btn.disabled = false;
+            }
+        }
+        
         // --- CONEXIÓN CON PYTHON ---
         async function generarCreativos() {
             const btn = document.getElementById('btn-generar');
