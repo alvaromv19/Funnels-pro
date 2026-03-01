@@ -90,7 +90,7 @@
                         </select>
                     </div>
                 </div>
-                <button class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 px-6 rounded-lg shadow-lg shadow-sky-500/30 transition-all">
+                <button id="btn-generar" onclick="generarCreativos()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 px-6 rounded-lg shadow-lg shadow-sky-500/30 transition-all">
                     <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generar Tanda con IA
                 </button>
             </div>
@@ -324,6 +324,40 @@
             paramsDiv.classList.remove('hidden');
             setTimeout(() => { paramsDiv.classList.remove('opacity-0'); }, 50);
         }
+
+        // --- LÓGICA DE CONEXIÓN CON EL BACKEND (PYTHON) ---
+async function generarCreativos() {
+    const btn = document.getElementById('btn-generar');
+    
+    // 1. Cambiamos el botón para mostrar que está pensando
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Generando...';
+    btn.disabled = true;
+
+    try {
+        // 2. Disparamos la petición a tu computadora (FastAPI)
+        // Por ahora le pasamos datos fijos para la prueba (volumen=10, formato=1080)
+        const response = await fetch('http://127.0.0.1:8000/api/laboratorio/generar?volumen=10&formato=1080', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        
+        // 3. Recibimos la respuesta de Python
+        const data = await response.json();
+        
+        // Mostramos el mensaje de éxito en pantalla
+        alert("¡Éxito! 🧠 Respuesta de Python: " + data.mensaje);
+        
+    } catch (error) {
+        console.error("Error:", error);
+        alert("Error de conexión. ¿Está encendido el servidor uvicorn en tu terminal?");
+    } finally {
+        // 4. Restauramos el botón a la normalidad
+        btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generar Tanda con IA';
+        btn.disabled = false;
+    }
     </script>
+    
 </body>
 </html>
