@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Closer Tracker V3 ⚡</title>
+    <title>AI Closer Tracker V3.5 ⚡</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -68,10 +68,11 @@
 
         /* Color de fondo oscuro para las opciones desplegadas */
         select.filter-control option {
-        background-color: var(--bg-surface); /* Fondo oscuro */
-        color: white; /* Texto blanco */
-        padding: 10px;
+            background-color: var(--bg-surface);
+            color: white;
+            padding: 10px;
         }
+
         .custom-dates { display: none; grid-template-columns: 1fr 1fr; gap: 10px; }
         .custom-dates.active { display: grid; }
         .date-input { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 6px; font-size: 0.8rem; width: 100%; color-scheme: dark; }
@@ -151,21 +152,28 @@
         .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid white; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: none; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        /* Componentes del Modal Individual de Lead (Heredados) */
+        /* Componentes del Modal Individual de Lead (Heredados de V2) */
         .modal-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
         .data-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; }
         .data-card h4 { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; }
         .data-row { margin-bottom: 1rem; }
         .data-row label { display: block; font-size: 0.75rem; color: #64748b; margin-bottom: 4px; }
+        .data-row span { font-size: 0.95rem; font-weight: 500; }
+        
         .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-content: start; }
         .ai-card { background: rgba(99, 102, 241, 0.03); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 12px; padding: 1.5rem; }
         .ai-card.danger { background: rgba(239, 68, 68, 0.03); border-color: rgba(239, 68, 68, 0.15); }
         .ai-card.success { background: rgba(16, 185, 129, 0.03); border-color: rgba(16, 185, 129, 0.15); }
         .ai-card.full-width { grid-column: span 2; }
-        .ai-card h3 { font-size: 0.9rem; text-transform: uppercase; margin-bottom: 1.2rem; }
+        .ai-card h3 { font-size: 0.9rem; text-transform: uppercase; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; letter-spacing: 1px;}
+        .ai-card.primary h3 { color: var(--accent-primary); }
+        .ai-card.danger h3 { color: var(--danger); }
+        .ai-card.success h3 { color: var(--success); }
         .ai-field { margin-bottom: 1.2rem; }
+        .ai-field:last-child { margin-bottom: 0; }
         .ai-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
         .ai-value { font-size: 0.95rem; line-height: 1.6; color: #e2e8f0; }
+        .ai-quote { font-style: italic; border-left: 2px solid var(--accent-primary); padding-left: 10px; color: #cbd5e1; }
 
     </style>
 </head>
@@ -185,7 +193,7 @@
         <label>Closer</label>
         <select id="closerFilter" class="filter-control">
             <option value="all">Todos los Closers</option>
-            </select>
+        </select>
     </div>
 
     <div class="filter-group">
@@ -256,16 +264,104 @@
     <div class="modal-content">
         <div class="modal-header">
             <div>
-                <h2 class="lead-title" id="m-name">Lead</h2>
+                <h2 class="lead-title" id="m-name">Nombre del Lead</h2>
                 <div class="lead-meta">
-                    <span id="m-email">Email</span> • <span id="m-date">Fecha</span> • <span id="m-closer" style="color: var(--accent-primary); font-weight: 600;">Closer</span>
+                    <span id="m-email">email@ejemplo.com</span>
+                    <span>•</span>
+                    <span id="m-date">Fecha</span>
+                    <span>•</span>
+                    <span id="m-closer" style="color: var(--accent-primary); font-weight: 600;">Closer</span>
                 </div>
             </div>
             <button class="close-btn" onclick="closeModal('modalLead')">×</button>
         </div>
         
-        <div class="modal-body" id="m-bodyContent">
+        <div class="modal-body">
+            <div class="modal-sidebar">
+                <div class="data-card">
+                    <h4>Datos de la Llamada</h4>
+                    <div class="data-row">
+                        <label>Resultado GHL</label>
+                        <span id="m-resultBadge"></span>
+                    </div>
+                    <div class="data-row">
+                        <label>Justificación del Closer</label>
+                        <span id="m-justificacion" style="font-style: italic; color: #cbd5e1;"></span>
+                    </div>
+                    <div class="data-row">
+                        <label>Campaña / Origen</label>
+                        <span id="m-utm"></span>
+                    </div>
+                    <a id="m-fathom" href="#" target="_blank" style="display:block; margin-top:10px; text-align:center; padding:10px; background:rgba(255,255,255,0.05); color:white; border-radius:6px; text-decoration:none; font-size:0.85rem; border: 1px solid rgba(255,255,255,0.1);">▶ Ver en Fathom</a>
+                </div>
+
+                <div class="data-card">
+                    <h4>Métricas IA</h4>
+                    <div style="display: flex; gap: 20px;">
+                        <div>
+                            <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:5px;">Score IA</label>
+                            <span id="m-aiScore" style="font-size:1.8rem; font-weight:800; color:var(--accent-primary);">0/10</span>
+                        </div>
+                        <div>
+                            <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:5px;">Cierre</label>
+                            <span id="m-aiTerm" style="font-size:1.8rem; font-weight:800; color:var(--warning);">0%</span>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <div class="ai-grid">
+                <div class="ai-card primary full-width">
+                    <h3>🎯 Radiografía del Lead</h3>
+                    <div class="ai-field">
+                        <div class="ai-label">Perfil y Situación</div>
+                        <div class="ai-value" id="ai-perfil"></div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="ai-field">
+                            <div class="ai-label">Nivel de Consciencia</div>
+                            <div class="ai-value" id="ai-consciencia"></div>
+                        </div>
+                        <div class="ai-field">
+                            <div class="ai-label">Ángulo de Marketing</div>
+                            <div class="ai-value" id="ai-angulo"></div>
+                        </div>
+                    </div>
+                    <div class="ai-field" style="margin-top: 1rem;">
+                        <div class="ai-label">Frase Textual del Dolor</div>
+                        <div class="ai-value ai-quote" id="ai-frase"></div>
+                    </div>
+                </div>
+
+                <div class="ai-card danger">
+                    <h3>🔪 Autopsia (Objeciones)</h3>
+                    <div class="ai-field">
+                        <div class="ai-label">Objeción Raíz</div>
+                        <div class="ai-value" id="ai-objecion"></div>
+                    </div>
+                    <div class="ai-field">
+                        <div class="ai-label">Fricciones</div>
+                        <div class="ai-value" id="ai-friccion"></div>
+                    </div>
+                    <div class="ai-field">
+                        <div class="ai-label">Errores / Mejoras Closer</div>
+                        <div class="ai-value" id="ai-mejoras"></div>
+                    </div>
+                </div>
+
+                <div class="ai-card success">
+                    <h3>🚀 Plan de Acción</h3>
+                    <div class="ai-field">
+                        <div class="ai-label">Diagnóstico Final</div>
+                        <div class="ai-value" style="font-weight: 700; color: white;" id="ai-diagnostico"></div>
+                    </div>
+                    <div class="ai-field">
+                        <div class="ai-label">Siguientes Pasos</div>
+                        <div class="ai-value" id="ai-pasos"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -297,7 +393,7 @@
 
 <script>
     // ⚠️ REEMPLAZA ESTA URL CON TU GOOGLE SHEETS V2
-    const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMnIzrwb9zOkYcksVroAL5F52QR-cnc37zW01dzBYv450w_vIZhjCCkW8jcsC16-5pHtGR0fxDb42B/pub?gid=0&single=true&output=csv";
+    const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQhTbxvLz2rMivV3L6JN23pdggW_-Rw6NZbZRvmVekbL_naRW7h2Ay4qhDPkTJ7VkxTGmV3wPJozvnd/pub?gid=0&single=true&output=csv";
 
     let globalData = [];
     let filteredData = [];
@@ -355,7 +451,7 @@
             // Transformar Fecha GHL a Date Object para poder filtrar
             let dateObj = null;
             const fechaStr = r[0] || "";
-            // Soporta DD/MM/YYYY o D/M/YYYY
+            // Soporta DD/MM/YYYY o D/M/YYYY o YYYY-MM-DD
             if(fechaStr.includes('/')) {
                 const parts = fechaStr.split('/');
                 if(parts.length === 3) dateObj = new Date(parts[2], parts[1]-1, parts[0]);
@@ -364,6 +460,8 @@
             }
 
             const monto = parseFloat((r[5] || "0").replace(/[^0-9.-]+/g, "")) || 0;
+            
+            // 🚨 EXTRAE TODA LA INFO DEL BLOQUE DE IA (RECUPERADO DE V2) 🚨
             const aiData = parseAIBlock(r[11] || "");
 
             return {
@@ -374,24 +472,30 @@
         }).filter(x => x && x.lead);
     }
 
+    // 🚨 FUNCIÓN DE EXTRACCIÓN COMPLETA RECUPERADA DE V2 🚨
     function parseAIBlock(text) {
         if (!text || text.length < 10) return null;
         const extract = (regex) => { const m = text.match(regex); return m ? m[1].replace(/["']/g, "").trim() : 'No especificado'; };
+        
         return {
             score: extract(/Score del Lead \(IA\):\s*\*?\*?(\d+(?:\/\d+)?)/i) || '-',
             termometro: extract(/Termómetro de Cierre:\s*\*?\*?(\d+%?)/i) || '-',
+            valor: extract(/Valor de Compra\/Oferta:\s*\*?\*?([^\n]+)/i) || '-',
             perfil: extract(/Perfil y Situación Actual:\s*\*?\*?([^\n]+)/i),
+            consciencia: extract(/Nivel de Consciencia:\s*\*?\*?([^\n]+)/i),
+            angulo: extract(/Ángulo de Marketing \/ Gap:\s*\*?\*?([^\n]+)/i),
             frase: extract(/Frase Textual del Dolor:\s*\*?\*?([^\n]+)/i),
             objecion: extract(/Objeción Raíz:\s*\*?\*?([^\n]+)/i),
-            diagnostico: extract(/Diagnóstico Final:\s*\*?\*?([^\n]+)/i)
-            // Agrega el resto según necesites para el modal individual
+            fricciones: extract(/Fricciones en la Llamada:\s*\*?\*?([^\n]+)/i),
+            mejoras: extract(/Áreas de Mejora del Closer:\s*\*?\*?([\s\S]*?)(?=\n\*|\n🚀|$)/i),
+            diagnostico: extract(/Diagnóstico Final:\s*\*?\*?([^\n]+)/i),
+            pasos: extract(/Siguientes Pasos:\s*\*?\*?([^\n]+)/i)
         };
     }
 
     function populateClosers(data) {
         const select = document.getElementById('closerFilter');
         const closers = [...new Set(data.map(d => d.closer).filter(c => c && c.trim() !== ''))].sort();
-        // Limpiar excepto el "Todos"
         select.innerHTML = '<option value="all">Todos los Closers</option>';
         closers.forEach(c => {
             const opt = document.createElement('option');
@@ -408,14 +512,10 @@
         const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
         filteredData = globalData.filter(d => {
-            // 1. Search
             const matchSearch = (d.lead && d.lead.toLowerCase().includes(search)) || (d.email && d.email.toLowerCase().includes(search));
             if (!matchSearch) return false;
-
-            // 2. Closer
             if (closer !== 'all' && d.closer !== closer) return false;
 
-            // 3. Fechas
             if (dateRange !== 'all' && d.dateObj) {
                 const dt = d.dateObj;
                 if (dateRange === 'today' && dt < startToday) return false;
@@ -486,24 +586,51 @@
         document.getElementById('kpiScore').innerText = count > 0 ? (total/count).toFixed(1) : '0.0';
     }
 
+    // 🚨 LLENADO DINÁMICO DEL MODAL RECUPERADO DE V2 🚨
     function openLeadModal(item, badgeClass) {
+        // Cabecera
         document.getElementById('m-name').innerText = item.lead;
         document.getElementById('m-email').innerText = item.email || 'Sin email';
         document.getElementById('m-date').innerText = item.fechaRaw;
         document.getElementById('m-closer').innerText = item.closer;
         
-        // Mantenemos una versión resumida del modal individual para el ejemplo, 
-        // puedes expandirla con el HTML completo que tenías en la V2.
-        document.getElementById('m-bodyContent').innerHTML = `
-            <div class="data-card">
-                <h4>Veredicto IA</h4>
-                <p style="color:white; font-size:1.1rem; margin-bottom:15px;">${item.ai ? item.ai.diagnostico : 'No procesado'}</p>
-                <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:8px;">
-                    <p style="font-size:0.8rem; color:#888;">Frase del Dolor:</p>
-                    <p style="font-style:italic; color:#cbd5e1;">"${item.ai ? item.ai.frase : '...'}"</p>
-                </div>
-            </div>
-        `;
+        // Sidebar Datos Humanos
+        document.getElementById('m-resultBadge').innerHTML = `<span class="badge ${badgeClass}">${item.resultado}</span>`;
+        document.getElementById('m-justificacion').innerText = `"${item.justificacion}"`;
+        document.getElementById('m-utm').innerText = item.utm;
+        
+        const fBtn = document.getElementById('m-fathom');
+        if(item.fathom && item.fathom.includes('http')) {
+            fBtn.style.display = 'block'; fBtn.href = item.fathom;
+        } else {
+            fBtn.style.display = 'none';
+        }
+
+        // Llenar datos de IA si existen
+        if (item.ai) {
+            document.getElementById('m-aiScore').innerText = item.ai.score;
+            document.getElementById('m-aiTerm').innerText = item.ai.termometro;
+            
+            document.getElementById('ai-perfil').innerText = item.ai.perfil;
+            document.getElementById('ai-consciencia').innerText = item.ai.consciencia;
+            document.getElementById('ai-angulo').innerText = item.ai.angulo;
+            document.getElementById('ai-frase').innerText = `"${item.ai.frase}"`;
+            
+            document.getElementById('ai-objecion').innerText = item.ai.objecion;
+            document.getElementById('ai-friccion').innerText = item.ai.fricciones;
+            document.getElementById('ai-mejoras').innerText = item.ai.mejoras;
+            
+            document.getElementById('ai-diagnostico').innerText = item.ai.diagnostico;
+            document.getElementById('ai-pasos').innerText = item.ai.pasos;
+        } else {
+            // Limpiar si no hay IA
+            const fields = ['m-aiScore','m-aiTerm','ai-perfil','ai-consciencia','ai-angulo','ai-frase','ai-objecion','ai-friccion','ai-mejoras','ai-diagnostico','ai-pasos'];
+            fields.forEach(id => {
+                const element = document.getElementById(id);
+                if(element) element.innerText = 'Procesando IA o no disponible...';
+            });
+        }
+
         document.getElementById('modalLead').classList.add('active');
     }
 
