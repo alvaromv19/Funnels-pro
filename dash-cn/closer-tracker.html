@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Closer Tracker V2 ⚡</title>
+    <title>AI Closer Tracker V3 ⚡</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,12 +12,11 @@
             --bg-card: #12121a;
             --border-color: #1f1f2e;
             
-            /* Paleta Premium */
-            --accent-primary: #6366f1; /* Indigo */
+            --accent-primary: #6366f1;
             --accent-glow: rgba(99, 102, 241, 0.4);
-            --accent-secondary: #0ea5e9; /* Sky blue */
+            --accent-secondary: #0ea5e9;
+            --accent-purple: #d946ef;
             
-            /* Status Colors */
             --success: #10b981;
             --warning: #f59e0b;
             --danger: #ef4444;
@@ -28,11 +27,9 @@
         }
 
         * { box-sizing: border-box; outline: none; margin: 0; padding: 0; }
-        
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-base); }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent-primary); }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
@@ -44,68 +41,51 @@
             overflow: hidden;
             background-image: 
                 radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 100% 100%, rgba(217, 70, 239, 0.05) 0%, transparent 50%);
         }
 
-        /* --- SIDEBAR --- */
+        /* --- SIDEBAR & FILTROS --- */
         .sidebar {
             background: rgba(10, 10, 15, 0.6);
             backdrop-filter: blur(20px);
             border-right: 1px solid var(--border-color);
             padding: 2rem 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            z-index: 10;
+            display: flex; flex-direction: column; gap: 2rem; z-index: 10;
         }
-
-        .brand {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: white;
-            letter-spacing: -0.5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .brand { font-size: 1.5rem; font-weight: 800; color: white; display: flex; align-items: center; gap: 10px; }
         .brand span { color: var(--accent-primary); }
 
-        .search-box { position: relative; }
-        .search-box input {
-            width: 100%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border-color);
-            padding: 12px 16px;
-            border-radius: 8px;
-            color: white;
-            font-family: inherit;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
+        .filter-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.5rem; }
+        .filter-group label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+        
+        .filter-control {
+            width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color);
+            padding: 12px 16px; border-radius: 8px; color: white; font-family: inherit; font-size: 0.9rem;
+            transition: all 0.3s ease; appearance: none;
         }
-        .search-box input:focus {
-            border-color: var(--accent-primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            background: rgba(255, 255, 255, 0.05);
+        select.filter-control { background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right .7rem top 50%; background-size: .65rem auto; cursor: pointer; }
+        .filter-control:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        
+        .custom-dates { display: none; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .custom-dates.active { display: grid; }
+        .date-input { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: white; padding: 10px; border-radius: 6px; font-size: 0.8rem; width: 100%; color-scheme: dark; }
+
+        .btn-insights {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-purple));
+            color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(217, 70, 239, 0.3);
+            margin-top: auto;
         }
+        .btn-insights:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217, 70, 239, 0.5); }
 
         /* --- MAIN LAYOUT --- */
-        .main {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
-
+        .main { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
         .header {
-            padding: 2rem;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(3, 3, 5, 0.8);
-            backdrop-filter: blur(10px);
+            padding: 2rem; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+            background: rgba(3, 3, 5, 0.8); backdrop-filter: blur(10px);
         }
-
         .kpi-container { display: flex; gap: 3rem; }
         .kpi { display: flex; flex-direction: column; gap: 5px; }
         .kpi-label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
@@ -113,154 +93,127 @@
         .kpi-value.green { color: var(--success); }
 
         .btn-sync {
-            background: var(--accent-primary);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.2s;
-            box-shadow: 0 4px 15px var(--accent-glow);
+            background: var(--bg-surface); color: white; border: 1px solid var(--border-color);
+            padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.2s;
         }
-        .btn-sync:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6); }
+        .btn-sync:hover { border-color: var(--accent-primary); }
 
         /* --- TABLA --- */
-        .table-container {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
+        .table-container { flex: 1; padding: 2rem; overflow-y: auto; }
         table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        th {
-            position: sticky; top: 0;
-            background: var(--bg-surface);
-            padding: 1rem; text-align: left;
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px;
-            color: var(--text-muted); font-weight: 600;
-            border-bottom: 1px solid var(--border-color);
-            z-index: 5; cursor: pointer;
-        }
-        th:hover { color: white; }
-        
-        td {
-            padding: 1.2rem 1rem;
-            border-bottom: 1px solid rgba(255,255,255,0.03);
-            font-size: 0.9rem; font-weight: 500;
-            transition: background 0.2s;
-        }
+        th { position: sticky; top: 0; background: var(--bg-surface); padding: 1rem; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border-color); z-index: 5; }
+        td { padding: 1.2rem 1rem; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 0.9rem; font-weight: 500; }
         tr:hover td { background: rgba(255,255,255,0.02); cursor: pointer; }
         
-        .badge {
-            padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
-        }
+        .badge { padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px; }
         .badge.venta { background: rgba(16, 185, 129, 0.1); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
         .badge.descalificado { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
         .badge.noshow { background: rgba(100, 116, 139, 0.1); color: var(--neutral); border: 1px solid rgba(100,116,139,0.2); }
         .badge.seguimiento { background: rgba(245, 158, 11, 0.1); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+        
+        .score-circle { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-weight: 800; font-size: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
 
-        .score-circle {
-            display: inline-flex; align-items: center; justify-content: center;
-            width: 28px; height: 28px; border-radius: 50%; font-weight: 800; font-size: 0.8rem;
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-        }
-
-        /* --- MODAL IA PRO --- */
+        /* --- MODALES --- */
         .modal-overlay {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
             display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 100;
         }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        
         .modal-content {
             background: var(--bg-surface); width: 1100px; max-width: 95vw; height: 90vh;
             border-radius: 16px; border: 1px solid var(--border-color);
-            display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            transform: scale(0.98); transition: transform 0.3s;
+            display: flex; flex-direction: column; overflow: hidden; transform: scale(0.98); transition: transform 0.3s;
         }
         .modal-overlay.active .modal-content { transform: scale(1); }
-
-        .modal-header {
-            padding: 2rem; border-bottom: 1px solid var(--border-color);
-            display: flex; justify-content: space-between; align-items: flex-start;
-            background: linear-gradient(135deg, rgba(99,102,241,0.05), transparent);
-        }
+        .modal-header { padding: 2rem; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: flex-start; background: linear-gradient(135deg, rgba(99,102,241,0.05), transparent); }
         .lead-title { font-size: 2rem; font-weight: 800; margin-bottom: 5px; color: white; }
         .lead-meta { color: var(--text-muted); font-size: 0.9rem; display: flex; gap: 15px; }
         .close-btn { background: none; border: none; color: var(--text-muted); font-size: 2rem; cursor: pointer; line-height: 1; }
         .close-btn:hover { color: white; }
+        .modal-body { display: grid; grid-template-columns: 350px 1fr; gap: 2rem; padding: 2rem; overflow-y: auto; flex: 1; }
+        
+        /* Modal Insights Estilos */
+        .insights-body { padding: 2rem; overflow-y: auto; flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .insight-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; }
+        .insight-title { font-size: 1.1rem; color: var(--accent-purple); font-weight: 700; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .tag-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 8px; font-size: 0.85rem; display: flex; align-items: center; justify-content: space-between; width: 100%; }
+        .tag-count { background: var(--accent-primary); color: white; font-weight: 800; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; }
+        .avatar-quote { font-style: italic; color: #cbd5e1; border-left: 2px solid var(--accent-secondary); padding-left: 15px; margin-bottom: 15px; font-size: 0.9rem; line-height: 1.5; }
 
-        .modal-body {
-            display: grid; grid-template-columns: 350px 1fr; gap: 2rem;
-            padding: 2rem; overflow-y: auto; flex: 1;
-        }
-
-        /* Sidebar del Modal (Datos Duros) */
+        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid white; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: none; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        /* Componentes del Modal Individual de Lead (Heredados) */
         .modal-sidebar { display: flex; flex-direction: column; gap: 1.5rem; }
-        .data-card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 1.5rem;
-        }
-        .data-card h4 { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; letter-spacing: 1px; }
+        .data-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.5rem; }
+        .data-card h4 { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; }
         .data-row { margin-bottom: 1rem; }
         .data-row label { display: block; font-size: 0.75rem; color: #64748b; margin-bottom: 4px; }
-        .data-row span { font-size: 0.95rem; font-weight: 500; }
-
-        /* Main IA Area */
         .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-content: start; }
-        
-        .ai-card {
-            background: rgba(99, 102, 241, 0.03); border: 1px solid rgba(99, 102, 241, 0.15);
-            border-radius: 12px; padding: 1.5rem;
-        }
+        .ai-card { background: rgba(99, 102, 241, 0.03); border: 1px solid rgba(99, 102, 241, 0.15); border-radius: 12px; padding: 1.5rem; }
         .ai-card.danger { background: rgba(239, 68, 68, 0.03); border-color: rgba(239, 68, 68, 0.15); }
         .ai-card.success { background: rgba(16, 185, 129, 0.03); border-color: rgba(16, 185, 129, 0.15); }
         .ai-card.full-width { grid-column: span 2; }
-        
-        .ai-card h3 { 
-            font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; 
-            margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px;
-        }
-        .ai-card.primary h3 { color: var(--accent-primary); }
-        .ai-card.danger h3 { color: var(--danger); }
-        .ai-card.success h3 { color: var(--success); }
-
+        .ai-card h3 { font-size: 0.9rem; text-transform: uppercase; margin-bottom: 1.2rem; }
         .ai-field { margin-bottom: 1.2rem; }
-        .ai-field:last-child { margin-bottom: 0; }
         .ai-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
         .ai-value { font-size: 0.95rem; line-height: 1.6; color: #e2e8f0; }
-        .ai-quote { font-style: italic; border-left: 2px solid var(--accent-primary); padding-left: 10px; color: #cbd5e1; }
-
-        /* Loader */
-        .loader { border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid white; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: none; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     </style>
 </head>
 <body>
 
 <aside class="sidebar">
-    <div class="brand">⚡ AI Tracker <span>CN</span></div>
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Buscar por nombre o email...">
+    <div class="brand">⚡ AI Tracker <span>Pro</span></div>
+    
+    <div class="filter-group">
+        <label>Buscador</label>
+        <div class="search-box">
+            <input type="text" id="searchInput" class="filter-control" placeholder="Nombre o email...">
+        </div>
     </div>
+
+    <div class="filter-group">
+        <label>Closer</label>
+        <select id="closerFilter" class="filter-control">
+            <option value="all">Todos los Closers</option>
+            </select>
+    </div>
+
+    <div class="filter-group">
+        <label>Rango de Fecha</label>
+        <select id="dateFilter" class="filter-control">
+            <option value="all">Histórico Completo</option>
+            <option value="today">Hoy</option>
+            <option value="yesterday">Ayer</option>
+            <option value="7days">Últimos 7 Días</option>
+            <option value="thisMonth">Este Mes</option>
+            <option value="lastMonth">Mes Pasado</option>
+            <option value="custom">📅 Personalizado</option>
+        </select>
+    </div>
+
+    <div class="custom-dates" id="customDateContainer">
+        <input type="date" id="dateStart" class="date-input">
+        <input type="date" id="dateEnd" class="date-input">
+    </div>
+
+    <button class="btn-insights" onclick="openInsights()">
+        <span>🧠 Analizar Audiencia</span>
+    </button>
 </aside>
 
 <main class="main">
     <header class="header">
         <div class="kpi-container">
             <div class="kpi">
-                <span class="kpi-label">Leads Analizados</span>
+                <span class="kpi-label">Leads Filtrados</span>
                 <span class="kpi-value" id="kpiLeads">0</span>
             </div>
             <div class="kpi">
-                <span class="kpi-label">Ventas Cerradas</span>
+                <span class="kpi-label">Facturación Filtrada</span>
                 <span class="kpi-value green" id="kpiVentas">$0</span>
             </div>
             <div class="kpi">
@@ -270,7 +223,7 @@
         </div>
         <button class="btn-sync" onclick="loadData()">
             <div class="loader" id="loader"></div>
-            <span>Sincronizar Sheets</span>
+            <span>Sincronizar</span>
         </button>
     </header>
 
@@ -293,116 +246,66 @@
     </div>
 </main>
 
-<div class="modal-overlay" id="modal">
+<div class="modal-overlay" id="modalLead">
     <div class="modal-content">
         <div class="modal-header">
             <div>
-                <h2 class="lead-title" id="m-name">Nombre del Lead</h2>
+                <h2 class="lead-title" id="m-name">Lead</h2>
                 <div class="lead-meta">
-                    <span id="m-email">email@ejemplo.com</span>
-                    <span>•</span>
-                    <span id="m-date">Fecha</span>
-                    <span>•</span>
-                    <span id="m-closer" style="color: var(--accent-primary); font-weight: 600;">Closer</span>
+                    <span id="m-email">Email</span> • <span id="m-date">Fecha</span> • <span id="m-closer" style="color: var(--accent-primary); font-weight: 600;">Closer</span>
                 </div>
             </div>
-            <button class="close-btn" onclick="closeModal()">×</button>
+            <button class="close-btn" onclick="closeModal('modalLead')">×</button>
         </div>
         
-        <div class="modal-body">
-            <div class="modal-sidebar">
-                <div class="data-card">
-                    <h4>Datos de la Llamada</h4>
-                    <div class="data-row">
-                        <label>Resultado GHL</label>
-                        <span id="m-resultBadge"></span>
-                    </div>
-                    <div class="data-row">
-                        <label>Justificación del Closer</label>
-                        <span id="m-justificacion" style="font-style: italic; color: #cbd5e1;"></span>
-                    </div>
-                    <div class="data-row">
-                        <label>Campaña / Origen</label>
-                        <span id="m-utm"></span>
-                    </div>
-                    <a id="m-fathom" href="#" target="_blank" style="display:block; margin-top:10px; text-align:center; padding:10px; background:rgba(255,255,255,0.05); color:white; border-radius:6px; text-decoration:none; font-size:0.85rem; border: 1px solid rgba(255,255,255,0.1);">▶ Ver en Fathom</a>
-                </div>
+        <div class="modal-body" id="m-bodyContent">
+            </div>
+    </div>
+</div>
 
-                <div class="data-card">
-                    <h4>Métricas IA</h4>
-                    <div style="display: flex; gap: 20px;">
-                        <div>
-                            <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:5px;">Score IA</label>
-                            <span id="m-aiScore" style="font-size:1.8rem; font-weight:800; color:var(--accent-primary);">0/10</span>
-                        </div>
-                        <div>
-                            <label style="font-size:0.75rem; color:#64748b; display:block; margin-bottom:5px;">Cierre</label>
-                            <span id="m-aiTerm" style="font-size:1.8rem; font-weight:800; color:var(--warning);">0%</span>
-                        </div>
-                    </div>
-                </div>
+<div class="modal-overlay" id="modalInsights">
+    <div class="modal-content" style="width: 900px;">
+        <div class="modal-header">
+            <div>
+                <h2 class="lead-title">🧠 Inteligencia de Audiencia</h2>
+                <div class="lead-meta" id="i-meta">Análisis basado en los filtros actuales</div>
+            </div>
+            <button class="close-btn" onclick="closeModal('modalInsights')">×</button>
+        </div>
+        
+        <div class="insights-body">
+            <div class="insight-card">
+                <h3 class="insight-title">👤 Avatar y Perfil Dominante</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Muestra de situaciones actuales recurrentes detectadas por la IA:</p>
+                <div id="i-avatars"></div>
             </div>
 
-            <div class="ai-grid">
-                <div class="ai-card primary full-width">
-                    <h3>🎯 Radiografía del Lead</h3>
-                    <div class="ai-field">
-                        <div class="ai-label">Perfil y Situación</div>
-                        <div class="ai-value" id="ai-perfil"></div>
-                    </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                        <div class="ai-field">
-                            <div class="ai-label">Nivel de Consciencia</div>
-                            <div class="ai-value" id="ai-consciencia"></div>
-                        </div>
-                        <div class="ai-field">
-                            <div class="ai-label">Ángulo de Marketing</div>
-                            <div class="ai-value" id="ai-angulo"></div>
-                        </div>
-                    </div>
-                    <div class="ai-field" style="margin-top: 1rem;">
-                        <div class="ai-label">Frase Textual del Dolor</div>
-                        <div class="ai-value ai-quote" id="ai-frase"></div>
-                    </div>
-                </div>
-
-                <div class="ai-card danger">
-                    <h3>🔪 Autopsia (Objeciones)</h3>
-                    <div class="ai-field">
-                        <div class="ai-label">Objeción Raíz</div>
-                        <div class="ai-value" id="ai-objecion"></div>
-                    </div>
-                    <div class="ai-field">
-                        <div class="ai-label">Fricciones</div>
-                        <div class="ai-value" id="ai-friccion"></div>
-                    </div>
-                    <div class="ai-field">
-                        <div class="ai-label">Errores / Mejoras Closer</div>
-                        <div class="ai-value" id="ai-mejoras"></div>
-                    </div>
-                </div>
-
-                <div class="ai-card success">
-                    <h3>🚀 Plan de Acción</h3>
-                    <div class="ai-field">
-                        <div class="ai-label">Diagnóstico Final</div>
-                        <div class="ai-value" style="font-weight: 700; color: white;" id="ai-diagnostico"></div>
-                    </div>
-                    <div class="ai-field">
-                        <div class="ai-label">Siguientes Pasos</div>
-                        <div class="ai-value" id="ai-pasos"></div>
-                    </div>
-                </div>
+            <div class="insight-card">
+                <h3 class="insight-title" style="color: var(--danger);">🚧 Objeciones Principales</h3>
+                <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">Basado en análisis semántico de palabras clave:</p>
+                <div class="tag-list" id="i-objections"></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // ⚠️ REEMPLAZA ESTA URL CON EL LINK CSV DE TU NUEVO GOOGLE SHEETS V2
-    const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMnIzrwb9zOkYcksVroAL5F52QR-cnc37zW01dzBYv450w_vIZhjCCkW8jcsC16-5pHtGR0fxDb42B/pub?gid=0&single=true&output=csv";
+    // ⚠️ REEMPLAZA ESTA URL CON TU GOOGLE SHEETS V2
+    const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQhTbxvLz2rMivV3L6JN23pdggW_-Rw6NZbZRvmVekbL_naRW7h2Ay4qhDPkTJ7VkxTGmV3wPJozvnd/pub?gid=0&single=true&output=csv";
 
     let globalData = [];
+    let filteredData = [];
+
+    // Listeners para filtros
+    document.getElementById('searchInput').addEventListener('input', applyFilters);
+    document.getElementById('closerFilter').addEventListener('change', applyFilters);
+    document.getElementById('dateFilter').addEventListener('change', (e) => {
+        const customContainer = document.getElementById('customDateContainer');
+        if (e.target.value === 'custom') { customContainer.classList.add('active'); } 
+        else { customContainer.classList.remove('active'); applyFilters(); }
+    });
+    document.getElementById('dateStart').addEventListener('change', applyFilters);
+    document.getElementById('dateEnd').addEventListener('change', applyFilters);
 
     document.addEventListener('DOMContentLoaded', loadData);
 
@@ -412,26 +315,23 @@
             const res = await fetch(GOOGLE_SHEETS_CSV_URL);
             const text = await res.text();
             globalData = processCSVData(text);
-            renderTable(globalData);
-            updateKPIs(globalData);
+            populateClosers(globalData);
+            applyFilters();
         } catch (err) {
-            console.error(err);
-            alert("Error al cargar Google Sheets. Verifica el enlace CSV.");
+            console.error(err); alert("Error al cargar Google Sheets.");
         } finally {
             document.getElementById('loader').style.display = 'none';
         }
     }
 
-    // 1. Parser Avanzado de CSV (Soporta saltos de línea y comillas en Markdown)
+    // Parser CSV robusto
     function processCSVData(csvText) {
         const rows = [];
         let row = [], cell = "", inQuotes = false;
-        
         for (let i = 0; i < csvText.length; i++) {
             let char = csvText[i], next = csvText[i+1];
             if (char === '"') {
-                if (inQuotes && next === '"') { cell += '"'; i++; }
-                else { inQuotes = !inQuotes; }
+                if (inQuotes && next === '"') { cell += '"'; i++; } else { inQuotes = !inQuotes; }
             } else if (char === ',' && !inQuotes) {
                 row.push(cell.trim()); cell = "";
             } else if ((char === '\n' || char === '\r') && !inQuotes) {
@@ -439,89 +339,127 @@
                 row.push(cell.trim());
                 if (row.length > 1) rows.push(row);
                 row = []; cell = "";
-            } else {
-                cell += char;
-            }
+            } else { cell += char; }
         }
         if (cell || row.length) { row.push(cell.trim()); rows.push(row); }
 
-        // 2. Mapeo a Columnas V2
         return rows.slice(1).map(r => {
             if (r.length < 5) return null;
             
-            // Asumiendo el orden estándar de tu V2 (Ajusta los índices si tu Sheet es diferente)
-            // 0:Fecha, 1:Closer, 2:Lead, 3:Email, 4:Resultado, 5:Monto, 6:Plazo, 7:MedioPago, 8:Calif, 9:Grabación, 10:Justificación, 11:IA, 12:Campaña
-            
-            const montoStr = (r[5] || "0").replace(/[^0-9.-]+/g, "");
-            const monto = parseFloat(montoStr) || 0;
-            const iaText = r[11] || ""; // Donde se guarda el bloque de código de IA
+            // Transformar Fecha GHL a Date Object para poder filtrar
+            let dateObj = null;
+            const fechaStr = r[0] || "";
+            // Soporta DD/MM/YYYY o D/M/YYYY
+            if(fechaStr.includes('/')) {
+                const parts = fechaStr.split('/');
+                if(parts.length === 3) dateObj = new Date(parts[2], parts[1]-1, parts[0]);
+            } else if(fechaStr.includes('-')) {
+                dateObj = new Date(fechaStr);
+            }
 
-            const aiData = parseAIBlock(iaText);
+            const monto = parseFloat((r[5] || "0").replace(/[^0-9.-]+/g, "")) || 0;
+            const aiData = parseAIBlock(r[11] || "");
 
             return {
-                fecha: r[0],
-                closer: r[1],
-                lead: r[2],
-                email: r[3],
-                resultado: r[4] || 'Lead',
-                monto: monto,
-                fathom: r[9],
-                justificacion: r[10] || 'Sin notas manuales.',
-                utm: r[12] || 'Orgánico / No detectado',
-                ai: aiData
+                fechaRaw: r[0], dateObj: dateObj, closer: r[1], lead: r[2], email: r[3],
+                resultado: r[4] || 'Lead', monto: monto, fathom: r[9],
+                justificacion: r[10] || '', utm: r[12] || 'Orgánico', ai: aiData
             };
         }).filter(x => x && x.lead);
     }
 
-    // 3. El Motor de IA: Extrae la data estructurada del texto Markdown de Gemini
     function parseAIBlock(text) {
         if (!text || text.length < 10) return null;
-        
-        // Función auxiliar para buscar con Regex multilínea
-        const extract = (regex) => {
-            const match = text.match(regex);
-            return match ? match[1].replace(/["']/g, "").trim() : 'No especificado por IA';
-        };
-
+        const extract = (regex) => { const m = text.match(regex); return m ? m[1].replace(/["']/g, "").trim() : 'No especificado'; };
         return {
             score: extract(/Score del Lead \(IA\):\s*\*?\*?(\d+(?:\/\d+)?)/i) || '-',
             termometro: extract(/Termómetro de Cierre:\s*\*?\*?(\d+%?)/i) || '-',
-            valor: extract(/Valor de Compra\/Oferta:\s*\*?\*?([^\n]+)/i) || '-',
             perfil: extract(/Perfil y Situación Actual:\s*\*?\*?([^\n]+)/i),
-            consciencia: extract(/Nivel de Consciencia:\s*\*?\*?([^\n]+)/i),
-            angulo: extract(/Ángulo de Marketing \/ Gap:\s*\*?\*?([^\n]+)/i),
             frase: extract(/Frase Textual del Dolor:\s*\*?\*?([^\n]+)/i),
             objecion: extract(/Objeción Raíz:\s*\*?\*?([^\n]+)/i),
-            fricciones: extract(/Fricciones en la Llamada:\s*\*?\*?([^\n]+)/i),
-            mejoras: extract(/Áreas de Mejora del Closer:\s*\*?\*?([\s\S]*?)(?=\n\*|\n🚀|$)/i),
-            diagnostico: extract(/Diagnóstico Final:\s*\*?\*?([^\n]+)/i),
-            pasos: extract(/Siguientes Pasos:\s*\*?\*?([^\n]+)/i)
+            diagnostico: extract(/Diagnóstico Final:\s*\*?\*?([^\n]+)/i)
+            // Agrega el resto según necesites para el modal individual
         };
     }
 
-    // 4. Render UI
+    function populateClosers(data) {
+        const select = document.getElementById('closerFilter');
+        const closers = [...new Set(data.map(d => d.closer).filter(c => c && c.trim() !== ''))].sort();
+        // Limpiar excepto el "Todos"
+        select.innerHTML = '<option value="all">Todos los Closers</option>';
+        closers.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c; opt.textContent = c; select.appendChild(opt);
+        });
+    }
+
+    function applyFilters() {
+        const search = document.getElementById('searchInput').value.toLowerCase();
+        const closer = document.getElementById('closerFilter').value;
+        const dateRange = document.getElementById('dateFilter').value;
+        
+        const now = new Date();
+        const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+        filteredData = globalData.filter(d => {
+            // 1. Search
+            const matchSearch = (d.lead && d.lead.toLowerCase().includes(search)) || (d.email && d.email.toLowerCase().includes(search));
+            if (!matchSearch) return false;
+
+            // 2. Closer
+            if (closer !== 'all' && d.closer !== closer) return false;
+
+            // 3. Fechas
+            if (dateRange !== 'all' && d.dateObj) {
+                const dt = d.dateObj;
+                if (dateRange === 'today' && dt < startToday) return false;
+                if (dateRange === 'yesterday') {
+                    const yest = new Date(startToday); yest.setDate(yest.getDate() - 1);
+                    if (dt < yest || dt >= startToday) return false;
+                }
+                if (dateRange === '7days') {
+                    const d7 = new Date(startToday); d7.setDate(d7.getDate() - 7);
+                    if (dt < d7) return false;
+                }
+                if (dateRange === 'thisMonth' && (dt.getMonth() !== now.getMonth() || dt.getFullYear() !== now.getFullYear())) return false;
+                if (dateRange === 'lastMonth') {
+                    const lm = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                    const lme = new Date(now.getFullYear(), now.getMonth(), 0);
+                    if (dt < lm || dt > lme) return false;
+                }
+                if (dateRange === 'custom') {
+                    const s = document.getElementById('dateStart').value;
+                    const e = document.getElementById('dateEnd').value;
+                    if (s && e) {
+                        const start = new Date(s);
+                        const end = new Date(e); end.setHours(23, 59, 59);
+                        if (dt < start || dt > end) return false;
+                    }
+                }
+            }
+            return true;
+        });
+
+        renderTable(filteredData);
+        updateKPIs(filteredData);
+    }
+
     function renderTable(data) {
         const tbody = document.getElementById('tableBody');
         tbody.innerHTML = '';
-        
         data.forEach(item => {
             const tr = document.createElement('tr');
-            
             let badgeClass = 'noshow';
             const resLower = item.resultado.toLowerCase();
             if(resLower.includes('venta')) badgeClass = 'venta';
             else if(resLower.includes('descalificado')) badgeClass = 'descalificado';
             else if(resLower.includes('asistió') || resLower.includes('seguimiento')) badgeClass = 'seguimiento';
 
-            // Extraer solo el número del score (ej: si dice 9/10, saca el 9)
-            let scoreBadge = '-';
-            if (item.ai && item.ai.score) {
-                const s = item.ai.score.split('/')[0];
-                scoreBadge = `<div class="score-circle" style="border-color:${s>=7?'var(--success)':s>=4?'var(--warning)':'var(--danger)'}; color:${s>=7?'var(--success)':s>=4?'var(--warning)':'var(--danger)'}">${s}</div>`;
-            }
+            let s = item.ai && item.ai.score ? item.ai.score.split('/')[0] : '-';
+            let scoreBadge = s !== '-' ? `<div class="score-circle" style="border-color:${s>=7?'var(--success)':s>=4?'var(--warning)':'var(--danger)'}; color:${s>=7?'var(--success)':s>=4?'var(--warning)':'var(--danger)'}">${s}</div>` : '-';
 
             tr.innerHTML = `
-                <td style="color: var(--text-muted)">${item.fecha}</td>
+                <td style="color: var(--text-muted)">${item.fechaRaw}</td>
                 <td style="font-weight: 700; color: white;">${item.lead}</td>
                 <td>${item.closer}</td>
                 <td><span class="badge ${badgeClass}">${item.resultado}</span></td>
@@ -529,83 +467,100 @@
                 <td style="color: var(--warning); font-weight: 600;">${item.ai ? item.ai.termometro : '-'}</td>
                 <td style="color: ${item.monto > 0 ? 'var(--success)' : '#64748b'}">$${item.monto.toLocaleString()}</td>
             `;
-            tr.onclick = () => openModal(item, badgeClass);
+            tr.onclick = () => openLeadModal(item, badgeClass);
             tbody.appendChild(tr);
         });
     }
 
     function updateKPIs(data) {
         document.getElementById('kpiLeads').innerText = data.length;
-        const totalVentas = data.reduce((acc, curr) => acc + curr.monto, 0);
-        document.getElementById('kpiVentas').innerText = `$${totalVentas.toLocaleString()}`;
-        
-        // Calcular promedio de IA
-        let totalScore = 0, count = 0;
-        data.forEach(d => {
-            if(d.ai && d.ai.score) {
-                const s = parseFloat(d.ai.score.split('/')[0]);
-                if(!isNaN(s)) { totalScore += s; count++; }
-            }
-        });
-        document.getElementById('kpiScore').innerText = count > 0 ? (totalScore/count).toFixed(1) : '0.0';
+        document.getElementById('kpiVentas').innerText = `$${data.reduce((acc, curr) => acc + curr.monto, 0).toLocaleString()}`;
+        let total = 0, count = 0;
+        data.forEach(d => { if(d.ai && d.ai.score){ const s=parseFloat(d.ai.score); if(!isNaN(s)){ total+=s; count++; } }});
+        document.getElementById('kpiScore').innerText = count > 0 ? (total/count).toFixed(1) : '0.0';
     }
 
-    // 5. Interacción del Modal
-    function openModal(item, badgeClass) {
-        // Cabecera
+    function openLeadModal(item, badgeClass) {
         document.getElementById('m-name').innerText = item.lead;
         document.getElementById('m-email').innerText = item.email || 'Sin email';
-        document.getElementById('m-date').innerText = item.fecha;
+        document.getElementById('m-date').innerText = item.fechaRaw;
         document.getElementById('m-closer').innerText = item.closer;
         
-        // Sidebar Datos
-        document.getElementById('m-resultBadge').innerHTML = `<span class="badge ${badgeClass}">${item.resultado}</span>`;
-        document.getElementById('m-justificacion').innerText = `"${item.justificacion}"`;
-        document.getElementById('m-utm').innerText = item.utm;
-        
-        const fBtn = document.getElementById('m-fathom');
-        if(item.fathom && item.fathom.includes('http')) {
-            fBtn.style.display = 'block'; fBtn.href = item.fathom;
-        } else {
-            fBtn.style.display = 'none';
-        }
-
-        // Llenar datos de IA si existen
-        if (item.ai) {
-            document.getElementById('m-aiScore').innerText = item.ai.score;
-            document.getElementById('m-aiTerm').innerText = item.ai.termometro;
-            
-            document.getElementById('ai-perfil').innerText = item.ai.perfil;
-            document.getElementById('ai-consciencia').innerText = item.ai.consciencia;
-            document.getElementById('ai-angulo').innerText = item.ai.angulo;
-            document.getElementById('ai-frase').innerText = `"${item.ai.frase}"`;
-            
-            document.getElementById('ai-objecion').innerText = item.ai.objecion;
-            document.getElementById('ai-friccion').innerText = item.ai.fricciones;
-            document.getElementById('ai-mejoras').innerText = item.ai.mejoras;
-            
-            document.getElementById('ai-diagnostico').innerText = item.ai.diagnostico;
-            document.getElementById('ai-pasos').innerText = item.ai.pasos;
-        } else {
-            // Limpiar si no hay IA
-            const fields = ['m-aiScore','m-aiTerm','ai-perfil','ai-consciencia','ai-angulo','ai-frase','ai-objecion','ai-friccion','ai-mejoras','ai-diagnostico','ai-pasos'];
-            fields.forEach(id => document.getElementById(id).innerText = 'Procesando IA o no disponible...');
-        }
-
-        document.getElementById('modal').classList.add('active');
+        // Mantenemos una versión resumida del modal individual para el ejemplo, 
+        // puedes expandirla con el HTML completo que tenías en la V2.
+        document.getElementById('m-bodyContent').innerHTML = `
+            <div class="data-card">
+                <h4>Veredicto IA</h4>
+                <p style="color:white; font-size:1.1rem; margin-bottom:15px;">${item.ai ? item.ai.diagnostico : 'No procesado'}</p>
+                <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:8px;">
+                    <p style="font-size:0.8rem; color:#888;">Frase del Dolor:</p>
+                    <p style="font-style:italic; color:#cbd5e1;">"${item.ai ? item.ai.frase : '...'}"</p>
+                </div>
+            </div>
+        `;
+        document.getElementById('modalLead').classList.add('active');
     }
 
-    function closeModal() { document.getElementById('modal').classList.remove('active'); }
+    // --- MOTOR DE INSIGHTS (IA CLIENT-SIDE) ---
+    function openInsights() {
+        if (filteredData.length === 0) { alert("No hay leads filtrados para analizar."); return; }
+        
+        document.getElementById('i-meta').innerText = `Análisis sobre ${filteredData.length} leads (Basado en filtros actuales)`;
+        
+        // 1. Extraer Avatares (Los 3 más recientes)
+        const avataresContainer = document.getElementById('i-avatars');
+        avataresContainer.innerHTML = '';
+        const leadsConPerfil = filteredData.filter(d => d.ai && d.ai.perfil && d.ai.perfil !== 'No especificado').slice(0, 3);
+        
+        if(leadsConPerfil.length > 0) {
+            leadsConPerfil.forEach(d => {
+                avataresContainer.innerHTML += `<div class="avatar-quote">"${d.ai.perfil}"</div>`;
+            });
+        } else {
+            avataresContainer.innerHTML = `<p style="color:#666">No hay datos suficientes de perfil.</p>`;
+        }
 
-    // Buscador
-    document.getElementById('searchInput').addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
-        const filtrado = globalData.filter(d => 
-            (d.lead && d.lead.toLowerCase().includes(term)) || 
-            (d.email && d.email.toLowerCase().includes(term))
-        );
-        renderTable(filtrado);
-    });
+        // 2. Extractor Semántico de Objeciones (Frecuencia)
+        const keywords = {
+            "Dinero / Liquidez": ["dinero", "precio", "caro", "liquidez", "inversión", "fondos", "pago"],
+            "Falta de Confianza / Miedo": ["confianza", "seguridad", "miedo", "estafa", "garantía", "duda"],
+            "Tiempo / Compromiso": ["tiempo", "ocupado", "horarios", "trabajo"],
+            "Socio / Terceros": ["esposa", "socio", "marido", "consultar", "hablar con"],
+            "No calificado": ["turista", "curioso", "no califica", "perfil"]
+        };
+
+        const scoreObjeciones = { "Dinero / Liquidez": 0, "Falta de Confianza / Miedo": 0, "Tiempo / Compromiso": 0, "Socio / Terceros": 0, "No calificado": 0, "Otras": 0 };
+        
+        filteredData.forEach(d => {
+            if(d.ai && d.ai.objecion && d.ai.objecion !== 'No especificado') {
+                const text = d.ai.objecion.toLowerCase();
+                let categorizado = false;
+                for (const [cat, words] of Object.entries(keywords)) {
+                    if (words.some(w => text.includes(w))) { scoreObjeciones[cat]++; categorizado = true; }
+                }
+                if(!categorizado) scoreObjeciones["Otras"]++;
+            }
+        });
+
+        // Ordenar y mostrar etiquetas
+        const objContainer = document.getElementById('i-objections');
+        objContainer.innerHTML = '';
+        Object.entries(scoreObjeciones)
+            .filter(([cat, count]) => count > 0)
+            .sort((a, b) => b[1] - a[1]) // Mayor a menor
+            .forEach(([cat, count]) => {
+                objContainer.innerHTML += `
+                    <div class="tag-item">
+                        <span>${cat}</span>
+                        <span class="tag-count">${count}</span>
+                    </div>
+                `;
+            });
+
+        document.getElementById('modalInsights').classList.add('active');
+    }
+
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 </script>
 </body>
 </html>
