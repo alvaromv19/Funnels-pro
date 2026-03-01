@@ -70,29 +70,45 @@
 
         <section id="laboratorio" class="tab-content">
             <h2 class="text-3xl font-bold mb-2 text-white">2. Laboratorio Creativo</h2>
-            <p class="text-slate-400 mb-6">Generación masiva de copys y fondos visuales. Revisa y aprueba la tanda antes de inyectar.</p>
+            <p class="text-slate-400 mb-6">Generación masiva de copys y fondos visuales. Define el estilo, revisa y aprueba la tanda antes de inyectar.</p>
             
-            <div class="mb-6 flex flex-wrap justify-between items-end bg-slate-900 p-5 rounded-xl border border-slate-800 shadow-lg">
-                <div class="flex space-x-6">
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-2">Volumen de la Tanda</label>
-                        <select class="bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500 min-w-[150px]">
-                            <option>10 Variaciones</option>
-                            <option>20 Variaciones</option>
-                            <option>50 Variaciones</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-2">Formato Visual</label>
-                        <select class="bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500 min-w-[150px]">
-                            <option>1080x1080 (Feed)</option>
-                            <option>1080x1920 (Reels/Stories)</option>
-                        </select>
+            <div class="mb-8 bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg flex flex-col space-y-5">
+                
+                <div class="w-full">
+                    <label class="block text-xs font-semibold text-sky-400 mb-2 uppercase tracking-wider"><i class="fa-solid fa-terminal mr-2"></i>Director Creativo (Instrucciones IA)</label>
+                    <div class="flex items-start bg-slate-800 border border-slate-700 rounded-lg overflow-hidden focus-within:border-sky-500 transition-colors shadow-inner">
+                        
+                        <button class="p-4 text-slate-400 hover:text-sky-400 hover:bg-slate-700/50 transition border-r border-slate-700 flex flex-col items-center justify-center h-full min-h-[90px]" title="Cargar imagen de referencia">
+                            <i class="fa-solid fa-image text-xl mb-1"></i>
+                            <span class="text-[10px] font-semibold uppercase tracking-widest">Ref.</span>
+                        </button>
+                        
+                        <textarea id="prompt-instruccion" class="w-full bg-transparent text-white p-4 min-h-[90px] focus:outline-none resize-y text-sm leading-relaxed" placeholder="Ej: Genera un fondo para anuncio de marketing. Escenario de oficina moderna, iluminación de neón sutil. Estilo hiperrealista y limpio. Deja espacio negativo en el centro..."></textarea>
                     </div>
                 </div>
-                <button id="btn-generar" onclick="generarCreativos()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-2.5 px-6 rounded-lg shadow-lg shadow-sky-500/30 transition-all">
-                    <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generar Tanda con IA
-                </button>
+
+                <div class="flex flex-wrap justify-between items-end w-full border-t border-slate-800 pt-5 mt-2">
+                    <div class="flex space-x-6">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-2">Volumen de la Tanda</label>
+                            <select id="volumen-tanda" class="bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500 min-w-[150px]">
+                                <option value="10">10 Variaciones</option>
+                                <option value="20">20 Variaciones</option>
+                                <option value="50">50 Variaciones</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-400 mb-2">Formato Visual</label>
+                            <select id="formato-tanda" class="bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500 min-w-[150px]">
+                                <option value="1080">1080x1080 (Feed)</option>
+                                <option value="1920">1080x1920 (Reels/Stories)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="btn-generar" onclick="generarCreativos()" class="bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg shadow-sky-500/30 transition-all flex items-center text-md mt-4 sm:mt-0">
+                        <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generar Tanda con IA
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -109,20 +125,6 @@
                         <div class="flex space-x-2 mt-auto">
                             <button class="flex-1 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 py-2 rounded text-sm font-bold transition">Aprobar</button>
                             <button class="flex-1 bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white border border-rose-500/30 py-2 rounded text-sm font-bold transition">Descartar</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-lg opacity-60">
-                    <div class="h-48 bg-slate-800 flex items-center justify-center relative border-b border-slate-800">
-                        <span class="text-slate-500 text-sm flex flex-col items-center"><i class="fa-regular fa-image text-4xl mb-2 text-slate-600"></i>Preview Pillow Engine</span>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex justify-between items-start mb-2">
-                            <p class="text-xs text-sky-400 font-mono font-bold">T1-SC2-Hook_Deseo</p>
-                        </div>
-                        <p class="text-sm text-slate-300 line-clamp-3 mb-4 leading-relaxed">"Imagina despertar, revisar tu Business Manager y ver un ROAS de 4x sostenido. Ese es el poder de..."</p>
-                        <div class="flex space-x-2 mt-auto">
-                            <button disabled class="flex-1 bg-slate-800 text-slate-500 border border-slate-700 py-2 rounded text-sm font-bold cursor-not-allowed">Aprobado</button>
                         </div>
                     </div>
                 </div>
