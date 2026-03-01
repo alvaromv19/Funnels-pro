@@ -381,14 +381,6 @@
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({
                         prompt: promptInput,
-                        volumen: cantidad, // Usamos la variable validada
-                        formato: formatoInput
-                    }),
-                    const response = await fetch('http://127.0.0.1:8000/api/laboratorio/generar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({
-                        prompt: promptInput,
                         volumen: cantidad,
                         formato: formatoInput,
                         imagen_referencia: referenciaBase64 // ¡Aquí viaja la imagen al backend!
