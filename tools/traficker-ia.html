@@ -365,7 +365,6 @@
                 return;
             }
 
-            // AQUI ESTÁ EL CAMBIO DE SEGURIDAD NUMÉRICA
             let cantidad = parseInt(volumenInput);
             if (isNaN(cantidad) || cantidad < 1) {
                 alert("⚠️ Por favor ingresa un número válido de variaciones (mínimo 1).");
@@ -383,7 +382,7 @@
                         prompt: promptInput,
                         volumen: cantidad,
                         formato: formatoInput,
-                        imagen_referencia: referenciaBase64 // ¡Aquí viaja la imagen al backend!
+                        imagen_referencia: referenciaBase64 // Aquí viaja la imagen al backend
                     })
                 });
                 
@@ -392,36 +391,40 @@
                 if(data.status === "success") {
                     console.log("🔥 RESULTADO DE LA IA:", data);
                     
-                    // 1. Seleccionamos la grilla
                     const grilla = document.getElementById('grilla-resultados');
-                    grilla.innerHTML = ''; // Limpiamos los ejemplos falsos
+                    grilla.innerHTML = ''; 
                     
-                    // 2. Iteramos sobre los textos generados y creamos las tarjetas
-                    data.copys.forEach((copy, index) => {
+                    // --- EL CAMBIO CLAVE: Leer data.resultados en lugar de data.copys ---
+                    data.resultados.forEach((res, index) => {
+                        const copy = res.copy_data;
+                        const imgRenderizada = res.imagen_renderizada;
                         const num = index + 1;
                         
-                        // Plantilla HTML dinámica para cada anuncio
                         const cardHTML = `
-                            <div class="bg-slate-900 rounded-xl border border-sky-500/30 overflow-hidden shadow-lg shadow-sky-900/20 transform transition hover:scale-[1.02]">
-                                <div class="h-48 bg-slate-800 flex items-center justify-center relative border-b border-slate-800 overflow-hidden">
-                                    <img src="${data.imagen_fondo}" alt="Fondo generado por IA" class="w-full h-full object-cover">
+                            <div class="bg-slate-900 rounded-xl border border-sky-500/30 overflow-hidden shadow-lg shadow-sky-900/20 transform transition hover:scale-[1.02] flex flex-col">
+                                <div class="h-56 bg-slate-800 relative border-b border-slate-800 overflow-hidden group">
+                                    <img src="${imgRenderizada}" alt="Ad Creative" class="w-full h-full object-cover">
+                                    <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center backdrop-blur-sm">
+                                        <button onclick="abrirModal('${imgRenderizada}')" class="bg-sky-600 hover:bg-sky-500 text-white w-12 h-12 rounded-full shadow-lg transform scale-75 group-hover:scale-100 transition duration-300 flex items-center justify-center text-lg">
+                                            <i class="fa-solid fa-expand"></i>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="p-5">
+                                <div class="p-5 flex-1 flex flex-col">
                                     <div class="flex justify-between items-start mb-2">
                                         <p class="text-xs text-sky-400 font-mono font-bold">T1-SC${num}-IA</p>
-                                        <span class="text-[10px] bg-emerald-900/50 px-2 py-1 rounded text-emerald-400 border border-emerald-500/30">Copy IA</span>
+                                        <span class="text-[10px] bg-emerald-900/50 px-2 py-1 rounded text-emerald-400 border border-emerald-500/30">Render + Copy</span>
                                     </div>
-                                    <h4 class="text-sm font-bold text-white mb-1"><i class="fa-solid fa-quote-left text-sky-500 text-xs mr-1"></i> ${copy.hook || copy.headline}</h4>
+                                    <h4 class="text-sm font-bold text-white mb-2"><i class="fa-solid fa-quote-left text-sky-500 text-xs mr-1"></i> ${copy.hook || copy.headline}</h4>
                                     <p class="text-sm text-slate-300 line-clamp-3 mb-4 leading-relaxed">${copy.primary_text}</p>
                                     
                                     <div class="flex space-x-2 mt-auto">
                                         <button class="flex-1 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 py-2 rounded text-sm font-bold transition">Aprobar</button>
-                                        <button class="flex-1 bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white border border-rose-500/30 py-2 rounded text-sm font-bold transition">Descartar</button>
+                                        <button class="flex-1 bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white border border-rose-500/30 py-2 rounded text-sm font-bold transition"><i class="fa-solid fa-trash-can"></i></button>
                                     </div>
                                 </div>
                             </div>
                         `;
-                        // Agregamos la tarjeta a la pantalla
                         grilla.innerHTML += cardHTML;
                     });
                     
@@ -430,14 +433,27 @@
                 }
                 
             } catch (error) {
-                console.error("Error:", error);
-                alert("Error de conexión con el backend.");
+                console.error("Error procesando JS:", error);
+                alert("Error de lectura en el navegador. Revisa la consola F12.");
             } finally {
                 btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Generar Tanda con IA';
                 btn.disabled = false;
             }
         }
 
+        // --- FUNCIONES DEL MODAL DE PREVISUALIZACIÓN ---
+        function abrirModal(imgSrc) {
+            const modal = document.getElementById('image-modal');
+            document.getElementById('modal-img').src = imgSrc;
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+        }
+
+        function cerrarModal() {
+            const modal = document.getElementById('image-modal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+        }
     </script>
     
 </body>
