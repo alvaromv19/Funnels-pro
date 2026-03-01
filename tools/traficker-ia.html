@@ -90,12 +90,8 @@
                 <div class="flex flex-wrap justify-between items-end w-full border-t border-slate-800 pt-5 mt-2">
                     <div class="flex space-x-6">
                         <div>
-                            <label class="block text-xs font-semibold text-slate-400 mb-2">Volumen de la Tanda</label>
-                            <select id="volumen-tanda" class="bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500 min-w-[150px]">
-                                <option value="10">10 Variaciones</option>
-                                <option value="20">20 Variaciones</option>
-                                <option value="50">50 Variaciones</option>
-                            </select>
+                            <label class="block text-xs font-semibold text-slate-400 mb-2">Cant. de Anuncios</label>
+                            <input type="number" id="volumen-tanda" min="1" max="100" value="3" class="bg-slate-800 border border-slate-700 text-white rounded-lg p-2.5 focus:outline-none focus:border-sky-500 min-w-[150px]" placeholder="Ej: 5">
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-slate-400 mb-2">Formato Visual</label>
@@ -112,21 +108,8 @@
             </div>
 
             <div id="grilla-resultados" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-lg">
-                    <div class="h-48 bg-slate-800 flex items-center justify-center relative border-b border-slate-800">
-                        <span class="text-slate-500 text-sm flex flex-col items-center"><i class="fa-regular fa-image text-4xl mb-2 text-slate-600"></i>Preview Pillow Engine</span>
-                    </div>
-                    <div class="p-5">
-                        <div class="flex justify-between items-start mb-2">
-                            <p class="text-xs text-sky-400 font-mono font-bold">T1-SC1-Hook_Dolor</p>
-                            <span class="text-[10px] bg-slate-800 px-2 py-1 rounded text-slate-300">Copy IA</span>
-                        </div>
-                        <p class="text-sm text-slate-300 line-clamp-3 mb-4 leading-relaxed">"¿Cansado de lanzar campañas que solo consumen tu presupuesto sin traer ventas reales? Descubre la estructura exacta..."</p>
-                        <div class="flex space-x-2 mt-auto">
-                            <button class="flex-1 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 py-2 rounded text-sm font-bold transition">Aprobar</button>
-                            <button class="flex-1 bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white border border-rose-500/30 py-2 rounded text-sm font-bold transition">Descartar</button>
-                        </div>
-                    </div>
+                <div class="bg-slate-900 rounded-xl border border-slate-800 overflow-hidden shadow-lg opacity-50 flex items-center justify-center p-10 col-span-full">
+                    <p class="text-slate-500 text-sm"><i class="fa-solid fa-robot mr-2"></i>Esperando instrucciones para generar creativos...</p>
                 </div>
             </div>
         </section>
@@ -212,7 +195,7 @@
                             <p class="text-emerald-400 font-bold">↳ 🎯 AD SET 2: Broad - Dynamic Limit</p>
                             <p class="ml-6 text-slate-400">↳ 🖼️ AD: T1-SC2-Hook_Deseo (Img_02.png)</p>
                         </div>
-                        <p class="text-slate-500 italic mt-2">... (Continúa hasta completar los 10 Ad Sets aprobados)</p>
+                        <p class="text-slate-500 italic mt-2">... (Continúa hasta completar los Ad Sets aprobados)</p>
                     </div>
                 </div>
             </div>
@@ -335,8 +318,16 @@
             const volumenInput = document.getElementById('volumen-tanda').value;
             const formatoInput = document.getElementById('formato-tanda').value;
 
+            // Validación de texto vacío
             if (!promptInput.trim()) {
                 alert("⚠️ Escribe las instrucciones para el Director Creativo antes de generar.");
+                return;
+            }
+
+            // AQUI ESTÁ EL CAMBIO DE SEGURIDAD NUMÉRICA
+            let cantidad = parseInt(volumenInput);
+            if (isNaN(cantidad) || cantidad < 1) {
+                alert("⚠️ Por favor ingresa un número válido de variaciones (mínimo 1).");
                 return;
             }
             
@@ -349,7 +340,7 @@
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
                     body: JSON.stringify({
                         prompt: promptInput,
-                        volumen: parseInt(volumenInput),
+                        volumen: cantidad, // Usamos la variable validada
                         formato: formatoInput
                     })
                 });
