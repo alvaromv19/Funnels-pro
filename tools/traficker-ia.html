@@ -65,11 +65,29 @@
             <p class="text-slate-400 mb-6">Pega aquí la información cruda del cliente, textos de su web, o tu investigación. La IA extraerá la médula estratégica.</p>
             
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg flex flex-col">
-                    <label class="block text-xs font-semibold text-sky-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-database mr-2"></i>Data del Proyecto / Cliente</label>
-                    <textarea id="texto-ingesta" class="w-full bg-slate-800 border border-slate-700 text-slate-300 p-4 rounded-lg focus:outline-none focus:border-sky-500 resize-y flex-1 min-h-[250px] text-sm leading-relaxed shadow-inner" placeholder="Ej: El cliente es una clínica dental. Venden implantes. Su público son adultos mayores que perdieron dientes y les da vergüenza sonreír..."></textarea>
+                <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 shadow-lg flex flex-col relative" id="estrategia-drop-zone" ondragover="estrategiaDragOver(event)" ondragleave="estrategiaDragLeave(event)" ondrop="estrategiaDrop(event)">
                     
-                    <button id="btn-analizar" onclick="analizarContexto()" class="mt-4 bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-sky-500/30 transition-all flex justify-center items-center">
+                    <label class="block text-xs font-semibold text-sky-400 mb-3 uppercase tracking-wider"><i class="fa-solid fa-database mr-2"></i>Data del Proyecto / Cliente</label>
+                    
+                    <div class="mb-4">
+                        <div class="flex items-center bg-slate-800 border border-slate-700 rounded-lg overflow-hidden focus-within:border-sky-500 transition-colors">
+                            <div class="p-3 text-slate-500"><i class="fa-solid fa-link"></i></div>
+                            <input type="url" id="url-ingesta" placeholder="Enlace a Google Drive, Landing Page, Notion..." class="w-full bg-transparent text-white p-3 focus:outline-none text-sm">
+                        </div>
+                    </div>
+
+                    <textarea id="texto-ingesta" class="w-full bg-slate-800 border border-slate-700 text-slate-300 p-4 rounded-lg focus:outline-none focus:border-sky-500 resize-y min-h-[120px] text-sm leading-relaxed shadow-inner mb-4" placeholder="O escribe/pega aquí las notas del cliente..."></textarea>
+                    
+                    <div class="border-2 border-dashed border-slate-700 rounded-lg p-5 text-center hover:border-sky-500 hover:bg-slate-800/50 transition-colors cursor-pointer" onclick="document.getElementById('estrategia-file-upload').click()">
+                        <input type="file" id="estrategia-file-upload" multiple accept=".pdf,.txt" class="hidden" onchange="estrategiaFileSelect(event)">
+                        <i class="fa-solid fa-file-arrow-up text-3xl text-sky-500/70 mb-3 drop-shadow-md"></i>
+                        <p class="text-sm font-semibold text-slate-300">Arrastra documentos aquí</p>
+                        <p class="text-xs text-slate-500 mt-1">Soporta PDF y TXT</p>
+                    </div>
+
+                    <div id="estrategia-archivos-container" class="flex flex-col gap-2 mt-4 w-full"></div>
+                    
+                    <button id="btn-analizar" onclick="analizarContexto()" class="mt-auto pt-6 w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-sky-500/30 transition-all flex justify-center items-center">
                         <i class="fa-solid fa-brain mr-2"></i> Extraer Estrategia
                     </button>
                 </div>
@@ -441,24 +459,83 @@
             }
         }
 
-        // --- LÓGICA DE INGESTA (PASO 1) ---
+        // --- LÓGICA DE INGESTA DE DOCUMENTOS (PASO 1) ---
+        let estrategiaArchivos = [];
+
+        function estrategiaDragOver(e) {
+            e.preventDefault();
+            document.getElementById('estrategia-drop-zone').classList.add('border-sky-500', 'bg-sky-900/10');
+        }
+        function estrategiaDragLeave(e) {
+            e.preventDefault();
+            document.getElementById('estrategia-drop-zone').classList.remove('border-sky-500', 'bg-sky-900/10');
+        }
+        function estrategiaDrop(e) {
+            e.preventDefault();
+            document.getElementById('estrategia-drop-zone').classList.remove('border-sky-500', 'bg-sky-900/10');
+            estrategiaProcesarArchivos(e.dataTransfer.files);
+        }
+        function estrategiaFileSelect(e) {
+            estrategiaProcesarArchivos(e.target.files);
+        }
+        function estrategiaProcesarArchivos(files) {
+            if (!files || files.length === 0) return;
+            Array.from(files).forEach(file => {
+                // Filtro básico de seguridad
+                if(file.name.endsWith('.pdf') || file.name.endsWith('.txt')) {
+                    estrategiaArchivos.push(file);
+                } else {
+                    alert("Por ahora solo soportamos archivos PDF y TXT.");
+                }
+            });
+            renderizarArchivosEstrategia();
+        }
+        function renderizarArchivosEstrategia() {
+            const container = document.getElementById('estrategia-archivos-container');
+            container.innerHTML = '';
+            estrategiaArchivos.forEach((file, index) => {
+                container.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-800 p-3 rounded-lg border border-slate-700 shadow-sm">
+                        <span class="text-xs text-slate-300 truncate flex-1 font-semibold"><i class="fa-solid fa-file-pdf mr-2 text-rose-400 text-lg"></i>${file.name}</span>
+                        <button onclick="eliminarArchivoEstrategia(event, ${index})" class="text-slate-500 hover:text-rose-500 ml-3 transition"><i class="fa-solid fa-xmark text-lg"></i></button>
+                    </div>
+                `;
+            });
+        }
+        function eliminarArchivoEstrategia(e, index) {
+            e.stopPropagation();
+            estrategiaArchivos.splice(index, 1);
+            renderizarArchivosEstrategia();
+            document.getElementById('estrategia-file-upload').value = '';
+        }
+
+        // --- ENVIAR DATOS AL BACKEND (PASO 1) ---
         async function analizarContexto() {
             const texto = document.getElementById('texto-ingesta').value;
+            const urlDrive = document.getElementById('url-ingesta').value;
             const btn = document.getElementById('btn-analizar');
 
-            if(!texto.trim()) {
-                alert("⚠️ Pega algo de información antes de analizar.");
+            if(!texto.trim() && !urlDrive.trim() && estrategiaArchivos.length === 0) {
+                alert("⚠️ Ingresa texto, un enlace o sube un documento para analizar.");
                 return;
             }
 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Procesando...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Leyendo documentos y analizando...';
             btn.disabled = true;
+
+            // Al enviar archivos, usamos FormData en lugar de JSON
+            const formData = new FormData();
+            formData.append("contexto", texto);
+            formData.append("url_drive", urlDrive);
+            
+            estrategiaArchivos.forEach(file => {
+                formData.append("archivos", file);
+            });
 
             try {
                 const response = await fetch('http://127.0.0.1:8000/api/estrategia/analizar', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contexto: texto })
+                    body: formData // No le ponemos headers, fetch los pone automáticamente para form-data
                 });
 
                 const jsonResponse = await response.json();
@@ -466,19 +543,14 @@
                 if(jsonResponse.status === "success") {
                     const data = jsonResponse.data;
                     
-                    // Ocultar estado vacío
                     document.getElementById('estrategia-vacia').classList.add('opacity-0');
                     setTimeout(() => { document.getElementById('estrategia-vacia').classList.add('hidden'); }, 300);
 
-                    // Llenar datos
                     document.getElementById('res-avatar').innerText = data.avatar;
-                    
                     document.getElementById('res-dolores').innerHTML = '';
                     data.dolores.forEach(d => document.getElementById('res-dolores').innerHTML += `<li>${d}</li>`);
-                    
                     document.getElementById('res-deseos').innerHTML = '';
                     data.deseos.forEach(d => document.getElementById('res-deseos').innerHTML += `<li>${d}</li>`);
-                    
                     document.getElementById('res-angulos').innerHTML = '';
                     data.angulos.forEach(a => document.getElementById('res-angulos').innerHTML += `<li>${a}</li>`);
                     
