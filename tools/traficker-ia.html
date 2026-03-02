@@ -520,10 +520,9 @@
                 return;
             }
 
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Leyendo documentos y analizando...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i>Leyendo y analizando...';
             btn.disabled = true;
 
-            // Al enviar archivos, usamos FormData en lugar de JSON
             const formData = new FormData();
             formData.append("contexto", texto);
             formData.append("url_drive", urlDrive);
@@ -535,8 +534,18 @@
             try {
                 const response = await fetch('http://127.0.0.1:8000/api/estrategia/analizar', {
                     method: 'POST',
-                    body: formData // No le ponemos headers, fetch los pone automáticamente para form-data
+                    body: formData
                 });
+
+                // NUEVO: Detector de errores HTTP (como el 422 o 500)
+                if (!response.ok) {
+                    const errData = await response.json();
+                    console.error("Error del backend:", errData);
+                    alert("Error del Servidor: " + (errData.detail || "Revisa la terminal de Python"));
+                    btn.innerHTML = '<i class="fa-solid fa-brain mr-2"></i> Extraer Estrategia';
+                    btn.disabled = false;
+                    return;
+                }
 
                 const jsonResponse = await response.json();
 
@@ -546,21 +555,21 @@
                     document.getElementById('estrategia-vacia').classList.add('opacity-0');
                     setTimeout(() => { document.getElementById('estrategia-vacia').classList.add('hidden'); }, 300);
 
-                    document.getElementById('res-avatar').innerText = data.avatar;
+                    document.getElementById('res-avatar').innerText = data.avatar || "No detectado";
                     document.getElementById('res-dolores').innerHTML = '';
-                    data.dolores.forEach(d => document.getElementById('res-dolores').innerHTML += `<li>${d}</li>`);
+                    (data.dolores || []).forEach(d => document.getElementById('res-dolores').innerHTML += `<li>${d}</li>`);
                     document.getElementById('res-deseos').innerHTML = '';
-                    data.deseos.forEach(d => document.getElementById('res-deseos').innerHTML += `<li>${d}</li>`);
+                    (data.deseos || []).forEach(d => document.getElementById('res-deseos').innerHTML += `<li>${d}</li>`);
                     document.getElementById('res-angulos').innerHTML = '';
-                    data.angulos.forEach(a => document.getElementById('res-angulos').innerHTML += `<li>${a}</li>`);
+                    (data.angulos || []).forEach(a => document.getElementById('res-angulos').innerHTML += `<li>${a}</li>`);
                     
                 } else {
-                    alert("Error: " + jsonResponse.mensaje);
+                    alert("Error de IA: " + jsonResponse.mensaje);
                 }
 
             } catch (error) {
                 console.error(error);
-                alert("Error de conexión al analizar.");
+                alert("Error crítico de conexión.");
             } finally {
                 btn.innerHTML = '<i class="fa-solid fa-brain mr-2"></i> Extraer Estrategia';
                 btn.disabled = false;
