@@ -407,56 +407,93 @@
         }
 
         // --- BASE DE DATOS LOCAL (LOCALSTORAGE) ---
-        function guardarEnBoveda(b64Image, copyText, hook) {
-            const item = {
-                id: Date.now(),
-                imagen: b64Image,
-                texto: copyText,
-                titulo: hook,
-                fecha: new Date().toLocaleDateString()
-            };
-            
-            let boveda = JSON.parse(localStorage.getItem('evo_boveda') || '[]');
-            boveda.unshift(item); // Agrega al principio
-            localStorage.setItem('evo_boveda', JSON.stringify(boveda));
-            
-            alert("✅ ¡Aprobado y guardado en tu Bóveda!");
+        // --- BASE DE DATOS EN LA NUBE (SUPABASE) ---
+        async function guardarEnBoveda(event, imgUrl, copyText, hook) {
+            const btn = event.target;
+            const textoOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Guardando...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/boveda/guardar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        imagen_url: imgUrl,
+                        titulo: hook,
+                        texto_principal: copyText
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if(data.status === 'success') {
+                    btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> ¡En Bóveda!';
+                    btn.classList.replace('bg-emerald-600/20', 'bg-emerald-600');
+                    btn.classList.replace('text-emerald-400', 'text-white');
+                    cargarBoveda(); // Recarga la pestaña 6 silenciosamente
+                } else {
+                    alert("Error guardando en la nube.");
+                    btn.innerHTML = textoOriginal;
+                    btn.disabled = false;
+                }
+            } catch (error) {
+                console.error(error);
+                alert("Error de conexión al guardar.");
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
+            }
         }
 
-        function cargarBoveda() {
+        async function cargarBoveda() {
             const grilla = document.getElementById('grilla-boveda');
-            let boveda = JSON.parse(localStorage.getItem('evo_boveda') || '[]');
+            grilla.innerHTML = '<div class="col-span-full flex flex-col items-center justify-center py-10"><i class="fa-solid fa-cloud-arrow-down text-4xl text-sky-500 mb-3 animate-bounce"></i><p class="text-slate-400">Sincronizando con Supabase...</p></div>';
             
-            grilla.innerHTML = '';
-            if(boveda.length === 0) {
-                grilla.innerHTML = '<p class="text-slate-500 col-span-full">Tu bóveda está vacía. Genera y aprueba creativos en el Laboratorio.</p>';
-                return;
-            }
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/boveda/listar');
+                const jsonResponse = await response.json();
+                
+                if(jsonResponse.status === 'success') {
+                    const boveda = jsonResponse.data;
+                    grilla.innerHTML = '';
+                    
+                    if(boveda.length === 0) {
+                        grilla.innerHTML = '<p class="text-slate-500 col-span-full text-center py-10 bg-slate-900 rounded-xl border border-slate-800"><i class="fa-solid fa-vault text-3xl mb-3 block"></i>Tu bóveda está vacía. Aprueba anuncios para guardarlos aquí.</p>';
+                        return;
+                    }
 
-            boveda.forEach(item => {
-                grilla.innerHTML += `
-                    <div class="bg-slate-900 rounded-xl border border-amber-500/30 overflow-hidden shadow-lg">
-                        <div class="h-40 relative group">
-                            <img src="${item.imagen}" class="w-full h-full object-cover cursor-pointer" onclick="abrirModal('${item.imagen}')">
-                            <button onclick="descargarImagen('${item.imagen}', '${item.titulo}')" class="absolute top-2 right-2 bg-slate-900/80 hover:bg-sky-600 text-white p-2 rounded text-xs transition backdrop-blur-sm shadow"><i class="fa-solid fa-download"></i></button>
-                        </div>
-                        <div class="p-4">
-                            <div class="flex justify-between text-xs text-slate-500 mb-1">
-                                <span>${item.fecha}</span>
+                    boveda.forEach(item => {
+                        // Formatear la fecha
+                        const fecha = new Date(item.created_at).toLocaleDateString();
+                        
+                        grilla.innerHTML += `
+                            <div class="bg-slate-900 rounded-xl border border-amber-500/30 overflow-hidden shadow-lg transform transition hover:-translate-y-1 hover:shadow-amber-500/20">
+                                <div class="h-48 relative group">
+                                    <img src="${item.imagen_b64}" class="w-full h-full object-cover cursor-pointer" onclick="abrirModal('${item.imagen_b64}')">
+                                    <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                                        <button onclick="descargarImagen('${item.imagen_b64}', '${item.titulo.replace(/"/g, '&quot;')}')" class="bg-sky-600 hover:bg-sky-500 text-white w-10 h-10 rounded-full shadow-lg transform scale-75 group-hover:scale-100 transition duration-300 flex items-center justify-center"><i class="fa-solid fa-download"></i></button>
+                                    </div>
+                                </div>
+                                <div class="p-5">
+                                    <div class="flex justify-between text-xs text-slate-500 mb-2 font-mono">
+                                        <span><i class="fa-regular fa-calendar mr-1"></i>${fecha}</span>
+                                        <span class="text-amber-500"><i class="fa-solid fa-cloud mr-1"></i>Nube</span>
+                                    </div>
+                                    <h4 class="text-sm font-bold text-amber-400 line-clamp-2 mb-2 leading-tight">${item.titulo}</h4>
+                                    <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">${item.texto_principal}</p>
+                                </div>
                             </div>
-                            <h4 class="text-sm font-bold text-amber-400 line-clamp-1 mb-1">${item.titulo}</h4>
-                            <p class="text-xs text-slate-400 line-clamp-3">${item.texto}</p>
-                        </div>
-                    </div>
-                `;
-            });
+                        `;
+                    });
+                }
+            } catch (error) {
+                grilla.innerHTML = '<p class="text-rose-500 col-span-full">Error conectando con la Bóveda en la Nube.</p>';
+            }
         }
 
+        // Ya no podemos limpiar todo desde el frontend por seguridad de base de datos
         function limpiarBoveda() {
-            if(confirm("¿Seguro que quieres borrar todo el historial? Esto no se puede deshacer.")) {
-                localStorage.removeItem('evo_boveda');
-                cargarBoveda();
-            }
+            alert("🔒 Por seguridad, el borrado masivo de la nube debe hacerse desde el panel de Supabase.");
         }
 
         // --- LÓGICA DE INGESTA DE DOCUMENTOS (PASO 1) ---
@@ -652,7 +689,7 @@
                                     <p class="text-sm text-slate-400 line-clamp-3 mb-4 leading-relaxed">${copy.primary_text}</p>
                                     
                                     <div class="flex space-x-2 mt-auto">
-                                        <button onclick="guardarEnBoveda('${imgRenderizada}', '${textoSeguro}', '${tituloSeguro}')" class="flex-1 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 py-2 rounded text-sm font-bold transition">Aprobar (Guardar)</button>
+                                        <button onclick=<button onclick="guardarEnBoveda(event, '${imgRenderizada}', '${textoSeguro}', '${tituloSeguro}')" class="flex-1 bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600 hover:text-white border border-emerald-500/30 py-2 rounded text-sm font-bold transition">Aprobar (Nube)</button>
                                         
                                         <button onclick="this.closest('div.bg-slate-900').remove()" class="bg-rose-600/20 text-rose-400 hover:bg-rose-600 hover:text-white border border-rose-500/30 px-4 py-2 rounded text-sm font-bold transition" title="Descartar"><i class="fa-solid fa-trash-can"></i></button>
                                     </div>
