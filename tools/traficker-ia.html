@@ -820,10 +820,11 @@
 
             // 2. Generar Nomenclaturas Reales (Blueprint Alvaro)
             const fecha = new Date().toLocaleDateString('es-ES', {day: '2-digit', month: '2-digit'});
-            // Ej: [CN] [01] [LATAM] [COLD] [MIX] [ETM01] [T01.SC01+02] [28/02] [IA]
             let adAbrevs = Array.from({length: numAds}, (_, i) => `0${i+1}`).join('+');
-            const nomCampana = `[${proyecto}] [01] [${pais}] [COLD] [MIX] [ETM01] [T01.SC${adAbrevs}] [${fecha}] [IA]`;
-            const nomAdSet = `${pais} - OPEN - T1.SC${adAbrevs}`;
+            
+            // Eliminamos [MIX] para reflejar el código de Python
+            const nomCampana = `[${proyecto}] <span class="text-amber-400">[AUTO]</span> [${pais}] [COLD] [ETM01] [T01.SC${adAbrevs}] [${fecha}] [IA]`;
+            const nomAdSet = `${pais} - OPEN - T01.SC${adAbrevs}`;
 
             // 3. Dibujar el Árbol HTML
             let htmlArbol = `<p class="text-sky-400 font-bold mb-3"><i class="fa-solid fa-folder-open mr-2"></i>CAMPAÑA: ${nomCampana}</p>`;
