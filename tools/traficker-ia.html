@@ -850,6 +850,54 @@
             htmlArbol += `</div>`;
             previewDiv.innerHTML = htmlArbol;
         }
+        // --- FUNCIÓN DE INYECCIÓN A META API (EL GATILLO) ---
+        async function lanzarCampanaMeta(estadoDeseado) {
+            // 1. Validar que haya seleccionado un objetivo
+            if (!estrategiaSetup.objetivo) {
+                alert("⚠️ Primero debes seleccionar un objetivo (Low Ticket, High Ticket, etc.) en el Paso 3.");
+                return;
+            }
+
+            // 2. Recolectar la estrategia de las cajas de texto
+            const payloadLanzamiento = {
+                objetivo: estrategiaSetup.objetivo,
+                estado: estadoDeseado, // 'ACTIVE' o 'PAUSED'
+                url_destino: document.getElementById('meta-url').value,
+                presupuesto_diario: parseFloat(document.getElementById('meta-presupuesto').value),
+                pais: document.getElementById('meta-pais').value,
+                proyecto_abrev: document.getElementById('meta-proyecto').value
+            };
+
+            // 3. Validar URL
+            if(!payloadLanzamiento.url_destino) {
+                alert("⚠️ Necesitas ingresar una URL de destino en el Paso 3.");
+                return;
+            }
+
+            // Alerta visual de que el proceso inició
+            alert(`🚀 Iniciando protocolo de inyección a Meta (${estadoDeseado})... Esto puede tardar unos segundos.`);
+
+            try {
+                // 4. Enviar el paquete a Python
+                const response = await fetch('http://127.0.0.1:8000/api/meta/lanzar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payloadLanzamiento)
+                });
+                
+                const data = await response.json();
+                
+                // 5. Analizar respuesta de Facebook
+                if(data.status === "success") {
+                    alert("✅ ¡ÉXITO TOTAL!\n\n" + data.mensaje + "\n\nRevisa tu Facebook Ads Manager.");
+                } else {
+                    alert("❌ META RECHAZÓ LA PETICIÓN:\n" + (data.detail || data.mensaje));
+                }
+            } catch (error) {
+                console.error(error);
+                alert("❌ Error crítico de red. Verifica que la terminal de Python esté encendida.");
+            }
+        }
     </script>
 </body>
 </html>
