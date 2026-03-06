@@ -220,9 +220,61 @@
             }
         }, 500);
     </script>
+
+<script>
+    // ---------------------------------------------------------
+    // ⚙️ BLOQUE 1: CONFIGURACIÓN (LO ÚNICO QUE DEBES CAMBIAR)
+    // ---------------------------------------------------------
+    var URL_ABANDONO_TEMPRANO = "https://evo-launch.agency/neuro-ingles/redirec-2"; // A dónde va si sale rápido
+    var URL_ABANDONO_TARDIO   = "https://evo-launch.agency/neuro-ingles/oferta-redirec"; // A dónde va si ya vio suficiente
+    var SEGUNDOS_DE_CORTE     = 542; // Tiempo límite en SEGUNDOS (Ej: 120 = 2 minutos)
+    // ---------------------------------------------------------
+
+    // 🧠 BLOQUE 2: RASTREADOR DE VTURB
+    var hacksArmados = false;
+    var tiempoActualVideo = 0; 
+    var smartPlayerInstance = null;
+
+    const checkSmartPlayer = setInterval(() => {
+        if (window.smartplayer && window.smartplayer.instances && window.smartplayer.instances.length > 0) {
+            clearInterval(checkSmartPlayer);
+            smartPlayerInstance = window.smartplayer.instances[0];
+            
+            smartPlayerInstance.on('timeupdate', () => {
+                if(smartPlayerInstance.video) {
+                    tiempoActualVideo = smartPlayerInstance.video.currentTime;
+                }
+            });
+        }
+    }, 200);
+
+    // 🪤 BLOQUE 3: EL SECUESTRO DEL HISTORIAL
+    function armarTrampa() {
+        if (hacksArmados) return;
+        hacksArmados = true;
+
+        if (window.history && window.history.pushState) {
+            window.history.pushState('forward', null, window.location.href);
+            window.history.pushState('forward', null, window.location.href);
+            
+            window.onpopstate = function(event) {
+                // AQUÍ ESTÁ LA LÓGICA DE DECISIÓN
+                if (tiempoActualVideo >= SEGUNDOS_DE_CORTE) {
+                    window.location.href = URL_ABANDONO_TARDIO;
+                } else {
+                    window.location.href = URL_ABANDONO_TEMPRANO;
+                }
+            };
+        }
+    }
+
+    // ARMAMOS LA TRAMPA AL PRIMER TOQUE
+    document.addEventListener('click', armarTrampa);
+    document.addEventListener('touchstart', armarTrampa);
+</script>
+            
 <script>
     // CONFIGURACIÓN
-    // 7 minutos y 56 segundos = (7 * 60) + 56 = 476 segundos
     var SEGUNDOS_OBJETIVO = 540; 
     var eventoYaDisparado = false; // Candado para que no se dispare 100 veces
 
