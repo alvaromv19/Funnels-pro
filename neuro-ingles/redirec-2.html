@@ -165,7 +165,7 @@
 
         <p>Sé que tu cerebro te está diciendo <em>"No tengo tiempo para esto"</em> o <em>"Seguro es otro curso más que abandonaré"</em>.</p>
         
-        <p>Te entiendo. Has comprado apps, cursos y materiales que terminaron acumulando polvo[cite: 70]. Pero quiero que sepas algo muy importante: <strong>Esa falta de disciplina NO es tu culpa.</strong></p>
+        <p>Te entiendo. Has comprado apps, cursos y materiales que terminaron acumulando polvo. Pero quiero que sepas algo muy importante: <strong>Esa falta de disciplina NO es tu culpa.</strong></p>
 
         <p>La neurociencia descubrió que tu cerebro activa un <span class="highlight">"Sistema de Protección"</span> cada vez que intentas estudiar con fuerza de voluntad[cite: 185, 194]. Por eso terminas en Netflix en lugar de estudiar[cite: 213].</p>
 
@@ -214,12 +214,6 @@
                 window.onpopstate = function(event) {
                     window.location.href = RESCATE_FINAL_URL;
                 };
-            }
-
-            window.onbeforeunload = function(e) {
-                e = e || window.event;
-                if (e) { e.returnValue = '¿Estás seguro de irte sin leer el resumen?'; }
-                return '¿Estás seguro de irte sin leer el resumen?';
             };
         }
 
