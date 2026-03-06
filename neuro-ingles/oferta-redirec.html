@@ -10,12 +10,40 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
 
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      
+      fbq('init', '3225869564382107');
+      fbq('track', 'AddToCart');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=3225869564382107&ev=AddToCart&noscript=1"
+    /></noscript>
+
+    <script>
+        (function(h,o,t,j,a,r){
+            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
+            h._hjSettings={hjid:6644987,hjsv:6};
+            a=o.getElementsByTagName('head')[0];
+            r=o.createElement('script');r.async=1;
+            r.src=t+h._hjSettings.hjid+j;
+            a.appendChild(r);
+        })(window,document,'https://static.hj.contentsquare.net/c/csq-','.js');
+    </script>
+
     <style>
         /* RESET */
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: #1a1a1a; /* Fondo oscuro exterior */
+            background-color: #1a1a1a; 
             font-family: 'Roboto', sans-serif;
             display: flex;
             justify-content: center;
@@ -77,7 +105,7 @@
         .content-body p { margin-bottom: 20px; }
 
         .highlight-text {
-            background: #fff8e1; /* Amarillo muy suave */
+            background: #fff8e1; 
             padding: 2px 5px;
             border-radius: 3px;
             font-weight: 500;
@@ -173,37 +201,7 @@
             .cta-button { font-size: 1.1rem; }
         }
     </style>
-
-    <script>
-    !function(f,b,e,v,n,t,s)
-    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-    n.queue=[];t=b.createElement(e);t.async=!0;
-    t.src=v;s=b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t,s)}(window, document,'script',
-    'https://connect.facebook.net/en_US/fbevents.js');
-    
-    // Tu ID
-    fbq('init', '3225869564382107');
-    
-    // Evento PageView (Visita a la página)
-    fbq('track', 'AddToCart');
-    </script>
-    <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=3225869564382107&ev=AddToCart&noscript=1"
-    /></noscript>
-    <script>
-        (function(h,o,t,j,a,r){
-            h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-            h._hjSettings={hjid:6644987,hjsv:6};
-            a=o.getElementsByTagName('head')[0];
-            r=o.createElement('script');r.async=1;
-            r.src=t+h._hjSettings.hjid+j;
-            a.appendChild(r);
-        })(window,document,'https://static.hj.contentsquare.net/c/csq-','.js');
-    </script>
-    </head>
+</head>
 <body>
 
     <div class="paper-card">
@@ -256,14 +254,45 @@
     </div>
 
     <script>
-        // Configuración
+        // --- 1. CONFIGURACIÓN ---
         const CHECKOUT_URL = "https://go.hotmart.com/U98312104O?ap=e09c";
-        const TIEMPO_ESPERA = 120000; // 2 minutos (120,000 milisegundos)
+        const RESCATE_OFERTA_URL = "https://evo-launch.agency/neuro-ingles/oferta-redirec-2"; 
+        const TIEMPO_ESPERA = 120000; // 2 minutos (120,000 ms)
 
-        // Temporizador: Si no han hecho clic en 2 minutos, los llevamos igual
+        // --- 2. AUTO-PUSH AL CHECKOUT ---
         setTimeout(() => {
             window.location.href = CHECKOUT_URL;
         }, TIEMPO_ESPERA);
+
+        // --- 3. REDIRECCIÓN AL BOTÓN ATRÁS Y EXIT INTENT ---
+        let hacksArmados = false;
+
+        function armarTrampa() {
+            if (hacksArmados) return;
+            hacksArmados = true;
+
+            // Secuestro del botón atrás
+            if (window.history && window.history.pushState) {
+                window.history.pushState('forward', null, window.location.href);
+                window.history.pushState('forward', null, window.location.href);
+                
+                window.onpopstate = function(event) {
+                    // Si le dan atrás, los mandamos a la oferta 2
+                    window.location.href = RESCATE_OFERTA_URL;
+                };
+            }
+
+            // Popup al intentar cerrar la pestaña
+            window.onbeforeunload = function(e) {
+                e = e || window.event;
+                if (e) { e.returnValue = '¿Seguro que quieres dejar pasar esta oportunidad?'; }
+                return '¿Seguro que quieres dejar pasar esta oportunidad?';
+            };
+        }
+
+        // Armar la trampa al primer clic o toque en la pantalla
+        document.addEventListener('click', armarTrampa);
+        document.addEventListener('touchstart', armarTrampa);
     </script>
 
 </body>
