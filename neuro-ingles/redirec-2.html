@@ -165,23 +165,23 @@
 
         <p>Sé que tu cerebro te está diciendo <em>"No tengo tiempo para esto"</em> o <em>"Seguro es otro curso más que abandonaré"</em>.</p>
         
-        <p>Te entiendo. Has comprado apps, cursos y materiales que terminaron acumulando polvo. Pero quiero que sepas algo muy importante: <strong>Esa falta de disciplina NO es tu culpa.</strong></p>
+        <p>Te entiendo perfectamente. Sé que has comprado cursos, apps y materiales antes movido por la motivación, y hoy están acumulando polvo. Pero quiero que sepas algo muy importante: <strong>Esa falta de disciplina NO es tu culpa.</strong></p>
 
-        <p>La neurociencia descubrió que tu cerebro activa un <span class="highlight">"Sistema de Protección"</span> cada vez que intentas estudiar con fuerza de voluntad[cite: 185, 194]. Por eso terminas en Netflix en lugar de estudiar[cite: 213].</p>
+        <p>La neurociencia descubrió que tu cerebro activa un <span class="highlight">"Sistema de Protección"</span> (el Efecto Banda Elástica) cada vez que intentas estudiar con fuerza de voluntad. Por eso terminas en redes sociales en lugar de avanzar.</p>
 
-        <p>Para no quitarte más tiempo, aquí tienes el resumen de la solución que estabas viendo en el video:</p>
+        <p>Para no quitarte más tiempo, aquí tienes el resumen exacto de la solución que estabas viendo en el video:</p>
 
         <ul class="bullet-list">
-            <li><strong>El Método Oculto:</strong> Tomamos un protocolo de audio de la Marina de los EE.UU.  y lo adaptamos al inglés.</li>
-            <li><strong>Tecnología Audio Neural 21™:</strong> Son pistas de audio diseñadas para poner a tu cerebro en "frecuencia de aprendizaje"[cite: 259, 263].</li>
-            <li><strong>Cero Libros, Cero Estrés:</strong> Solo te pones los audífonos 21 minutos al día[cite: 265, 266, 288]. El hábito se instala solo en tu subconsciente.</li>
+            <li><strong>El Método Oculto:</strong> Tomamos un protocolo de audio diseñado originalmente para la Marina de los EE.UU. y lo adaptamos al inglés.</li>
+            <li><strong>Tecnología Audio Neural 21™:</strong> No hay libros aburridos. Son pistas de audio diseñadas para poner a tu cerebro en la frecuencia exacta de aprendizaje.</li>
+            <li><strong>Solo 21 Minutos:</strong> Cero estrés. Te pones los audífonos 21 minutos al día y el hábito se instala directamente en tu subconsciente.</li>
         </ul>
 
         <div class="price-box">
             <p>Puedes acceder a todo el <strong>Neural English Habit™</strong> ahora mismo por un único pago de <strong>$27 USD</strong>.</p>
         </div>
 
-        <p style="text-align: center; font-size: 0.95rem;">Tienes 7 días de garantía. O hablas inglés, o te devuelvo tu dinero. Cero riesgos.</p>
+        <p style="text-align: center; font-size: 0.95rem;">Cuentas con 7 días de garantía incondicional. O hablas inglés, o te devuelvo tu dinero. Cero riesgos.</p>
 
         <a href="https://go.hotmart.com/U98312104O?ap=e09c" class="cta-button">
             SÍ, QUIERO ACCEDER POR $27 DÓLARES 
@@ -193,14 +193,14 @@
         const CHECKOUT_URL = "https://go.hotmart.com/U98312104O?ap=e09c";
         // Si retroceden de nuevo, los mandamos a la oferta final de la pizza
         const RESCATE_FINAL_URL = "https://evo-launch.agency/neuro-ingles/oferta-redirec-2"; 
-        const TIEMPO_ESPERA = 90000; // 1.5 minutos (90,000 ms) - Tienen poco tiempo de atención aquí
+        const TIEMPO_ESPERA = 90000; // 1.5 minutos (90,000 ms)
 
         // --- 2. AUTO-PUSH AL CHECKOUT ---
         setTimeout(() => {
             window.location.href = CHECKOUT_URL;
         }, TIEMPO_ESPERA);
 
-        // --- 3. REDIRECCIÓN AL BOTÓN ATRÁS Y EXIT INTENT ---
+        // --- 3. REDIRECCIÓN AL BOTÓN ATRÁS (Secuestro de Historial) ---
         let hacksArmados = false;
 
         function armarTrampa() {
@@ -214,7 +214,7 @@
                 window.onpopstate = function(event) {
                     window.location.href = RESCATE_FINAL_URL;
                 };
-            };
+            }
         }
 
         document.addEventListener('click', armarTrampa);
