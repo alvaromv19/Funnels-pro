@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vale, entiendo. Tienes prisa...</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <script>
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window, document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      
+      fbq('init', '3225869564382107');
+      fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+      src="https://www.facebook.com/tr?id=3225869564382107&ev=PageView&noscript=1"
+    /></noscript>
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #050505;
+            color: #e0e0e0;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .urgent-card {
+            background: #111111;
+            width: 100%;
+            max-width: 650px;
+            border-left: 5px solid #ffcc00;
+            border-radius: 8px;
+            padding: 40px 35px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .attention-tag {
+            color: #ffcc00;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            line-height: 1.2;
+            margin-bottom: 25px;
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 18px;
+            color: #cccccc;
+        }
+
+        .highlight {
+            background-color: rgba(255, 204, 0, 0.15);
+            color: #ffcc00;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 700;
+        }
+
+        .bullet-list {
+            margin: 25px 0;
+            padding-left: 20px;
+        }
+
+        .bullet-list li {
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: #ffffff;
+            list-style-type: none;
+            position: relative;
+        }
+
+        .bullet-list li::before {
+            content: "👉";
+            position: absolute;
+            left: -25px;
+        }
+
+        .price-box {
+            background: rgba(39, 174, 96, 0.1);
+            border: 1px solid rgba(39, 174, 96, 0.3);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .price-box p { margin: 0; color: #fff; font-size: 1.2rem;}
+        .price-box strong { color: #2ecc71; font-size: 1.4rem; font-family: 'Montserrat', sans-serif; font-weight: 900;}
+
+        /* BOTÓN DE ACCIÓN */
+        .cta-button {
+            display: block;
+            width: 100%;
+            background: linear-gradient(to bottom, #ffcc00 0%, #f39c12 100%);
+            border: none;
+            padding: 20px;
+            text-align: center;
+            color: #000;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 1.2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            text-transform: uppercase;
+            box-shadow: 0 5px 0 #d68910, 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.1s;
+        }
+
+        .cta-button:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #d68910;
+        }
+
+        @media (max-width: 600px) {
+            .urgent-card { padding: 30px 20px; }
+            h1 { font-size: 1.5rem; }
+            p, .bullet-list li { font-size: 1rem; }
+            .cta-button { font-size: 1.1rem; padding: 15px;}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="urgent-card">
+        <span class="attention-tag">LECTURA RÁPIDA: 60 SEGUNDOS</span>
+        
+        <h1>Vale, entiendo. Estás ocupado y no quieres ver otro video. Te lo resumo aquí:</h1>
+
+        <p>Sé que tu cerebro te está diciendo <em>"No tengo tiempo para esto"</em> o <em>"Seguro es otro curso más que abandonaré"</em>.</p>
+        
+        <p>Te entiendo. Has comprado apps, cursos y materiales que terminaron acumulando polvo[cite: 70]. Pero quiero que sepas algo muy importante: <strong>Esa falta de disciplina NO es tu culpa.</strong></p>
+
+        <p>La neurociencia descubrió que tu cerebro activa un <span class="highlight">"Sistema de Protección"</span> cada vez que intentas estudiar con fuerza de voluntad[cite: 185, 194]. Por eso terminas en Netflix en lugar de estudiar[cite: 213].</p>
+
+        <p>Para no quitarte más tiempo, aquí tienes el resumen de la solución que estabas viendo en el video:</p>
+
+        <ul class="bullet-list">
+            <li><strong>El Método Oculto:</strong> Tomamos un protocolo de audio de la Marina de los EE.UU.  y lo adaptamos al inglés.</li>
+            <li><strong>Tecnología Audio Neural 21™:</strong> Son pistas de audio diseñadas para poner a tu cerebro en "frecuencia de aprendizaje"[cite: 259, 263].</li>
+            <li><strong>Cero Libros, Cero Estrés:</strong> Solo te pones los audífonos 21 minutos al día[cite: 265, 266, 288]. El hábito se instala solo en tu subconsciente.</li>
+        </ul>
+
+        <div class="price-box">
+            <p>Puedes acceder a todo el <strong>Neural English Habit™</strong> ahora mismo por un único pago de <strong>$27 USD</strong>.</p>
+        </div>
+
+        <p style="text-align: center; font-size: 0.95rem;">Tienes 7 días de garantía. O hablas inglés, o te devuelvo tu dinero. Cero riesgos.</p>
+
+        <a href="https://go.hotmart.com/U98312104O?ap=e09c" class="cta-button">
+            SÍ, QUIERO ACCEDER POR $27 DÓLARES 
+        </a>
+    </div>
+
+    <script>
+        // --- 1. CONFIGURACIÓN ---
+        const CHECKOUT_URL = "https://go.hotmart.com/U98312104O?ap=e09c";
+        // Si retroceden de nuevo, los mandamos a la oferta final de la pizza
+        const RESCATE_FINAL_URL = "https://evo-launch.agency/neuro-ingles/oferta-redirec-2"; 
+        const TIEMPO_ESPERA = 90000; // 1.5 minutos (90,000 ms) - Tienen poco tiempo de atención aquí
+
+        // --- 2. AUTO-PUSH AL CHECKOUT ---
+        setTimeout(() => {
+            window.location.href = CHECKOUT_URL;
+        }, TIEMPO_ESPERA);
+
+        // --- 3. REDIRECCIÓN AL BOTÓN ATRÁS Y EXIT INTENT ---
+        let hacksArmados = false;
+
+        function armarTrampa() {
+            if (hacksArmados) return;
+            hacksArmados = true;
+
+            if (window.history && window.history.pushState) {
+                window.history.pushState('forward', null, window.location.href);
+                window.history.pushState('forward', null, window.location.href);
+                
+                window.onpopstate = function(event) {
+                    window.location.href = RESCATE_FINAL_URL;
+                };
+            }
+
+            window.onbeforeunload = function(e) {
+                e = e || window.event;
+                if (e) { e.returnValue = '¿Estás seguro de irte sin leer el resumen?'; }
+                return '¿Estás seguro de irte sin leer el resumen?';
+            };
+        }
+
+        document.addEventListener('click', armarTrampa);
+        document.addEventListener('touchstart', armarTrampa);
+    </script>
+
+</body>
+</html>
