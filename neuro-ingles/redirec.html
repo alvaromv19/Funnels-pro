@@ -222,91 +222,85 @@
     </script>
 
 <script>
-    // ---------------------------------------------------------
-    // ⚙️ BLOQUE 1: CONFIGURACIÓN (LO ÚNICO QUE DEBES CAMBIAR)
-    // ---------------------------------------------------------
-    var URL_ABANDONO_TEMPRANO = "https://evo-launch.agency/neuro-ingles/redirec-2"; // A dónde va si sale rápido
-    var URL_ABANDONO_TARDIO   = "https://evo-launch.agency/neuro-ingles/oferta-redirec"; // A dónde va si ya vio suficiente
-    var SEGUNDOS_DE_CORTE     = 542; // Tiempo límite en SEGUNDOS (Ej: 120 = 2 minutos)
-    // ---------------------------------------------------------
+        // ---------------------------------------------------------
+        // ⚙️ BLOQUE 1: CONFIGURACIÓN 
+        // ---------------------------------------------------------
+        var URL_ABANDONO_TEMPRANO = "https://evo-launch.agency/neuro-ingles/redirec-2"; 
+        var URL_ABANDONO_TARDIO   = "https://evo-launch.agency/neuro-ingles/oferta-redirec"; 
+        var SEGUNDOS_DE_CORTE     = 522; // 8:42 minutos
+        // ---------------------------------------------------------
 
-    // 🧠 BLOQUE 2: RASTREADOR DE VTURB
-    var hacksArmados = false;
-    var tiempoActualVideo = 0; 
-    var smartPlayerInstance = null;
+        // 🧠 BLOQUE 2: RASTREADOR DE VTURB
+        var hacksArmados = false;
+        var tiempoActualVideo = 0; 
+        var smartPlayerInstance = null;
 
-    const checkSmartPlayer = setInterval(() => {
-        if (window.smartplayer && window.smartplayer.instances && window.smartplayer.instances.length > 0) {
-            clearInterval(checkSmartPlayer);
-            smartPlayerInstance = window.smartplayer.instances[0];
-            
-            smartPlayerInstance.on('timeupdate', () => {
-                if(smartPlayerInstance.video) {
-                    tiempoActualVideo = smartPlayerInstance.video.currentTime;
-                }
-            });
-        }
-    }, 200);
-
-    // 🪤 BLOQUE 3: EL SECUESTRO DEL HISTORIAL
-    function armarTrampa() {
-        if (hacksArmados) return;
-        hacksArmados = true;
-
-        if (window.history && window.history.pushState) {
-            window.history.pushState('forward', null, window.location.href);
-            window.history.pushState('forward', null, window.location.href);
-            
-            window.onpopstate = function(event) {
-                // AQUÍ ESTÁ LA LÓGICA DE DECISIÓN
-                if (tiempoActualVideo >= SEGUNDOS_DE_CORTE) {
-                    window.location.href = URL_ABANDONO_TARDIO;
-                } else {
-                    window.location.href = URL_ABANDONO_TEMPRANO;
-                }
-            };
-        }
-    }
-
-    // ARMAMOS LA TRAMPA AL PRIMER TOQUE
-    document.addEventListener('click', armarTrampa);
-    document.addEventListener('touchstart', armarTrampa);
-</script>
-            
-<script>
-    // CONFIGURACIÓN
-    var SEGUNDOS_OBJETIVO = 540; 
-    var eventoYaDisparado = false; // Candado para que no se dispare 100 veces
-
-    // Buscamos al reproductor Vturb
-    var checkVturbTracker = setInterval(function() {
-        if (window.smartplayer && window.smartplayer.instances && window.smartplayer.instances.length > 0) {
-            clearInterval(checkVturbTracker); // Dejamos de buscar
-            var playerInstance = window.smartplayer.instances[0];
-
-            // Escuchamos el avance del video
-            playerInstance.on('timeupdate', function() {
-                // Verificamos si cruzó la marca de tiempo
-                if (playerInstance.video.currentTime >= SEGUNDOS_OBJETIVO && !eventoYaDisparado) {
-                    
-                    eventoYaDisparado = true; // Cerramos el candado
-                    
-                    // 🚀 DISPARAMOS EL EVENTO AL PIXEL
-                    if(typeof fbq === 'function') {
-                        fbq('track', 'ViewContent', {
-                            content_name: 'VSL_Offer_Revealed', // Para que lo identifiques en el Admin
-                            content_ids: ['VSL_NEURO_01'],
-                            content_type: 'product',
-                            value: 0.00, // Le damos un valor simbólico para ayudar al algoritmo
-                            currency: 'USD'
-                        });
-                        
-                        console.log("✅ Pixel Event Fired: ViewContent (Minuto 7:56 alcanzado)");
+        const checkSmartPlayer = setInterval(() => {
+            if (window.smartplayer && window.smartplayer.instances && window.smartplayer.instances.length > 0) {
+                clearInterval(checkSmartPlayer);
+                smartPlayerInstance = window.smartplayer.instances[0];
+                
+                smartPlayerInstance.on('timeupdate', () => {
+                    if(smartPlayerInstance.video) {
+                        tiempoActualVideo = smartPlayerInstance.video.currentTime;
                     }
-                }
-            });
+                });
+            }
+        }, 200);
+
+        // 🪤 BLOQUE 3: EL SECUESTRO DEL HISTORIAL
+        function armarTrampa() {
+            if (hacksArmados) return;
+            hacksArmados = true;
+
+            if (window.history && window.history.pushState) {
+                window.history.pushState('forward', null, window.location.href);
+                window.history.pushState('forward', null, window.location.href);
+                
+                window.onpopstate = function(event) {
+                    if (tiempoActualVideo >= SEGUNDOS_DE_CORTE) {
+                        window.location.href = URL_ABANDONO_TARDIO;
+                    } else {
+                        window.location.href = URL_ABANDONO_TEMPRANO;
+                    }
+                };
+            }
         }
-    }, 500); // Revisa cada medio segundo hasta encontrar el video
-</script>
+
+        // ARMAMOS LA TRAMPA AL PRIMER TOQUE
+        document.addEventListener('click', armarTrampa);
+        document.addEventListener('touchstart', armarTrampa);
+    </script>
+            
+    <script>
+        // CONFIGURACIÓN EVENTO PIXEL
+        var SEGUNDOS_OBJETIVO = 522; // 8:42 minutos
+        var eventoYaDisparado = false; 
+
+        var checkVturbTracker = setInterval(function() {
+            if (window.smartplayer && window.smartplayer.instances && window.smartplayer.instances.length > 0) {
+                clearInterval(checkVturbTracker); 
+                var playerInstance = window.smartplayer.instances[0];
+
+                playerInstance.on('timeupdate', function() {
+                    if (playerInstance.video.currentTime >= SEGUNDOS_OBJETIVO && !eventoYaDisparado) {
+                        eventoYaDisparado = true; 
+                        
+                        if(typeof fbq === 'function') {
+                            fbq('track', 'ViewContent', {
+                                content_name: 'VSL_Offer_Revealed', 
+                                content_ids: ['VSL_NEURO_01'],
+                                content_type: 'product',
+                                value: 0.00, 
+                                currency: 'USD'
+                            });
+                            console.log("✅ Pixel Event Fired: ViewContent (Minuto 8:42 alcanzado)");
+                        }
+                    }
+                });
+            }
+        }, 500); 
+    </script>
+    
 </body>
 </html>
