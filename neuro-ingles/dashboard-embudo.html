@@ -3,165 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard: Embudo Inverso - Neural English</title>
+    <title>Dashboard PRO: Embudo Inverso Neural English</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
+        /* Diseño "Blueprint" Oscuro */
         body {
-            background-color: #0f111a;
+            background-color: #0b0f19;
+            background-image: 
+                radial-gradient(#1e243b 1px, transparent 1px),
+                radial-gradient(#1e243b 1px, transparent 1px);
+            background-position: 0 0, 20px 20px;
+            background-size: 40px 40px;
             color: #ffffff;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             padding: 40px 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
         }
 
+        /* Cabecera Glowing */
         .header {
             text-align: center;
             margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
         }
 
         .header h1 {
-            color: #00ff9d;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
             font-weight: 900;
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
+        }
+
+        .header h1 span {
+            color: #00ff9d;
         }
 
         .header p {
-            color: #a0aab2;
-            font-size: 1.1rem;
+            color: #8b9bb4;
+            font-size: 1.2rem;
+            font-weight: 400;
         }
 
         /* Contenedor del Flowchart */
         .diagram-container {
-            background-color: #1a1d2d;
+            background: rgba(15, 19, 31, 0.85);
+            backdrop-filter: blur(10px);
             padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
             overflow-x: auto;
-            border: 1px solid #2a2e45;
+            border: 1px solid #2a2f4c;
         }
 
-        /* Panel de Enlaces Rápidos */
+        /* Estilos CSS Mágicos para el SVG de Mermaid */
+        .node rect {
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            rx: 16px !important; /* Bordes muy redondeados */
+            ry: 16px !important;
+        }
+
+        .node:hover rect {
+            filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.8)) brightness(1.2);
+            transform: translateY(-3px);
+        }
+
+        /* Panel de Enlaces Rápidos (Abajo) */
         .links-panel {
             display: flex;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
             justify-content: center;
-            margin-top: 40px;
-            max-width: 1000px;
+            margin-top: 50px;
+            max-width: 1200px;
         }
 
         .link-card {
-            background: #222639;
-            border-left: 4px solid #00ff9d;
-            padding: 15px 20px;
-            border-radius: 8px;
+            background: linear-gradient(145deg, #1e2438 0%, #151928 100%);
+            border: 1px solid #2a2f4c;
+            padding: 15px 25px;
+            border-radius: 12px;
             text-decoration: none;
             color: #fff;
+            font-family: 'Montserrat', sans-serif;
             font-weight: 700;
-            font-size: 0.9rem;
-            transition: transform 0.2s, background 0.2s;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
         .link-card:hover {
-            transform: translateY(-3px);
-            background: #2a2f47;
+            transform: translateY(-5px);
+            border-color: #00ff9d;
+            box-shadow: 0 15px 30px rgba(0, 255, 157, 0.15);
         }
 
-        .card-vsl { border-color: #3498db; }
-        .card-rescue { border-color: #e74c3c; }
-        .card-offer { border-color: #f39c12; }
+        .link-card img {
+            width: 28px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Control de Mando</h1>
-        <p>Arquitectura del Embudo Inverso (Abandonment Flow)</p>
+        <h1>Tracking <span>Master Flow</span></h1>
+        <p>Árbol de Decisión Lineal (0 Líneas Cruzadas) - Haz clic en los bloques para abrir</p>
     </div>
 
     <div class="diagram-container">
         <pre class="mermaid">
         graph TD
-            %% Estilos de los Nodos
-            classDef traffic fill:#2c3e50,stroke:#00ff9d,stroke-width:2px,color:#fff,font-weight:bold,border-radius:8px;
-            classDef vsl fill:#2980b9,stroke:#3498db,stroke-width:2px,color:#fff,font-weight:bold;
-            classDef rescue fill:#c0392b,stroke:#e74c3c,stroke-width:2px,color:#fff,font-weight:bold;
-            classDef offer fill:#d35400,stroke:#f39c12,stroke-width:2px,color:#fff,font-weight:bold;
-            classDef checkout fill:#27ae60,stroke:#2ecc71,stroke-width:3px,color:#fff,font-weight:bold;
+            %% ==========================================
+            %% ESTILOS DE LOS NODOS (GLASSMORPHISM & BORDERS)
+            %% ==========================================
+            classDef traffic fill:#131f24,stroke:#00ff9d,stroke-width:2px,color:#fff;
+            classDef vsl fill:#112338,stroke:#3498db,stroke-width:2px,color:#fff;
+            classDef rescue fill:#331515,stroke:#e74c3c,stroke-width:2px,color:#fff;
+            classDef offer fill:#362611,stroke:#f39c12,stroke-width:2px,color:#fff;
+            classDef final fill:#2b1536,stroke:#9b59b6,stroke-width:2px,color:#fff;
+            classDef checkout fill:#102e1c,stroke:#2ecc71,stroke-width:2px,color:#fff;
 
-            %% Nodos
-            A(📢 Tráfico / Meta Ads):::traffic
+            %% ==========================================
+            %% CREACIÓN DE NODOS CON ICONOS 3D
+            %% ==========================================
             
-            B(🎬 VSL PRINCIPAL<br/>/v1):::vsl
+            %% Entrada
+            T["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Megaphone.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>TRÁFICO</span><br/><span style='font-size:12px;color:#a0aab2;'>Meta Ads / Orgánico</span></div>"]:::traffic
+
+            %% Nivel 1: VSL
+            V["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clapper%20Board.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>VSL PRINCIPAL</span><br/><span style='font-size:12px;color:#3498db;'>/v1</span></div>"]:::vsl
+
+            %% Nivel 2: Primera línea de contención
+            C_V["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>CHECKOUT HOTMART</span><br/><span style='font-size:12px;color:#2ecc71;'>$27 USD</span></div>"]:::checkout
             
-            C(🔄 RESCATE 1 <br/>/redirec):::rescue
-            D(🍕 RESCATE OFERTA 1<br/>/oferta-redirec):::offer
+            R1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Warning.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>RESCATE 1 (Video)</span><br/><span style='font-size:12px;color:#e74c3c;'>/redirec</span></div>"]:::rescue
             
-            E(📄 RESCATE 2 Texto<br/>/redirec-2):::rescue
+            OP1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA PIZZA (1)</span><br/><span style='font-size:12px;color:#f39c12;'>/oferta-redirec</span></div>"]:::offer
+
+            %% Nivel 3: Segunda línea de contención (Nodos Duplicados para evitar cruces)
+            C_R1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
             
-            F(🚨 RESCATE OFERTA 2<br/>/oferta-redirec-2):::offer
+            R2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20Facing%20Up.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>RESCATE 2 (Texto)</span><br/><span style='font-size:12px;color:#e74c3c;'>/redirec-2</span></div>"]:::rescue
             
-            Z{🛒 HOTMART CHECKOUT}:::checkout
-
-            %% Conexiones (Lógica del Embudo)
-            A -->|Clic en Anuncio| B
+            OP2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA PIZZA (2)</span><br/><span style='font-size:12px;color:#f39c12;'>/oferta-redirec</span></div>"]:::offer
             
-            B -->|COMPRA| Z
-            B -->|Sale ANTES de 7:30| C
-            B -->|Sale DESPUÉS de 7:30| D
+            C_OP1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
+            
+            OF1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (1)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span></div>"]:::final
 
-            C -->|COMPRA| Z
-            C -->|Sale ANTES de 8:42| E
-            C -->|Sale DESPUÉS de 8:42| D
+            %% Nivel 4: Cierres y Última Oportunidad
+            C_R2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
+            
+            OF2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (2)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span></div>"]:::final
+            
+            C_OP2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
+            
+            OF3["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (3)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span></div>"]:::final
 
-            D -->|COMPRA| Z
-            D -->|Auto-Push 2 Mins| Z
-            D -->|Sale / Botón Atrás| F
+            C_OF1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
 
-            E -->|COMPRA| Z
-            E -->|Auto-Push 90 Seg| Z
-            E -->|Sale / Botón Atrás| F
+            %% Nivel 5: Checkouts Finales
+            C_OF2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
+            C_OF3["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
 
-            F -->|COMPRA| Z
-            F -->|Auto-Push 60 Seg| Z
 
-            %% Hacer los Nodos Clickeables
-            click B "https://evo-launch.agency/neuro-ingles/v1" "Ver VSL" _blank
-            click C "https://evo-launch.agency/neuro-ingles/redirec" "Ver Rescate 1" _blank
-            click D "https://evo-launch.agency/neuro-ingles/oferta-redirec" "Ver Oferta Pizza" _blank
-            click E "https://evo-launch.agency/neuro-ingles/redirec-2" "Ver Rescate 2" _blank
-            click F "https://evo-launch.agency/neuro-ingles/oferta-redirec-2" "Ver Verdad Absoluta" _blank
+            %% ==========================================
+            %% RUTAS (CERO CRUCES DE LÍNEAS)
+            %% ==========================================
+            T --> V
+            
+            %% Ramas desde VSL
+            V -- "<b style='color:#2ecc71; font-family:Inter;'>💳 Compra</b>" --> C_V
+            V -- "<b style='color:#e74c3c; font-family:Inter;'>⏱️ Sale ANTES 7:30</b>" --> R1
+            V -- "<b style='color:#f39c12; font-family:Inter;'>⏱️ Sale DESPUÉS 7:30</b>" --> OP1
+
+            %% Ramas desde Rescate 1 (Video)
+            R1 -- "<b style='color:#2ecc71; font-family:Inter;'>💳 Compra</b>" --> C_R1
+            R1 -- "<b style='color:#e74c3c; font-family:Inter;'>⏱️ Sale ANTES 8:42</b>" --> R2
+            R1 -- "<b style='color:#f39c12; font-family:Inter;'>⏱️ Sale DESPUÉS 8:42</b>" --> OP2
+
+            %% Ramas desde Oferta Pizza 1
+            OP1 -- "<b style='color:#2ecc71; font-family:Inter;'>💳 Compra / Auto (120s)</b>" --> C_OP1
+            OP1 -- "<b style='color:#9b59b6; font-family:Inter;'>🔙 Botón Atrás</b>" --> OF1
+
+            %% Ramas desde Rescate 2 (Texto)
+            R2 -- "<b style='color:#2ecc71; font-family:Inter;'>💳 Compra / Auto (90s)</b>" --> C_R2
+            R2 -- "<b style='color:#9b59b6; font-family:Inter;'>🔙 Botón Atrás</b>" --> OF2
+
+            %% Ramas desde Oferta Pizza 2
+            OP2 -- "<b style='color:#2ecc71; font-family:Inter;'>💳 Compra / Auto (120s)</b>" --> C_OP2
+            OP2 -- "<b style='color:#9b59b6; font-family:Inter;'>🔙 Botón Atrás</b>" --> OF3
+
+            %% Ramas desde Oferta Final (Todos empujan al Checkout)
+            OF1 -- "<b style='color:#2ecc71; font-family:Inter;'>💳 Compra / Auto (60s)</b>" --> C_OF1
+            OF2 -- "<b style='color:#2ecc71; font-family:Inter;'>💳 Compra / Auto (60s)</b>" --> C_OF2
+            OF3 -- "<b style='color:#2ecc71; font-family:Inter;'>💳 Compra / Auto (60s)</b>" --> C_OF3
+
+            %% ==========================================
+            %% CLICK EVENTS (ENLACES A TUS PÁGINAS)
+            %% ==========================================
+            click V "https://evo-launch.agency/neuro-ingles/v1" "Abrir" _blank
+            click R1 "https://evo-launch.agency/neuro-ingles/redirec" "Abrir" _blank
+            click OP1 "https://evo-launch.agency/neuro-ingles/oferta-redirec" "Abrir" _blank
+            click R2 "https://evo-launch.agency/neuro-ingles/redirec-2" "Abrir" _blank
+            click OP2 "https://evo-launch.agency/neuro-ingles/oferta-redirec" "Abrir" _blank
+            click OF1 "https://evo-launch.agency/neuro-ingles/oferta-redirec-2" "Abrir" _blank
+            click OF2 "https://evo-launch.agency/neuro-ingles/oferta-redirec-2" "Abrir" _blank
+            click OF3 "https://evo-launch.agency/neuro-ingles/oferta-redirec-2" "Abrir" _blank
+            
+            click C_V "https://go.hotmart.com/U98312104O?ap=e09c" "Abrir Checkout" _blank
+            click C_R1 "https://go.hotmart.com/U98312104O?ap=e09c" "Abrir Checkout" _blank
+            click C_OP1 "https://go.hotmart.com/U98312104O?ap=e09c" "Abrir Checkout" _blank
+            click C_R2 "https://go.hotmart.com/U98312104O?ap=e09c" "Abrir Checkout" _blank
+            click C_OP2 "https://go.hotmart.com/U98312104O?ap=e09c" "Abrir Checkout" _blank
+            click C_OF1 "https://go.hotmart.com/U98312104O?ap=e09c" "Abrir Checkout" _blank
+            click C_OF2 "https://go.hotmart.com/U98312104O?ap=e09c" "Abrir Checkout" _blank
+            click C_OF3 "https://go.hotmart.com/U98312104O?ap=e09c" "Abrir Checkout" _blank
         </pre>
     </div>
 
     <div class="links-panel">
-        <a href="https://evo-launch.agency/neuro-ingles/v1" target="_blank" class="link-card card-vsl">
-            🎬 VSL Principal
+        <a href="https://evo-launch.agency/neuro-ingles/v1" target="_blank" class="link-card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clapper%20Board.png">
+            VSL Principal
         </a>
-        <a href="https://evo-launch.agency/neuro-ingles/redirec" target="_blank" class="link-card card-rescue">
-            🔄 Rescate 1 (Video)
+        <a href="https://evo-launch.agency/neuro-ingles/redirec" target="_blank" class="link-card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Warning.png">
+            Rescate 1 (Video)
         </a>
-        <a href="https://evo-launch.agency/neuro-ingles/redirec-2" target="_blank" class="link-card card-rescue">
-            📄 Rescate 2 (Texto)
+        <a href="https://evo-launch.agency/neuro-ingles/redirec-2" target="_blank" class="link-card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20Facing%20Up.png">
+            Rescate 2 (Texto)
         </a>
-        <a href="https://evo-launch.agency/neuro-ingles/oferta-redirec" target="_blank" class="link-card card-offer">
-            🍕 Oferta 1 (Pizza)
+        <a href="https://evo-launch.agency/neuro-ingles/oferta-redirec" target="_blank" class="link-card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png">
+            Oferta 1 (Pizza)
         </a>
-        <a href="https://evo-launch.agency/neuro-ingles/oferta-redirec-2" target="_blank" class="link-card card-offer">
-            🚨 Oferta 2 (Final)
+        <a href="https://evo-launch.agency/neuro-ingles/oferta-redirec-2" target="_blank" class="link-card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png">
+            Oferta 2 (Final)
+        </a>
+        <a href="https://go.hotmart.com/U98312104O?ap=e09c" target="_blank" class="link-card" style="border-color:#2ecc71;">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png">
+            Checkout Hotmart
         </a>
     </div>
 
@@ -169,9 +269,20 @@
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ 
             startOnLoad: true, 
-            theme: 'dark',
-            securityLevel: 'loose',
-            flowchart: { curve: 'smooth' }
+            securityLevel: 'loose', // Permite inyectar HTML e imágenes en los nodos
+            theme: 'base',
+            themeVariables: {
+                primaryColor: '#1e2438',
+                lineColor: '#3a4261',
+                textColor: '#fff',
+                edgeLabelBackground: '#151928',
+                fontFamily: 'Inter'
+            },
+            flowchart: { 
+                curve: 'basis', // Líneas fluidas y redondeadas
+                nodeSpacing: 80,
+                rankSpacing: 100
+            }
         });
     </script>
 </body>
