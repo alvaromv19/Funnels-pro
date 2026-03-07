@@ -44,9 +44,7 @@
         .node rect { transition: all 0.3s ease; rx: 16px !important; ry: 16px !important; }
         .node:hover rect { filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.8)) brightness(1.2); transform: translateY(-3px); }
 
-        /* ========================================================== */
-        /* FONDO OSCURO PARA QUE RESALTEN LOS NUEVOS COLORES NEÓN */
-        /* ========================================================== */
+        /* FONDO OSCURO PARA QUE RESALTEN LOS COLORES NEÓN */
         .edgeLabel {
             background-color: #111522 !important; 
             padding: 4px 10px !important;
@@ -108,29 +106,29 @@
             C_OF3["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
 
             %% ==========================================
-            %% RUTAS SIMPLES (SIN HTML INYECTADO)
+            %% RUTAS (AHORA ENTRE COMILLAS DOBLES)
             %% ==========================================
             T --> V
-            V -->|💳 Compra| C_V
-            V -->|⏱️ Sale ANTES 7:30| R1
-            V -->|⏱️ Sale DESPUÉS 7:30| OP1
+            V -->|"💳 Compra"| C_V
+            V -->|"⏱️ Sale ANTES 7:30"| R1
+            V -->|"⏱️ Sale DESPUÉS 7:30"| OP1
 
-            R1 -->|💳 Compra| C_R1
-            R1 -->|⏱️ Sale ANTES 8:42| R2
-            R1 -->|⏱️ Sale DESPUÉS 8:42| OP2
+            R1 -->|"💳 Compra"| C_R1
+            R1 -->|"⏱️ Sale ANTES 8:42"| R2
+            R1 -->|"⏱️ Sale DESPUÉS 8:42"| OP2
 
-            OP1 -->|💳 Compra / Auto 120s| C_OP1
-            OP1 -->|🔙 Botón Atrás| OF1
+            OP1 -->|"💳 Compra / Auto 120s"| C_OP1
+            OP1 -->|"🔙 Botón Atrás"| OF1
 
-            R2 -->|💳 Compra / Auto 90s| C_R2
-            R2 -->|🔙 Botón Atrás| OF2
+            R2 -->|"💳 Compra / Auto 90s"| C_R2
+            R2 -->|"🔙 Botón Atrás"| OF2
 
-            OP2 -->|💳 Compra / Auto 120s| C_OP2
-            OP2 -->|🔙 Botón Atrás| OF3
+            OP2 -->|"💳 Compra / Auto 120s"| C_OP2
+            OP2 -->|"🔙 Botón Atrás"| OF3
 
-            OF1 -->|💳 Compra / Auto 60s| C_OF1
-            OF2 -->|💳 Compra / Auto 60s| C_OF2
-            OF3 -->|💳 Compra / Auto 60s| C_OF3
+            OF1 -->|"💳 Compra / Auto 60s"| C_OF1
+            OF2 -->|"💳 Compra / Auto 60s"| C_OF2
+            OF3 -->|"💳 Compra / Auto 60s"| C_OF3
 
             %% ==========================================
             %% STYLING NATIVO DE MERMAID (COLOR DE FLECHA Y TEXTO)
@@ -173,6 +171,33 @@
         </pre>
     </div>
 
+    <div class="links-panel">
+        <a href="https://evo-launch.agency/neuro-ingles/v1" target="_blank" class="link-card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clapper%20Board.png">
+            VSL Principal
+        </a>
+        <a href="https://evo-launch.agency/neuro-ingles/redirec" target="_blank" class="link-card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Warning.png">
+            Rescate 1 (Video)
+        </a>
+        <a href="https://evo-launch.agency/neuro-ingles/redirec-2" target="_blank" class="link-card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20Facing%20Up.png">
+            Rescate 2 (Texto)
+        </a>
+        <a href="https://evo-launch.agency/neuro-ingles/oferta-redirec" target="_blank" class="link-card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png">
+            Oferta 1 (Pizza)
+        </a>
+        <a href="https://evo-launch.agency/neuro-ingles/oferta-redirec-2" target="_blank" class="link-card">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png">
+            Oferta 2 (Final)
+        </a>
+        <a href="https://go.hotmart.com/U98312104O?ap=e09c" target="_blank" class="link-card" style="border-color:#2ecc71;">
+            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png">
+            Checkout Hotmart
+        </a>
+    </div>
+
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ 
@@ -184,7 +209,7 @@
                 lineColor: '#3a4261',
                 textColor: '#fff',
                 fontFamily: 'Inter',
-                edgeLabelBackground: '#111522' // Asegura que el fondo del texto respete la oscuridad
+                edgeLabelBackground: '#111522' 
             },
             flowchart: { 
                 curve: 'basis', 
