@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard PRO: Embudo Inverso Neural English</title>
     
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
         /* Diseño "Blueprint" Oscuro */
@@ -26,7 +26,6 @@
             overflow-x: hidden;
         }
 
-        /* Cabecera Glowing */
         .header {
             text-align: center;
             margin-bottom: 40px;
@@ -45,17 +44,9 @@
             text-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
         }
 
-        .header h1 span {
-            color: #00ff9d;
-        }
+        .header h1 span { color: #00ff9d; }
+        .header p { color: #8b9bb4; font-size: 1.2rem; font-weight: 400; }
 
-        .header p {
-            color: #8b9bb4;
-            font-size: 1.2rem;
-            font-weight: 400;
-        }
-
-        /* Contenedor del Flowchart */
         .diagram-container {
             background: rgba(15, 19, 31, 0.85);
             backdrop-filter: blur(10px);
@@ -68,10 +59,9 @@
             border: 1px solid #2a2f4c;
         }
 
-        /* Estilos CSS Mágicos para el SVG de Mermaid */
         .node rect {
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            rx: 16px !important; /* Bordes muy redondeados */
+            rx: 16px !important; 
             ry: 16px !important;
         }
 
@@ -80,7 +70,14 @@
             transform: translateY(-3px);
         }
 
-        /* Panel de Enlaces Rápidos (Abajo) */
+        /* Fuerza el fondo oscuro en los textos de las flechas para el contraste */
+        .edgeLabel {
+            background-color: #151928 !important;
+            padding: 4px 8px !important;
+            border-radius: 6px !important;
+            border: 1px solid #2a2f4c !important;
+        }
+
         .links-panel {
             display: flex;
             flex-wrap: wrap;
@@ -123,14 +120,14 @@
 
     <div class="header">
         <h1>Tracking <span>Master Flow</span></h1>
-        <p>Árbol de Decisión Lineal (0 Líneas Cruzadas) - Haz clic en los bloques para abrir</p>
+        <p>Mapa Táctico de Redirecciones y Eventos Pixel - Haz clic para abrir páginas</p>
     </div>
 
     <div class="diagram-container">
         <pre class="mermaid">
         graph TD
             %% ==========================================
-            %% ESTILOS DE LOS NODOS (GLASSMORPHISM & BORDERS)
+            %% ESTILOS DE LOS NODOS 
             %% ==========================================
             classDef traffic fill:#131f24,stroke:#00ff9d,stroke-width:2px,color:#fff;
             classDef vsl fill:#112338,stroke:#3498db,stroke-width:2px,color:#fff;
@@ -140,83 +137,74 @@
             classDef checkout fill:#102e1c,stroke:#2ecc71,stroke-width:2px,color:#fff;
 
             %% ==========================================
-            %% CREACIÓN DE NODOS CON ICONOS 3D
+            %% CREACIÓN DE NODOS (CON BADGES DE EVENTOS)
             %% ==========================================
-            
-            %% Entrada
             T["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Megaphone.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>TRÁFICO</span><br/><span style='font-size:12px;color:#a0aab2;'>Meta Ads / Orgánico</span></div>"]:::traffic
 
-            %% Nivel 1: VSL
-            V["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clapper%20Board.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>VSL PRINCIPAL</span><br/><span style='font-size:12px;color:#3498db;'>/v1</span></div>"]:::vsl
+            V["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clapper%20Board.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>VSL PRINCIPAL</span><br/><span style='font-size:12px;color:#3498db;'>/v1</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 PageView (+ ViewContent 7:56)</span></div>"]:::vsl
 
-            %% Nivel 2: Primera línea de contención
-            C_V["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>CHECKOUT HOTMART</span><br/><span style='font-size:12px;color:#2ecc71;'>$27 USD</span></div>"]:::checkout
+            C_V["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>CHECKOUT HOTMART</span><br/><span style='font-size:12px;color:#2ecc71;'>$27 USD</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>🛒 InitiateCheckout</span></div>"]:::checkout
             
-            R1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Warning.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>RESCATE 1 (Video)</span><br/><span style='font-size:12px;color:#e74c3c;'>/redirec</span></div>"]:::rescue
+            R1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Warning.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>RESCATE 1 (Video)</span><br/><span style='font-size:12px;color:#e74c3c;'>/redirec</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 Search (+ ViewContent 8:42)</span></div>"]:::rescue
             
-            OP1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>Rescate Oferta (1)</span><br/><span style='font-size:12px;color:#f39c12;'>/oferta-redirec</span></div>"]:::offer
+            OP1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>Rescate Oferta (1)</span><br/><span style='font-size:12px;color:#f39c12;'>/oferta-redirec</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 AddToCart</span></div>"]:::offer
 
-            %% Nivel 3: Segunda línea de contención (Nodos Duplicados para evitar cruces)
-            C_R1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
+            C_R1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
             
-            R2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20Facing%20Up.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>RESCATE 2 (Texto)</span><br/><span style='font-size:12px;color:#e74c3c;'>/redirec-2</span></div>"]:::rescue
+            R2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20Facing%20Up.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>RESCATE 2 (Texto)</span><br/><span style='font-size:12px;color:#e74c3c;'>/redirec-2</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 ViewContent</span></div>"]:::rescue
             
-            OP2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>Rescate Oferta (1)</span><br/><span style='font-size:12px;color:#f39c12;'>/oferta-redirec</span></div>"]:::offer
+            OP2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>Rescate Oferta (1)</span><br/><span style='font-size:12px;color:#f39c12;'>/oferta-redirec</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 AddToCart</span></div>"]:::offer
             
-            C_OP1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
+            C_OP1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
             
-            OF1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (2)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span></div>"]:::final
+            OF1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (2)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 AddToWishlist</span></div>"]:::final
 
-            %% Nivel 4: Cierres y Última Oportunidad
-            C_R2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
+            C_R2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
             
-            OF2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (2)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span></div>"]:::final
+            OF2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (2)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 AddToWishlist</span></div>"]:::final
             
-            C_OP2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
+            C_OP2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
             
-            OF3["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (2)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span></div>"]:::final
+            OF3["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (2)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 AddToWishlist</span></div>"]:::final
 
-            C_OF1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
-
-            %% Nivel 5: Checkouts Finales
-            C_OF2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
-            C_OF3["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='55'><br/><span style='font-size:14px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
-
+            C_OF1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
+            C_OF2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
+            C_OF3["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
 
             %% ==========================================
-            %% RUTAS (CERO CRUCES DE LÍNEAS)
+            %% RUTAS CON ESTILOS INLINE (NEÓN Y SIN CRUCES)
             %% ==========================================
             T --> V
             
             %% Ramas desde VSL
-            V -- "<b style='color:#4ade80; font-family:Inter;'>💳 Compra</b>" --> C_V
-            V -- "<b style='color:#ff8a80; font-family:Inter;'>⏱️ Sale ANTES 7:30</b>" --> R1
-            V -- "<b style='color:#fbbf24; font-family:Inter;'>⏱️ Sale DESPUÉS 7:30</b>" --> OP1
+            V -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra</div>" --> C_V
+            V -- "<div style='color:#ff8a80;font-weight:800;font-size:13px;'>⏱️ Sale ANTES 7:30</div>" --> R1
+            V -- "<div style='color:#fbbf24;font-weight:800;font-size:13px;'>⏱️ Sale DESPUÉS 7:30</div>" --> OP1
 
             %% Ramas desde Rescate 1 (Video)
-            R1 -- "<b style='color:#4ade80; font-family:Inter;'>💳 Compra</b>" --> C_R1
-            R1 -- "<b style='color:#ff8a80; font-family:Inter;'>⏱️ Sale ANTES 8:42</b>" --> R2
-            R1 -- "<b style='color:#fbbf24; font-family:Inter;'>⏱️ Sale DESPUÉS 8:42</b>" --> OP2
+            R1 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra</div>" --> C_R1
+            R1 -- "<div style='color:#ff8a80;font-weight:800;font-size:13px;'>⏱️ Sale ANTES 8:42</div>" --> R2
+            R1 -- "<div style='color:#fbbf24;font-weight:800;font-size:13px;'>⏱️ Sale DESPUÉS 8:42</div>" --> OP2
 
             %% Ramas desde Oferta Pizza 1
-            OP1 -- "<b style='color:#4ade80; font-family:Inter;'>💳 Compra / Auto (120s)</b>" --> C_OP1
-            OP1 -- "<b style='color:#d8b4e2; font-family:Inter;'>🔙 Botón Atrás</b>" --> OF1
+            OP1 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (120s)</div>" --> C_OP1
+            OP1 -- "<div style='color:#d8b4e2;font-weight:800;font-size:13px;'>🔙 Botón Atrás</div>" --> OF1
 
             %% Ramas desde Rescate 2 (Texto)
-            R2 -- "<b style='color:#4ade80; font-family:Inter;'>💳 Compra / Auto (90s)</b>" --> C_R2
-            R2 -- "<b style='color:#d8b4e2; font-family:Inter;'>🔙 Botón Atrás</b>" --> OF2
+            R2 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (90s)</div>" --> C_R2
+            R2 -- "<div style='color:#d8b4e2;font-weight:800;font-size:13px;'>🔙 Botón Atrás</div>" --> OF2
 
             %% Ramas desde Oferta Pizza 2
-            OP2 -- "<b style='color:#4ade80; font-family:Inter;'>💳 Compra / Auto (120s)</b>" --> C_OP2
-            OP2 -- "<b style='color:#d8b4e2; font-family:Inter;'>🔙 Botón Atrás</b>" --> OF3
+            OP2 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (120s)</div>" --> C_OP2
+            OP2 -- "<div style='color:#d8b4e2;font-weight:800;font-size:13px;'>🔙 Botón Atrás</div>" --> OF3
 
-            %% Ramas desde Oferta Final (Todos empujan al Checkout)
-            OF1 -- "<b style='color:#4ade80; font-family:Inter;'>💳 Compra / Auto (60s)</b>" --> C_OF1
-            OF2 -- "<b style='color:#4ade80; font-family:Inter;'>💳 Compra / Auto (60s)</b>" --> C_OF2
-            OF3 -- "<b style='color:#4ade80; font-family:Inter;'>💳 Compra / Auto (60s)</b>" --> C_OF3
+            %% Ramas desde Oferta Final
+            OF1 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (60s)</div>" --> C_OF1
+            OF2 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (60s)</div>" --> C_OF2
+            OF3 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (60s)</div>" --> C_OF3
 
             %% ==========================================
-            %% CLICK EVENTS (ENLACES A TUS PÁGINAS)
+            %% CLICK EVENTS
             %% ==========================================
             click V "https://evo-launch.agency/neuro-ingles/v1" "Abrir" _blank
             click R1 "https://evo-launch.agency/neuro-ingles/redirec" "Abrir" _blank
@@ -269,17 +257,16 @@
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ 
             startOnLoad: true, 
-            securityLevel: 'loose', // Permite inyectar HTML e imágenes en los nodos
+            securityLevel: 'loose', 
             theme: 'base',
             themeVariables: {
                 primaryColor: '#1e2438',
                 lineColor: '#3a4261',
                 textColor: '#fff',
-                edgeLabelBackground: '#151928',
                 fontFamily: 'Inter'
             },
             flowchart: { 
-                curve: 'basis', // Líneas fluidas y redondeadas
+                curve: 'basis', 
                 nodeSpacing: 80,
                 rankSpacing: 100
             }
