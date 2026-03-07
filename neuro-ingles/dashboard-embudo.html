@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard: Embudo Inverso - Neural English</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            background-color: #0f111a;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #00ff9d;
+            font-weight: 900;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header p {
+            color: #a0aab2;
+            font-size: 1.1rem;
+        }
+
+        /* Contenedor del Flowchart */
+        .diagram-container {
+            background-color: #1a1d2d;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 1200px;
+            overflow-x: auto;
+            border: 1px solid #2a2e45;
+        }
+
+        /* Panel de Enlaces Rápidos */
+        .links-panel {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 40px;
+            max-width: 1000px;
+        }
+
+        .link-card {
+            background: #222639;
+            border-left: 4px solid #00ff9d;
+            padding: 15px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: transform 0.2s, background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            background: #2a2f47;
+        }
+
+        .card-vsl { border-color: #3498db; }
+        .card-rescue { border-color: #e74c3c; }
+        .card-offer { border-color: #f39c12; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Control de Mando</h1>
+        <p>Arquitectura del Embudo Inverso (Abandonment Flow)</p>
+    </div>
+
+    <div class="diagram-container">
+        <pre class="mermaid">
+        graph TD
+            %% Estilos de los Nodos
+            classDef traffic fill:#2c3e50,stroke:#00ff9d,stroke-width:2px,color:#fff,font-weight:bold,border-radius:8px;
+            classDef vsl fill:#2980b9,stroke:#3498db,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef rescue fill:#c0392b,stroke:#e74c3c,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef offer fill:#d35400,stroke:#f39c12,stroke-width:2px,color:#fff,font-weight:bold;
+            classDef checkout fill:#27ae60,stroke:#2ecc71,stroke-width:3px,color:#fff,font-weight:bold;
+
+            %% Nodos
+            A(📢 Tráfico / Meta Ads):::traffic
+            
+            B(🎬 VSL PRINCIPAL<br/>/v1):::vsl
+            
+            C(🔄 RESCATE 1 <br/>/redirec):::rescue
+            D(🍕 RESCATE OFERTA 1<br/>/oferta-redirec):::offer
+            
+            E(📄 RESCATE 2 Texto<br/>/redirec-2):::rescue
+            
+            F(🚨 RESCATE OFERTA 2<br/>/oferta-redirec-2):::offer
+            
+            Z{🛒 HOTMART CHECKOUT}:::checkout
+
+            %% Conexiones (Lógica del Embudo)
+            A -->|Clic en Anuncio| B
+            
+            B -->|COMPRA| Z
+            B -->|Sale ANTES de 7:30| C
+            B -->|Sale DESPUÉS de 7:30| D
+
+            C -->|COMPRA| Z
+            C -->|Sale ANTES de 8:42| E
+            C -->|Sale DESPUÉS de 8:42| D
+
+            D -->|COMPRA| Z
+            D -->|Auto-Push 2 Mins| Z
+            D -->|Sale / Botón Atrás| F
+
+            E -->|COMPRA| Z
+            E -->|Auto-Push 90 Seg| Z
+            E -->|Sale / Botón Atrás| F
+
+            F -->|COMPRA| Z
+            F -->|Auto-Push 60 Seg| Z
+
+            %% Hacer los Nodos Clickeables
+            click B "https://evo-launch.agency/neuro-ingles/v1" "Ver VSL" _blank
+            click C "https://evo-launch.agency/neuro-ingles/redirec" "Ver Rescate 1" _blank
+            click D "https://evo-launch.agency/neuro-ingles/oferta-redirec" "Ver Oferta Pizza" _blank
+            click E "https://evo-launch.agency/neuro-ingles/redirec-2" "Ver Rescate 2" _blank
+            click F "https://evo-launch.agency/neuro-ingles/oferta-redirec-2" "Ver Verdad Absoluta" _blank
+        </pre>
+    </div>
+
+    <div class="links-panel">
+        <a href="https://evo-launch.agency/neuro-ingles/v1" target="_blank" class="link-card card-vsl">
+            🎬 VSL Principal
+        </a>
+        <a href="https://evo-launch.agency/neuro-ingles/redirec" target="_blank" class="link-card card-rescue">
+            🔄 Rescate 1 (Video)
+        </a>
+        <a href="https://evo-launch.agency/neuro-ingles/redirec-2" target="_blank" class="link-card card-rescue">
+            📄 Rescate 2 (Texto)
+        </a>
+        <a href="https://evo-launch.agency/neuro-ingles/oferta-redirec" target="_blank" class="link-card card-offer">
+            🍕 Oferta 1 (Pizza)
+        </a>
+        <a href="https://evo-launch.agency/neuro-ingles/oferta-redirec-2" target="_blank" class="link-card card-offer">
+            🚨 Oferta 2 (Final)
+        </a>
+    </div>
+
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ 
+            startOnLoad: true, 
+            theme: 'dark',
+            securityLevel: 'loose',
+            flowchart: { curve: 'smooth' }
+        });
+    </script>
+</body>
+</html>
