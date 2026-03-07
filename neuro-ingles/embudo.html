@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
     
     <style>
-        /* Diseño "Blueprint" Oscuro */
         body {
             background-color: #0b0f19;
             background-image: 
@@ -26,109 +25,63 @@
             overflow-x: hidden;
         }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            position: relative;
-            z-index: 2;
-        }
-
+        .header { text-align: center; margin-bottom: 40px; position: relative; z-index: 2; }
         .header h1 {
-            color: #ffffff;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 900;
-            font-size: 3rem;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
+            color: #ffffff; font-family: 'Montserrat', sans-serif; font-weight: 900;
+            font-size: 3rem; margin-bottom: 10px; text-transform: uppercase;
+            letter-spacing: 1px; text-shadow: 0 0 30px rgba(0, 255, 157, 0.3);
         }
-
         .header h1 span { color: #00ff9d; }
         .header p { color: #8b9bb4; font-size: 1.2rem; font-weight: 400; }
 
         .diagram-container {
-            background: rgba(15, 19, 31, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 24px;
+            background: rgba(15, 19, 31, 0.85); backdrop-filter: blur(10px);
+            padding: 40px; border-radius: 24px;
             box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
-            width: 100%;
-            max-width: 1400px;
-            overflow-x: auto;
-            border: 1px solid #2a2f4c;
+            width: 100%; max-width: 1400px; overflow-x: auto; border: 1px solid #2a2f4c;
         }
 
-        .node rect {
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            rx: 16px !important; 
-            ry: 16px !important;
-        }
+        .node rect { transition: all 0.3s ease; rx: 16px !important; ry: 16px !important; }
+        .node:hover rect { filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.8)) brightness(1.2); transform: translateY(-3px); }
 
-        .node:hover rect {
-            filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.8)) brightness(1.2);
-            transform: translateY(-3px);
-        }
-
-        /* Fuerza el fondo oscuro en los textos de las flechas para el contraste */
+        /* ========================================================== */
+        /* FONDO OSCURO PARA QUE RESALTEN LOS NUEVOS COLORES NEÓN */
+        /* ========================================================== */
         .edgeLabel {
-            background-color: #151928 !important;
-            padding: 4px 8px !important;
+            background-color: #111522 !important; 
+            padding: 4px 10px !important;
             border-radius: 6px !important;
             border: 1px solid #2a2f4c !important;
         }
-
-        .links-panel {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 50px;
-            max-width: 1200px;
+        .edgeLabel span {
+            font-weight: 800 !important;
+            font-size: 13px !important;
+            background-color: transparent !important;
         }
 
+        .links-panel { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 50px; max-width: 1200px; }
         .link-card {
             background: linear-gradient(145deg, #1e2438 0%, #151928 100%);
-            border: 1px solid #2a2f4c;
-            padding: 15px 25px;
-            border-radius: 12px;
-            text-decoration: none;
-            color: #fff;
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 0.95rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 1px solid #2a2f4c; padding: 15px 25px; border-radius: 12px;
+            text-decoration: none; color: #fff; font-family: 'Montserrat', sans-serif;
+            font-weight: 700; font-size: 0.95rem; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
+        .link-card:hover { transform: translateY(-5px); border-color: #00ff9d; box-shadow: 0 15px 30px rgba(0, 255, 157, 0.15); }
+        .link-card img { width: 28px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); }
 
-        .link-card:hover {
-            transform: translateY(-5px);
-            border-color: #00ff9d;
-            box-shadow: 0 15px 30px rgba(0, 255, 157, 0.15);
-        }
-
-        .link-card img {
-            width: 28px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4));
-        }
     </style>
 </head>
 <body>
 
     <div class="header">
         <h1>Tracking <span>Master Flow</span></h1>
-        <p>Mapa Táctico de Redirecciones y Eventos Pixel - Haz clic para abrir páginas</p>
+        <p>Mapa Táctico de Redirecciones - Flechas y Textos a Color</p>
     </div>
 
     <div class="diagram-container">
         <pre class="mermaid">
         graph TD
-            %% ==========================================
-            %% ESTILOS DE LOS NODOS 
-            %% ==========================================
             classDef traffic fill:#131f24,stroke:#00ff9d,stroke-width:2px,color:#fff;
             classDef vsl fill:#112338,stroke:#3498db,stroke-width:2px,color:#fff;
             classDef rescue fill:#331515,stroke:#e74c3c,stroke-width:2px,color:#fff;
@@ -136,72 +89,66 @@
             classDef final fill:#2b1536,stroke:#9b59b6,stroke-width:2px,color:#fff;
             classDef checkout fill:#102e1c,stroke:#2ecc71,stroke-width:2px,color:#fff;
 
-            %% ==========================================
-            %% CREACIÓN DE NODOS (CON BADGES DE EVENTOS)
-            %% ==========================================
             T["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Megaphone.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>TRÁFICO</span><br/><span style='font-size:12px;color:#a0aab2;'>Meta Ads / Orgánico</span></div>"]:::traffic
-
             V["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clapper%20Board.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>VSL PRINCIPAL</span><br/><span style='font-size:12px;color:#3498db;'>/v1</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 PageView (+ ViewContent 7:56)</span></div>"]:::vsl
-
             C_V["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>CHECKOUT HOTMART</span><br/><span style='font-size:12px;color:#2ecc71;'>$27 USD</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>🛒 InitiateCheckout</span></div>"]:::checkout
-            
             R1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Warning.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>RESCATE 1 (Video)</span><br/><span style='font-size:12px;color:#e74c3c;'>/redirec</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 Search (+ ViewContent 8:42)</span></div>"]:::rescue
-            
             OP1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>Rescate Oferta (1)</span><br/><span style='font-size:12px;color:#f39c12;'>/oferta-redirec</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 AddToCart</span></div>"]:::offer
-
             C_R1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
-            
             R2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20Facing%20Up.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>RESCATE 2 (Texto)</span><br/><span style='font-size:12px;color:#e74c3c;'>/redirec-2</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 ViewContent</span></div>"]:::rescue
-            
             OP2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>Rescate Oferta (1)</span><br/><span style='font-size:12px;color:#f39c12;'>/oferta-redirec</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 AddToCart</span></div>"]:::offer
-            
             C_OP1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
-            
             OF1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (2)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 AddToWishlist</span></div>"]:::final
-
             C_R2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
-            
             OF2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (2)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 AddToWishlist</span></div>"]:::final
-            
             C_OP2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
-            
             OF3["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png' width='65'><br/><span style='font-size:16px;font-family:Montserrat;font-weight:900;'>OFERTA FINAL (2)</span><br/><span style='font-size:12px;color:#9b59b6;'>/oferta-redirec-2</span><br/><span style='background:#1877f2;color:#fff;font-size:10px;padding:3px 6px;border-radius:4px;display:inline-block;margin-top:8px;'>📊 AddToWishlist</span></div>"]:::final
-
             C_OF1["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
             C_OF2["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
             C_OF3["<div style='padding:10px;'><img src='https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png' width='45'><br/><span style='font-size:12px;font-weight:bold;'>CHECKOUT</span></div>"]:::checkout
 
             %% ==========================================
-            %% RUTAS CON ESTILOS INLINE (NEÓN Y SIN CRUCES)
+            %% RUTAS SIMPLES (SIN HTML INYECTADO)
             %% ==========================================
             T --> V
+            V -->|💳 Compra| C_V
+            V -->|⏱️ Sale ANTES 7:30| R1
+            V -->|⏱️ Sale DESPUÉS 7:30| OP1
+
+            R1 -->|💳 Compra| C_R1
+            R1 -->|⏱️ Sale ANTES 8:42| R2
+            R1 -->|⏱️ Sale DESPUÉS 8:42| OP2
+
+            OP1 -->|💳 Compra / Auto 120s| C_OP1
+            OP1 -->|🔙 Botón Atrás| OF1
+
+            R2 -->|💳 Compra / Auto 90s| C_R2
+            R2 -->|🔙 Botón Atrás| OF2
+
+            OP2 -->|💳 Compra / Auto 120s| C_OP2
+            OP2 -->|🔙 Botón Atrás| OF3
+
+            OF1 -->|💳 Compra / Auto 60s| C_OF1
+            OF2 -->|💳 Compra / Auto 60s| C_OF2
+            OF3 -->|💳 Compra / Auto 60s| C_OF3
+
+            %% ==========================================
+            %% STYLING NATIVO DE MERMAID (COLOR DE FLECHA Y TEXTO)
+            %% ==========================================
             
-            %% Ramas desde VSL
-            V -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra</div>" --> C_V
-            V -- "<div style='color:#ff8a80;font-weight:800;font-size:13px;'>⏱️ Sale ANTES 7:30</div>" --> R1
-            V -- "<div style='color:#fbbf24;font-weight:800;font-size:13px;'>⏱️ Sale DESPUÉS 7:30</div>" --> OP1
-
-            %% Ramas desde Rescate 1 (Video)
-            R1 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra</div>" --> C_R1
-            R1 -- "<div style='color:#ff8a80;font-weight:800;font-size:13px;'>⏱️ Sale ANTES 8:42</div>" --> R2
-            R1 -- "<div style='color:#fbbf24;font-weight:800;font-size:13px;'>⏱️ Sale DESPUÉS 8:42</div>" --> OP2
-
-            %% Ramas desde Oferta Pizza 1
-            OP1 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (120s)</div>" --> C_OP1
-            OP1 -- "<div style='color:#d8b4e2;font-weight:800;font-size:13px;'>🔙 Botón Atrás</div>" --> OF1
-
-            %% Ramas desde Rescate 2 (Texto)
-            R2 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (90s)</div>" --> C_R2
-            R2 -- "<div style='color:#d8b4e2;font-weight:800;font-size:13px;'>🔙 Botón Atrás</div>" --> OF2
-
-            %% Ramas desde Oferta Pizza 2
-            OP2 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (120s)</div>" --> C_OP2
-            OP2 -- "<div style='color:#d8b4e2;font-weight:800;font-size:13px;'>🔙 Botón Atrás</div>" --> OF3
-
-            %% Ramas desde Oferta Final
-            OF1 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (60s)</div>" --> C_OF1
-            OF2 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (60s)</div>" --> C_OF2
-            OF3 -- "<div style='color:#4ade80;font-weight:800;font-size:13px;'>💳 Compra / Auto (60s)</div>" --> C_OF3
+            linkStyle 0 stroke:#00ff9d,stroke-width:2px,color:#00ff9d;
+            
+            %% Verde Claro Neón (Compradores) - Links: 1, 4, 7, 9, 11, 13, 14, 15
+            linkStyle 1,4,7,9,11,13,14,15 stroke:#4ade80,stroke-width:2px,color:#4ade80;
+            
+            %% Rojo Claro (Sale Antes) - Links: 2, 5
+            linkStyle 2,5 stroke:#ff8a80,stroke-width:2px,color:#ff8a80;
+            
+            %% Amarillo Claro (Sale Después) - Links: 3, 6
+            linkStyle 3,6 stroke:#fbbf24,stroke-width:2px,color:#fbbf24;
+            
+            %% Morado Claro (Botón Atrás) - Links: 8, 10, 12
+            linkStyle 8,10,12 stroke:#d8b4e2,stroke-width:2px,color:#d8b4e2;
 
             %% ==========================================
             %% CLICK EVENTS
@@ -226,33 +173,6 @@
         </pre>
     </div>
 
-    <div class="links-panel">
-        <a href="https://evo-launch.agency/neuro-ingles/v1" target="_blank" class="link-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Clapper%20Board.png">
-            VSL Principal
-        </a>
-        <a href="https://evo-launch.agency/neuro-ingles/redirec" target="_blank" class="link-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Symbols/Warning.png">
-            Rescate 1 (Video)
-        </a>
-        <a href="https://evo-launch.agency/neuro-ingles/redirec-2" target="_blank" class="link-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20Facing%20Up.png">
-            Rescate 2 (Texto)
-        </a>
-        <a href="https://evo-launch.agency/neuro-ingles/oferta-redirec" target="_blank" class="link-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Pizza.png">
-            Oferta 1 (Pizza)
-        </a>
-        <a href="https://evo-launch.agency/neuro-ingles/oferta-redirec-2" target="_blank" class="link-card">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Fire.png">
-            Oferta 2 (Final)
-        </a>
-        <a href="https://go.hotmart.com/U98312104O?ap=e09c" target="_blank" class="link-card" style="border-color:#2ecc71;">
-            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Shopping%20Cart.png">
-            Checkout Hotmart
-        </a>
-    </div>
-
     <script type="module">
         import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
         mermaid.initialize({ 
@@ -263,7 +183,8 @@
                 primaryColor: '#1e2438',
                 lineColor: '#3a4261',
                 textColor: '#fff',
-                fontFamily: 'Inter'
+                fontFamily: 'Inter',
+                edgeLabelBackground: '#111522' // Asegura que el fondo del texto respete la oscuridad
             },
             flowchart: { 
                 curve: 'basis', 
