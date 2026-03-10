@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ads & Sales Dashboard | Pro Analytics</title>
+    <title>Financial Ads Dashboard | Pro Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <style>
@@ -27,15 +27,15 @@
 </head>
 <body class="p-6 relative">
 
-    <div class="max-w-screen-2xl mx-auto">
+    <div class="max-w-[1400px] mx-auto">
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div>
-                <h1 class="text-3xl font-bold text-white tracking-tight">Ads & Sales Analytics</h1>
-                <p class="text-slate-400 mt-1">Monitoreo Avanzado, Drill-down y CRM Insights (Merged Databases).</p>
+                <h1 class="text-3xl font-bold text-white tracking-tight">Ads & Sales Financial Analytics</h1>
+                <p class="text-slate-400 mt-1">Multi-DB Merge, CRM Insights, Gasto Meta & ROAS Tracker.</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <button onclick="openLeadSearch()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2">
-                    🔍 Buscador de Leads
+                    🔍 Buscador CRM
                 </button>
                 <button onclick="loadData()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2">
                     ↻ Actualizar Datos
@@ -79,51 +79,66 @@
                     ⚙️ Configurar Columnas
                 </button>
                 <div class="absolute right-0 mt-2 w-48 bg-[#1e293b] border border-slate-600 rounded shadow-xl hidden group-hover:block z-10 p-2">
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(2)"> Leads</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(3)"> Calificados</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(4)"> Agendas</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(5)"> Asistieron</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(6)"> Ventas</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(7)"> Ingresos</label>
+                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(2)"> Inversión</label>
+                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(3)"> Leads</label>
+                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(4)"> CPL</label>
+                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(5)"> Calificados</label>
+                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(6)"> Asistieron</label>
+                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(7)"> Ventas</label>
+                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(8)"> CPA</label>
+                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(9)"> Ingresos</label>
+                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(10)"> ROAS</label>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-            <div class="card p-5 rounded-lg shadow border-l-4 border-l-slate-400">
-                <p class="text-sm text-slate-400 font-semibold mb-1">Total Leads</p><h3 class="text-3xl font-bold text-white" id="kpi-leads">0</h3>
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8" id="kpi-container">
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-slate-400">
+                <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Leads</p>
+                <h3 class="text-2xl font-bold text-white" id="kpi-leads">0</h3>
             </div>
-            <div class="card p-5 rounded-lg shadow border-l-4 border-l-blue-400">
-                <p class="text-sm text-slate-400 font-semibold mb-1">Leads Calificados</p><h3 class="text-3xl font-bold text-blue-400" id="kpi-calificados">0</h3>
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-yellow-400">
+                <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Asistencias</p>
+                <h3 class="text-2xl font-bold text-yellow-400" id="kpi-agendas">0</h3>
             </div>
-            <div class="card p-5 rounded-lg shadow border-l-4 border-l-yellow-400">
-                <p class="text-sm text-slate-400 font-semibold mb-1">Agendas Asistidas</p><h3 class="text-3xl font-bold text-yellow-400" id="kpi-agendas">0</h3>
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-green-400">
+                <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Ventas</p>
+                <h3 class="text-2xl font-bold text-green-400" id="kpi-ventas">0</h3>
             </div>
-            <div class="card p-5 rounded-lg shadow border-l-4 border-l-green-400">
-                <p class="text-sm text-slate-400 font-semibold mb-1">Ventas Cerradas</p><h3 class="text-3xl font-bold text-green-400" id="kpi-ventas">0</h3>
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-red-500">
+                <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Inversión</p>
+                <h3 class="text-2xl font-bold text-red-400" id="kpi-gasto">$0</h3>
             </div>
-            <div class="card p-5 rounded-lg shadow border-l-4 border-l-emerald-400">
-                <p class="text-sm text-slate-400 font-semibold mb-1">Ingresos Generados</p><h3 class="text-3xl font-bold text-emerald-400" id="kpi-ingresos">$0</h3>
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-emerald-500">
+                <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Ingresos</p>
+                <h3 class="text-2xl font-bold text-emerald-400" id="kpi-ingresos">$0</h3>
+            </div>
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-purple-500 bg-gradient-to-br from-[#1e293b] to-[#2e1065] relative overflow-hidden">
+                <p class="text-xs text-purple-300 font-semibold mb-1 uppercase tracking-wider">ROAS Global</p>
+                <h3 class="text-3xl font-black text-white" id="kpi-roas">0x</h3>
             </div>
         </div>
 
-        <div class="mb-8 card rounded-lg overflow-hidden shadow-xl border border-slate-700">
+        <div class="mb-8 card rounded-lg overflow-hidden shadow-2xl border border-slate-700">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse whitespace-nowrap" id="mainTable">
                     <thead>
-                        <tr class="table-header text-xs uppercase tracking-wider select-none">
-                            <th class="px-6 py-4 font-semibold" onclick="sortTable('campana')">Campaña ↕</th>
-                            <th class="px-6 py-4 font-semibold" onclick="sortTable('anuncio')">Anuncio ↕</th>
-                            <th class="px-6 py-4 font-semibold text-right col-metric col-2" onclick="sortTable('leads')">Leads ↕</th>
-                            <th class="px-6 py-4 font-semibold text-right col-metric col-3" onclick="sortTable('calificados')">Calificados ↕</th>
-                            <th class="px-6 py-4 font-semibold text-right col-metric col-4" onclick="sortTable('agendas_total')">Agendas ↕</th>
-                            <th class="px-6 py-4 font-semibold text-right col-metric col-5" onclick="sortTable('asistieron')">Asistieron ↕</th>
-                            <th class="px-6 py-4 font-semibold text-right col-metric col-6" onclick="sortTable('ventas')">Ventas ↕</th>
-                            <th class="px-6 py-4 font-semibold text-right col-metric col-7" onclick="sortTable('ingresos')">Ingresos ↕</th>
+                        <tr class="table-header text-[11px] uppercase tracking-wider select-none">
+                            <th class="px-5 py-4 font-semibold" onclick="sortTable('campana')">Campaña ↕</th>
+                            <th class="px-5 py-4 font-semibold" onclick="sortTable('anuncio')">Anuncio ↕</th>
+                            <th class="px-5 py-4 font-semibold text-right col-metric col-2" onclick="sortTable('gasto')">Inversión ↕</th>
+                            <th class="px-5 py-4 font-semibold text-right col-metric col-3" onclick="sortTable('leads')">Leads ↕</th>
+                            <th class="px-5 py-4 font-semibold text-right col-metric col-4" onclick="sortTable('cpl')">CPL ↕</th>
+                            <th class="px-5 py-4 font-semibold text-right col-metric col-5" onclick="sortTable('calificados')">Calif ↕</th>
+                            <th class="px-5 py-4 font-semibold text-right col-metric col-6" onclick="sortTable('asistieron')">Asistieron ↕</th>
+                            <th class="px-5 py-4 font-semibold text-right col-metric col-7" onclick="sortTable('ventas')">Ventas ↕</th>
+                            <th class="px-5 py-4 font-semibold text-right col-metric col-8" onclick="sortTable('cpa')">CPA ↕</th>
+                            <th class="px-5 py-4 font-semibold text-right col-metric col-9" onclick="sortTable('ingresos')">Ingresos ↕</th>
+                            <th class="px-5 py-4 font-semibold text-right text-purple-300 col-metric col-10" onclick="sortTable('roas')">ROAS ↕</th>
                         </tr>
                     </thead>
-                    <tbody id="table-campaigns" class="text-sm divide-y divide-slate-700">
-                        <tr><td colspan="8" class="text-center py-8 text-slate-400">Cargando datos...</td></tr>
+                    <tbody id="table-campaigns" class="text-sm divide-y divide-slate-700/50">
+                        <tr><td colspan="11" class="text-center py-8 text-slate-400">Cargando base de datos financiera y fusionando histórico...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -177,13 +192,14 @@
         const URL_LEADS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=0&single=true&output=csv';
         const URL_CALIFICADOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv';
         const URL_AGENDAS_OLD = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv';
-        // 🚀 NUEVA URL AÑADIDA
         const URL_AGENDAS_V2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMnIzrwb9zOkYcksVroAL5F52QR-cnc37zW01dzBYv450w_vIZhjCCkW8jcsC16-5pHtGR0fxDb42B/pub?gid=0&single=true&output=csv';
+        // 🚀 URL META SPEND AÑADIDA
+        const URL_META = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?gid=1230809162&single=true&output=csv';
 
         // Almacenamiento Global
-        let rawLeads = [], rawCalificados = [], rawAgendas = [];
+        let rawLeads = [], rawCalificados = [], rawAgendas = [], rawMeta = [];
         let consolidatedCampaigns = [];
-        let currentSort = { column: 'ingresos', desc: true };
+        let currentSort = { column: 'gasto', desc: true };
 
         function parseCSV(url) {
             return new Promise((resolve, reject) => {
@@ -197,10 +213,12 @@
         // --- MANEJO DE FECHAS ---
         function parseDate(dateStr) {
             if(!dateStr) return null;
-            let parts = dateStr.split('/');
+            let parts = dateStr.split(/[-/]/);
             if(parts.length === 3) {
-                let d = parseInt(parts[0], 10), m = parseInt(parts[1], 10) - 1, y = parseInt(parts[2], 10);
-                if(y < 100) y += 2000;
+                let d, m, y;
+                // Detectar si es YYYY-MM-DD
+                if(parts[0].length === 4) { y = parseInt(parts[0], 10); m = parseInt(parts[1], 10) - 1; d = parseInt(parts[2], 10); }
+                else { d = parseInt(parts[0], 10); m = parseInt(parts[1], 10) - 1; y = parseInt(parts[2], 10); if(y < 100) y += 2000; }
                 return new Date(y, m, d).getTime();
             }
             return new Date(dateStr).getTime();
@@ -251,25 +269,26 @@
 
         // --- CARGA Y PROCESAMIENTO ---
         async function loadData() {
-            document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-400">Leyendo y fusionando bases de datos...</td></tr>';
+            document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="11" class="text-center py-8 text-slate-400">Leyendo y fusionando 5 bases de datos...</td></tr>';
             try {
-                // 🚀 Descargamos todo, incluyendo la base de Agendas antigua y la V2
-                const [l, c, aOld, aV2] = await Promise.all([ 
+                // 🚀 Descargamos todo, incluyendo la base de Agendas antigua, V2 y Costos Meta
+                const [l, c, aOld, aV2, m] = await Promise.all([ 
                     parseCSV(URL_LEADS), 
                     parseCSV(URL_CALIFICADOS), 
                     parseCSV(URL_AGENDAS_OLD),
-                    parseCSV(URL_AGENDAS_V2)
+                    parseCSV(URL_AGENDAS_V2),
+                    parseCSV(URL_META)
                 ]);
                 
                 rawLeads = l; 
                 rawCalificados = c; 
-                // Fusionamos las dos bases de agendas en un solo array
                 rawAgendas = [...aOld, ...aV2]; 
+                rawMeta = m;
                 
                 processData();
             } catch (error) {
                 console.error("Error:", error);
-                document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="8" class="text-center py-8 text-red-400">Error cargando datos.</td></tr>';
+                document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="11" class="text-center py-8 text-red-400">Error cargando datos. Revisa la consola o asegúrate que los enlaces funcionen.</td></tr>';
             }
         }
 
@@ -285,7 +304,7 @@
             };
 
             const initRow = (key, camp, ad) => {
-                if(!stats[key]) stats[key] = { campana: camp, anuncio: ad, leads: 0, calificados: 0, agendas_total: 0, asistieron: 0, ventas: 0, ingresos: 0, arr_leads: [], arr_calif: [], arr_agendas: [], arr_ventas: [] };
+                if(!stats[key]) stats[key] = { campana: camp, anuncio: ad, leads: 0, calificados: 0, agendas_total: 0, asistieron: 0, ventas: 0, ingresos: 0, gasto: 0, arr_leads: [], arr_calif: [], arr_agendas: [], arr_ventas: [] };
             };
 
             // 1. Leads
@@ -306,7 +325,7 @@
                 stats[key].arr_calif.push(r);
             });
 
-            // 3. Agendas / Ventas (Ahora lee el histórico y lo nuevo al mismo tiempo)
+            // 3. Agendas / Ventas (Lee el histórico y lo nuevo)
             rawAgendas.forEach(r => {
                 let {key, camp, ad, fecha} = getRowDetails(r);
                 let resultado = (r['Resultado'] || '').trim();
@@ -328,7 +347,54 @@
                 }
             });
 
-            consolidatedCampaigns = Object.values(stats);
+            // 4. Inversión (Meta Spend)
+            rawMeta.forEach(r => {
+                let camp = (r['Campaign name'] || r['Campaña'] || r['Campaign'] || 'Desconocida').trim();
+                let ad = (r['Ad name'] || r['Ad Name'] || r['Anuncio'] || 'Desconocido').trim();
+                
+                let keys = Object.keys(r);
+                // La métrica puede no tener nombre en el encabezado, lo buscamos en la clave vacía o en la 4ta posición
+                let metricName = r[''] || r['Metric'] || r['Métrica'] || r[keys[3]] || '';
+                
+                // Si la fila detalla una métrica pero NO es sobre dinero/gasto, la ignoramos.
+                if (typeof metricName === 'string' && metricName.trim() !== '' && !metricName.toLowerCase().includes('spent') && !metricName.toLowerCase().includes('gasto') && !metricName.toLowerCase().includes('importe')) {
+                    return; 
+                }
+
+                let fechaTabular = r['Date'] || r['Fecha'] || r['Day'] || r['Reporting starts'];
+                if (fechaTabular) {
+                    // Formato 1: Una fecha por fila
+                    if (isDateInRange(fechaTabular, start, end) && (camp || ad)) {
+                        let spend = parseFloat((r['Amount spent'] || r['Amount spent (USD)'] || r['Importe gastado'] || r['Gasto'] || '0').toString().replace(/[$,]/g, '')) || 0;
+                        let key = `${camp}___${ad}`;
+                        initRow(key, camp, ad);
+                        stats[key].gasto += spend;
+                    }
+                } else {
+                    // Formato 2: Fechas como columnas
+                    keys.forEach(keyName => {
+                        if(keyName.match(/^20\d{2}-\d{2}-\d{2}$/) || keyName.match(/^\d{1,2}\/\d{1,2}\/\d{2,4}$/)) {
+                            if (isDateInRange(keyName, start, end) && (camp || ad)) {
+                                let spend = parseFloat((r[keyName] || '0').toString().replace(/[$,]/g, '')) || 0;
+                                if (spend > 0) {
+                                    let key = `${camp}___${ad}`;
+                                    initRow(key, camp, ad);
+                                    stats[key].gasto += spend;
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+
+            // Calcular Métricas Financieras (CPA, CPL, ROAS)
+            consolidatedCampaigns = Object.values(stats).map(r => {
+                r.cpl = r.leads > 0 ? r.gasto / r.leads : 0;
+                r.cpa = r.ventas > 0 ? r.gasto / r.ventas : 0;
+                r.roas = r.gasto > 0 ? r.ingresos / r.gasto : 0;
+                return r;
+            });
+
             applySort();
         }
 
@@ -353,15 +419,18 @@
 
         // --- RENDERIZADO ---
         function updateKPIs() {
-            let tLeads = 0, tCalif = 0, tAsist = 0, tVentas = 0, tIngresos = 0;
+            let tLeads = 0, tAsist = 0, tVentas = 0, tIngresos = 0, tGasto = 0;
             consolidatedCampaigns.forEach(r => {
-                tLeads += r.leads; tCalif += r.calificados; tAsist += r.asistieron; tVentas += r.ventas; tIngresos += r.ingresos;
+                tLeads += r.leads; tAsist += r.asistieron; tVentas += r.ventas; tIngresos += r.ingresos; tGasto += r.gasto;
             });
+            let globalRoas = tGasto > 0 ? (tIngresos / tGasto).toFixed(2) : 0;
+
             document.getElementById('kpi-leads').innerText = tLeads.toLocaleString();
-            document.getElementById('kpi-calificados').innerText = tCalif.toLocaleString();
             document.getElementById('kpi-agendas').innerText = tAsist.toLocaleString();
             document.getElementById('kpi-ventas').innerText = tVentas.toLocaleString();
-            document.getElementById('kpi-ingresos').innerText = `$${tIngresos.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('kpi-gasto').innerText = `$${tGasto.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('kpi-ingresos').innerText = `$${tIngresos.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('kpi-roas').innerText = `${globalRoas}x`;
         }
 
         function renderCampaignTable() {
@@ -373,20 +442,23 @@
                 if(filterText && !row.campana.toLowerCase().includes(filterText) && !row.anuncio.toLowerCase().includes(filterText)) return;
 
                 const tr = document.createElement('tr');
-                tr.className = 'table-row border-b border-slate-700/50 text-slate-300';
+                tr.className = 'table-row border-b border-slate-700/50 text-slate-300 transition-colors';
                 tr.innerHTML = `
-                    <td class="px-6 py-4 font-medium text-white max-w-xs truncate" title="${row.campana}">${row.campana}</td>
-                    <td class="px-6 py-4 text-slate-400 max-w-xs truncate" title="${row.anuncio}">${row.anuncio}</td>
-                    <td class="px-6 py-4 text-right col-metric col-2"><span class="clickable-metric" onclick="openDrilldown(${i}, 'leads')">${row.leads}</span></td>
-                    <td class="px-6 py-4 text-right text-blue-400 font-semibold col-metric col-3"><span class="clickable-metric" onclick="openDrilldown(${i}, 'calificados')">${row.calificados}</span></td>
-                    <td class="px-6 py-4 text-right col-metric col-4"><span class="clickable-metric" onclick="openDrilldown(${i}, 'agendas')">${row.agendas_total}</span></td>
-                    <td class="px-6 py-4 text-right text-yellow-400 col-metric col-5">${row.asistieron}</td>
-                    <td class="px-6 py-4 text-right text-green-400 font-bold col-metric col-6"><span class="clickable-metric" onclick="openDrilldown(${i}, 'ventas')">${row.ventas}</span></td>
-                    <td class="px-6 py-4 text-right text-emerald-400 font-bold col-metric col-7">$${row.ingresos.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td class="px-5 py-4 font-medium text-white max-w-[200px] truncate" title="${row.campana}">${row.campana}</td>
+                    <td class="px-5 py-4 text-slate-400 max-w-[150px] truncate" title="${row.anuncio}">${row.anuncio}</td>
+                    <td class="px-5 py-4 text-right text-red-400 font-bold col-metric col-2">$${row.gasto.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="px-5 py-4 text-right col-metric col-3"><span class="clickable-metric" onclick="openDrilldown(${i}, 'leads')">${row.leads}</span></td>
+                    <td class="px-5 py-4 text-right text-slate-400 col-metric col-4">$${row.cpl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="px-5 py-4 text-right text-blue-400 font-semibold col-metric col-5"><span class="clickable-metric" onclick="openDrilldown(${i}, 'calificados')">${row.calificados}</span></td>
+                    <td class="px-5 py-4 text-right text-yellow-400 col-metric col-6">${row.asistieron}</td>
+                    <td class="px-5 py-4 text-right text-green-400 font-bold col-metric col-7"><span class="clickable-metric" onclick="openDrilldown(${i}, 'ventas')">${row.ventas}</span></td>
+                    <td class="px-5 py-4 text-right text-orange-400 font-semibold col-metric col-8">$${row.cpa.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="px-5 py-4 text-right text-emerald-400 font-bold col-metric col-9">$${row.ingresos.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                    <td class="px-5 py-4 text-right text-purple-400 font-black col-metric col-10 bg-purple-900/10 rounded">${row.roas.toFixed(2)}x</td>
                 `;
                 tbody.appendChild(tr);
             });
-            if(tbody.innerHTML === '') tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-400">Sin resultados.</td></tr>';
+            if(tbody.innerHTML === '') tbody.innerHTML = '<tr><td colspan="11" class="text-center py-8 text-slate-400">Sin resultados.</td></tr>';
         }
 
         function toggleCol(colIndex) {
@@ -402,7 +474,6 @@
 
             if(type === 'leads') { arr = data.arr_leads; title = "Leads Entrantes"; }
             else if(type === 'calificados') { arr = data.arr_calif; title = "Leads Calificados"; }
-            else if(type === 'agendas') { arr = data.arr_agendas; title = "Agendas Totales"; }
             else if(type === 'ventas') { arr = data.arr_ventas; title = "Ventas Cerradas"; }
 
             document.getElementById('modal-title').innerText = `${title} - ${data.campana}`;
@@ -416,19 +487,10 @@
                 let tel = r['Teléfono'] || r['Phone'] || '-';
                 let extra = type === 'ventas' ? `$${r['Monto ($)'] || 0}` : (r['Resultado'] || '');
                 
-                tbody.innerHTML += `
-                    <tr>
-                        <td class="px-4 py-3">${fecha}</td>
-                        <td class="px-4 py-3 font-semibold text-white">${nombre}</td>
-                        <td class="px-4 py-3 text-blue-400">${email}</td>
-                        <td class="px-4 py-3">${tel}</td>
-                        <td class="px-4 py-3 text-right font-bold text-green-400">${extra}</td>
-                    </tr>
-                `;
+                tbody.innerHTML += `<tr><td class="px-4 py-3">${fecha}</td><td class="px-4 py-3 font-semibold text-white">${nombre}</td><td class="px-4 py-3 text-blue-400">${email}</td><td class="px-4 py-3">${tel}</td><td class="px-4 py-3 text-right font-bold text-green-400">${extra}</td></tr>`;
             });
 
             if(arr.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">No hay detalles disponibles</td></tr>';
-            
             document.getElementById('modal-drilldown').classList.remove('hidden');
         }
 
