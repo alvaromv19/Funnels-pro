@@ -9,29 +9,30 @@
     <style>
         body { background-color: #0f172a; color: #f8fafc; font-family: 'Inter', sans-serif; }
         .card { background-color: #1e293b; border: 1px solid #334155; }
-        .table-header { background-color: #334155; color: #94a3b8; cursor: pointer; transition: background 0.2s;}
-        .table-header:hover { background-color: #475569; color: #fff;}
+        
+        /* Drag and Drop Styles */
+        .draggable-header { cursor: grab; transition: background 0.2s; position: relative; }
+        .draggable-header:active { cursor: grabbing; }
+        .draggable-header:hover { background-color: #475569; color: #fff; }
+        .drag-over { background-color: #475569 !important; outline: 2px dashed #cbd5e1; outline-offset: -2px;}
+        
         .table-row:hover { background-color: #334155; transition: background-color 0.2s; }
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #0f172a; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
         
-        /* Modal Styles */
         .modal-bg { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(4px); }
         .clickable-metric { cursor: pointer; border-bottom: 1px dashed currentcolor; transition: opacity 0.2s; }
         .clickable-metric:hover { opacity: 0.7; }
-        
-        /* Column Visibility */
-        .col-hidden { display: none; }
     </style>
 </head>
 <body class="p-6 relative">
 
-    <div class="max-w-[1400px] mx-auto">
+    <div class="max-w-[1500px] mx-auto">
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-white tracking-tight">Ads & Sales Financial Analytics</h1>
-                <p class="text-slate-400 mt-1">Multi-DB Merge, CRM Insights, Gasto Meta & ROAS Tracker.</p>
+                <p class="text-slate-400 mt-1">Multi-DB, CRM Insights, Costos Personalizados & ROAS Tracker.</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <button onclick="openLeadSearch()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2">
@@ -43,7 +44,7 @@
             </div>
         </header>
 
-        <div class="card p-4 rounded-lg mb-6 flex flex-wrap gap-4 items-end justify-between">
+        <div class="card p-4 rounded-lg mb-6 flex flex-wrap gap-4 items-end justify-between shadow-lg">
             <div class="flex flex-wrap gap-4 items-end">
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Rango de Fechas</label>
@@ -67,28 +68,18 @@
                         <input type="date" id="dateEnd" onchange="processData()" class="bg-[#0f172a] border border-slate-600 text-white rounded px-2 py-1.5 text-sm">
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Buscar Campaña/Anuncio</label>
-                    <input type="text" id="searchInput" placeholder="Escribe aquí..." class="bg-[#0f172a] border border-slate-600 text-white rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500" onkeyup="renderCampaignTable()">
+                    <input type="text" id="searchInput" placeholder="Escribe aquí..." class="bg-[#0f172a] border border-slate-600 text-white rounded px-3 py-2 text-sm focus:outline-none focus:border-blue-500" onkeyup="renderTable()">
                 </div>
             </div>
 
             <div class="relative group">
-                <button class="bg-[#0f172a] border border-slate-600 text-slate-300 px-3 py-2 rounded text-sm hover:text-white">
+                <button class="bg-[#0f172a] border border-slate-600 text-slate-300 px-3 py-2 rounded text-sm hover:text-white flex items-center gap-2">
                     ⚙️ Configurar Columnas
                 </button>
-                <div class="absolute right-0 mt-2 w-48 bg-[#1e293b] border border-slate-600 rounded shadow-xl hidden group-hover:block z-10 p-2">
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(2)"> Inversión</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(3)"> Leads</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(4)"> CPL</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(5)"> Calificados</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(6)"> Asistieron</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(7)"> Ventas</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(8)"> CPA</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(9)"> Ingresos</label>
-                    <label class="flex items-center gap-2 text-sm text-slate-300 p-1 hover:bg-slate-700 cursor-pointer"><input type="checkbox" checked onchange="toggleCol(10)"> ROAS</label>
-                </div>
+                <div id="column-settings-menu" class="absolute right-0 mt-2 w-56 bg-[#1e293b] border border-slate-600 rounded shadow-2xl hidden group-hover:flex flex-col z-10 p-2 max-h-80 overflow-y-auto">
+                    </div>
             </div>
         </div>
 
@@ -120,25 +111,13 @@
         </div>
 
         <div class="mb-8 card rounded-lg overflow-hidden shadow-2xl border border-slate-700">
-            <div class="overflow-x-auto">
+            <div class="overflow-x-auto pb-4">
                 <table class="w-full text-left border-collapse whitespace-nowrap" id="mainTable">
-                    <thead>
-                        <tr class="table-header text-[11px] uppercase tracking-wider select-none">
-                            <th class="px-5 py-4 font-semibold" onclick="sortTable('campana')">Campaña ↕</th>
-                            <th class="px-5 py-4 font-semibold" onclick="sortTable('anuncio')">Anuncio ↕</th>
-                            <th class="px-5 py-4 font-semibold text-right col-metric col-2" onclick="sortTable('gasto')">Inversión ↕</th>
-                            <th class="px-5 py-4 font-semibold text-right col-metric col-3" onclick="sortTable('leads')">Leads ↕</th>
-                            <th class="px-5 py-4 font-semibold text-right col-metric col-4" onclick="sortTable('cpl')">CPL ↕</th>
-                            <th class="px-5 py-4 font-semibold text-right col-metric col-5" onclick="sortTable('calificados')">Calif ↕</th>
-                            <th class="px-5 py-4 font-semibold text-right col-metric col-6" onclick="sortTable('asistieron')">Asistieron ↕</th>
-                            <th class="px-5 py-4 font-semibold text-right col-metric col-7" onclick="sortTable('ventas')">Ventas ↕</th>
-                            <th class="px-5 py-4 font-semibold text-right col-metric col-8" onclick="sortTable('cpa')">CPA ↕</th>
-                            <th class="px-5 py-4 font-semibold text-right col-metric col-9" onclick="sortTable('ingresos')">Ingresos ↕</th>
-                            <th class="px-5 py-4 font-semibold text-right text-purple-300 col-metric col-10" onclick="sortTable('roas')">ROAS ↕</th>
-                        </tr>
+                    <thead class="bg-[#334155] text-[#94a3b8] text-[11px] uppercase tracking-wider select-none border-b border-slate-600">
+                        <tr id="table-header-row"></tr>
                     </thead>
                     <tbody id="table-campaigns" class="text-sm divide-y divide-slate-700/50">
-                        <tr><td colspan="11" class="text-center py-8 text-slate-400">Cargando base de datos financiera y fusionando histórico...</td></tr>
+                        <tr><td colspan="15" class="text-center py-8 text-slate-400">Descargando todas las bases (Incluyendo Costos de Meta)...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -182,7 +161,7 @@
             <div class="p-6 overflow-auto flex-1" id="crm-results">
                 <div class="text-center text-slate-500 mt-10">
                     <p class="text-lg">Ingresa un correo o nombre arriba.</p>
-                    <p class="text-sm mt-2">El sistema buscará en Leads, Calificados, Agendas (Antiguas y Nuevas) y Ventas para trazar su recorrido.</p>
+                    <p class="text-sm mt-2">Busca el historial completo a través de Leads, Calificados, Agendas y Ventas.</p>
                 </div>
             </div>
         </div>
@@ -193,13 +172,30 @@
         const URL_CALIFICADOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv';
         const URL_AGENDAS_OLD = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv';
         const URL_AGENDAS_V2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMnIzrwb9zOkYcksVroAL5F52QR-cnc37zW01dzBYv450w_vIZhjCCkW8jcsC16-5pHtGR0fxDb42B/pub?gid=0&single=true&output=csv';
-        // 🚀 URL META SPEND AÑADIDA
         const URL_META = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?gid=1230809162&single=true&output=csv';
 
-        // Almacenamiento Global
         let rawLeads = [], rawCalificados = [], rawAgendas = [], rawMeta = [];
         let consolidatedCampaigns = [];
         let currentSort = { column: 'gasto', desc: true };
+
+        // --- SISTEMA DINÁMICO DE COLUMNAS (ARRASTRABLES) ---
+        let tableColumns = [
+            { id: 'campana', label: 'Campaña ↕', type: 'text', visible: true, align: 'text-left', classes: 'font-medium text-white max-w-[200px] truncate' },
+            { id: 'anuncio', label: 'Anuncio ↕', type: 'text', visible: true, align: 'text-left', classes: 'text-slate-400 max-w-[150px] truncate' },
+            { id: 'gasto', label: 'Inversión ↕', type: 'currency', visible: true, align: 'text-right', classes: 'text-red-400 font-bold' },
+            { id: 'leads', label: 'Leads ↕', type: 'drilldown_leads', visible: true, align: 'text-right', classes: '' },
+            { id: 'cpl', label: 'CPL ↕', type: 'currency', visible: true, align: 'text-right', classes: 'text-slate-400' },
+            { id: 'calificados', label: 'Calif ↕', type: 'drilldown_calificados', visible: true, align: 'text-right', classes: 'text-blue-400 font-semibold' },
+            { id: 'cpq', label: 'Costo x Calif ↕', type: 'currency', visible: true, align: 'text-right', classes: 'text-blue-300' },
+            { id: 'agendas_total', label: 'Agendas ↕', type: 'drilldown_agendas', visible: true, align: 'text-right', classes: 'text-purple-300' },
+            { id: 'cp_agenda', label: 'Costo x Agenda ↕', type: 'currency', visible: true, align: 'text-right', classes: 'text-orange-300' },
+            { id: 'asistieron', label: 'Asistieron ↕', type: 'number', visible: true, align: 'text-right', classes: 'text-yellow-400' },
+            { id: 'cp_asistencia', label: 'Costo x Asist ↕', type: 'currency', visible: true, align: 'text-right', classes: 'text-yellow-500' },
+            { id: 'ventas', label: 'Ventas ↕', type: 'drilldown_ventas', visible: true, align: 'text-right', classes: 'text-green-400 font-bold' },
+            { id: 'cpa', label: 'CPA ↕', type: 'currency', visible: true, align: 'text-right', classes: 'text-orange-400 font-semibold' },
+            { id: 'ingresos', label: 'Ingresos ↕', type: 'currency', visible: true, align: 'text-right', classes: 'text-emerald-400 font-bold' },
+            { id: 'roas', label: 'ROAS ↕', type: 'roas', visible: true, align: 'text-right', classes: 'text-purple-400 font-black bg-purple-900/20 rounded px-2' }
+        ];
 
         function parseCSV(url) {
             return new Promise((resolve, reject) => {
@@ -210,13 +206,12 @@
             });
         }
 
-        // --- MANEJO DE FECHAS ---
+        // FECHAS
         function parseDate(dateStr) {
             if(!dateStr) return null;
             let parts = dateStr.split(/[-/]/);
             if(parts.length === 3) {
                 let d, m, y;
-                // Detectar si es YYYY-MM-DD
                 if(parts[0].length === 4) { y = parseInt(parts[0], 10); m = parseInt(parts[1], 10) - 1; d = parseInt(parts[2], 10); }
                 else { d = parseInt(parts[0], 10); m = parseInt(parts[1], 10) - 1; y = parseInt(parts[2], 10); if(y < 100) y += 2000; }
                 return new Date(y, m, d).getTime();
@@ -236,19 +231,14 @@
         function handleDateRangeChange() {
             const val = document.getElementById('dateRange').value;
             const customCont = document.getElementById('customDateContainer');
-            if(val === 'custom') {
-                customCont.classList.remove('hidden');
-            } else {
-                customCont.classList.add('hidden');
-                processData();
-            }
+            if(val === 'custom') customCont.classList.remove('hidden');
+            else { customCont.classList.add('hidden'); processData(); }
         }
 
         function getTimestampsFromFilter() {
             const val = document.getElementById('dateRange').value;
             let start = null, end = null;
-            const now = new Date();
-            now.setHours(0,0,0,0);
+            const now = new Date(); now.setHours(0,0,0,0);
 
             if(val === 'today') { start = now.getTime(); end = now.getTime() + 86400000; }
             else if(val === 'yesterday') { start = now.getTime() - 86400000; end = now.getTime(); }
@@ -259,36 +249,26 @@
                 end = new Date(now.getFullYear(), now.getMonth(), 0).getTime() + 86400000;
             }
             else if(val === 'custom') {
-                let s = document.getElementById('dateStart').value;
-                let e = document.getElementById('dateEnd').value;
+                let s = document.getElementById('dateStart').value; let e = document.getElementById('dateEnd').value;
                 if(s) { let sd = new Date(s); sd.setMinutes(sd.getMinutes() + sd.getTimezoneOffset()); start = sd.getTime(); }
                 if(e) { let ed = new Date(e); ed.setMinutes(ed.getMinutes() + ed.getTimezoneOffset()); end = ed.getTime() + 86400000; }
             }
             return {start, end};
         }
 
-        // --- CARGA Y PROCESAMIENTO ---
+        // CARGA DE DATOS
         async function loadData() {
-            document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="11" class="text-center py-8 text-slate-400">Leyendo y fusionando 5 bases de datos...</td></tr>';
+            document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="15" class="text-center py-8 text-slate-400">Descargando y fusionando 5 bases de datos...</td></tr>';
             try {
-                // 🚀 Descargamos todo, incluyendo la base de Agendas antigua, V2 y Costos Meta
                 const [l, c, aOld, aV2, m] = await Promise.all([ 
-                    parseCSV(URL_LEADS), 
-                    parseCSV(URL_CALIFICADOS), 
-                    parseCSV(URL_AGENDAS_OLD),
-                    parseCSV(URL_AGENDAS_V2),
-                    parseCSV(URL_META)
+                    parseCSV(URL_LEADS), parseCSV(URL_CALIFICADOS), parseCSV(URL_AGENDAS_OLD), parseCSV(URL_AGENDAS_V2), parseCSV(URL_META)
                 ]);
-                
-                rawLeads = l; 
-                rawCalificados = c; 
-                rawAgendas = [...aOld, ...aV2]; 
-                rawMeta = m;
-                
+                rawLeads = l; rawCalificados = c; rawAgendas = [...aOld, ...aV2]; rawMeta = m;
                 processData();
+                renderColumnSettings();
             } catch (error) {
                 console.error("Error:", error);
-                document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="11" class="text-center py-8 text-red-400">Error cargando datos. Revisa la consola o asegúrate que los enlaces funcionen.</td></tr>';
+                document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="15" class="text-center py-8 text-red-400">Error de conexión. Revisa las URLs.</td></tr>';
             }
         }
 
@@ -304,28 +284,25 @@
             };
 
             const initRow = (key, camp, ad) => {
-                if(!stats[key]) stats[key] = { campana: camp, anuncio: ad, leads: 0, calificados: 0, agendas_total: 0, asistieron: 0, ventas: 0, ingresos: 0, gasto: 0, arr_leads: [], arr_calif: [], arr_agendas: [], arr_ventas: [] };
+                if(!stats[key]) stats[key] = { 
+                    campana: camp, anuncio: ad, leads: 0, calificados: 0, agendas_total: 0, asistieron: 0, ventas: 0, 
+                    ingresos: 0, gasto: 0, cpl: 0, cpq: 0, cp_agenda: 0, cp_asistencia: 0, cpa: 0, roas: 0,
+                    arr_leads: [], arr_calif: [], arr_agendas: [], arr_ventas: [] 
+                };
             };
 
-            // 1. Leads
             rawLeads.forEach(r => {
                 let {key, camp, ad, fecha} = getRowDetails(r);
                 if(!isDateInRange(fecha, start, end) || (!camp && !ad)) return;
-                initRow(key, camp, ad);
-                stats[key].leads++;
-                stats[key].arr_leads.push(r);
+                initRow(key, camp, ad); stats[key].leads++; stats[key].arr_leads.push(r);
             });
 
-            // 2. Calificados
             rawCalificados.forEach(r => {
                 let {key, camp, ad, fecha} = getRowDetails(r);
                 if(!isDateInRange(fecha, start, end) || (!camp && !ad)) return;
-                initRow(key, camp, ad);
-                stats[key].calificados++;
-                stats[key].arr_calif.push(r);
+                initRow(key, camp, ad); stats[key].calificados++; stats[key].arr_calif.push(r);
             });
 
-            // 3. Agendas / Ventas (Lee el histórico y lo nuevo)
             rawAgendas.forEach(r => {
                 let {key, camp, ad, fecha} = getRowDetails(r);
                 let resultado = (r['Resultado'] || '').trim();
@@ -333,63 +310,47 @@
 
                 if(!isDateInRange(fecha, start, end) || (!camp && !ad)) return;
                 initRow(key, camp, ad);
-
-                stats[key].agendas_total++;
-                stats[key].arr_agendas.push(r);
+                stats[key].agendas_total++; stats[key].arr_agendas.push(r);
 
                 if(resultado.includes('✅ Venta Cerrada')) {
-                    stats[key].ventas++;
-                    stats[key].asistieron++;
-                    stats[key].ingresos += monto;
-                    stats[key].arr_ventas.push(r);
+                    stats[key].ventas++; stats[key].asistieron++; stats[key].ingresos += monto; stats[key].arr_ventas.push(r);
                 } else if (!resultado.includes('❌ No Show')) {
                     stats[key].asistieron++;
                 }
             });
 
-            // 4. Inversión (Meta Spend)
             rawMeta.forEach(r => {
                 let camp = (r['Campaign name'] || r['Campaña'] || r['Campaign'] || 'Desconocida').trim();
                 let ad = (r['Ad name'] || r['Ad Name'] || r['Anuncio'] || 'Desconocido').trim();
-                
                 let keys = Object.keys(r);
-                // La métrica puede no tener nombre en el encabezado, lo buscamos en la clave vacía o en la 4ta posición
                 let metricName = r[''] || r['Metric'] || r['Métrica'] || r[keys[3]] || '';
                 
-                // Si la fila detalla una métrica pero NO es sobre dinero/gasto, la ignoramos.
-                if (typeof metricName === 'string' && metricName.trim() !== '' && !metricName.toLowerCase().includes('spent') && !metricName.toLowerCase().includes('gasto') && !metricName.toLowerCase().includes('importe')) {
-                    return; 
-                }
+                if (typeof metricName === 'string' && metricName.trim() !== '' && !metricName.toLowerCase().includes('spent') && !metricName.toLowerCase().includes('gasto') && !metricName.toLowerCase().includes('importe')) return; 
 
                 let fechaTabular = r['Date'] || r['Fecha'] || r['Day'] || r['Reporting starts'];
                 if (fechaTabular) {
-                    // Formato 1: Una fecha por fila
                     if (isDateInRange(fechaTabular, start, end) && (camp || ad)) {
                         let spend = parseFloat((r['Amount spent'] || r['Amount spent (USD)'] || r['Importe gastado'] || r['Gasto'] || '0').toString().replace(/[$,]/g, '')) || 0;
-                        let key = `${camp}___${ad}`;
-                        initRow(key, camp, ad);
-                        stats[key].gasto += spend;
+                        initRow(`${camp}___${ad}`, camp, ad); stats[`${camp}___${ad}`].gasto += spend;
                     }
                 } else {
-                    // Formato 2: Fechas como columnas
                     keys.forEach(keyName => {
                         if(keyName.match(/^20\d{2}-\d{2}-\d{2}$/) || keyName.match(/^\d{1,2}\/\d{1,2}\/\d{2,4}$/)) {
                             if (isDateInRange(keyName, start, end) && (camp || ad)) {
                                 let spend = parseFloat((r[keyName] || '0').toString().replace(/[$,]/g, '')) || 0;
-                                if (spend > 0) {
-                                    let key = `${camp}___${ad}`;
-                                    initRow(key, camp, ad);
-                                    stats[key].gasto += spend;
-                                }
+                                if (spend > 0) { initRow(`${camp}___${ad}`, camp, ad); stats[`${camp}___${ad}`].gasto += spend; }
                             }
                         }
                     });
                 }
             });
 
-            // Calcular Métricas Financieras (CPA, CPL, ROAS)
+            // Matemáticas de CPA y Costos
             consolidatedCampaigns = Object.values(stats).map(r => {
                 r.cpl = r.leads > 0 ? r.gasto / r.leads : 0;
+                r.cpq = r.calificados > 0 ? r.gasto / r.calificados : 0;
+                r.cp_agenda = r.agendas_total > 0 ? r.gasto / r.agendas_total : 0;
+                r.cp_asistencia = r.asistieron > 0 ? r.gasto / r.asistieron : 0;
                 r.cpa = r.ventas > 0 ? r.gasto / r.ventas : 0;
                 r.roas = r.gasto > 0 ? r.ingresos / r.gasto : 0;
                 return r;
@@ -398,7 +359,7 @@
             applySort();
         }
 
-        // --- SORTING ---
+        // SORTING Y KPIs
         function sortTable(column) {
             if(currentSort.column === column) currentSort.desc = !currentSort.desc;
             else { currentSort.column = column; currentSort.desc = true; }
@@ -414,15 +375,12 @@
                 return (valA - valB) * mult;
             });
             updateKPIs();
-            renderCampaignTable();
+            renderTable();
         }
 
-        // --- RENDERIZADO ---
         function updateKPIs() {
             let tLeads = 0, tAsist = 0, tVentas = 0, tIngresos = 0, tGasto = 0;
-            consolidatedCampaigns.forEach(r => {
-                tLeads += r.leads; tAsist += r.asistieron; tVentas += r.ventas; tIngresos += r.ingresos; tGasto += r.gasto;
-            });
+            consolidatedCampaigns.forEach(r => { tLeads += r.leads; tAsist += r.asistieron; tVentas += r.ventas; tIngresos += r.ingresos; tGasto += r.gasto; });
             let globalRoas = tGasto > 0 ? (tIngresos / tGasto).toFixed(2) : 0;
 
             document.getElementById('kpi-leads').innerText = tLeads.toLocaleString();
@@ -433,104 +391,134 @@
             document.getElementById('kpi-roas').innerText = `${globalRoas}x`;
         }
 
-        function renderCampaignTable() {
-            const tbody = document.getElementById('table-campaigns');
-            tbody.innerHTML = '';
-            const filterText = document.getElementById('searchInput').value.toLowerCase();
+        // --- SISTEMA DE DIBUJADO DE LA TABLA Y DRAG & DROP ---
+        function handleDragStart(e, colId) {
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', colId);
+            e.target.classList.add('opacity-50');
+        }
+        function handleDragOver(e) {
+            e.preventDefault(); e.dataTransfer.dropEffect = 'move';
+            e.target.classList.add('drag-over'); return false;
+        }
+        function handleDragLeave(e) { e.target.classList.remove('drag-over'); }
+        function handleDrop(e, targetColId) {
+            e.stopPropagation(); e.target.classList.remove('drag-over');
+            let sourceColId = e.dataTransfer.getData('text/plain');
+            if (sourceColId && sourceColId !== targetColId) {
+                let srcIdx = tableColumns.findIndex(c => c.id === sourceColId);
+                let dstIdx = tableColumns.findIndex(c => c.id === targetColId);
+                let moved = tableColumns.splice(srcIdx, 1)[0];
+                tableColumns.splice(dstIdx, 0, moved);
+                renderTable(); renderColumnSettings();
+            }
+            return false;
+        }
+        function handleDragEnd(e) { e.target.classList.remove('opacity-50'); document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over')); }
 
+        function renderTable() {
+            const thead = document.getElementById('table-header-row');
+            const tbody = document.getElementById('table-campaigns');
+            thead.innerHTML = ''; tbody.innerHTML = '';
+            
+            let visibleCols = tableColumns.filter(c => c.visible);
+
+            // Generar Header
+            visibleCols.forEach((col) => {
+                const th = document.createElement('th');
+                th.className = `px-5 py-4 font-semibold ${col.align} draggable-header`;
+                th.draggable = true; th.innerHTML = col.label;
+                th.addEventListener('dragstart', (e) => handleDragStart(e, col.id));
+                th.addEventListener('dragover', handleDragOver);
+                th.addEventListener('dragleave', handleDragLeave);
+                th.addEventListener('drop', (e) => handleDrop(e, col.id));
+                th.addEventListener('dragend', handleDragEnd);
+                th.addEventListener('click', () => sortTable(col.id));
+                thead.appendChild(th);
+            });
+
+            // Generar Body
+            const filterText = document.getElementById('searchInput').value.toLowerCase();
             consolidatedCampaigns.forEach((row, i) => {
                 if(filterText && !row.campana.toLowerCase().includes(filterText) && !row.anuncio.toLowerCase().includes(filterText)) return;
-
                 const tr = document.createElement('tr');
                 tr.className = 'table-row border-b border-slate-700/50 text-slate-300 transition-colors';
-                tr.innerHTML = `
-                    <td class="px-5 py-4 font-medium text-white max-w-[200px] truncate" title="${row.campana}">${row.campana}</td>
-                    <td class="px-5 py-4 text-slate-400 max-w-[150px] truncate" title="${row.anuncio}">${row.anuncio}</td>
-                    <td class="px-5 py-4 text-right text-red-400 font-bold col-metric col-2">$${row.gasto.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td class="px-5 py-4 text-right col-metric col-3"><span class="clickable-metric" onclick="openDrilldown(${i}, 'leads')">${row.leads}</span></td>
-                    <td class="px-5 py-4 text-right text-slate-400 col-metric col-4">$${row.cpl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td class="px-5 py-4 text-right text-blue-400 font-semibold col-metric col-5"><span class="clickable-metric" onclick="openDrilldown(${i}, 'calificados')">${row.calificados}</span></td>
-                    <td class="px-5 py-4 text-right text-yellow-400 col-metric col-6">${row.asistieron}</td>
-                    <td class="px-5 py-4 text-right text-green-400 font-bold col-metric col-7"><span class="clickable-metric" onclick="openDrilldown(${i}, 'ventas')">${row.ventas}</span></td>
-                    <td class="px-5 py-4 text-right text-orange-400 font-semibold col-metric col-8">$${row.cpa.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td class="px-5 py-4 text-right text-emerald-400 font-bold col-metric col-9">$${row.ingresos.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                    <td class="px-5 py-4 text-right text-purple-400 font-black col-metric col-10 bg-purple-900/10 rounded">${row.roas.toFixed(2)}x</td>
-                `;
+                
+                visibleCols.forEach(col => {
+                    const td = document.createElement('td');
+                    td.className = `px-5 py-4 ${col.align} ${col.classes}`;
+                    if(col.id === 'campana' || col.id === 'anuncio') td.title = row[col.id];
+                    
+                    let val = row[col.id];
+                    if (col.type === 'text' || col.type === 'number') td.innerHTML = val;
+                    else if (col.type === 'currency') td.innerHTML = `$${val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                    else if (col.type === 'roas') td.innerHTML = `${val.toFixed(2)}x`;
+                    else if (col.type.startsWith('drilldown_')) {
+                        let type = col.type.split('_')[1];
+                        td.innerHTML = `<span class="clickable-metric" onclick="openDrilldown(${i}, '${type}')">${val}</span>`;
+                    }
+                    tr.appendChild(td);
+                });
                 tbody.appendChild(tr);
             });
-            if(tbody.innerHTML === '') tbody.innerHTML = '<tr><td colspan="11" class="text-center py-8 text-slate-400">Sin resultados.</td></tr>';
+
+            if(tbody.innerHTML === '') tbody.innerHTML = `<tr><td colspan="${visibleCols.length}" class="text-center py-8 text-slate-400">Sin resultados en la búsqueda.</td></tr>`;
         }
 
-        function toggleCol(colIndex) {
-            const cols = document.querySelectorAll(`.col-${colIndex}`);
-            cols.forEach(el => el.classList.toggle('col-hidden'));
+        function renderColumnSettings() {
+            const container = document.getElementById('column-settings-menu');
+            container.innerHTML = '<div class="text-xs text-slate-400 mb-2 border-b border-slate-600 pb-1">Prende o apaga columnas:</div>';
+            tableColumns.forEach(col => {
+                const label = document.createElement('label');
+                label.className = 'flex items-center gap-2 text-sm text-slate-300 p-1.5 hover:bg-slate-700 cursor-pointer rounded transition';
+                
+                const cb = document.createElement('input');
+                cb.type = 'checkbox'; cb.checked = col.visible;
+                cb.className = "accent-purple-500 rounded";
+                cb.onchange = () => { col.visible = cb.checked; renderTable(); };
+                
+                label.appendChild(cb);
+                label.appendChild(document.createTextNode(' ' + col.label.replace(' ↕', '')));
+                container.appendChild(label);
+            });
         }
 
-        // --- DRILL DOWN ---
+        // --- DRILL DOWN Y CRM ---
         function openDrilldown(index, type) {
-            let data = consolidatedCampaigns[index];
-            let arr = [];
-            let title = "";
-
+            let data = consolidatedCampaigns[index]; let arr = []; let title = "";
             if(type === 'leads') { arr = data.arr_leads; title = "Leads Entrantes"; }
             else if(type === 'calificados') { arr = data.arr_calif; title = "Leads Calificados"; }
+            else if(type === 'agendas') { arr = data.arr_agendas; title = "Agendas Totales"; }
             else if(type === 'ventas') { arr = data.arr_ventas; title = "Ventas Cerradas"; }
 
             document.getElementById('modal-title').innerText = `${title} - ${data.campana}`;
-            let tbody = document.getElementById('modal-tbody');
-            tbody.innerHTML = '';
-
+            let tbody = document.getElementById('modal-tbody'); tbody.innerHTML = '';
             arr.forEach(r => {
                 let fecha = r['Fecha Creación'] || r['Fecha'] || '-';
                 let nombre = r['Nombre'] || r['Lead Name'] || '-';
                 let email = r['Email'] || r['Email '] || '-';
                 let tel = r['Teléfono'] || r['Phone'] || '-';
                 let extra = type === 'ventas' ? `$${r['Monto ($)'] || 0}` : (r['Resultado'] || '');
-                
                 tbody.innerHTML += `<tr><td class="px-4 py-3">${fecha}</td><td class="px-4 py-3 font-semibold text-white">${nombre}</td><td class="px-4 py-3 text-blue-400">${email}</td><td class="px-4 py-3">${tel}</td><td class="px-4 py-3 text-right font-bold text-green-400">${extra}</td></tr>`;
             });
-
             if(arr.length === 0) tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4">No hay detalles disponibles</td></tr>';
             document.getElementById('modal-drilldown').classList.remove('hidden');
         }
 
-        function openLeadSearch() {
-            document.getElementById('modal-crm').classList.remove('hidden');
-            document.getElementById('crmSearch').focus();
-        }
-
-        function closeModal(id) {
-            document.getElementById(id).classList.add('hidden');
-        }
-
+        function openLeadSearch() { document.getElementById('modal-crm').classList.remove('hidden'); document.getElementById('crmSearch').focus(); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         function searchCRM() {
             let term = document.getElementById('crmSearch').value.toLowerCase().trim();
             let container = document.getElementById('crm-results');
-            
-            if(term.length < 3) {
-                container.innerHTML = `<div class="text-center text-slate-500 mt-10">Escribe al menos 3 letras para buscar...</div>`;
-                return;
-            }
+            if(term.length < 3) { container.innerHTML = `<div class="text-center text-slate-500 mt-10">Escribe al menos 3 letras para buscar...</div>`; return; }
 
             const matchLead = (r) => (r['Nombre']||r['Lead Name']||'').toLowerCase().includes(term) || (r['Email']||r['Email ']||'').toLowerCase().includes(term);
-            
-            let foundLeads = rawLeads.filter(matchLead);
-            let foundCalif = rawCalificados.filter(matchLead);
-            let foundAgendas = rawAgendas.filter(matchLead);
-
             let perfiles = {};
-
             const addDataToProfile = (row, phase) => {
-                let email = (row['Email'] || row['Email '] || '').toLowerCase();
-                let nombre = row['Nombre'] || row['Lead Name'] || 'Sin Nombre';
+                let email = (row['Email'] || row['Email '] || '').toLowerCase(); let nombre = row['Nombre'] || row['Lead Name'] || 'Sin Nombre';
                 if(!email) return;
-
                 if(!perfiles[email]) perfiles[email] = { nombre, email, journey: [] };
-                
-                let fecha = row['Fecha Creación'] || row['Fecha'] || '-';
-                let camp = row['Campaña (UTM)'] || row['Origen Campaña'] || '-';
-                let ad = row['Ad Content'] || row['Nombre del Ad'] || '-';
-
+                let fecha = row['Fecha Creación'] || row['Fecha'] || '-'; let camp = row['Campaña (UTM)'] || row['Origen Campaña'] || '-'; let ad = row['Ad Content'] || row['Nombre del Ad'] || '-';
                 let badge = "";
                 if(phase === 'Lead') badge = '<span class="px-2 py-1 bg-slate-600 text-xs rounded text-white">1. Lead Frío</span>';
                 if(phase === 'Calif') badge = '<span class="px-2 py-1 bg-blue-600 text-xs rounded text-white">2. Calificó</span>';
@@ -540,40 +528,15 @@
                     else if(res.includes('❌')) badge = '<span class="px-2 py-1 bg-red-600 text-xs rounded text-white">3. No Show</span>';
                     else badge = '<span class="px-2 py-1 bg-yellow-600 text-xs rounded text-white">3. Asistió / En Proceso</span>';
                 }
-
-                perfiles[email].journey.push(`
-                    <div class="border-l-2 border-slate-600 pl-4 py-2 mb-2">
-                        <div class="flex items-center gap-2 mb-1">${badge} <span class="text-xs text-slate-400">📅 ${fecha}</span></div>
-                        <p class="text-sm">Vino de: <b class="text-blue-300">${camp}</b> > <span class="text-slate-400">${ad}</span></p>
-                        ${row['Resultado'] ? `<p class="text-sm mt-1 text-slate-300">Resultado: ${row['Resultado']}</p>` : ''}
-                    </div>
-                `);
+                perfiles[email].journey.push(`<div class="border-l-2 border-slate-600 pl-4 py-2 mb-2"><div class="flex items-center gap-2 mb-1">${badge} <span class="text-xs text-slate-400">📅 ${fecha}</span></div><p class="text-sm">Vino de: <b class="text-blue-300">${camp}</b> > <span class="text-slate-400">${ad}</span></p>${row['Resultado'] ? `<p class="text-sm mt-1 text-slate-300">Resultado: ${row['Resultado']}</p>` : ''}</div>`);
             };
 
-            foundLeads.forEach(r => addDataToProfile(r, 'Lead'));
-            foundCalif.forEach(r => addDataToProfile(r, 'Calif'));
-            foundAgendas.forEach(r => addDataToProfile(r, 'Agenda'));
+            rawLeads.filter(matchLead).forEach(r => addDataToProfile(r, 'Lead'));
+            rawCalificados.filter(matchLead).forEach(r => addDataToProfile(r, 'Calif'));
+            rawAgendas.filter(matchLead).forEach(r => addDataToProfile(r, 'Agenda'));
 
-            if(Object.keys(perfiles).length === 0) {
-                container.innerHTML = `<div class="text-center text-red-400 mt-10">No se encontró a nadie con ese nombre o email.</div>`;
-                return;
-            }
-
-            container.innerHTML = Object.values(perfiles).map(p => `
-                <div class="bg-[#1e293b] p-4 rounded-lg mb-4 border border-slate-700">
-                    <div class="flex items-center gap-4 border-b border-slate-700 pb-3 mb-3">
-                        <div class="w-10 h-10 rounded-full bg-purple-600 flex justify-center items-center text-white font-bold">${p.nombre.substring(0,1).toUpperCase()}</div>
-                        <div>
-                            <h4 class="text-lg font-bold text-white">${p.nombre}</h4>
-                            <p class="text-sm text-blue-400">${p.email}</p>
-                        </div>
-                    </div>
-                    <div>
-                        <h5 class="text-xs uppercase text-slate-400 font-bold mb-3 tracking-wider">Historial del Cliente:</h5>
-                        ${p.journey.join('')}
-                    </div>
-                </div>
-            `).join('');
+            if(Object.keys(perfiles).length === 0) { container.innerHTML = `<div class="text-center text-red-400 mt-10">No se encontró a nadie.</div>`; return; }
+            container.innerHTML = Object.values(perfiles).map(p => `<div class="bg-[#1e293b] p-4 rounded-lg mb-4 border border-slate-700"><div class="flex items-center gap-4 border-b border-slate-700 pb-3 mb-3"><div class="w-10 h-10 rounded-full bg-purple-600 flex justify-center items-center text-white font-bold">${p.nombre.substring(0,1).toUpperCase()}</div><div><h4 class="text-lg font-bold text-white">${p.nombre}</h4><p class="text-sm text-blue-400">${p.email}</p></div></div><div><h5 class="text-xs uppercase text-slate-400 font-bold mb-3 tracking-wider">Historial:</h5>${p.journey.join('')}</div></div>`).join('');
         }
 
         window.onload = loadData;
