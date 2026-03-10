@@ -32,7 +32,7 @@
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-white tracking-tight">Ads & Sales Financial Analytics</h1>
-                <p class="text-slate-400 mt-1">Multi-DB, Custom Metrics, Fórmulas & ROAS Tracker.</p>
+                <p class="text-slate-400 mt-1">Multi-DB, Fórmulas, ROAS Tracker & Totales Dinámicos.</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <button onclick="openLeadSearch()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2 transition">
@@ -89,29 +89,70 @@
         </div>
 
         <div class="grid grid-cols-2 md:grid-cols-6 gap-4 mb-8" id="kpi-container">
-            <div class="card p-4 rounded-lg shadow border-l-4 border-l-slate-400">
-                <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Leads</p>
-                <h3 class="text-2xl font-bold text-white" id="kpi-leads">0</h3>
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-slate-400 flex flex-col justify-between">
+                <div>
+                    <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Leads</p>
+                    <h3 class="text-2xl font-bold text-white" id="kpi-leads">0</h3>
+                </div>
+                <div class="mt-2 pt-2 border-t border-slate-700/50 flex justify-between items-center">
+                    <span class="text-[10px] text-slate-400 uppercase">CPL</span>
+                    <span class="text-xs font-bold text-slate-300" id="kpi-cpl">$0.00</span>
+                </div>
             </div>
-            <div class="card p-4 rounded-lg shadow border-l-4 border-l-yellow-400">
-                <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Asistencias</p>
-                <h3 class="text-2xl font-bold text-yellow-400" id="kpi-agendas">0</h3>
+
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-yellow-400 flex flex-col justify-between">
+                <div>
+                    <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Asistencias</p>
+                    <h3 class="text-2xl font-bold text-yellow-400" id="kpi-agendas">0</h3>
+                </div>
+                <div class="mt-2 pt-2 border-t border-slate-700/50 flex justify-between items-center">
+                    <span class="text-[10px] text-slate-400 uppercase">Costo x Asist</span>
+                    <span class="text-xs font-bold text-yellow-200" id="kpi-cp-asist">$0.00</span>
+                </div>
             </div>
-            <div class="card p-4 rounded-lg shadow border-l-4 border-l-green-400">
-                <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Ventas</p>
-                <h3 class="text-2xl font-bold text-green-400" id="kpi-ventas">0</h3>
+
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-green-400 flex flex-col justify-between">
+                <div>
+                    <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Ventas</p>
+                    <h3 class="text-2xl font-bold text-green-400" id="kpi-ventas">0</h3>
+                </div>
+                <div class="mt-2 pt-2 border-t border-slate-700/50 flex justify-between items-center">
+                    <span class="text-[10px] text-slate-400 uppercase">CPA</span>
+                    <span class="text-xs font-bold text-green-200" id="kpi-cpa">$0.00</span>
+                </div>
             </div>
-            <div class="card p-4 rounded-lg shadow border-l-4 border-l-red-500">
-                <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Inversión</p>
-                <h3 class="text-2xl font-bold text-red-400" id="kpi-gasto">$0</h3>
+
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-red-500 flex flex-col justify-between">
+                <div>
+                    <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Inversión</p>
+                    <h3 class="text-2xl font-bold text-red-400" id="kpi-gasto">$0</h3>
+                </div>
+                <div class="mt-2 pt-2 border-t border-slate-700/50 flex justify-between items-center">
+                    <span class="text-[10px] text-slate-400 uppercase">CPM Promedio</span>
+                    <span class="text-xs font-bold text-red-200" id="kpi-cpm">$0.00</span>
+                </div>
             </div>
-            <div class="card p-4 rounded-lg shadow border-l-4 border-l-emerald-500">
-                <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Ingresos</p>
-                <h3 class="text-2xl font-bold text-emerald-400" id="kpi-ingresos">$0</h3>
+
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-emerald-500 flex flex-col justify-between">
+                <div>
+                    <p class="text-xs text-slate-400 font-semibold mb-1 uppercase tracking-wider">Ingresos</p>
+                    <h3 class="text-2xl font-bold text-emerald-400" id="kpi-ingresos">$0</h3>
+                </div>
+                <div class="mt-2 pt-2 border-t border-slate-700/50 flex justify-between items-center">
+                    <span class="text-[10px] text-slate-400 uppercase">Ticket Promedio</span>
+                    <span class="text-xs font-bold text-emerald-200" id="kpi-aov">$0.00</span>
+                </div>
             </div>
-            <div class="card p-4 rounded-lg shadow border-l-4 border-l-purple-500 bg-gradient-to-br from-[#1e293b] to-[#2e1065] relative overflow-hidden">
-                <p class="text-xs text-purple-300 font-semibold mb-1 uppercase tracking-wider">ROAS Global</p>
-                <h3 class="text-3xl font-black text-white" id="kpi-roas">0x</h3>
+
+            <div class="card p-4 rounded-lg shadow border-l-4 border-l-purple-500 bg-gradient-to-br from-[#1e293b] to-[#2e1065] flex flex-col justify-between relative overflow-hidden">
+                <div>
+                    <p class="text-xs text-purple-300 font-semibold mb-1 uppercase tracking-wider">ROAS Global</p>
+                    <h3 class="text-3xl font-black text-white" id="kpi-roas">0x</h3>
+                </div>
+                <div class="mt-2 pt-2 border-t border-purple-800/50 flex justify-between items-center">
+                    <span class="text-[10px] text-purple-300 uppercase">Profit Neto</span>
+                    <span class="text-xs font-bold" id="kpi-profit">$0.00</span>
+                </div>
             </div>
         </div>
 
@@ -138,7 +179,7 @@
             <div class="p-5 flex flex-col gap-4">
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Nombre de la Columna</label>
-                    <input type="text" id="custom-col-name" placeholder="Ej. Costo por Visita" class="w-full bg-[#0f172a] border border-slate-600 text-white rounded px-3 py-2 text-sm focus:outline-none focus:border-pink-500">
+                    <input type="text" id="custom-col-name" placeholder="Ej. Tasa de Cierre" class="w-full bg-[#0f172a] border border-slate-600 text-white rounded px-3 py-2 text-sm focus:outline-none focus:border-pink-500">
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Formato</label>
@@ -150,7 +191,7 @@
                 </div>
                 <div>
                     <label class="block text-xs text-slate-400 mb-1">Fórmula Matemática</label>
-                    <input type="text" id="custom-col-formula" placeholder="Ej. {{gasto}} / {{visitas}}" class="w-full bg-[#0f172a] border border-slate-600 text-white rounded px-3 py-2 text-sm focus:outline-none focus:border-pink-500 font-mono">
+                    <input type="text" id="custom-col-formula" placeholder="Ej. ( {{ventas}} / {{asistieron}} ) * 100" class="w-full bg-[#0f172a] border border-slate-600 text-white rounded px-3 py-2 text-sm focus:outline-none focus:border-pink-500 font-mono">
                     <p class="text-[11px] text-slate-400 mt-2 leading-tight bg-[#0f172a] p-2 rounded border border-slate-700">
                         Variables disponibles (Clic para añadir): <br>
                         <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{gasto}}')">{{gasto}}</code>, 
@@ -227,7 +268,7 @@
         let customColumns = []; // Variables de métricas personalizadas
         let currentSort = { column: 'gasto', desc: true };
 
-        // --- SISTEMA DINÁMICO DE COLUMNAS (ARRASTRABLES Y CONFIGURABLES) ---
+        // --- SISTEMA DINÁMICO DE COLUMNAS ---
         let tableColumns = [
             { id: 'campana', label: 'Campaña ↕', type: 'text', visible: true, align: 'text-left', classes: 'font-medium text-white max-w-[200px] truncate' },
             { id: 'anuncio', label: 'Anuncio ↕', type: 'text', visible: true, align: 'text-left', classes: 'text-slate-400 max-w-[150px] truncate' },
@@ -324,7 +365,7 @@
             }
         }
 
-        // MOTOR DE EVALUACIÓN MATEMÁTICA PARA COLUMNAS CUSTOM
+        // MOTOR DE EVALUACIÓN MATEMÁTICA
         function evaluateFormula(formula, row) {
             try {
                 let parsed = formula.replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, (m, variable) => {
@@ -429,7 +470,6 @@
                 }
             });
 
-            // Matemáticas
             consolidatedCampaigns = Object.values(stats).map(r => {
                 r.cpl = r.leads > 0 ? r.gasto / r.leads : 0;
                 r.cpq = r.calificados > 0 ? r.gasto / r.calificados : 0;
@@ -438,19 +478,14 @@
                 r.cpa = r.ventas > 0 ? r.gasto / r.ventas : 0;
                 r.roas = r.gasto > 0 ? r.ingresos / r.gasto : 0;
                 r.ctr = r.impresiones > 0 ? (r.clics / r.impresiones) * 100 : 0;
-                
-                // Ejecutar métricas personalizadas si las hay
-                customColumns.forEach(cc => {
-                    r[cc.id] = evaluateFormula(cc.formula, r);
-                });
-
+                customColumns.forEach(cc => { r[cc.id] = evaluateFormula(cc.formula, r); });
                 return r;
             });
 
             applySort();
         }
 
-        // SORTING Y KPIs
+        // SORTING
         function sortTable(column) {
             if(currentSort.column === column) currentSort.desc = !currentSort.desc;
             else { currentSort.column = column; currentSort.desc = true; }
@@ -465,62 +500,37 @@
                 if(typeof valA === 'string') return valA.localeCompare(valB) * mult;
                 return (valA - valB) * mult;
             });
-            updateKPIs();
             renderTable();
         }
 
-        function updateKPIs() {
-            let tLeads = 0, tAsist = 0, tVentas = 0, tIngresos = 0, tGasto = 0;
-            consolidatedCampaigns.forEach(r => { tLeads += r.leads; tAsist += r.asistieron; tVentas += r.ventas; tIngresos += r.ingresos; tGasto += r.gasto; });
-            let globalRoas = tGasto > 0 ? (tIngresos / tGasto).toFixed(2) : 0;
-
-            document.getElementById('kpi-leads').innerText = tLeads.toLocaleString();
-            document.getElementById('kpi-agendas').innerText = tAsist.toLocaleString();
-            document.getElementById('kpi-ventas').innerText = tVentas.toLocaleString();
-            document.getElementById('kpi-gasto').innerText = `$${tGasto.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('kpi-ingresos').innerText = `$${tIngresos.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('kpi-roas').innerText = `${globalRoas}x`;
+        // ACTUALIZAR KPIs EN PANTALLA
+        function updateKPIs(totalsObj) {
+            document.getElementById('kpi-leads').innerText = totalsObj.leads.toLocaleString();
+            document.getElementById('kpi-cpl').innerText = `$${totalsObj.cpl.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            document.getElementById('kpi-agendas').innerText = totalsObj.asistieron.toLocaleString();
+            document.getElementById('kpi-cp-asist').innerText = `$${totalsObj.cp_asistencia.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            document.getElementById('kpi-ventas').innerText = totalsObj.ventas.toLocaleString();
+            document.getElementById('kpi-cpa').innerText = `$${totalsObj.cpa.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            document.getElementById('kpi-gasto').innerText = `$${totalsObj.gasto.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            let cpm = totalsObj.impresiones > 0 ? (totalsObj.gasto / totalsObj.impresiones) * 1000 : 0;
+            document.getElementById('kpi-cpm').innerText = `$${cpm.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            document.getElementById('kpi-ingresos').innerText = `$${totalsObj.ingresos.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            let aov = totalsObj.ventas > 0 ? (totalsObj.ingresos / totalsObj.ventas) : 0;
+            document.getElementById('kpi-aov').innerText = `$${aov.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            document.getElementById('kpi-roas').innerText = `${totalsObj.roas.toFixed(2)}x`;
+            let profit = totalsObj.ingresos - totalsObj.gasto;
+            let profitColor = profit >= 0 ? 'text-green-300' : 'text-red-300';
+            let sign = profit >= 0 ? '+$' : '-$';
+            document.getElementById('kpi-profit').className = `text-xs font-bold ${profitColor}`;
+            document.getElementById('kpi-profit').innerText = `${sign}${Math.abs(profit).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
         }
 
-        // --- FUNCIONES DE MODAL PERSONALIZADO ---
-        function openCustomColModal() {
-            document.getElementById('modal-custom-col').classList.remove('hidden');
-        }
-        
-        function insertVar(val) {
-            let input = document.getElementById('custom-col-formula');
-            input.value += val + " ";
-            input.focus();
-        }
-
-        function saveCustomCol() {
-            let name = document.getElementById('custom-col-name').value;
-            let formula = document.getElementById('custom-col-formula').value;
-            let format = document.getElementById('custom-col-format').value;
-            
-            if(!name || !formula) { alert("Completa el nombre y la fórmula"); return; }
-            
-            let newId = 'cust_' + Date.now();
-            customColumns.push({ id: newId, formula: formula });
-            
-            tableColumns.push({
-                id: newId,
-                label: name + ' ↕',
-                type: format,
-                visible: true,
-                align: 'text-right',
-                classes: 'text-pink-300 font-semibold bg-pink-900/10 rounded px-2'
-            });
-            
-            document.getElementById('custom-col-name').value = '';
-            document.getElementById('custom-col-formula').value = '';
-            
-            processData(); // Recalcula todo incluyendo la nueva columna
-            renderColumnSettings(); // Agrega la columna al menú de engranaje
-            closeModal('modal-custom-col');
-        }
-
-        // --- SISTEMA DE DIBUJADO DE LA TABLA Y DRAG & DROP ---
+        // --- DRAG & DROP Y RENDERIZADO DE TABLA ---
         function handleDragStart(e, colId) {
             e.dataTransfer.effectAllowed = 'move';
             e.dataTransfer.setData('text/plain', colId);
@@ -566,10 +576,22 @@
                 thead.appendChild(th);
             });
 
-            // Generar Body
             const filterText = document.getElementById('searchInput').value.toLowerCase();
-            consolidatedCampaigns.forEach((row, i) => {
-                if(filterText && !row.campana.toLowerCase().includes(filterText) && !row.anuncio.toLowerCase().includes(filterText)) return;
+            
+            // 1. Filtrar Data y Acumular Totales
+            let filteredData = consolidatedCampaigns.filter(row => {
+                if(filterText && !row.campana.toLowerCase().includes(filterText) && !row.anuncio.toLowerCase().includes(filterText)) return false;
+                return true;
+            });
+
+            let totals = { gasto: 0, clics: 0, visitas: 0, impresiones: 0, leads: 0, calificados: 0, agendas_total: 0, asistieron: 0, ventas: 0, ingresos: 0 };
+
+            // Generar Filas
+            filteredData.forEach((row, i) => {
+                totals.gasto += row.gasto || 0; totals.clics += row.clics || 0; totals.visitas += row.visitas || 0; totals.impresiones += row.impresiones || 0;
+                totals.leads += row.leads || 0; totals.calificados += row.calificados || 0; totals.agendas_total += row.agendas_total || 0;
+                totals.asistieron += row.asistieron || 0; totals.ventas += row.ventas || 0; totals.ingresos += row.ingresos || 0;
+
                 const tr = document.createElement('tr');
                 tr.className = 'table-row border-b border-slate-700/50 text-slate-300 transition-colors';
                 
@@ -593,9 +615,49 @@
                 tbody.appendChild(tr);
             });
 
-            if(tbody.innerHTML === '') tbody.innerHTML = `<tr><td colspan="${visibleCols.length}" class="text-center py-8 text-slate-400">Sin resultados en la búsqueda.</td></tr>`;
+            if(filteredData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${visibleCols.length}" class="text-center py-8 text-slate-400">Sin resultados.</td></tr>`;
+                updateKPIs(totals); // Actualiza en ceros
+                return;
+            }
+
+            // 2. Calcular Fórmulas Globales para la fila final de Totales
+            totals.cpl = totals.leads > 0 ? totals.gasto / totals.leads : 0;
+            totals.cpq = totals.calificados > 0 ? totals.gasto / totals.calificados : 0;
+            totals.cp_agenda = totals.agendas_total > 0 ? totals.gasto / totals.agendas_total : 0;
+            totals.cp_asistencia = totals.asistieron > 0 ? totals.gasto / totals.asistieron : 0;
+            totals.cpa = totals.ventas > 0 ? totals.gasto / totals.ventas : 0;
+            totals.roas = totals.gasto > 0 ? totals.ingresos / totals.gasto : 0;
+            totals.ctr = totals.impresiones > 0 ? (totals.clics / totals.impresiones) * 100 : 0;
+            
+            customColumns.forEach(cc => { totals[cc.id] = evaluateFormula(cc.formula, totals); });
+
+            // 3. Imprimir Fila de Totales Generales
+            const trTotal = document.createElement('tr');
+            trTotal.className = 'bg-[#0f172a] border-t-2 border-blue-500 font-bold text-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]';
+            
+            visibleCols.forEach((col, idx) => {
+                const td = document.createElement('td');
+                td.className = `px-5 py-4 ${col.align} ${col.classes} tracking-wide`;
+                
+                if (idx === 0) td.innerHTML = 'TOTALES GENERALES';
+                else if (col.id === 'anuncio') td.innerHTML = '';
+                else {
+                    let val = totals[col.id] || 0;
+                    if (col.type === 'number') td.innerHTML = val.toLocaleString(undefined, {maximumFractionDigits: 2});
+                    else if (col.type === 'currency') td.innerHTML = `$${val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                    else if (col.type === 'percentage') td.innerHTML = `${val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}%`;
+                    else if (col.type === 'roas') td.innerHTML = `${val.toFixed(2)}x`;
+                    else if (col.type.startsWith('drilldown_')) td.innerHTML = val.toLocaleString();
+                }
+                trTotal.appendChild(td);
+            });
+            tbody.appendChild(trTotal);
+
+            updateKPIs(totals); // Refresca las tarjetas de arriba
         }
 
+        // --- FUNCIONES DE COLUMNAS PERSONALIZADAS ---
         function renderColumnSettings() {
             const container = document.getElementById('column-settings-menu');
             container.innerHTML = '<div class="text-xs text-slate-400 mb-2 border-b border-slate-600 pb-1">Prende o apaga columnas:</div>';
@@ -612,6 +674,32 @@
                 label.appendChild(document.createTextNode(' ' + col.label.replace(' ↕', '')));
                 container.appendChild(label);
             });
+        }
+
+        function openCustomColModal() { document.getElementById('modal-custom-col').classList.remove('hidden'); }
+        function insertVar(val) { let input = document.getElementById('custom-col-formula'); input.value += val + " "; input.focus(); }
+
+        function saveCustomCol() {
+            let name = document.getElementById('custom-col-name').value;
+            let formula = document.getElementById('custom-col-formula').value;
+            let format = document.getElementById('custom-col-format').value;
+            
+            if(!name || !formula) { alert("Completa el nombre y la fórmula"); return; }
+            
+            let newId = 'cust_' + Date.now();
+            customColumns.push({ id: newId, formula: formula });
+            
+            tableColumns.push({
+                id: newId, label: name + ' ↕', type: format, visible: true, align: 'text-right',
+                classes: 'text-pink-300 font-semibold bg-pink-900/10 rounded px-2'
+            });
+            
+            document.getElementById('custom-col-name').value = '';
+            document.getElementById('custom-col-formula').value = '';
+            
+            processData(); 
+            renderColumnSettings(); 
+            closeModal('modal-custom-col');
         }
 
         // --- DRILL DOWN Y CRM ---
