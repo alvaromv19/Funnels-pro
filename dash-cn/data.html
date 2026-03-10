@@ -28,17 +28,17 @@
 </head>
 <body class="p-6 relative">
 
-    <div class="max-w-[1500px] mx-auto">
+    <div class="max-w-[1600px] mx-auto">
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-white tracking-tight">Ads & Sales Financial Analytics</h1>
-                <p class="text-slate-400 mt-1">Multi-DB, CRM Insights, Costos Personalizados & ROAS Tracker.</p>
+                <p class="text-slate-400 mt-1">Multi-DB, Custom Metrics, Fórmulas & ROAS Tracker.</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
-                <button onclick="openLeadSearch()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2">
+                <button onclick="openLeadSearch()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2 transition">
                     🔍 Buscador CRM
                 </button>
-                <button onclick="loadData()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2">
+                <button onclick="loadData()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2 transition">
                     ↻ Actualizar Datos
                 </button>
             </div>
@@ -74,12 +74,17 @@
                 </div>
             </div>
 
-            <div class="relative group">
-                <button class="bg-[#0f172a] border border-slate-600 text-slate-300 px-3 py-2 rounded text-sm hover:text-white flex items-center gap-2">
-                    ⚙️ Configurar Columnas
+            <div class="flex items-center gap-3 relative group">
+                <button onclick="openCustomColModal()" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-2 rounded text-sm shadow flex items-center gap-1 transition">
+                    ➕ Crear Métrica
                 </button>
-                <div id="column-settings-menu" class="absolute right-0 mt-2 w-56 bg-[#1e293b] border border-slate-600 rounded shadow-2xl hidden group-hover:flex flex-col z-10 p-2 max-h-80 overflow-y-auto">
-                    </div>
+                <div class="relative group">
+                    <button class="bg-[#0f172a] border border-slate-600 text-slate-300 px-3 py-2 rounded text-sm hover:text-white flex items-center gap-2">
+                        ⚙️ Configurar Columnas
+                    </button>
+                    <div id="column-settings-menu" class="absolute right-0 mt-2 w-56 bg-[#1e293b] border border-slate-600 rounded shadow-2xl hidden group-hover:flex flex-col z-10 p-2 max-h-80 overflow-y-auto">
+                        </div>
+                </div>
             </div>
         </div>
 
@@ -117,9 +122,52 @@
                         <tr id="table-header-row"></tr>
                     </thead>
                     <tbody id="table-campaigns" class="text-sm divide-y divide-slate-700/50">
-                        <tr><td colspan="15" class="text-center py-8 text-slate-400">Descargando todas las bases (Incluyendo Costos de Meta)...</td></tr>
+                        <tr><td colspan="20" class="text-center py-8 text-slate-400">Descargando todas las bases (Incluyendo Costos de Meta)...</td></tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-custom-col" class="fixed inset-0 modal-bg hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-[#1e293b] border border-slate-600 rounded-lg shadow-2xl w-full max-w-md flex flex-col">
+            <div class="flex justify-between items-center p-4 border-b border-slate-700">
+                <h3 class="text-lg font-bold text-white">Crear Métrica Personalizada</h3>
+                <button onclick="closeModal('modal-custom-col')" class="text-slate-400 hover:text-white text-2xl font-bold">&times;</button>
+            </div>
+            <div class="p-5 flex flex-col gap-4">
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Nombre de la Columna</label>
+                    <input type="text" id="custom-col-name" placeholder="Ej. Costo por Visita" class="w-full bg-[#0f172a] border border-slate-600 text-white rounded px-3 py-2 text-sm focus:outline-none focus:border-pink-500">
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Formato</label>
+                    <select id="custom-col-format" class="w-full bg-[#0f172a] border border-slate-600 text-white rounded px-3 py-2 text-sm focus:outline-none focus:border-pink-500">
+                        <option value="currency">Dinero ($0.00)</option>
+                        <option value="number">Número (0.00)</option>
+                        <option value="percentage">Porcentaje (0.00%)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs text-slate-400 mb-1">Fórmula Matemática</label>
+                    <input type="text" id="custom-col-formula" placeholder="Ej. {{gasto}} / {{visitas}}" class="w-full bg-[#0f172a] border border-slate-600 text-white rounded px-3 py-2 text-sm focus:outline-none focus:border-pink-500 font-mono">
+                    <p class="text-[11px] text-slate-400 mt-2 leading-tight bg-[#0f172a] p-2 rounded border border-slate-700">
+                        Variables disponibles (Clic para añadir): <br>
+                        <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{gasto}}')">{{gasto}}</code>, 
+                        <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{clics}}')">{{clics}}</code>, 
+                        <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{visitas}}')">{{visitas}}</code>, 
+                        <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{impresiones}}')">{{impresiones}}</code>, 
+                        <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{leads}}')">{{leads}}</code>, 
+                        <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{calificados}}')">{{calificados}}</code>, <br>
+                        <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{agendas_total}}')">{{agendas_total}}</code>, 
+                        <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{asistieron}}')">{{asistieron}}</code>, 
+                        <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{ventas}}')">{{ventas}}</code>, 
+                        <code class="text-pink-400 cursor-pointer hover:text-pink-300" onclick="insertVar('{{ingresos}}')">{{ingresos}}</code>
+                    </p>
+                </div>
+                <button onclick="saveCustomCol()" class="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-2 rounded transition mt-2">
+                    Guardar Columna
+                </button>
             </div>
         </div>
     </div>
@@ -176,13 +224,17 @@
 
         let rawLeads = [], rawCalificados = [], rawAgendas = [], rawMeta = [];
         let consolidatedCampaigns = [];
+        let customColumns = []; // Variables de métricas personalizadas
         let currentSort = { column: 'gasto', desc: true };
 
-        // --- SISTEMA DINÁMICO DE COLUMNAS (ARRASTRABLES) ---
+        // --- SISTEMA DINÁMICO DE COLUMNAS (ARRASTRABLES Y CONFIGURABLES) ---
         let tableColumns = [
             { id: 'campana', label: 'Campaña ↕', type: 'text', visible: true, align: 'text-left', classes: 'font-medium text-white max-w-[200px] truncate' },
             { id: 'anuncio', label: 'Anuncio ↕', type: 'text', visible: true, align: 'text-left', classes: 'text-slate-400 max-w-[150px] truncate' },
             { id: 'gasto', label: 'Inversión ↕', type: 'currency', visible: true, align: 'text-right', classes: 'text-red-400 font-bold' },
+            { id: 'clics', label: 'Clics ↕', type: 'number', visible: true, align: 'text-right', classes: 'text-blue-200' },
+            { id: 'visitas', label: 'Visitas ↕', type: 'number', visible: true, align: 'text-right', classes: 'text-indigo-200' },
+            { id: 'ctr', label: 'CTR ↕', type: 'percentage', visible: true, align: 'text-right', classes: 'text-slate-300' },
             { id: 'leads', label: 'Leads ↕', type: 'drilldown_leads', visible: true, align: 'text-right', classes: '' },
             { id: 'cpl', label: 'CPL ↕', type: 'currency', visible: true, align: 'text-right', classes: 'text-slate-400' },
             { id: 'calificados', label: 'Calif ↕', type: 'drilldown_calificados', visible: true, align: 'text-right', classes: 'text-blue-400 font-semibold' },
@@ -258,7 +310,7 @@
 
         // CARGA DE DATOS
         async function loadData() {
-            document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="15" class="text-center py-8 text-slate-400">Descargando y fusionando 5 bases de datos...</td></tr>';
+            document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="20" class="text-center py-8 text-slate-400">Descargando y fusionando 5 bases de datos...</td></tr>';
             try {
                 const [l, c, aOld, aV2, m] = await Promise.all([ 
                     parseCSV(URL_LEADS), parseCSV(URL_CALIFICADOS), parseCSV(URL_AGENDAS_OLD), parseCSV(URL_AGENDAS_V2), parseCSV(URL_META)
@@ -268,8 +320,19 @@
                 renderColumnSettings();
             } catch (error) {
                 console.error("Error:", error);
-                document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="15" class="text-center py-8 text-red-400">Error de conexión. Revisa las URLs.</td></tr>';
+                document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="20" class="text-center py-8 text-red-400">Error de conexión. Revisa las URLs.</td></tr>';
             }
+        }
+
+        // MOTOR DE EVALUACIÓN MATEMÁTICA PARA COLUMNAS CUSTOM
+        function evaluateFormula(formula, row) {
+            try {
+                let parsed = formula.replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, (m, variable) => {
+                    return parseFloat(row[variable]) || 0;
+                });
+                let result = new Function('return ' + parsed)();
+                return (isFinite(result) && !isNaN(result)) ? result : 0;
+            } catch (e) { return 0; }
         }
 
         function processData() {
@@ -286,7 +349,8 @@
             const initRow = (key, camp, ad) => {
                 if(!stats[key]) stats[key] = { 
                     campana: camp, anuncio: ad, leads: 0, calificados: 0, agendas_total: 0, asistieron: 0, ventas: 0, 
-                    ingresos: 0, gasto: 0, cpl: 0, cpq: 0, cp_agenda: 0, cp_asistencia: 0, cpa: 0, roas: 0,
+                    ingresos: 0, gasto: 0, clics: 0, visitas: 0, impresiones: 0, ctr: 0,
+                    cpl: 0, cpq: 0, cp_agenda: 0, cp_asistencia: 0, cpa: 0, roas: 0,
                     arr_leads: [], arr_calif: [], arr_agendas: [], arr_ventas: [] 
                 };
             };
@@ -325,27 +389,47 @@
                 let keys = Object.keys(r);
                 let metricName = r[''] || r['Metric'] || r['Métrica'] || r[keys[3]] || '';
                 
-                if (typeof metricName === 'string' && metricName.trim() !== '' && !metricName.toLowerCase().includes('spent') && !metricName.toLowerCase().includes('gasto') && !metricName.toLowerCase().includes('importe')) return; 
+                if(typeof metricName !== 'string') return;
+                let metricLower = metricName.toLowerCase();
+                
+                let isGasto = metricLower.includes('spent') || metricLower.includes('gasto') || metricLower.includes('importe');
+                let isClics = metricLower.includes('click') || metricLower.includes('clic');
+                let isVisitas = metricLower.includes('view') || metricLower.includes('visita');
+                let isImpresiones = metricLower.includes('impression') || metricLower.includes('impresion');
+
+                if (!isGasto && !isClics && !isVisitas && !isImpresiones) return; 
 
                 let fechaTabular = r['Date'] || r['Fecha'] || r['Day'] || r['Reporting starts'];
                 if (fechaTabular) {
                     if (isDateInRange(fechaTabular, start, end) && (camp || ad)) {
-                        let spend = parseFloat((r['Amount spent'] || r['Amount spent (USD)'] || r['Importe gastado'] || r['Gasto'] || '0').toString().replace(/[$,]/g, '')) || 0;
-                        initRow(`${camp}___${ad}`, camp, ad); stats[`${camp}___${ad}`].gasto += spend;
+                        let amount = parseFloat((r['Amount spent'] || r['Amount spent (USD)'] || r['Importe gastado'] || r['Gasto'] || r[keys[4]] || '0').toString().replace(/[$,]/g, '')) || 0;
+                        let key = `${camp}___${ad}`;
+                        initRow(key, camp, ad); 
+                        if(isGasto) stats[key].gasto += amount;
+                        if(isClics) stats[key].clics += amount;
+                        if(isVisitas) stats[key].visitas += amount;
+                        if(isImpresiones) stats[key].impresiones += amount;
                     }
                 } else {
                     keys.forEach(keyName => {
                         if(keyName.match(/^20\d{2}-\d{2}-\d{2}$/) || keyName.match(/^\d{1,2}\/\d{1,2}\/\d{2,4}$/)) {
                             if (isDateInRange(keyName, start, end) && (camp || ad)) {
-                                let spend = parseFloat((r[keyName] || '0').toString().replace(/[$,]/g, '')) || 0;
-                                if (spend > 0) { initRow(`${camp}___${ad}`, camp, ad); stats[`${camp}___${ad}`].gasto += spend; }
+                                let amount = parseFloat((r[keyName] || '0').toString().replace(/[$,]/g, '')) || 0;
+                                if (amount > 0) { 
+                                    let key = `${camp}___${ad}`;
+                                    initRow(key, camp, ad); 
+                                    if(isGasto) stats[key].gasto += amount;
+                                    if(isClics) stats[key].clics += amount;
+                                    if(isVisitas) stats[key].visitas += amount;
+                                    if(isImpresiones) stats[key].impresiones += amount;
+                                }
                             }
                         }
                     });
                 }
             });
 
-            // Matemáticas de CPA y Costos
+            // Matemáticas
             consolidatedCampaigns = Object.values(stats).map(r => {
                 r.cpl = r.leads > 0 ? r.gasto / r.leads : 0;
                 r.cpq = r.calificados > 0 ? r.gasto / r.calificados : 0;
@@ -353,6 +437,13 @@
                 r.cp_asistencia = r.asistieron > 0 ? r.gasto / r.asistieron : 0;
                 r.cpa = r.ventas > 0 ? r.gasto / r.ventas : 0;
                 r.roas = r.gasto > 0 ? r.ingresos / r.gasto : 0;
+                r.ctr = r.impresiones > 0 ? (r.clics / r.impresiones) * 100 : 0;
+                
+                // Ejecutar métricas personalizadas si las hay
+                customColumns.forEach(cc => {
+                    r[cc.id] = evaluateFormula(cc.formula, r);
+                });
+
                 return r;
             });
 
@@ -370,7 +461,7 @@
             let col = currentSort.column;
             let mult = currentSort.desc ? -1 : 1;
             consolidatedCampaigns.sort((a, b) => {
-                let valA = a[col], valB = b[col];
+                let valA = a[col] || 0, valB = b[col] || 0;
                 if(typeof valA === 'string') return valA.localeCompare(valB) * mult;
                 return (valA - valB) * mult;
             });
@@ -389,6 +480,44 @@
             document.getElementById('kpi-gasto').innerText = `$${tGasto.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             document.getElementById('kpi-ingresos').innerText = `$${tIngresos.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             document.getElementById('kpi-roas').innerText = `${globalRoas}x`;
+        }
+
+        // --- FUNCIONES DE MODAL PERSONALIZADO ---
+        function openCustomColModal() {
+            document.getElementById('modal-custom-col').classList.remove('hidden');
+        }
+        
+        function insertVar(val) {
+            let input = document.getElementById('custom-col-formula');
+            input.value += val + " ";
+            input.focus();
+        }
+
+        function saveCustomCol() {
+            let name = document.getElementById('custom-col-name').value;
+            let formula = document.getElementById('custom-col-formula').value;
+            let format = document.getElementById('custom-col-format').value;
+            
+            if(!name || !formula) { alert("Completa el nombre y la fórmula"); return; }
+            
+            let newId = 'cust_' + Date.now();
+            customColumns.push({ id: newId, formula: formula });
+            
+            tableColumns.push({
+                id: newId,
+                label: name + ' ↕',
+                type: format,
+                visible: true,
+                align: 'text-right',
+                classes: 'text-pink-300 font-semibold bg-pink-900/10 rounded px-2'
+            });
+            
+            document.getElementById('custom-col-name').value = '';
+            document.getElementById('custom-col-formula').value = '';
+            
+            processData(); // Recalcula todo incluyendo la nueva columna
+            renderColumnSettings(); // Agrega la columna al menú de engranaje
+            closeModal('modal-custom-col');
         }
 
         // --- SISTEMA DE DIBUJADO DE LA TABLA Y DRAG & DROP ---
@@ -449,9 +578,11 @@
                     td.className = `px-5 py-4 ${col.align} ${col.classes}`;
                     if(col.id === 'campana' || col.id === 'anuncio') td.title = row[col.id];
                     
-                    let val = row[col.id];
-                    if (col.type === 'text' || col.type === 'number') td.innerHTML = val;
+                    let val = row[col.id] || 0;
+                    if (col.type === 'text') td.innerHTML = row[col.id];
+                    else if (col.type === 'number') td.innerHTML = val.toLocaleString(undefined, {maximumFractionDigits: 2});
                     else if (col.type === 'currency') td.innerHTML = `$${val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                    else if (col.type === 'percentage') td.innerHTML = `${val.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}%`;
                     else if (col.type === 'roas') td.innerHTML = `${val.toFixed(2)}x`;
                     else if (col.type.startsWith('drilldown_')) {
                         let type = col.type.split('_')[1];
