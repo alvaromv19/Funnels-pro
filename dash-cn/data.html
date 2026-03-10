@@ -31,7 +31,7 @@
         <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
             <div>
                 <h1 class="text-3xl font-bold text-white tracking-tight">Ads & Sales Analytics</h1>
-                <p class="text-slate-400 mt-1">Monitoreo Avanzado, Drill-down y CRM Insights.</p>
+                <p class="text-slate-400 mt-1">Monitoreo Avanzado, Drill-down y CRM Insights (Merged Databases).</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
                 <button onclick="openLeadSearch()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2">
@@ -167,7 +167,7 @@
             <div class="p-6 overflow-auto flex-1" id="crm-results">
                 <div class="text-center text-slate-500 mt-10">
                     <p class="text-lg">Ingresa un correo o nombre arriba.</p>
-                    <p class="text-sm mt-2">El sistema buscará en Leads, Calificados, Agendas y Ventas para trazar su recorrido.</p>
+                    <p class="text-sm mt-2">El sistema buscará en Leads, Calificados, Agendas (Antiguas y Nuevas) y Ventas para trazar su recorrido.</p>
                 </div>
             </div>
         </div>
@@ -176,7 +176,9 @@
     <script>
         const URL_LEADS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=0&single=true&output=csv';
         const URL_CALIFICADOS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv';
-        const URL_AGENDAS = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv';
+        const URL_AGENDAS_OLD = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv';
+        // 🚀 NUEVA URL AÑADIDA
+        const URL_AGENDAS_V2 = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMnIzrwb9zOkYcksVroAL5F52QR-cnc37zW01dzBYv450w_vIZhjCCkW8jcsC16-5pHtGR0fxDb42B/pub?gid=0&single=true&output=csv';
 
         // Almacenamiento Global
         let rawLeads = [], rawCalificados = [], rawAgendas = [];
@@ -195,7 +197,6 @@
         // --- MANEJO DE FECHAS ---
         function parseDate(dateStr) {
             if(!dateStr) return null;
-            // Soporte para DD/MM/YYYY o DD/MM/YY
             let parts = dateStr.split('/');
             if(parts.length === 3) {
                 let d = parseInt(parts[0], 10), m = parseInt(parts[1], 10) - 1, y = parseInt(parts[2], 10);
@@ -206,7 +207,7 @@
         }
 
         function isDateInRange(dateValue, start, end) {
-            if(!dateValue) return true; // Si no hay fecha, lo contamos igual
+            if(!dateValue) return true;
             let t = parseDate(dateValue);
             if(!t) return true;
             if(start && t < start) return false;
@@ -221,7 +222,7 @@
                 customCont.classList.remove('hidden');
             } else {
                 customCont.classList.add('hidden');
-                processData(); // Reprocesar de inmediato
+                processData();
             }
         }
 
@@ -250,10 +251,21 @@
 
         // --- CARGA Y PROCESAMIENTO ---
         async function loadData() {
-            document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-400">Leyendo bases de datos...</td></tr>';
+            document.getElementById('table-campaigns').innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-400">Leyendo y fusionando bases de datos...</td></tr>';
             try {
-                const [l, c, a] = await Promise.all([ parseCSV(URL_LEADS), parseCSV(URL_CALIFICADOS), parseCSV(URL_AGENDAS) ]);
-                rawLeads = l; rawCalificados = c; rawAgendas = a;
+                // 🚀 Descargamos todo, incluyendo la base de Agendas antigua y la V2
+                const [l, c, aOld, aV2] = await Promise.all([ 
+                    parseCSV(URL_LEADS), 
+                    parseCSV(URL_CALIFICADOS), 
+                    parseCSV(URL_AGENDAS_OLD),
+                    parseCSV(URL_AGENDAS_V2)
+                ]);
+                
+                rawLeads = l; 
+                rawCalificados = c; 
+                // Fusionamos las dos bases de agendas en un solo array
+                rawAgendas = [...aOld, ...aV2]; 
+                
                 processData();
             } catch (error) {
                 console.error("Error:", error);
@@ -265,7 +277,6 @@
             let stats = {};
             const {start, end} = getTimestampsFromFilter();
 
-            // Función Helper para crear llave
             const getRowDetails = (r) => {
                 let camp = (r['Campaña (UTM)'] || r['Campaña'] || r['Origen Campaña'] || 'Desconocida').trim();
                 let ad = (r['Ad Content'] || r['Anuncio'] || r['Nombre del Ad'] || 'Desconocido').trim();
@@ -295,7 +306,7 @@
                 stats[key].arr_calif.push(r);
             });
 
-            // 3. Agendas / Ventas
+            // 3. Agendas / Ventas (Ahora lee el histórico y lo nuevo al mismo tiempo)
             rawAgendas.forEach(r => {
                 let {key, camp, ad, fecha} = getRowDetails(r);
                 let resultado = (r['Resultado'] || '').trim();
@@ -318,7 +329,7 @@
             });
 
             consolidatedCampaigns = Object.values(stats);
-            applySort(); // Ordena y renderiza
+            applySort();
         }
 
         // --- SORTING ---
@@ -378,13 +389,12 @@
             if(tbody.innerHTML === '') tbody.innerHTML = '<tr><td colspan="8" class="text-center py-8 text-slate-400">Sin resultados.</td></tr>';
         }
 
-        // --- TOGGLE COLUMNS ---
         function toggleCol(colIndex) {
             const cols = document.querySelectorAll(`.col-${colIndex}`);
             cols.forEach(el => el.classList.toggle('col-hidden'));
         }
 
-        // --- DRILL DOWN (Popups al clickear número) ---
+        // --- DRILL DOWN ---
         function openDrilldown(index, type) {
             let data = consolidatedCampaigns[index];
             let arr = [];
@@ -422,7 +432,6 @@
             document.getElementById('modal-drilldown').classList.remove('hidden');
         }
 
-        // --- CRM SEARCHER ---
         function openLeadSearch() {
             document.getElementById('modal-crm').classList.remove('hidden');
             document.getElementById('crmSearch').focus();
@@ -441,14 +450,12 @@
                 return;
             }
 
-            // Filtrar en las 3 bases
             const matchLead = (r) => (r['Nombre']||r['Lead Name']||'').toLowerCase().includes(term) || (r['Email']||r['Email ']||'').toLowerCase().includes(term);
             
             let foundLeads = rawLeads.filter(matchLead);
             let foundCalif = rawCalificados.filter(matchLead);
             let foundAgendas = rawAgendas.filter(matchLead);
 
-            // Consolidar resultados por Email
             let perfiles = {};
 
             const addDataToProfile = (row, phase) => {
@@ -485,7 +492,6 @@
             foundCalif.forEach(r => addDataToProfile(r, 'Calif'));
             foundAgendas.forEach(r => addDataToProfile(r, 'Agenda'));
 
-            // Renderizar
             if(Object.keys(perfiles).length === 0) {
                 container.innerHTML = `<div class="text-center text-red-400 mt-10">No se encontró a nadie con ese nombre o email.</div>`;
                 return;
