@@ -3,121 +3,229 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reclutamiento Creadores UGC</title>
+    <title>Evo Launch | Reclutamiento UGC</title>
     <style>
+        :root {
+            --primary: #00ffcc;
+            --bg-dark: #050505;
+            --card-bg: #111111;
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --border-color: #1f1f1f;
+        }
+
         body {
-            background-color: #050505;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 40px 20px;
+            box-sizing: border-box;
+            line-height: 1.6;
         }
         
         .container {
-            background: #111111;
-            padding: 40px;
-            border-radius: 8px;
-            /* Efecto de borde y sombra neón suave */
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.15);
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.08);
             width: 100%;
-            max-width: 450px;
-            border: 1px solid #1a1a1a;
+            max-width: 600px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
         }
 
-        h2 {
+        .header {
             text-align: center;
-            color: #00ffcc;
-            text-shadow: 0 0 10px rgba(0, 255, 204, 0.4);
-            margin-bottom: 35px;
+            padding: 40px 30px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .agency-name {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+        }
+
+        .project-details {
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .project-details h3 {
+            margin-top: 0;
+            font-size: 16px;
+            color: var(--text-main);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .requirements-list {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+
+        .requirements-list li {
+            position: relative;
+            padding-left: 24px;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+            font-size: 15px;
+        }
+
+        .requirements-list li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        .highlight {
+            color: var(--primary);
             font-weight: 600;
         }
 
-        .form-group {
+        .form-section {
+            padding: 30px;
+        }
+
+        .form-instructions {
+            text-align: center;
             margin-bottom: 25px;
+            font-size: 15px;
+            color: var(--text-muted);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
-            font-size: 14px;
-            color: #b3b3b3;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
         }
 
         input {
             width: 100%;
-            padding: 12px 15px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 4px;
-            color: #ffffff;
+            padding: 14px;
+            background: #161616;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-main);
+            font-size: 15px;
             box-sizing: border-box;
             transition: all 0.3s ease;
         }
 
-        /* Efecto al hacer clic en el campo de texto */
         input:focus {
             outline: none;
-            border-color: #00ffcc;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
-            background: #222;
+            border-color: var(--primary);
+            box-shadow: 0 0 12px rgba(0, 255, 204, 0.2);
+            background: #1a1a1a;
+        }
+
+        .optional-tag {
+            font-size: 11px;
+            color: #666;
+            text-transform: none;
+            letter-spacing: 0;
         }
 
         button {
             width: 100%;
-            padding: 15px;
-            margin-top: 10px;
-            background: transparent;
-            border: 1px solid #00ffcc;
-            color: #00ffcc;
-            font-weight: bold;
+            padding: 16px;
+            margin-top: 15px;
+            background: var(--primary);
+            border: none;
+            color: #000000;
+            font-weight: 700;
             font-size: 16px;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
         }
 
-        /* Efecto al pasar el mouse por el botón */
         button:hover {
-            background: #00ffcc;
-            color: #000000;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.6);
+            background: #00e6b8;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Postulación Creador UGC</h2>
-    
-    <form action="https://formspree.io/f/xnjgvgvy" method="POST">
+    <div class="header">
+        <span class="agency-name">Evo Launch Agency</span>
+        <h1>Casting Creadores UGC</h1>
+    </div>
+
+    <div class="project-details">
+        <h3>Detalles del Proyecto</h3>
+        <ul class="requirements-list">
+            <li><strong>Perfil requerido:</strong> Creador de contenido masculinos.</li>
+            <li><strong>Entregables:</strong> 1 video horizontal (aprox. 10 min) + Varios videos verticales (formato Reels).</li>
+            <li><strong>Setup exigido:</strong> Entorno profesional tipo oficina. Es fundamental contar con un escritorio estructurado y elementos de fondo (ej. laptop visible).</li>
+            <li><strong>Estilo de grabación:</strong> Toma frontal, hablando directo a la cámara con actitud profesional.</li>
+        </ul>
+    </div>
+
+    <div class="form-section">
+        <p class="form-instructions">Si cuentas con estos requisitos, completa el formulario a continuación para evaluar tu perfil.</p>
         
-        <div class="form-group">
-            <label for="nombre">Nombre completo</label>
-            <input type="text" id="nombre" name="nombre" required placeholder="Ej. Juan Pérez">
-        </div>
+        <form action="https://formspree.io/f/xnjgvgvy" method="POST">
+            
+            <div class="form-group">
+                <label for="nombre">Nombre completo</label>
+                <input type="text" id="nombre" name="nombre" required placeholder="Ingresa tu nombre">
+            </div>
 
-        <div class="form-group">
-            <label for="correo">Correo electrónico</label>
-            <input type="email" id="correo" name="correo" required placeholder="tu@correo.com">
-        </div>
+            <div class="form-group">
+                <label for="correo">Correo electrónico</label>
+                <input type="email" id="correo" name="correo" required placeholder="correo@ejemplo.com">
+            </div>
 
-        <div class="form-group">
-            <label for="telefono">Número de contacto</label>
-            <input type="tel" id="telefono" name="telefono" required placeholder="+54 999 999 999">
-        </div>
+            <div class="form-group">
+                <label for="telefono">Número de contacto</label>
+                <input type="tel" id="telefono" name="telefono" required placeholder="+00 000 000 000">
+            </div>
 
-        <div class="form-group">
-            <label for="portafolio">Enlace a tu portafolio (Drive, TikTok, IG)</label>
-            <input type="url" id="portafolio" name="portafolio" required placeholder="https://...">
-        </div>
+            <div class="form-group">
+                <label for="portafolio">Portafolio <span class="optional-tag">(Requerido)</span></label>
+                <input type="url" id="portafolio" name="portafolio" required placeholder="Enlace a Drive, sitio web o trabajos previos">
+            </div>
 
-        <button type="submit">Enviar perfil</button>
-    </form>
+            <div class="form-group">
+                <label for="redes">Redes Sociales <span class="optional-tag">(Opcional)</span></label>
+                <input type="text" id="redes" name="redes" placeholder="Instagram, TikTok, YouTube, etc.">
+            </div>
+
+            <button type="submit">Enviar Postulación</button>
+        </form>
+    </div>
 </div>
 
 </body>
