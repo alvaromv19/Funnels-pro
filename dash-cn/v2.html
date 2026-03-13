@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CREAMOS NEGOCIOS Dashboard</title>
+    <title>Evo Launch Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -81,8 +81,8 @@
 <body>
 
     <div id="loading-overlay">
-        <div>Obteniendo datos...</div>
-        <div style="font-size: 1rem; color: #666; margin-top: 10px;" id="loading-text">Conectando a Google Sheets</div>
+        <div>⏳ Obteniendo datos...</div>
+        <div style="font-size: 1rem; color: #94a3b8; margin-top: 10px;" id="loading-text">Conectando a Google Sheets</div>
     </div>
 
     <div class="sidebar">
@@ -135,7 +135,7 @@
     </div>
 
     <div class="main-content">
-        <h1>Creamos Negocios - Dashboard</h1>
+        <h1>Evo Launch - Dashboard</h1>
 
         <h2 class="section-title">Proyecciones del Mes</h2>
         <div class="metrics-grid" style="grid-template-columns: repeat(3, 1fr);">
@@ -254,13 +254,14 @@
                 }).filter(v => v.fecha != null); 
 
                 dbGastos = g2026.map(row => {
-                    let fechaStr = row.Day || row.Fecha;
-                    let gastoStr = row['Amount spent'] || row.Gasto;
+                    let valores = Object.values(row); 
+                    let fechaStr = valores[0]; 
+                    let gastoStr = valores[1]; 
                     return {
                         fecha: parseFecha(fechaStr),
                         gasto: parseDinero(gastoStr)
                     };
-                }).filter(g => g.fecha != null);
+                }).filter(g => g.fecha != null && g.gasto > 0);
 
                 let closersUnicos = [...new Set(dbVentas.map(v => v.closer))].filter(c => c).sort();
                 let closerSelect = document.getElementById('closer');
@@ -288,13 +289,13 @@
             let mesActual = hoy.getMonth();
             let anioActual = hoy.getFullYear();
 
-            let vFiltrado = dbVentas;
-            let gFiltrado = dbGastos;
-
             // 1. Mostrar/Ocultar inputs de fecha personalizada
             const customContainer = document.getElementById('customDateContainer');
             if (periodoSel === 'custom') customContainer.style.display = 'grid';
             else customContainer.style.display = 'none';
+
+            let vFiltrado = dbVentas;
+            let gFiltrado = dbGastos;
 
             // 2. Definir rango de fechas según la selección
             let fechaInicio = null;
@@ -359,10 +360,9 @@
             let cSeg = vFiltrado.filter(v => v.estado === "👀 Seguimiento").length;
             let cNoshow = vFiltrado.filter(v => v.estado === "❌ No Show").length;
             let cDesc = vFiltrado.filter(v => v.estado === "🚫 Descalificado").length;
-            let cOtro = vFiltrado.filter(v => v.estado === "📅 Agendado" || v.estado === "Otro/Pendiente").length;
+            let cOtro = vFiltrado.filter(v => v.estado === "📅 Re-Agendado" || v.estado === "Otro/Pendiente").length;
 
             let diasEnMes = new Date(anioActual, mesActual + 1, 0).getDate();
-            let diaHoy = hoy.getDate();
             let diasRestantes = diasEnMes - diaHoy;
             diasRestantes = diasRestantes > 0 ? diasRestantes : 1;
 
@@ -449,7 +449,7 @@
                 yaxis: { title: 'Monto ($)', tickprefix: '$', color: '#94a3b8', gridcolor: '#1f1f2e' },
                 hovermode: 'x unified',
                 margin: { t: 40, l: 50, r: 20, b: 40 },
-                paper_bgcolor: 'rgba(0,0,0,0)', /* Fondo transparente para que tome el del CSS */
+                paper_bgcolor: 'rgba(0,0,0,0)', 
                 plot_bgcolor: 'rgba(0,0,0,0)',
                 legend: { font: { color: '#f8fafc' } }
             });
@@ -457,20 +457,20 @@
             let agruparLeads = {};
             vFiltrado.forEach(v => {
                 let d = v.fecha.toISOString().split('T')[0];
-                if (!agruparLeads[d]) agruparLeads[d] = {"✅ Venta":0, "❌ No Show":0, "🚫 Descalificado":0, "👀 Seguimiento":0, "📅 Agendado":0, "Otro/Pendiente":0};
+                if (!agruparLeads[d]) agruparLeads[d] = {"✅ Venta":0, "❌ No Show":0, "🚫 Descalificado":0, "👀 Seguimiento":0, "📅 Re-Agendado":0, "Otro/Pendiente":0};
                 agruparLeads[d][v.estado] += 1;
             });
 
             let fechasLeads = Object.keys(agruparLeads).sort();
-            let estados = ["✅ Venta", "❌ No Show", "🚫 Descalificado", "👀 Seguimiento", "📅 Agendado", "Otro/Pendiente"];
-            // Nuevos colores adaptados al tema oscuro
+            let estados = ["✅ Venta", "❌ No Show", "🚫 Descalificado", "👀 Seguimiento", "📅 Re-Agendado", "Otro/Pendiente"];
+            
             let colores = {
-                "✅ Venta": "#10b981", // Success green
-                "❌ No Show": "#ef4444", // Danger red
-                "🚫 Descalificado": "#f59e0b", // Warning orange
-                "👀 Seguimiento": "#6366f1", // Accent primary (Indigo)
-                "📅 Agendado": "#d946ef", // Accent purple
-                "Otro/Pendiente": "#64748b" // Neutral gray
+                "✅ Venta": "#10b981", 
+                "❌ No Show": "#ef4444", 
+                "🚫 Descalificado": "#f59e0b", 
+                "👀 Seguimiento": "#6366f1", 
+                "📅 Re-Agendado": "#d946ef", 
+                "Otro/Pendiente": "#64748b" 
             };
             
             let dataLeads = estados.map(estado => {
