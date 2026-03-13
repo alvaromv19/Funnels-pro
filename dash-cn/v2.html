@@ -7,16 +7,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
     <style>
         :root {
             --bg-base: #030305;
             --bg-surface: #0a0a0f;
-            --bg-card: #12121a;
+            --bg-card: rgba(18, 18, 26, 0.7);
             --border-color: #1f1f2e;
             
-            --accent-primary: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.4);
+            --accent-primary: #06b6d4; /* Cyan */
+            --accent-glow: rgba(6, 182, 212, 0.4);
+            --accent-secondary: #3b82f6; /* Blue */
             
             --success: #10b981;
             --warning: #f59e0b;
@@ -35,45 +37,41 @@
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: var(--bg-base); 
             color: var(--text-main); 
-            display: flex; height: 100vh; overflow: hidden; 
-            background-image: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.1) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(217, 70, 239, 0.05) 0%, transparent 50%);
+            display: block; overflow-y: auto; 
+            background-image: radial-gradient(circle at 0% 0%, rgba(6, 182, 212, 0.05) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.05) 0%, transparent 50%);
         }
 
-        .sidebar { 
-            width: 300px; 
-            background: rgba(10, 10, 15, 0.6); 
-            backdrop-filter: blur(20px); 
-            border-right: 1px solid var(--border-color); 
-            padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; z-index: 10;
-        }
-        .sidebar h2 { font-size: 1.2rem; margin-bottom: 10px; color: white; }
-        .sidebar label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
-        .sidebar select, .sidebar input { 
-            width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); 
-            padding: 10px; border-radius: 6px; color: white; font-family: inherit; font-size: 0.9rem; margin-top: 5px; box-sizing: border-box; transition: all 0.3s;
-        }
-        .sidebar select:focus, .sidebar input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
-        .sidebar select option { background-color: var(--bg-surface); color: white; }
+        /* --- TOP BAR Y FILTROS --- */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 15px 30px; background: rgba(10, 10, 15, 0.8); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 50; }
+        .top-bar h1 { font-size: 1.5rem; margin: 0; color: white; font-weight: 800; letter-spacing: -0.5px;}
+        .top-bar h1 span { color: var(--accent-primary); font-weight: 300; }
         
-        .sidebar button { 
-            background: linear-gradient(135deg, var(--accent-primary), #d946ef); 
-            color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(217, 70, 239, 0.3); width: 100%; margin-top: 5px; box-sizing: border-box;
-        }
-        .sidebar button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217, 70, 239, 0.5); }
-        .divider { border-top: 1px solid var(--border-color); margin: 15px 0; }
+        .top-bar-right { display: flex; gap: 12px; align-items: center; }
+        .filter-select { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 8px 12px; border-radius: 8px; color: white; font-family: inherit; font-size: 0.85rem; transition: 0.3s; }
+        .filter-select:focus { border-color: var(--accent-primary); box-shadow: 0 0 10px var(--accent-glow); }
+        .filter-select option { background-color: var(--bg-surface); color: white; }
+        
+        .icon-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); color: var(--text-muted); border-radius: 8px; width: 38px; height: 38px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s; }
+        .icon-btn:hover { background: var(--accent-primary); color: #000; border-color: var(--accent-primary); box-shadow: 0 0 10px var(--accent-glow); transform: translateY(-2px); }
 
-        .main-content { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        .main-content h1 { font-size: 2rem; margin-top: 0; color: white; font-weight: 800; }
+        /* --- MODAL --- */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 100; }
+        .modal-content { background: var(--bg-card); width: 380px; padding: 25px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .btn-save { background: var(--accent-primary); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: 0.3s; }
+        .btn-save:hover { background: #00ff9d; box-shadow: 0 0 15px rgba(0, 255, 157, 0.4); }
+
+        .main-content { padding: 30px; }
         .section-title { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 30px 0 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
         
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .metric-card { background-color: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-align: center; }
+        .metric-card { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); backdrop-filter: blur(5px); text-align: center; transition: 0.3s;}
+        .metric-card:hover { border-color: rgba(255,255,255,0.1); transform: translateY(-2px); }
         .metric-title { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;}
         .metric-value { font-size: 1.8rem; font-weight: 800; color: white; }
         .metric-delta { font-size: 0.85rem; color: var(--success); margin-top: 5px; font-weight: 500;} 
         .metric-delta.negative { color: var(--danger); } 
 
-        .chart-container { background-color: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.3); min-height: 350px; margin-bottom: 20px; width: 100%; box-sizing: border-box;}
+        .chart-container { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; width: 100%; box-sizing: border-box;}
         
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3,3,5,0.95); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 1000; font-size: 1.5rem; font-weight: bold; flex-direction: column; color: white; }
     </style>
@@ -85,13 +83,12 @@
         <div style="font-size: 1rem; color: #94a3b8; margin-top: 10px;" id="loading-text">Conectando a Google Sheets</div>
     </div>
 
-    <div class="sidebar">
-        <h2>Panel de Control</h2>
-        <button onclick="inicializarDashboard()">Actualizar Datos</button>
-        <div class="divider"></div>
+    <header class="top-bar">
         <div>
-            <label for="periodo">Período:</label>
-            <select id="periodo">
+            <h1>Creamos Negocios <span>| Dashboard</span></h1>
+        </div>
+        <div class="top-bar-right">
+            <select id="periodo" class="filter-select">
                 <option value="all">Histórico Completo</option>
                 <option value="today">Hoy</option>
                 <option value="yesterday">Ayer</option>
@@ -103,40 +100,44 @@
                 <option value="thisYear">Este Año</option>
                 <option value="custom">📅 Personalizado</option>
             </select>
-        </div>
-        
-        <div id="customDateContainer" style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px;">
-            <div>
-                <label for="dateStart" style="font-size: 0.65rem;">Desde:</label>
-                <input type="date" id="dateStart" style="padding: 6px; font-size: 0.8rem;">
+            
+            <div id="customDateContainer" style="display: none; gap: 5px;">
+                <input type="date" id="dateStart" class="filter-select">
+                <input type="date" id="dateEnd" class="filter-select">
             </div>
-            <div>
-                <label for="dateEnd" style="font-size: 0.65rem;">Hasta:</label>
-                <input type="date" id="dateEnd" style="padding: 6px; font-size: 0.8rem;">
-            </div>
-        </div>
-        <div>
-            <label for="closer">Closer:</label>
-            <select id="closer">
+
+            <select id="closer" class="filter-select">
                 <option value="Todos">Todos</option>
             </select>
+
+            <button class="icon-btn" onclick="inicializarDashboard()" title="Actualizar Datos">
+                <i class="fa-solid fa-rotate-right"></i>
+            </button>
+            <button class="icon-btn" onclick="openSettings()" title="Ajustes de Mando">
+                <i class="fa-solid fa-sliders"></i>
+            </button>
         </div>
-        <div class="divider"></div>
-        <h2>Objetivos</h2>
-        <div>
-            <label for="meta_fact">Meta Facturación ($):</label>
-            <input type="number" id="meta_fact" value="30000">
+    </header>
+
+    <div id="modal-settings" class="modal-overlay">
+        <div class="modal-content">
+            <h2 style="margin-top:0; color: white; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-gear text-accent"></i> Configuración</h2>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 20px;">Tus metas se guardarán en tu navegador.</p>
+            
+            <label style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Meta Facturación ($):</label>
+            <input type="number" id="meta_fact" value="30000" class="filter-select" style="width: 100%; margin-top: 5px; margin-bottom: 15px; font-size: 1.2rem;">
+            
+            <label style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Presupuesto Ads ($):</label>
+            <input type="number" id="meta_ads" value="3500" class="filter-select" style="width: 100%; margin-top: 5px; margin-bottom: 25px; font-size: 1.2rem;">
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button onclick="closeSettings()" style="background: transparent; color: var(--text-muted); border: none; cursor: pointer; padding: 10px;">Cancelar</button>
+                <button onclick="saveSettings()" class="btn-save">Guardar y Aplicar</button>
+            </div>
         </div>
-        <div>
-            <label for="meta_ads">Presupuesto Ads ($):</label>
-            <input type="number" id="meta_ads" value="3500">
-        </div>
-        <button style="margin-top: 15px; background-color: #31333F;" onclick="procesarDatos()">Aplicar Objetivos</button>
     </div>
 
     <div class="main-content">
-        <h1>Creamos Negocios - Dashboard</h1>
-
         <h2 class="section-title">Proyecciones del Mes</h2>
         <div class="metrics-grid" style="grid-template-columns: repeat(3, 1fr);">
             <div class="metric-card">
@@ -187,7 +188,7 @@
     </div>
 
     <script>
-        const URLS = {
+    const URLS = {
             agendasAntiguo: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv",
             agendasNuevo: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMnIzrwb9zOkYcksVroAL5F52QR-cnc37zW01dzBYv450w_vIZhjCCkW8jcsC16-5pHtGR0fxDb42B/pub?gid=0&single=true&output=csv",
             gastos2026: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?gid=692917105&single=true&output=csv"
@@ -196,39 +197,41 @@
         let dbVentas = [];
         let dbGastos = [];
 
+        // === LOCAL STORAGE Y MODAL ===
+        function loadSettings() {
+            const saved = localStorage.getItem('evo_settings');
+            if (saved) {
+                const s = JSON.parse(saved);
+                document.getElementById('meta_fact').value = s.fact || 30000;
+                document.getElementById('meta_ads').value = s.ads || 3500;
+            }
+        }
+        function saveSettings() {
+            const fact = document.getElementById('meta_fact').value;
+            const ads = document.getElementById('meta_ads').value;
+            localStorage.setItem('evo_settings', JSON.stringify({fact, ads}));
+            closeSettings();
+            procesarDatos();
+        }
+        function openSettings() { document.getElementById('modal-settings').style.display = 'flex'; }
+        function closeSettings() { document.getElementById('modal-settings').style.display = 'none'; }
+
+        // === LECTURA DE DATOS ===
         function fetchCSV(url) {
             return new Promise((resolve, reject) => {
-                Papa.parse(url, {
-                    download: true,
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: results => resolve(results.data),
-                    error: err => reject(err)
-                });
+                Papa.parse(url, { download: true, header: true, skipEmptyLines: true, complete: res => resolve(res.data), error: err => reject(err) });
             });
         }
-
         function parseDinero(val) {
-            if (!val) return 0;
-            let num = String(val).replace(/[$,]/g, '').trim();
-            return isNaN(parseFloat(num)) ? 0 : parseFloat(num);
+            if (!val) return 0; let num = String(val).replace(/[$,]/g, '').trim(); return isNaN(parseFloat(num)) ? 0 : parseFloat(num);
         }
-
         function parseFecha(val) {
-            if (!val) return null;
-            let partes = String(val).split(/[-/]/);
-            if (partes.length !== 3) return null;
-            
-            if (partes[0].length === 4) {
-                return new Date(partes[0], partes[1] - 1, partes[2]);
-            }
-            let year = partes[2].length === 2 ? `20${partes[2]}` : partes[2];
-            return new Date(year, partes[1] - 1, partes[0]);
+            if (!val) return null; let partes = String(val).split(/[-/]/); if (partes.length !== 3) return null;
+            if (partes[0].length === 4) return new Date(partes[0], partes[1] - 1, partes[2]);
+            let year = partes[2].length === 2 ? `20${partes[2]}` : partes[2]; return new Date(year, partes[1] - 1, partes[0]);
         }
-
         function clasificarEstado(texto) {
-            if(!texto) return "Otro/Pendiente";
-            let txt = String(texto).toLowerCase();
+            if(!texto) return "Otro/Pendiente"; let txt = String(texto).toLowerCase();
             if (txt.includes("venta")) return "✅ Venta";
             if (txt.includes("no show")) return "❌ No Show";
             if (txt.includes("descalif")) return "🚫 Descalificado";
@@ -239,47 +242,34 @@
 
         async function inicializarDashboard() {
             document.getElementById('loading-overlay').style.display = 'flex';
-            document.getElementById('loading-text').innerText = "Descargando Ventas y Gastos...";
+            document.getElementById('loading-text').innerText = "Conectando a los Sheets...";
+            loadSettings(); // Cargar memoria guardada
 
             try {
                 const [agAntiguo, agNuevo, g2026] = await Promise.all([
-                    fetchCSV(URLS.agendasAntiguo),
-                    fetchCSV(URLS.agendasNuevo),
-                    fetchCSV(URLS.gastos2026)
+                    fetchCSV(URLS.agendasAntiguo), fetchCSV(URLS.agendasNuevo), fetchCSV(URLS.gastos2026)
                 ]);
 
                 let crudoVentas = [...agAntiguo, ...agNuevo];
                 dbVentas = crudoVentas.map(row => {
                     return {
-                        fecha: parseFecha(row.Fecha),
-                        monto: parseDinero(row['Monto ($)'] || row.Monto || 0),
-                        estado: clasificarEstado(row.Resultado),
-                        closer: row.Closer ? row.Closer.trim() : "Sin Asignar",
-                        notas: row.Notas || row.Justificación || "",
-                        calificacion: row.Calificación || ""
+                        fecha: parseFecha(row.Fecha), monto: parseDinero(row['Monto ($)'] || row.Monto || 0),
+                        estado: clasificarEstado(row.Resultado), closer: row.Closer ? row.Closer.trim() : "Sin Asignar"
                     };
                 }).filter(v => v.fecha != null); 
 
                 dbGastos = g2026.map(row => {
                     let valores = Object.values(row); 
-                    let fechaStr = valores[0]; 
-                    let gastoStr = valores[1]; 
-                    return {
-                        fecha: parseFecha(fechaStr),
-                        gasto: parseDinero(gastoStr)
-                    };
+                    return { fecha: parseFecha(valores[0]), gasto: parseDinero(valores[1]) };
                 }).filter(g => g.fecha != null && g.gasto > 0);
 
                 let closersUnicos = [...new Set(dbVentas.map(v => v.closer))].filter(c => c).sort();
                 let closerSelect = document.getElementById('closer');
-                closerSelect.innerHTML = '<option value="Todos">Todos</option>';
-                closersUnicos.forEach(c => {
-                    closerSelect.innerHTML += `<option value="${c}">${c}</option>`;
-                });
+                closerSelect.innerHTML = '<option value="Todos">Todos Closers</option>';
+                closersUnicos.forEach(c => { closerSelect.innerHTML += `<option value="${c}">${c}</option>`; });
 
                 document.getElementById('loading-overlay').style.display = 'none';
                 procesarDatos();
-
             } catch (error) {
                 console.error("Detalle del error:", error);
                 document.getElementById('loading-text').innerText = "Revisa la consola. Error: " + error.message;
@@ -292,94 +282,36 @@
             const metaFact = parseFloat(document.getElementById('meta_fact').value) || 0;
             const metaAds = parseFloat(document.getElementById('meta_ads').value) || 0;
 
-            let hoy = new Date();
-            let mesActual = hoy.getMonth();
-            let anioActual = hoy.getFullYear();
-
-            // 1. Mostrar/Ocultar inputs de fecha personalizada
+            let hoy = new Date(); let mesActual = hoy.getMonth(); let anioActual = hoy.getFullYear();
             const customContainer = document.getElementById('customDateContainer');
-            if (periodoSel === 'custom') customContainer.style.display = 'grid';
-            else customContainer.style.display = 'none';
+            if (periodoSel === 'custom') customContainer.style.display = 'flex'; else customContainer.style.display = 'none';
 
-            let vFiltrado = dbVentas;
-            let gFiltrado = dbGastos;
+            let vFiltrado = dbVentas; let gFiltrado = dbGastos;
+            let fechaInicio = null; let fechaFin = null; let diaHoy = hoy.getDate();
 
-            // 2. Definir rango de fechas según la selección
-            let fechaInicio = null;
-            let fechaFin = null;
-            let diaHoy = hoy.getDate();
+            if (periodoSel === 'today') { fechaInicio = new Date(anioActual, mesActual, diaHoy); fechaFin = new Date(anioActual, mesActual, diaHoy, 23, 59, 59); } 
+            else if (periodoSel === 'yesterday') { fechaInicio = new Date(anioActual, mesActual, diaHoy - 1); fechaFin = new Date(anioActual, mesActual, diaHoy - 1, 23, 59, 59); } 
+            else if (periodoSel === '7days') { fechaInicio = new Date(anioActual, mesActual, diaHoy - 7); fechaFin = hoy; } 
+            else if (periodoSel === '14days') { fechaInicio = new Date(anioActual, mesActual, diaHoy - 14); fechaFin = hoy; } 
+            else if (periodoSel === '30days') { fechaInicio = new Date(anioActual, mesActual, diaHoy - 30); fechaFin = hoy; } 
+            else if (periodoSel === 'thisMonth') { fechaInicio = new Date(anioActual, mesActual, 1); fechaFin = new Date(anioActual, mesActual + 1, 0, 23, 59, 59); } 
+            else if (periodoSel === 'lastMonth') { fechaInicio = new Date(anioActual, mesActual - 1, 1); fechaFin = new Date(anioActual, mesActual, 0, 23, 59, 59); } 
+            else if (periodoSel === 'thisYear') { fechaInicio = new Date(anioActual, 0, 1); fechaFin = new Date(anioActual, 11, 31, 23, 59, 59); } 
+            else if (periodoSel === 'custom') { let s = document.getElementById('dateStart').value; let e = document.getElementById('dateEnd').value; if (s && e) { fechaInicio = new Date(s + "T00:00:00"); fechaFin = new Date(e + "T23:59:59"); } }
 
-            if (periodoSel === 'today') {
-                fechaInicio = new Date(anioActual, mesActual, diaHoy);
-                fechaFin = new Date(anioActual, mesActual, diaHoy, 23, 59, 59);
-            } else if (periodoSel === 'yesterday') {
-                fechaInicio = new Date(anioActual, mesActual, diaHoy - 1);
-                fechaFin = new Date(anioActual, mesActual, diaHoy - 1, 23, 59, 59);
-            } else if (periodoSel === '7days') {
-                fechaInicio = new Date(anioActual, mesActual, diaHoy - 7);
-                fechaFin = hoy;
-            } else if (periodoSel === '14days') {
-                fechaInicio = new Date(anioActual, mesActual, diaHoy - 14);
-                fechaFin = hoy;
-            } else if (periodoSel === '30days') {
-                fechaInicio = new Date(anioActual, mesActual, diaHoy - 30);
-                fechaFin = hoy;
-            } else if (periodoSel === 'thisMonth') {
-                fechaInicio = new Date(anioActual, mesActual, 1);
-                fechaFin = new Date(anioActual, mesActual + 1, 0, 23, 59, 59);
-            } else if (periodoSel === 'lastMonth') {
-                fechaInicio = new Date(anioActual, mesActual - 1, 1);
-                fechaFin = new Date(anioActual, mesActual, 0, 23, 59, 59);
-            } else if (periodoSel === 'thisYear') {
-                fechaInicio = new Date(anioActual, 0, 1);
-                fechaFin = new Date(anioActual, 11, 31, 23, 59, 59);
-            } else if (periodoSel === 'custom') {
-                let s = document.getElementById('dateStart').value;
-                let e = document.getElementById('dateEnd').value;
-                if (s && e) {
-                    fechaInicio = new Date(s + "T00:00:00");
-                    fechaFin = new Date(e + "T23:59:59");
-                }
-            }
-
-            // 3. Aplicar el filtro de fechas si no es "all"
             if (periodoSel !== 'all' && fechaInicio && fechaFin) {
                 vFiltrado = vFiltrado.filter(v => v.fecha >= fechaInicio && v.fecha <= fechaFin);
                 gFiltrado = gFiltrado.filter(g => g.fecha >= fechaInicio && g.fecha <= fechaFin);
             }
-
-            if (closerSel !== "Todos") {
-                vFiltrado = vFiltrado.filter(v => v.closer === closerSel);
-                gFiltrado = []; 
-            }
+            if (closerSel !== "Todos") { vFiltrado = vFiltrado.filter(v => v.closer === closerSel); gFiltrado = []; }
 
             let facturacion = vFiltrado.reduce((sum, v) => sum + v.monto, 0);
             let inversionAds = gFiltrado.reduce((sum, g) => sum + g.gasto, 0);
+            let gastoMesTotal = dbGastos.filter(g => g.fecha.getMonth() === mesActual && g.fecha.getFullYear() === anioActual).reduce((sum, g) => sum + g.gasto, 0);
             
-            let gastoMesTotal = dbGastos.filter(g => g.fecha.getMonth() === mesActual && g.fecha.getFullYear() === anioActual)
-                                        .reduce((sum, g) => sum + g.gasto, 0);
-
             let profit = facturacion - inversionAds;
             let roas = inversionAds > 0 ? (facturacion / inversionAds) : 0;
             let ventasCerradas = vFiltrado.filter(v => v.estado === "✅ Venta").length;
-
-            let cVentas = ventasCerradas;
-            let cSeg = vFiltrado.filter(v => v.estado === "👀 Seguimiento").length;
-            let cNoshow = vFiltrado.filter(v => v.estado === "❌ No Show").length;
-            let cDesc = vFiltrado.filter(v => v.estado === "🚫 Descalificado").length;
-            let cOtro = vFiltrado.filter(v => v.estado === "📅 Re-Agendado" || v.estado === "Otro/Pendiente").length;
-
-            let diasEnMes = new Date(anioActual, mesActual + 1, 0).getDate();
-            let diasRestantes = diasEnMes - diaHoy;
-            diasRestantes = diasRestantes > 0 ? diasRestantes : 1;
-
-            let progreso = metaFact > 0 ? Math.min((facturacion / metaFact) * 100, 100) : 0;
-            let faltaFact = Math.max(metaFact - facturacion, 0);
-            let factNecDiaria = faltaFact / diasRestantes;
-            
-            let budgetRestante = Math.max(metaAds - gastoMesTotal, 0);
-            let gastoIdealDiario = budgetRestante / diasRestantes;
-            let gastoPromedioActual = diaHoy > 0 ? (gastoMesTotal / diaHoy) : 0;
 
             document.getElementById('val-facturacion').innerText = `$${facturacion.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             document.getElementById('val-profit').innerText = `$${profit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
@@ -387,199 +319,148 @@
             document.getElementById('val-ventas').innerText = ventasCerradas;
             document.getElementById('val-inversion').innerText = `$${inversionAds.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-            document.getElementById('val-l-ventas').innerText = cVentas;
-            document.getElementById('val-l-seg').innerText = cSeg;
-            document.getElementById('val-l-noshow').innerText = cNoshow;
-            document.getElementById('val-l-desc').innerText = cDesc;
-            document.getElementById('val-l-otro').innerText = cOtro;
+            document.getElementById('val-l-ventas').innerText = ventasCerradas;
+            document.getElementById('val-l-seg').innerText = vFiltrado.filter(v => v.estado === "👀 Seguimiento").length;
+            document.getElementById('val-l-noshow').innerText = vFiltrado.filter(v => v.estado === "❌ No Show").length;
+            document.getElementById('val-l-desc').innerText = vFiltrado.filter(v => v.estado === "🚫 Descalificado").length;
+            document.getElementById('val-l-otro').innerText = vFiltrado.filter(v => v.estado === "📅 Re-Agendado" || v.estado === "Otro/Pendiente").length;
 
-            document.getElementById('val-meta').innerText = `$${metaFact.toLocaleString('en-US')}`;
-            document.getElementById('val-progreso').innerText = `Progreso: ${progreso.toFixed(2)}%`;
-            document.getElementById('val-falta').innerText = `$${faltaFact.toLocaleString('en-US')}`;
-            document.getElementById('val-necesario-diario').innerText = `Debes facturar $${factNecDiaria.toFixed(0)}/día`;
+            let diasEnMes = new Date(anioActual, mesActual + 1, 0).getDate();
+            let diasRestantes = Math.max(diasEnMes - diaHoy, 1);
+            let faltaFact = Math.max(metaFact - facturacion, 0);
             
+            document.getElementById('val-meta').innerText = `$${metaFact.toLocaleString('en-US')}`;
+            document.getElementById('val-progreso').innerText = `Progreso: ${(metaFact > 0 ? Math.min((facturacion / metaFact) * 100, 100) : 0).toFixed(2)}%`;
+            document.getElementById('val-falta').innerText = `$${faltaFact.toLocaleString('en-US')}`;
+            document.getElementById('val-necesario-diario').innerText = `Debes facturar $${(faltaFact / diasRestantes).toFixed(0)}/día`;
+            
+            let gastoIdealDiario = Math.max(metaAds - gastoMesTotal, 0) / diasRestantes;
+            let gastoPromedioActual = diaHoy > 0 ? (gastoMesTotal / diaHoy) : 0;
             document.getElementById('val-budget-diario').innerText = `$${gastoIdealDiario.toFixed(0)}/día`;
+            
             let txtGasto = document.getElementById('val-gasto-actual');
             txtGasto.innerText = `Gasto actual $${gastoPromedioActual.toFixed(0)}/día`;
-            if(gastoPromedioActual > gastoIdealDiario) {
-                txtGasto.classList.add('negative');
-                txtGasto.innerText += " (Excedido)";
-            } else {
-                txtGasto.classList.remove('negative');
-            }
+            if(gastoPromedioActual > gastoIdealDiario) { txtGasto.classList.add('negative'); txtGasto.innerText += " (Excedido)"; } 
+            else { txtGasto.classList.remove('negative'); }
 
-            dibujarGraficos(vFiltrado, gFiltrado, closerSel, fechaInicio, fechaFin, metaAds);
+            dibujarGraficos(vFiltrado, gFiltrado, closerSel);
         }
 
-        // Variables globales para que Chart.js no se superponga al actualizar
-        let chartLeadsInst = null;
-        let chartFinInst = null;
-        let chartInvInst = null;
-
-        // Estilos Globales Neon/Dark para Chart.js
+        // === RENDERIZADO DE GRÁFICOS (CHART.JS) ===
+        let chartLeadsInst = null, chartFinInst = null, chartInvInst = null;
         Chart.defaults.color = '#94a3b8';
         Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
 
         function dibujarGraficos(vFiltrado, gFiltrado, closerSel) {
             const gridOptions = { color: 'rgba(255,255,255,0.05)' };
-            const tooltipOptions = {
-                backgroundColor: 'rgba(2, 6, 23, 0.95)',
-                titleColor: '#06b6d4',
-                bodyColor: '#f8fafc',
-                borderColor: 'rgba(255,255,255,0.1)',
-                borderWidth: 1,
-                padding: 12,
-                usePointStyle: true
-            };
+            const tooltipOptions = { backgroundColor: 'rgba(2, 6, 23, 0.95)', titleColor: '#06b6d4', bodyColor: '#f8fafc', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1, padding: 12, usePointStyle: true };
 
-            // 1. Obtener Rango de Fechas Exacto (Para el Eje X)
+            // Rango Base y Textos de Mes
             let fInit, fEnd;
             let allDates = [...vFiltrado.map(v=>v.fecha), ...gFiltrado.map(g=>g.fecha)];
-            if (allDates.length > 0) {
-                fInit = new Date(Math.min(...allDates));
-                fEnd = new Date(Math.max(...allDates));
-            } else {
-                fInit = new Date(); fEnd = new Date();
-            }
+            if (allDates.length > 0) { fInit = new Date(Math.min(...allDates)); fEnd = new Date(Math.max(...allDates)); } 
+            else { fInit = new Date(); fEnd = new Date(); }
             
-            let fechasX = [];
-            let curr = new Date(fInit);
-            while(curr <= fEnd) {
-                fechasX.push(curr.toISOString().split('T')[0]);
-                curr.setDate(curr.getDate() + 1);
-            }
+            let fechasX = []; let curr = new Date(fInit);
+            while(curr <= fEnd) { fechasX.push(curr.toISOString().split('T')[0]); curr.setDate(curr.getDate() + 1); }
 
-            // ============================================
-            // DATA GRÁFICO 1: EMBUDO DE LEADS
-            // ============================================
-            let agLeads = {};
-            fechasX.forEach(f => agLeads[f] = {"✅ Venta":0, "❌ No Show":0, "🚫 Descalificado":0, "👀 Seguimiento":0, "📅 Re-Agendado":0});
-            
-            vFiltrado.forEach(v => {
-                let d = v.fecha.toISOString().split('T')[0];
-                if (agLeads[d] && agLeads[d][v.estado] !== undefined) agLeads[d][v.estado] += 1;
-            });
+            // Subtítulo del mes/año basado en el punto medio del gráfico
+            const nomMeses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+            let dateMiddle = new Date(fechasX[Math.floor(fechasX.length / 2)] + "T12:00:00");
+            let subTitleStr = `${nomMeses[dateMiddle.getMonth()]} ${dateMiddle.getFullYear()}`;
 
+            // Configuración del eje X para que solo muestre el DÍA
+            const xScaleConfig = {
+                grid: { display: false },
+                ticks: { callback: function(val, index) { let d = fechasX[index]; return d ? d.split('-')[2] : ''; } }
+            };
+
+            // DATA EMBUDO
+            let agLeads = {}; fechasX.forEach(f => agLeads[f] = {"✅ Venta":0, "❌ No Show":0, "🚫 Descalificado":0, "👀 Seguimiento":0, "📅 Re-Agendado":0});
+            vFiltrado.forEach(v => { let d = v.fecha.toISOString().split('T')[0]; if (agLeads[d] && agLeads[d][v.estado] !== undefined) agLeads[d][v.estado] += 1; });
             let agendas=[], asistencias=[], calificadas=[], ventas=[], tooltipDetails=[];
             
             fechasX.forEach(f => {
-                let v = agLeads[f]["✅ Venta"];
-                let ns = agLeads[f]["❌ No Show"];
-                let desc = agLeads[f]["🚫 Descalificado"];
-                let seg = agLeads[f]["👀 Seguimiento"];
-                let reag = agLeads[f]["📅 Re-Agendado"];
-
-                // La lógica estricta que pediste:
-                agendas.push(v + ns + desc + seg + reag); // Todo
-                asistencias.push(v + desc + seg + reag);  // Todo menos No Show
-                calificadas.push(v + seg + reag);         // Venta, Seguimiento, Re-Agendado
-                ventas.push(v);                           // Solo Ventas
-                
-                // Info para el popup
+                let v = agLeads[f]["✅ Venta"], ns = agLeads[f]["❌ No Show"], desc = agLeads[f]["🚫 Descalificado"], seg = agLeads[f]["👀 Seguimiento"], reag = agLeads[f]["📅 Re-Agendado"];
+                agendas.push(v + ns + desc + seg + reag);
+                asistencias.push(v + desc + seg + reag);
+                calificadas.push(v + seg + reag);
+                ventas.push(v);
                 tooltipDetails.push(`✅ Ventas: ${v}  |  👀 Seg: ${seg}  |  📅 Re-Ag: ${reag}  |  🚫 Desc: ${desc}  |  ❌ No Show: ${ns}`);
             });
 
-            // ============================================
-            // DATA GRÁFICOS 2 y 3: FINANZAS Y BUDGET
-            // ============================================
-            let agFin = {};
-            fechasX.forEach(f => agFin[f] = {ingreso: 0, gasto: 0});
+            // DATA FINANZAS
+            let agFin = {}; fechasX.forEach(f => agFin[f] = {ingreso: 0, gasto: 0});
             vFiltrado.forEach(v => { let d = v.fecha.toISOString().split('T')[0]; if (agFin[d]) agFin[d].ingreso += v.monto; });
             gFiltrado.forEach(g => { let d = g.fecha.toISOString().split('T')[0]; if (agFin[d]) agFin[d].gasto += g.gasto; });
-
             let ingresos=[], gastos=[], profits=[];
-            fechasX.forEach(f => {
-                ingresos.push(agFin[f].ingreso);
-                gastos.push(agFin[f].gasto);
-                profits.push(agFin[f].ingreso - agFin[f].gasto);
-            });
+            fechasX.forEach(f => { ingresos.push(agFin[f].ingreso); gastos.push(agFin[f].gasto); profits.push(agFin[f].ingreso - agFin[f].gasto); });
 
-            // Meta diaria sugerida (Gráfico 3)
             const metaAds = parseFloat(document.getElementById('meta_ads').value) || 0;
-            let mesRepresentativo = new Date(fechasX[Math.floor(fechasX.length / 2) || 0] + "T00:00:00");
-            let diasEnMes = new Date(mesRepresentativo.getFullYear(), mesRepresentativo.getMonth() + 1, 0).getDate();
-            let gastoDiarioSugerido = metaAds > 0 ? (metaAds / diasEnMes) : 0;
-            let limitLine = fechasX.map(() => gastoDiarioSugerido);
+            let diasEnMes = new Date(dateMiddle.getFullYear(), dateMiddle.getMonth() + 1, 0).getDate();
+            let limitLine = fechasX.map(() => metaAds > 0 ? (metaAds / diasEnMes) : 0);
 
-            // ============================================
-            // RENDERIZADO VISUAL
-            // ============================================
+            // RENDER
             if (chartLeadsInst) chartLeadsInst.destroy();
             if (chartFinInst) chartFinInst.destroy();
             if (chartInvInst) chartInvInst.destroy();
 
-            // CHART 1: EMBUDO
             const ctxLeads = document.getElementById('chart-leads').getContext('2d');
             chartLeadsInst = new Chart(ctxLeads, {
                 type: 'line',
                 data: {
                     labels: fechasX,
                     datasets: [
-                        { label: 'Ventas Cerradas', data: ventas, borderColor: '#10b981', backgroundColor: '#10b981', tension: 0.4, borderWidth: 3 },
-                        { label: 'Asist. Calificadas', data: calificadas, borderColor: '#6366f1', backgroundColor: '#6366f1', tension: 0.4, borderWidth: 2 },
-                        { label: 'Asistencias', data: asistencias, borderColor: '#f59e0b', backgroundColor: '#f59e0b', tension: 0.4, borderWidth: 2 },
+                        { label: 'Ventas', data: ventas, borderColor: '#10b981', backgroundColor: '#10b981', tension: 0.4, borderWidth: 3 },
+                        { label: 'Asist. Calificadas', data: calificadas, borderColor: '#3b82f6', backgroundColor: '#3b82f6', tension: 0.4, borderWidth: 2 },
+                        { label: 'Asistencias', data: asistencias, borderColor: '#06b6d4', backgroundColor: '#06b6d4', tension: 0.4, borderWidth: 2 },
                         { label: 'Agendas (Total)', data: agendas, borderColor: '#64748b', backgroundColor: '#64748b', tension: 0.4, borderWidth: 2, borderDash: [5, 5] }
                     ]
                 },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: {
-                            ...tooltipOptions,
-                            callbacks: {
-                                afterBody: function(context) {
-                                    // Inyectar el desglose SOLO en el hover general
-                                    return '\n--- Desglose del Día ---\n' + tooltipDetails[context[0].dataIndex].split('  |  ').join('\n');
-                                }
-                            }
-                        }
+                    responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+                    plugins: { 
+                        title: { display: true, text: ['Tendencia del Embudo', subTitleStr], color: '#f8fafc', font: {size: 14} },
+                        legend: { position: 'bottom' }, 
+                        tooltip: { ...tooltipOptions, callbacks: { 
+                            title: function(ctx) { return ctx[0].label; }, // Conserva fecha full en hover
+                            afterBody: function(context) { return '\n--- Desglose ---\n' + tooltipDetails[context[0].dataIndex].split('  |  ').join('\n'); } 
+                        }} 
                     },
-                    scales: { x: { grid: { display: false } }, y: { grid: gridOptions, beginAtZero: true } }
+                    scales: { x: xScaleConfig, y: { grid: gridOptions, beginAtZero: true } }
                 }
             });
 
-            // CHART 2: INGRESOS VS GASTO VS PROFIT
             const ctxFin = document.getElementById('chart-finance').getContext('2d');
             let dsFin = [ { label: 'Ingresos', data: ingresos, borderColor: '#10b981', backgroundColor: '#10b981', tension: 0.4, borderWidth: 3 } ];
             if (closerSel === "Todos") {
                 dsFin.push({ label: 'Inversión Real', data: gastos, borderColor: '#ef4444', backgroundColor: '#ef4444', tension: 0.4, borderWidth: 3 });
                 dsFin.push({ label: 'Profit', data: profits, borderColor: '#ffffff', backgroundColor: '#ffffff', tension: 0.4, borderWidth: 2, borderDash: [5, 5], pointRadius: 0 });
             }
-            
             chartFinInst = new Chart(ctxFin, {
-                type: 'line',
-                data: { labels: fechasX, datasets: dsFin },
+                type: 'line', data: { labels: fechasX, datasets: dsFin },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: { ...tooltipOptions, callbacks: { label: (ctx) => `${ctx.dataset.label}: $${ctx.raw.toLocaleString('en-US', {minimumFractionDigits:2})}` } }
+                    responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+                    plugins: { 
+                        title: { display: true, text: ['Ingresos vs Inversión vs Profit', subTitleStr], color: '#f8fafc', font: {size: 14} },
+                        legend: { position: 'bottom' }, tooltip: { ...tooltipOptions, callbacks: { label: (ctx) => `${ctx.dataset.label}: $${ctx.raw.toLocaleString('en-US', {minimumFractionDigits:2})}` } } 
                     },
-                    scales: { x: { grid: { display: false } }, y: { grid: gridOptions, ticks: { callback: (v) => '$'+v } } }
+                    scales: { x: xScaleConfig, y: { grid: gridOptions, ticks: { callback: (v) => '$'+v } } }
                 }
             });
 
-            // CHART 3: PACING DE INVERSIÓN
             const ctxInv = document.getElementById('chart-investment').getContext('2d');
-            let dsInv = [ { label: `Límite Sugerido ($${gastoDiarioSugerido.toFixed(0)}/día)`, data: limitLine, borderColor: '#6366f1', backgroundColor: 'transparent', tension: 0, borderWidth: 2, borderDash: [5, 5], pointRadius: 0 } ];
-            if (closerSel === "Todos") {
-                dsInv.push({ label: 'Inversión Real', data: gastos, borderColor: '#ef4444', backgroundColor: '#ef4444', tension: 0.4, borderWidth: 3 });
-            }
-
+            let dsInv = [ { label: `Límite Sugerido`, data: limitLine, borderColor: '#06b6d4', backgroundColor: 'transparent', tension: 0, borderWidth: 2, borderDash: [5, 5], pointRadius: 0 } ];
+            if (closerSel === "Todos") { dsInv.push({ label: 'Inversión Real', data: gastos, borderColor: '#ef4444', backgroundColor: '#ef4444', tension: 0.4, borderWidth: 3 }); }
             chartInvInst = new Chart(ctxInv, {
-                type: 'line',
-                data: { labels: fechasX, datasets: dsInv },
+                type: 'line', data: { labels: fechasX, datasets: dsInv },
                 options: {
-                    responsive: true, maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: { ...tooltipOptions, callbacks: { label: (ctx) => `${ctx.dataset.label.split(' (')[0]}: $${ctx.raw.toLocaleString('en-US', {minimumFractionDigits:2})}` } }
+                    responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false },
+                    plugins: { 
+                        title: { display: true, text: ['Pacing de Inversión Sugerido', subTitleStr], color: '#f8fafc', font: {size: 14} },
+                        legend: { position: 'bottom' }, tooltip: { ...tooltipOptions, callbacks: { label: (ctx) => `${ctx.dataset.label}: $${ctx.raw.toLocaleString('en-US', {minimumFractionDigits:2})}` } } 
                     },
-                    scales: { x: { grid: { display: false } }, y: { grid: gridOptions, beginAtZero: true, ticks: { callback: (v) => '$'+v } } }
+                    scales: { x: xScaleConfig, y: { grid: gridOptions, beginAtZero: true, ticks: { callback: (v) => '$'+v } } }
                 }
             });
         }
