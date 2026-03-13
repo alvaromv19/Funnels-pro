@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agency Dashboard 🚀</title>
+    <title>CREAMOS NEGOCIOS Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
     
     <style>
-        /* --- ESTILOS GENERALES --- */
         body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f6; color: #31333F; display: flex; height: 100vh; overflow: hidden; }
         .sidebar { width: 300px; background-color: #ffffff; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
         .sidebar h2 { font-size: 1.2rem; margin-bottom: 10px; }
@@ -27,22 +26,22 @@
         .metric-delta { font-size: 0.85rem; color: #00CC96; margin-top: 5px; } 
         .metric-delta.negative { color: #EF553B; } 
         .chart-container { background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); min-height: 350px; margin-bottom: 20px; width: 100%; box-sizing: border-box;}
-        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; font-size: 1.5rem; font-weight: bold; flex-direction: column; }
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; font-size: 1.5rem; font-weight: bold; flex-direction: column; }
     </style>
 </head>
 <body>
 
     <div id="loading-overlay">
-        <div>⏳ Obteniendo datos en tiempo real...</div>
-        <div style="font-size: 1rem; color: #666; margin-top: 10px;" id="loading-text">Conectando a la matrix</div>
+        <div>Obteniendo datos...</div>
+        <div style="font-size: 1rem; color: #666; margin-top: 10px;" id="loading-text">Conectando a Google Sheets</div>
     </div>
 
     <div class="sidebar">
-        <h2>🎛️ Panel de Control</h2>
-        <button onclick="inicializarDashboard()">🔄 Actualizar Datos</button>
+        <h2>Panel de Control</h2>
+        <button onclick="inicializarDashboard()">Actualizar Datos</button>
         <div class="divider"></div>
         <div>
-            <label for="periodo">Selecciona Período:</label>
+            <label for="periodo">Período:</label>
             <select id="periodo">
                 <option value="mes_actual">Este Mes</option>
                 <option value="historico">Histórico (Todo)</option>
@@ -55,7 +54,7 @@
             </select>
         </div>
         <div class="divider"></div>
-        <h2>🎯 Configuración Objetivos</h2>
+        <h2>Objetivos</h2>
         <div>
             <label for="meta_fact">Meta Facturación ($):</label>
             <input type="number" id="meta_fact" value="30000">
@@ -68,9 +67,9 @@
     </div>
 
     <div class="main-content">
-        <h1>🚀 Creamos Negocios - Dashboard</h1>
+        <h1>Evo Launch - Dashboard</h1>
 
-        <h2 class="section-title">🎯 Proyecciones del Mes</h2>
+        <h2 class="section-title">Proyecciones del Mes</h2>
         <div class="metrics-grid" style="grid-template-columns: repeat(3, 1fr);">
             <div class="metric-card">
                 <div class="metric-title">Meta Facturación</div>
@@ -80,7 +79,7 @@
             <div class="metric-card">
                 <div class="metric-title">Falta para Meta</div>
                 <div class="metric-value" id="val-falta">$0</div>
-                <div class="metric-delta" id="val-necesario-diario">💡 Debes facturar $0/día</div>
+                <div class="metric-delta" id="val-necesario-diario">Debes facturar $0/día</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Budget Disponible Diario</div>
@@ -89,7 +88,7 @@
             </div>
         </div>
 
-        <h2 class="section-title">💰 Estado Financiero</h2>
+        <h2 class="section-title">Estado Financiero</h2>
         <div class="metrics-grid" style="grid-template-columns: repeat(5, 1fr);">
             <div class="metric-card"><div class="metric-title">Facturación</div><div class="metric-value" id="val-facturacion">$0.00</div></div>
             <div class="metric-card"><div class="metric-title">Profit</div><div class="metric-value" id="val-profit">$0.00</div></div>
@@ -98,7 +97,7 @@
             <div class="metric-card"><div class="metric-title">Inversión Ads</div><div class="metric-value" id="val-inversion">$0.00</div></div>
         </div>
 
-        <h2 class="section-title">🔍 Desglose de Leads</h2>
+        <h2 class="section-title">Desglose de Leads</h2>
         <div class="metrics-grid" style="grid-template-columns: repeat(5, 1fr);">
             <div class="metric-card"><div class="metric-title">✅ Tx. Ventas</div><div class="metric-value" id="val-l-ventas">0</div></div>
             <div class="metric-card"><div class="metric-title">👀 Seguimiento</div><div class="metric-value" id="val-l-seg">0</div></div>
@@ -107,31 +106,21 @@
             <div class="metric-card"><div class="metric-title">📅 Agend/Otro</div><div class="metric-value" id="val-l-otro">0</div></div>
         </div>
 
-        <h2 class="section-title">📊 Dinámica Diaria</h2>
+        <h2 class="section-title">Dinámica Diaria</h2>
         <div class="chart-container" id="chart-leads"></div>
         <div class="chart-container" id="chart-finance"></div>
     </div>
 
     <script>
-        // URLs Activas
         const URLS = {
             agendasAntiguo: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv",
             agendasNuevo: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMnIzrwb9zOkYcksVroAL5F52QR-cnc37zW01dzBYv450w_vIZhjCCkW8jcsC16-5pHtGR0fxDb42B/pub?gid=0&single=true&output=csv",
-            gastos2025: "https://docs.google.com/spreadsheets/d/e/2PACX-1vGOLgPTDLie5gEbkViCbpebWfN9S_eb2h2GGlpWLjmfVgzfnwR_ncVTs4IqmKgmAFfxZTQHJlMBrIi/pub?gid=0&single=true&output=csv",
             gastos2026: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?gid=692917105&single=true&output=csv"
-        };
-
-        // URLs Guardadas para futuras implementaciones
-        const URLS_FUTURAS = {
-            gastosDetallado: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?gid=1230809162&single=true&output=csv",
-            leadsVolumen: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=0&single=true&output=csv",
-            leadsQualified: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv"
         };
 
         let dbVentas = [];
         let dbGastos = [];
 
-        // Función para leer CSV usando PapaParse
         function fetchCSV(url) {
             return new Promise((resolve, reject) => {
                 Papa.parse(url, {
@@ -144,37 +133,32 @@
             });
         }
 
-        // Limpiar strings de dinero a números
         function parseDinero(val) {
             if (!val) return 0;
             let num = String(val).replace(/[$,]/g, '').trim();
             return isNaN(parseFloat(num)) ? 0 : parseFloat(num);
         }
 
-        // Parsear fecha formato DD/MM/YY o YYYY-MM-DD
         function parseFecha(val) {
             if (!val) return null;
-            let partes = val.split(/[-/]/);
+            let partes = String(val).split(/[-/]/);
             if (partes.length !== 3) return null;
             
-            // Si el año está primero (ej. 2026-01-01)
             if (partes[0].length === 4) {
                 return new Date(partes[0], partes[1] - 1, partes[2]);
             }
-            // Si es formato latino DD/MM/YYYY
             let year = partes[2].length === 2 ? `20${partes[2]}` : partes[2];
             return new Date(year, partes[1] - 1, partes[0]);
         }
 
-        // Clasificador de estado de ventas
         function clasificarEstado(texto) {
             if(!texto) return "Otro/Pendiente";
             let txt = String(texto).toLowerCase();
             if (txt.includes("venta")) return "✅ Venta";
             if (txt.includes("no show")) return "❌ No Show";
-            if (txt.includes("descalificado")) return "🚫 Descalificado";
-            if (txt.includes("seguimiento")) return "👀 Seguimiento";
-            if (txt.includes("re-agendado") || txt.includes("reagendado") || txt.includes("agendado")) return "📅 Agendado";
+            if (txt.includes("descalif")) return "🚫 Descalificado";
+            if (txt.includes("seguimiento") || txt.includes("asisti")) return "👀 Seguimiento";
+            if (txt.includes("agendado") || txt.includes("re-agendado")) return "📅 Agendado";
             return "Otro/Pendiente";
         }
 
@@ -183,39 +167,33 @@
             document.getElementById('loading-text').innerText = "Descargando Ventas y Gastos...";
 
             try {
-                // Ejecutar todas las llamadas en paralelo
-                const [agAntiguo, agNuevo, g2025, g2026] = await Promise.all([
+                const [agAntiguo, agNuevo, g2026] = await Promise.all([
                     fetchCSV(URLS.agendasAntiguo),
                     fetchCSV(URLS.agendasNuevo),
-                    fetchCSV(URLS.gastos2025),
                     fetchCSV(URLS.gastos2026)
                 ]);
 
-                // PROCESAR VENTAS (Unificando los dos documentos)
                 let crudoVentas = [...agAntiguo, ...agNuevo];
                 dbVentas = crudoVentas.map(row => {
                     return {
-                        fecha_raw: row.Fecha,
                         fecha: parseFecha(row.Fecha),
                         monto: parseDinero(row['Monto ($)'] || row.Monto || 0),
                         estado: clasificarEstado(row.Resultado),
-                        closer: row.Closer ? row.Closer.trim() : "Sin Asignar"
+                        closer: row.Closer ? row.Closer.trim() : "Sin Asignar",
+                        notas: row.Notas || row.Justificación || "",
+                        calificacion: row.Calificación || ""
                     };
-                }).filter(v => v.fecha != null); // Quitar filas sin fecha válida
+                }).filter(v => v.fecha != null); 
 
-                // PROCESAR GASTOS (Unificando 2025 y 2026)
-                // Nota: 2026 usa headers 'Day' y 'Amount spent' o similar
-                let crudoGastos = [...g2025, ...g2026];
-                dbGastos = crudoGastos.map(row => {
-                    let fechaStr = row.Fecha || row.Day;
-                    let gastoStr = row.Gasto || row['Amount spent'];
+                dbGastos = g2026.map(row => {
+                    let fechaStr = row.Day || row.Fecha;
+                    let gastoStr = row['Amount spent'] || row.Gasto;
                     return {
                         fecha: parseFecha(fechaStr),
                         gasto: parseDinero(gastoStr)
                     };
                 }).filter(g => g.fecha != null);
 
-                // Llenar selector de Closers
                 let closersUnicos = [...new Set(dbVentas.map(v => v.closer))].filter(c => c).sort();
                 let closerSelect = document.getElementById('closer');
                 closerSelect.innerHTML = '<option value="Todos">Todos</option>';
@@ -224,18 +202,15 @@
                 });
 
                 document.getElementById('loading-overlay').style.display = 'none';
-                
-                // Procesar la UI
                 procesarDatos();
 
             } catch (error) {
-                console.error("Error cargando datos:", error);
-                document.getElementById('loading-text').innerText = "Error cargando datos. Revisa la consola.";
+                console.error("Detalle del error:", error);
+                document.getElementById('loading-text').innerText = "Revisa la consola. Error: " + error.message;
             }
         }
 
         function procesarDatos() {
-            // Filtros de UI
             const periodoSel = document.getElementById('periodo').value;
             const closerSel = document.getElementById('closer').value;
             const metaFact = parseFloat(document.getElementById('meta_fact').value) || 0;
@@ -245,7 +220,6 @@
             let mesActual = hoy.getMonth();
             let anioActual = hoy.getFullYear();
 
-            // Filtrar bases de datos según inputs
             let vFiltrado = dbVentas;
             let gFiltrado = dbGastos;
 
@@ -256,16 +230,12 @@
 
             if (closerSel !== "Todos") {
                 vFiltrado = vFiltrado.filter(v => v.closer === closerSel);
-                // Si filtramos por closer individual, técnicamente la inversión de ads general no le corresponde al 100%, 
-                // pero por ahora lo ocultaremos o pondremos en 0 para no alterar su ROAS personal.
                 gFiltrado = []; 
             }
 
-            // Cálculos principales
             let facturacion = vFiltrado.reduce((sum, v) => sum + v.monto, 0);
             let inversionAds = gFiltrado.reduce((sum, g) => sum + g.gasto, 0);
             
-            // Si estamos en "Todos", calculamos el total de inversión del mes aunque filtremos
             let gastoMesTotal = dbGastos.filter(g => g.fecha.getMonth() === mesActual && g.fecha.getFullYear() === anioActual)
                                         .reduce((sum, g) => sum + g.gasto, 0);
 
@@ -273,14 +243,12 @@
             let roas = inversionAds > 0 ? (facturacion / inversionAds) : 0;
             let ventasCerradas = vFiltrado.filter(v => v.estado === "✅ Venta").length;
 
-            // Desglose Leads
             let cVentas = ventasCerradas;
             let cSeg = vFiltrado.filter(v => v.estado === "👀 Seguimiento").length;
             let cNoshow = vFiltrado.filter(v => v.estado === "❌ No Show").length;
             let cDesc = vFiltrado.filter(v => v.estado === "🚫 Descalificado").length;
             let cOtro = vFiltrado.filter(v => v.estado === "📅 Agendado" || v.estado === "Otro/Pendiente").length;
 
-            // Proyecciones
             let diasEnMes = new Date(anioActual, mesActual + 1, 0).getDate();
             let diaHoy = hoy.getDate();
             let diasRestantes = diasEnMes - diaHoy;
@@ -294,7 +262,6 @@
             let gastoIdealDiario = budgetRestante / diasRestantes;
             let gastoPromedioActual = diaHoy > 0 ? (gastoMesTotal / diaHoy) : 0;
 
-            // --- ACTUALIZAR UI (DOM) ---
             document.getElementById('val-facturacion').innerText = `$${facturacion.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             document.getElementById('val-profit').innerText = `$${profit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
             document.getElementById('val-roas').innerText = `${roas.toFixed(2)}x`;
@@ -310,7 +277,7 @@
             document.getElementById('val-meta').innerText = `$${metaFact.toLocaleString('en-US')}`;
             document.getElementById('val-progreso').innerText = `Progreso: ${progreso.toFixed(2)}%`;
             document.getElementById('val-falta').innerText = `$${faltaFact.toLocaleString('en-US')}`;
-            document.getElementById('val-necesario-diario').innerText = `💡 Debes facturar $${factNecDiaria.toFixed(0)}/día`;
+            document.getElementById('val-necesario-diario').innerText = `Debes facturar $${factNecDiaria.toFixed(0)}/día`;
             
             document.getElementById('val-budget-diario').innerText = `$${gastoIdealDiario.toFixed(0)}/día`;
             let txtGasto = document.getElementById('val-gasto-actual');
@@ -326,7 +293,6 @@
         }
 
         function dibujarGraficos(vFiltrado, gFiltrado, closerSel) {
-            // Agrupar ventas por día
             let agruparVentas = {};
             vFiltrado.forEach(v => {
                 let d = v.fecha.toISOString().split('T')[0];
@@ -334,7 +300,6 @@
                 agruparVentas[d] += v.monto;
             });
 
-            // Agrupar gastos por día
             let agruparGastos = {};
             gFiltrado.forEach(g => {
                 let d = g.fecha.toISOString().split('T')[0];
@@ -342,7 +307,6 @@
                 agruparGastos[d] += g.gasto;
             });
 
-            // Preparar arrays para Plotly
             let fechasFinanzas = [...new Set([...Object.keys(agruparVentas), ...Object.keys(agruparGastos)])].sort();
             let traceVentasLine = {
                 x: fechasFinanzas,
@@ -368,14 +332,13 @@
             }
 
             Plotly.newPlot('chart-finance', dataFinanzas, {
-                title: 'Dinámica Diaria: Ingresos vs Gasto',
+                title: 'Ingresos vs Gasto',
                 xaxis: { title: 'Fecha' },
                 yaxis: { title: 'Monto ($)', tickprefix: '$' },
                 hovermode: 'x unified',
                 margin: { t: 40, l: 50, r: 20, b: 40 }
             });
 
-            // Agrupar leads por estado
             let agruparLeads = {};
             vFiltrado.forEach(v => {
                 let d = v.fecha.toISOString().split('T')[0];
@@ -398,7 +361,7 @@
             });
 
             Plotly.newPlot('chart-leads', dataLeads, {
-                title: 'Evolución Diaria de Leads',
+                title: 'Evolución de Leads',
                 barmode: 'stack',
                 xaxis: { title: 'Fecha' },
                 yaxis: { title: 'Cantidad' },
@@ -407,13 +370,10 @@
             });
         }
 
-        // Agregar Event Listeners a los controles de la barra lateral
         document.getElementById('periodo').addEventListener('change', procesarDatos);
         document.getElementById('closer').addEventListener('change', procesarDatos);
 
-        // Arrancar
         window.onload = inicializarDashboard;
-
     </script>
 </body>
 </html>
