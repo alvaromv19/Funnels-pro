@@ -285,16 +285,26 @@
 
                 let crudoVentas = [...agAntiguo, ...agNuevo];
                 dbVentas = crudoVentas.map((row, index) => {
-                    // Buscar Email o Nombre para identificar clientes únicos
-                    let idCliente = (row.Email || row['Lead Name'] || row.Name || `cliente-${index}`).trim().toLowerCase();
+                    // FIX: Extracción segura del ID de cliente
+                    let rawEmail = row.Email || "";
+                    let rawName = row['Lead Name'] || row.Name || "";
+                    let idCliente = (rawEmail !== "" ? rawEmail : rawName);
+                    if (idCliente === "") idCliente = `cliente-anonimo-${index}`;
+                    idCliente = String(idCliente).trim().toLowerCase();
+
                     return {
                         fecha: parseFecha(row.Fecha), 
                         monto: parseDinero(row['Monto ($)'] || row.Monto || 0),
                         estado: clasificarEstado(row.Resultado), 
-                        closer: row.Closer ? row.Closer.trim() : "Sin Asignar",
+                        closer: row.Closer ? String(row.Closer).trim() : "Sin Asignar",
                         id_cliente: idCliente
                     };
-                }).filter(v => v.fecha != null);
+                }).filter(v => v.fecha != null); 
+
+                dbGastos = g2026.map(row => {
+                    let valores = Object.values(row); 
+                    return { fecha: parseFecha(valores[0]), gasto: parseDinero(valores[1]) };
+                }).filter(g => g.fecha != null && g.gasto > 0);
 
                 let closersUnicos = [...new Set(dbVentas.map(v => v.closer))].filter(c => c).sort();
                 let closerSelect = document.getElementById('closer');
