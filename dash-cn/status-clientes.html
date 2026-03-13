@@ -175,6 +175,20 @@
             color: var(--text-muted);
             font-style: italic;
         }
+
+        /* --- NUEVOS ESTILOS: Modal y Tarjetas Interactivas --- */
+        .kpi-card { cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        
+        .ver-mas-btn { background: none; border: none; color: var(--accent); font-size: 13px; cursor: pointer; margin-top: 10px; padding: 0; font-weight: bold; width: 100%; text-align: left; }
+        .ver-mas-btn:hover { text-decoration: underline; }
+        
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
+        .modal-content { background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px; width: 90%; max-width: 500px; max-height: 80vh; overflow-y: auto; position: relative; }
+        .close-btn { position: absolute; top: 15px; right: 20px; color: var(--text-muted); font-size: 24px; cursor: pointer; border: none; background: none; }
+        .close-btn:hover { color: white; }
+        .modal-list-item { padding: 10px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;}
+        .modal-list-item:last-child { border-bottom: none; }
     </style>
 </head>
 <body>
@@ -205,17 +219,25 @@
     </div>
 
     <div class="kpi-container">
-        <div class="kpi-card">
+        <div class="kpi-card" onclick="abrirModal('activos')">
             <div class="kpi-title">Clientes Activos (Filtro)</div>
             <div class="kpi-value" id="kpi-total">0</div>
         </div>
-        <div class="kpi-card" style="border-bottom: 3px solid var(--alert-yellow);">
+        <div class="kpi-card" style="border-bottom: 3px solid var(--alert-yellow);" onclick="abrirModal('estancados')">
             <div class="kpi-title">Alerta Estancamiento (>5d Testing)</div>
             <div class="kpi-value" id="kpi-yellow" style="color: var(--alert-yellow);">0</div>
         </div>
-        <div class="kpi-card" style="border-bottom: 3px solid var(--alert-red);">
+        <div class="kpi-card" style="border-bottom: 3px solid var(--alert-red);" onclick="abrirModal('apagados')">
             <div class="kpi-title">Alerta Crítica (>3d Apagado)</div>
             <div class="kpi-value" id="kpi-red" style="color: var(--alert-red);">0</div>
+        </div>
+    </div>
+
+    <div id="miModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="cerrarModal()">&times;</button>
+            <h2 id="modal-titulo" style="margin-top: 0; font-size: 18px; border-bottom: 1px solid var(--border); padding-bottom: 10px; color: var(--accent);">Detalle</h2>
+            <div id="modal-lista"></div>
         </div>
     </div>
 
@@ -253,13 +275,6 @@
             document.getElementById('buscador-cliente').addEventListener('input', renderizarDashboard);
         });
 
-        function inicializarFiltros() {
-            const traffickers = [...new Set(datosGlobales.map(d => d.Trafficker))].filter(Boolean);
-            const select = document.getElementById('filtro-trafficker');
-            traffickers.forEach(t => {
-                select.innerHTML += `<option value="${t}">${t}</option>`;
-            });
-        }
 
         function parsearFecha(fechaStr) {
             let parts = fechaStr.split(/[\/\-\s:]/);
@@ -310,23 +325,39 @@
             return { inicio, fin };
         }
 
+        // SOLUCION BUG ESPACIOS: Agregamos .trim() a Trafficker
+        function inicializarFiltros() {
+            const traffickers = [...new Set(datosGlobales.map(d => d.Trafficker.trim()))].filter(Boolean);
+            const select = document.getElementById('filtro-trafficker');
+            traffickers.forEach(t => {
+                select.innerHTML += `<option value="${t}">${t}</option>`;
+            });
+        }
+
+        // Variable global para alimentar los Popups
+        let listasModal = { activos: [], estancados: [], apagados: [] };
+
         function renderizarDashboard() {
             const filtroTrafficker = document.getElementById('filtro-trafficker').value;
             const busqueda = document.getElementById('buscador-cliente').value.toLowerCase();
             const rango = obtenerRangoFechas();
 
-            // 1. Agrupar
+            // Resetear listas de modal
+            listasModal = { activos: [], estancados: [], apagados: [] };
+
+            // 1. Agrupar (SOLUCION BUG ESPACIOS: Agregamos .trim() al agrupar)
             let clientesMap = {};
             datosGlobales.forEach(row => {
-                const nombre = row.Cliente;
+                const nombre = row.Cliente.trim();
+                const trafficker = row.Trafficker.trim();
                 if(!clientesMap[nombre]) {
-                    clientesMap[nombre] = { nombre: nombre, trafficker: row.Trafficker, historial: [] };
+                    clientesMap[nombre] = { nombre: nombre, trafficker: trafficker, historial: [] };
                 }
                 clientesMap[nombre].historial.push({
                     fechaObj: parsearFecha(row.Fecha_Hora),
                     fechaStr: row.Fecha_Hora,
                     estado: row.Estado,
-                    notas: row.Notas || "" // Capturamos la nota si existe, si no, cadena vacía
+                    notas: row.Notas || ""
                 });
             });
 
@@ -353,32 +384,50 @@
                 
                 let estadoBadge = "bg-green";
                 let textoAlerta = "Estable";
+                let tiempoTexto = diasDesdeUltimo === 0 ? "Hoy" : `Hace ${diasDesdeUltimo} días`;
 
+                // Capturar datos para el Popup Modal
                 if (ultimoRegistroAbsoluto.estado.toLowerCase().includes("apagado") && diasDesdeUltimo >= 3) {
                     estadoBadge = "bg-red"; textoAlerta = "¡Alerta Crítica! >3 días apagado"; kpiRed++;
+                    listasModal.apagados.push({nombre: cliente.nombre, trafficker: cliente.trafficker, tiempo: tiempoTexto});
                 } else if (ultimoRegistroAbsoluto.estado.toLowerCase().includes("testing") && diasDesdeUltimo >= 5) {
                     estadoBadge = "bg-yellow"; textoAlerta = "Cuello de botella en Testing"; kpiYellow++;
+                    listasModal.estancados.push({nombre: cliente.nombre, trafficker: cliente.trafficker, tiempo: tiempoTexto});
                 } else if (ultimoRegistroAbsoluto.estado.toLowerCase().includes("apagado")) {
                     estadoBadge = "bg-red"; textoAlerta = "Apagado Recientemente";
                 }
 
                 kpiTotal++;
+                listasModal.activos.push({nombre: cliente.nombre, trafficker: cliente.trafficker, tiempo: tiempoTexto});
 
+                // Lógica de Tarjetas Contraídas (Acordeón)
                 let timelineHTML = "";
-                historialFiltrado.forEach(h => {
-                    // Lógica para renderizar la nota solo si no está vacía
-                    let htmlNota = (h.notas && h.notas.trim() !== "") 
-                        ? `<div class="timeline-nota">💬 ${h.notas}</div>` 
-                        : "";
+                let idUnico = "hist-" + cliente.nombre.replace(/[^a-zA-Z0-9]/g, ""); // ID seguro sin espacios
 
-                    timelineHTML += `
+                historialFiltrado.forEach((h, index) => {
+                    let htmlNota = (h.notas && h.notas.trim() !== "") ? `<div class="timeline-nota">💬 ${h.notas}</div>` : "";
+                    let itemContent = `
                         <div class="timeline-item">
                             <div class="timeline-date">${h.fechaStr}</div>
                             <div class="timeline-estado">${h.estado}</div>
                             ${htmlNota}
                         </div>
                     `;
+
+                    if(index === 0) {
+                        timelineHTML += itemContent; // El primero siempre visible
+                        if(historialFiltrado.length > 1) {
+                            timelineHTML += `<div id="${idUnico}" style="display:none; margin-top: 10px;">`; // Abrir contenedor oculto
+                        }
+                    } else {
+                        timelineHTML += itemContent; // Los demás van ocultos
+                    }
                 });
+
+                if (historialFiltrado.length > 1) {
+                    let btnText = `Ver historial completo (${historialFiltrado.length - 1} más) ▼`;
+                    timelineHTML += `</div><button class="ver-mas-btn" id="btn-${idUnico}" onclick="toggleHistorial('${idUnico}')">${btnText}</button>`;
+                }
 
                 html += `
                     <div class="cliente-card">
@@ -396,11 +445,70 @@
                 `;
             });
 
-            // Actualizar DOM
             document.getElementById('clientes-container').innerHTML = html || `<div class="empty-state">No se encontraron movimientos en este rango de fechas.</div>`;
             document.getElementById('kpi-total').innerText = kpiTotal;
             document.getElementById('kpi-yellow').innerText = kpiYellow;
             document.getElementById('kpi-red').innerText = kpiRed;
+        }
+
+        // --- FUNCIONES NUEVAS: Acordeón y Modal (Pegar al final del script) ---
+
+        function toggleHistorial(id) {
+            let div = document.getElementById(id);
+            let btn = document.getElementById('btn-' + id);
+            let totalItems = div.querySelectorAll('.timeline-item').length;
+            
+            if (div.style.display === "none") {
+                div.style.display = "block";
+                btn.innerText = "Ocultar historial ▲";
+            } else {
+                div.style.display = "none";
+                btn.innerText = `Ver historial completo (${totalItems} más) ▼`;
+            }
+        }
+
+        function abrirModal(tipo) {
+            document.getElementById('miModal').style.display = 'flex';
+            let titulo = document.getElementById('modal-titulo');
+            let lista = document.getElementById('modal-lista');
+            lista.innerHTML = '';
+
+            let arrayUsar = listasModal[tipo];
+
+            if (tipo === 'activos') titulo.innerText = "Todos los Clientes Activos";
+            if (tipo === 'estancados') titulo.innerText = "Clientes Estancados (>5 días en Testing)";
+            if (tipo === 'apagados') titulo.innerText = "Clientes en Alerta Crítica (>3 días Apagados)";
+
+            if (arrayUsar.length === 0) {
+                lista.innerHTML = '<div class="empty-state" style="text-align:center;">No hay clientes en esta categoría.</div>';
+                return;
+            }
+
+            arrayUsar.forEach(c => {
+                lista.innerHTML += `
+                    <div class="modal-list-item">
+                        <div>
+                            <strong style="color:var(--text-main); font-size:15px;">${c.nombre}</strong><br>
+                            <span style="font-size:12px; color:var(--accent);">👤 ${c.trafficker}</span>
+                        </div>
+                        <div style="text-align:right; font-size:13px; font-weight:bold; color:var(--text-muted);">
+                            ⏱️ ${c.tiempo}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function cerrarModal() {
+            document.getElementById('miModal').style.display = 'none';
+        }
+
+        // Cierra el modal si hacen clic fuera de la caja de contenido
+        window.onclick = function(event) {
+            let modal = document.getElementById('miModal');
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
         }
     </script>
 </body>
