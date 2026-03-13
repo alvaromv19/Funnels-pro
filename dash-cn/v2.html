@@ -92,9 +92,28 @@
         <div>
             <label for="periodo">Período:</label>
             <select id="periodo">
-                <option value="mes_actual">Este Mes</option>
-                <option value="historico">Histórico (Todo)</option>
+                <option value="all">Histórico Completo</option>
+                <option value="today">Hoy</option>
+                <option value="yesterday">Ayer</option>
+                <option value="7days">Últimos 7 Días</option>
+                <option value="14days">Últimos 14 Días</option>
+                <option value="30days">Últimos 30 Días</option>
+                <option value="thisMonth" selected>Este Mes</option>
+                <option value="lastMonth">Mes Pasado</option>
+                <option value="thisYear">Este Año</option>
+                <option value="custom">📅 Personalizado</option>
             </select>
+        </div>
+        
+        <div id="customDateContainer" style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 5px;">
+            <div>
+                <label for="dateStart" style="font-size: 0.65rem;">Desde:</label>
+                <input type="date" id="dateStart" style="padding: 6px; font-size: 0.8rem;">
+            </div>
+            <div>
+                <label for="dateEnd" style="font-size: 0.65rem;">Hasta:</label>
+                <input type="date" id="dateEnd" style="padding: 6px; font-size: 0.8rem;">
+            </div>
         </div>
         <div>
             <label for="closer">Closer:</label>
@@ -272,9 +291,56 @@
             let vFiltrado = dbVentas;
             let gFiltrado = dbGastos;
 
-            if (periodoSel === "mes_actual") {
-                vFiltrado = vFiltrado.filter(v => v.fecha.getMonth() === mesActual && v.fecha.getFullYear() === anioActual);
-                gFiltrado = gFiltrado.filter(g => g.fecha.getMonth() === mesActual && g.fecha.getFullYear() === anioActual);
+            // 1. Mostrar/Ocultar inputs de fecha personalizada
+            const customContainer = document.getElementById('customDateContainer');
+            if (periodoSel === 'custom') customContainer.style.display = 'grid';
+            else customContainer.style.display = 'none';
+
+            let vFiltrado = dbVentas;
+            let gFiltrado = dbGastos;
+
+            // 2. Definir rango de fechas según la selección
+            let fechaInicio = null;
+            let fechaFin = null;
+            let diaHoy = hoy.getDate();
+
+            if (periodoSel === 'today') {
+                fechaInicio = new Date(anioActual, mesActual, diaHoy);
+                fechaFin = new Date(anioActual, mesActual, diaHoy, 23, 59, 59);
+            } else if (periodoSel === 'yesterday') {
+                fechaInicio = new Date(anioActual, mesActual, diaHoy - 1);
+                fechaFin = new Date(anioActual, mesActual, diaHoy - 1, 23, 59, 59);
+            } else if (periodoSel === '7days') {
+                fechaInicio = new Date(anioActual, mesActual, diaHoy - 7);
+                fechaFin = hoy;
+            } else if (periodoSel === '14days') {
+                fechaInicio = new Date(anioActual, mesActual, diaHoy - 14);
+                fechaFin = hoy;
+            } else if (periodoSel === '30days') {
+                fechaInicio = new Date(anioActual, mesActual, diaHoy - 30);
+                fechaFin = hoy;
+            } else if (periodoSel === 'thisMonth') {
+                fechaInicio = new Date(anioActual, mesActual, 1);
+                fechaFin = new Date(anioActual, mesActual + 1, 0, 23, 59, 59);
+            } else if (periodoSel === 'lastMonth') {
+                fechaInicio = new Date(anioActual, mesActual - 1, 1);
+                fechaFin = new Date(anioActual, mesActual, 0, 23, 59, 59);
+            } else if (periodoSel === 'thisYear') {
+                fechaInicio = new Date(anioActual, 0, 1);
+                fechaFin = new Date(anioActual, 11, 31, 23, 59, 59);
+            } else if (periodoSel === 'custom') {
+                let s = document.getElementById('dateStart').value;
+                let e = document.getElementById('dateEnd').value;
+                if (s && e) {
+                    fechaInicio = new Date(s + "T00:00:00");
+                    fechaFin = new Date(e + "T23:59:59");
+                }
+            }
+
+            // 3. Aplicar el filtro de fechas si no es "all"
+            if (periodoSel !== 'all' && fechaInicio && fechaFin) {
+                vFiltrado = vFiltrado.filter(v => v.fecha >= fechaInicio && v.fecha <= fechaFin);
+                gFiltrado = gFiltrado.filter(g => g.fecha >= fechaInicio && g.fecha <= fechaFin);
             }
 
             if (closerSel !== "Todos") {
@@ -435,7 +501,9 @@
 
         document.getElementById('periodo').addEventListener('change', procesarDatos);
         document.getElementById('closer').addEventListener('change', procesarDatos);
-
+        document.getElementById('dateStart').addEventListener('change', procesarDatos);
+        document.getElementById('dateEnd').addEventListener('change', procesarDatos);
+        
         window.onload = inicializarDashboard;
     </script>
 </body>
