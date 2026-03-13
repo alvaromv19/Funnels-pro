@@ -174,9 +174,10 @@
             <div class="metric-card"><div class="metric-title">📅 Re-agendado</div><div class="metric-value" id="val-l-otro">0</div></div>
         </div>
 
-        <h2 class="section-title">Dinámica Diaria</h2>
+        <<h2 class="section-title">Dinámica Diaria</h2>
         <div class="chart-container" id="chart-leads"></div>
         <div class="chart-container" id="chart-finance"></div>
+        <div class="chart-container" id="chart-investment"></div>
     </div>
 
     <script>
@@ -401,99 +402,150 @@
                 txtGasto.classList.remove('negative');
             }
 
-            dibujarGraficos(vFiltrado, gFiltrado, closerSel);
+            dibujarGraficos(vFiltrado, gFiltrado, closerSel, fechaInicio, fechaFin, metaAds);
         }
 
-        function dibujarGraficos(vFiltrado, gFiltrado, closerSel) {
-            let agruparVentas = {};
+        function dibujarGraficos(vFiltrado, gFiltrado, closerSel, fechaInicio, fechaFin, metaAds) {
+            // Configuración Global para desactivar iconos molestos y mejorar el Hover
+            const configPlotly = { displayModeBar: false, responsive: true };
+            const layoutBase = {
+                font: { color: '#f8fafc' },
+                xaxis: { color: '#94a3b8', gridcolor: '#1f1f2e' },
+                yaxis: { color: '#94a3b8', gridcolor: '#1f1f2e' },
+                hovermode: 'x unified',
+                hoverlabel: { bgcolor: '#12121a', bordercolor: '#334155', font: { color: '#f8fafc' } },
+                margin: { t: 40, l: 50, r: 20, b: 40 },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                legend: { font: { color: '#f8fafc' }, orientation: "h", y: -0.2 }
+            };
+
+            // 1. Armar el eje X (Fechas dinámicas según el filtro)
+            let fInit = fechaInicio;
+            let fEnd = fechaFin;
+            if (!fInit || !fEnd) {
+                let allDates = [...vFiltrado.map(v=>v.fecha), ...gFiltrado.map(g=>g.fecha)];
+                if (allDates.length > 0) {
+                    fInit = new Date(Math.min(...allDates));
+                    fEnd = new Date(Math.max(...allDates));
+                } else {
+                    fInit = new Date(); fEnd = new Date();
+                }
+            }
+
+            let fechasX = [];
+            let curr = new Date(fInit);
+            while(curr <= fEnd) {
+                fechasX.push(curr.toISOString().split('T')[0]);
+                curr.setDate(curr.getDate() + 1);
+            }
+
+            // ============================================
+            // GRÁFICO 1: EMBUDO DE LEADS (TENDENCIA)
+            // ============================================
+            let agLeads = {};
+            fechasX.forEach(f => agLeads[f] = {"✅ Venta":0, "❌ No Show":0, "🚫 Descalificado":0, "👀 Seguimiento":0, "📅 Re-Agendado":0});
+            
             vFiltrado.forEach(v => {
                 let d = v.fecha.toISOString().split('T')[0];
-                if (!agruparVentas[d]) agruparVentas[d] = 0;
-                agruparVentas[d] += v.monto;
+                if (agLeads[d] && agLeads[d][v.estado] !== undefined) {
+                    agLeads[d][v.estado] += 1;
+                }
             });
 
-            let agruparGastos = {};
+            let agendas=[], asistencias=[], calificadas=[], ventas=[], tooltips=[];
+            
+            fechasX.forEach(f => {
+                let v = agLeads[f]["✅ Venta"];
+                let ns = agLeads[f]["❌ No Show"];
+                let desc = agLeads[f]["🚫 Descalificado"];
+                let seg = agLeads[f]["👀 Seguimiento"];
+                let reag = agLeads[f]["📅 Re-Agendado"];
+
+                agendas.push(v + ns + desc + seg + reag);
+                asistencias.push(v + desc + seg + reag);
+                calificadas.push(v + seg + reag);
+                ventas.push(v);
+
+                // Armamos el texto detallado solo para que se inyecte en el hover de Agendas
+                tooltips.push(`Desglose:<br>✅ Ventas: ${v}<br>👀 Seg: ${seg}<br>📅 Re-Ag: ${reag}<br>🚫 Desc: ${desc}<br>❌ No Show: ${ns}`);
+            });
+
+            let dataLeads = [
+                { x: fechasX, y: agendas, name: 'Agendas (Total)', type: 'scatter', mode: 'lines+markers', line: {color: '#64748b'}, customdata: tooltips, hovertemplate: '%{y} Totales<br><br>%{customdata}<extra></extra>' },
+                { x: fechasX, y: asistencias, name: 'Asistencias', type: 'scatter', mode: 'lines+markers', line: {color: '#f59e0b'}, hovertemplate: '%{y}<extra></extra>' },
+                { x: fechasX, y: calificadas, name: 'Asist. Calificadas', type: 'scatter', mode: 'lines+markers', line: {color: '#6366f1'}, hovertemplate: '%{y}<extra></extra>' },
+                { x: fechasX, y: ventas, name: 'Ventas Cerradas', type: 'scatter', mode: 'lines+markers', line: {color: '#10b981'}, hovertemplate: '%{y}<extra></extra>' }
+            ];
+
+            Plotly.newPlot('chart-leads', dataLeads, {
+                ...layoutBase,
+                title: { text: 'Tendencia del Embudo de Leads', font: { color: '#f8fafc' } },
+                yaxis: { ...layoutBase.yaxis, title: 'Cantidad' }
+            }, configPlotly);
+
+            // ============================================
+            // PROCESAMIENTO DE DATOS FINANCIEROS (GRÁFICOS 2 Y 3)
+            // ============================================
+            let agFin = {};
+            fechasX.forEach(f => agFin[f] = {ingreso: 0, gasto: 0});
+            
+            vFiltrado.forEach(v => {
+                let d = v.fecha.toISOString().split('T')[0];
+                if (agFin[d]) agFin[d].ingreso += v.monto;
+            });
             gFiltrado.forEach(g => {
                 let d = g.fecha.toISOString().split('T')[0];
-                if (!agruparGastos[d]) agruparGastos[d] = 0;
-                agruparGastos[d] += g.gasto;
+                if (agFin[d]) agFin[d].gasto += g.gasto;
             });
 
-            let fechasFinanzas = [...new Set([...Object.keys(agruparVentas), ...Object.keys(agruparGastos)])].sort();
-            let traceVentasLine = {
-                x: fechasFinanzas,
-                y: fechasFinanzas.map(f => agruparVentas[f] || 0),
-                type: 'scatter',
-                mode: 'lines+markers',
-                name: 'Facturación',
-                line: {color: '#00CC96'}
-            };
-            
-            let dataFinanzas = [traceVentasLine];
-            
+            let ingresos=[], gastos=[], profits=[];
+            fechasX.forEach(f => {
+                ingresos.push(agFin[f].ingreso);
+                gastos.push(agFin[f].gasto);
+                profits.push(agFin[f].ingreso - agFin[f].gasto);
+            });
+
+            // ============================================
+            // GRÁFICO 2: INGRESOS VS INVERSIÓN VS PROFIT
+            // ============================================
+            let dataFinanzas = [
+                { x: fechasX, y: ingresos, name: 'Ingresos', type: 'scatter', mode: 'lines+markers', line: {color: '#10b981', width: 3}, hovertemplate: 'Ingresos: $%{y:,.2f}<extra></extra>' }
+            ];
             if (closerSel === "Todos") {
-                let traceGastosLine = {
-                    x: fechasFinanzas,
-                    y: fechasFinanzas.map(f => agruparGastos[f] || 0),
-                    type: 'scatter',
-                    mode: 'lines+markers',
-                    name: 'Gasto Ads',
-                    line: {color: '#EF553B'}
-                };
-                dataFinanzas.push(traceGastosLine);
+                dataFinanzas.push({ x: fechasX, y: gastos, name: 'Inversión', type: 'scatter', mode: 'lines+markers', line: {color: '#ef4444', width: 3}, hovertemplate: 'Inversión: $%{y:,.2f}<extra></extra>' });
+                dataFinanzas.push({ x: fechasX, y: profits, name: 'Profit', type: 'scatter', mode: 'lines', line: {color: '#ffffff', dash: 'dot', width: 2}, hovertemplate: 'Profit: $%{y:,.2f}<extra></extra>' });
             }
 
             Plotly.newPlot('chart-finance', dataFinanzas, {
-                title: { text: 'Ingresos vs Gasto', font: { color: '#f8fafc' } },
-                xaxis: { title: 'Fecha', color: '#94a3b8', gridcolor: '#1f1f2e' },
-                yaxis: { title: 'Monto ($)', tickprefix: '$', color: '#94a3b8', gridcolor: '#1f1f2e' },
-                hovermode: 'x unified',
-                margin: { t: 40, l: 50, r: 20, b: 40 },
-                paper_bgcolor: 'rgba(0,0,0,0)', 
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                legend: { font: { color: '#f8fafc' } }
-            });
+                ...layoutBase,
+                title: { text: 'Tendencia Financiera (Profit)', font: { color: '#f8fafc' } },
+                yaxis: { ...layoutBase.yaxis, title: 'Monto ($)', tickprefix: '$' }
+            }, configPlotly);
 
-            let agruparLeads = {};
-            vFiltrado.forEach(v => {
-                let d = v.fecha.toISOString().split('T')[0];
-                if (!agruparLeads[d]) agruparLeads[d] = {"✅ Venta":0, "❌ No Show":0, "🚫 Descalificado":0, "👀 Seguimiento":0, "📅 Re-Agendado":0, "Otro/Pendiente":0};
-                agruparLeads[d][v.estado] += 1;
-            });
-
-            let fechasLeads = Object.keys(agruparLeads).sort();
-            let estados = ["✅ Venta", "❌ No Show", "🚫 Descalificado", "👀 Seguimiento", "📅 Re-Agendado", "Otro/Pendiente"];
+            // ============================================
+            // GRÁFICO 3: PACING DE INVERSIÓN (REAL VS SUGERIDA)
+            // ============================================
+            // Calculamos cuántos días tiene el mes correspondiente a las fechas visualizadas
+            let mesRepresentativo = new Date(fechasX[Math.floor(fechasX.length / 2) || 0]);
+            let diasEnMes = new Date(mesRepresentativo.getFullYear(), mesRepresentativo.getMonth() + 1, 0).getDate();
             
-            let colores = {
-                "✅ Venta": "#10b981", 
-                "❌ No Show": "#ef4444", 
-                "🚫 Descalificado": "#f59e0b", 
-                "👀 Seguimiento": "#6366f1", 
-                "📅 Re-Agendado": "#d946ef", 
-                "Otro/Pendiente": "#64748b" 
-            };
-            
-            let dataLeads = estados.map(estado => {
-                return {
-                    x: fechasLeads,
-                    y: fechasLeads.map(f => agruparLeads[f][estado]),
-                    name: estado,
-                    type: 'bar',
-                    marker: { color: colores[estado], line: { width: 0 } }
-                };
-            });
+            // Calculamos el límite lineal diario (Presupuesto total / días del mes)
+            let gastoDiarioSugerido = metaAds > 0 ? (metaAds / diasEnMes) : 0;
+            let limitLine = fechasX.map(() => gastoDiarioSugerido);
 
-            Plotly.newPlot('chart-leads', dataLeads, {
-                title: { text: 'Evolución de Leads', font: { color: '#f8fafc' } },
-                barmode: 'stack',
-                xaxis: { title: 'Fecha', color: '#94a3b8', gridcolor: '#1f1f2e' },
-                yaxis: { title: 'Cantidad', color: '#94a3b8', gridcolor: '#1f1f2e' },
-                hovermode: 'x unified',
-                margin: { t: 40, l: 40, r: 20, b: 40 },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                legend: { font: { color: '#f8fafc' } }
-            });
+            let dataInv = [
+                { x: fechasX, y: limitLine, name: 'Límite Sugerido/Día', type: 'scatter', mode: 'lines', line: {color: '#6366f1', dash: 'dash', width: 2}, hovertemplate: 'Límite: $%{y:,.2f}/día<extra></extra>' }
+            ];
+            if (closerSel === "Todos") {
+                dataInv.push({ x: fechasX, y: gastos, name: 'Inversión Real', type: 'scatter', mode: 'lines+markers', line: {color: '#ef4444', width: 3}, hovertemplate: 'Gasto: $%{y:,.2f}<extra></extra>' });
+            }
+
+            Plotly.newPlot('chart-investment', dataInv, {
+                ...layoutBase,
+                title: { text: 'Inversión Real vs Sugerida (Budget Pacing)', font: { color: '#f8fafc' } },
+                yaxis: { ...layoutBase.yaxis, title: 'Monto ($)', tickprefix: '$' }
+            }, configPlotly);
         }
 
         document.getElementById('periodo').addEventListener('change', procesarDatos);
