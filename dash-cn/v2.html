@@ -143,7 +143,10 @@
             <div class="metric-card">
                 <div class="metric-title">Meta Facturación</div>
                 <div class="metric-value" id="val-meta">$30,000</div>
-                <div class="metric-delta" id="val-progreso">Progreso: 0.00%</div>
+                <div style="background: rgba(255,255,255,0.05); border-radius: 6px; height: 8px; width: 100%; margin-top: 12px; overflow: hidden;">
+                    <div id="bar-progreso" style="background: var(--success); height: 100%; width: 0%; transition: width 0.5s ease-out; box-shadow: 0 0 10px var(--success);"></div>
+                </div>
+                <div class="metric-delta" id="val-progreso" style="margin-top: 8px;">0.00%</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Falta para Meta</div>
@@ -159,20 +162,50 @@
 
         <h2 class="section-title">Estado Financiero</h2>
         <div class="metrics-grid" style="grid-template-columns: repeat(5, 1fr);">
-            <div class="metric-card"><div class="metric-title">Facturación</div><div class="metric-value" id="val-facturacion">$0.00</div></div>
-            <div class="metric-card"><div class="metric-title">Profit</div><div class="metric-value" id="val-profit">$0.00</div></div>
-            <div class="metric-card"><div class="metric-title">ROAS</div><div class="metric-value" id="val-roas">0.00x</div></div>
-            <div class="metric-card"><div class="metric-title">Ventas (Clientes)</div><div class="metric-value" id="val-ventas">0</div></div>
-            <div class="metric-card"><div class="metric-title">Inversión Ads</div><div class="metric-value" id="val-inversion">$0.00</div></div>
+            <div class="metric-card" style="background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.3);">
+                <div class="metric-title" style="color: #a7f3d0;">Facturación</div>
+                <div class="metric-value" id="val-facturacion" style="color: var(--success); text-shadow: 0 0 15px rgba(16, 185, 129, 0.4);">$0.00</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Profit</div>
+                <div class="metric-value" id="val-profit">$0.00</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">ROAS Global</div>
+                <div class="metric-value" id="val-roas">0.00x</div>
+                <div class="metric-delta" style="color: var(--text-muted); font-size: 0.75rem;" id="val-roas-obj">Objetivo: 0.00x</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Ventas (Clientes Únicos)</div>
+                <div class="metric-value" id="val-ventas-clientes">0</div>
+                <div class="metric-delta" style="color: var(--text-muted); font-size: 0.75rem;" id="val-aov-cpa">AOV: $0 | CPA: $0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Inversión Ads</div>
+                <div class="metric-value" id="val-inversion">$0.00</div>
+            </div>
         </div>
 
         <h2 class="section-title">Desglose de Leads</h2>
-        <div class="metrics-grid" style="grid-template-columns: repeat(5, 1fr);">
-            <div class="metric-card"><div class="metric-title">✅ Tx. Ventas</div><div class="metric-value" id="val-l-ventas">0</div></div>
+        <div class="metrics-grid" style="grid-template-columns: repeat(6, 1fr);">
+            <div class="metric-card">
+                <div class="metric-title">✅ Ventas (Total)</div>
+                <div class="metric-value" id="val-tx-ventas">0</div>
+                <div class="metric-delta" style="color: var(--text-muted); font-size: 0.75rem;" id="val-clientes-nuevos">0 Clientes Nuevos</div>
+            </div>
             <div class="metric-card"><div class="metric-title">👀 Seguimiento</div><div class="metric-value" id="val-l-seg">0</div></div>
             <div class="metric-card"><div class="metric-title">❌ No Show</div><div class="metric-value" id="val-l-noshow">0</div></div>
             <div class="metric-card"><div class="metric-title">🚫 Descalif.</div><div class="metric-value" id="val-l-desc">0</div></div>
             <div class="metric-card"><div class="metric-title">📅 Re-agendado</div><div class="metric-value" id="val-l-otro">0</div></div>
+            
+            <div class="metric-card" style="background: rgba(6, 182, 212, 0.05); border-color: rgba(6, 182, 212, 0.2); padding: 15px;">
+                <div class="metric-title" style="color: var(--accent-primary);">📊 Ratios</div>
+                <div style="font-size: 0.75rem; color: #cbd5e1; text-align: left; margin-top: 10px; line-height: 1.8;">
+                    Cierre: <span id="val-ratio-cierre" style="color: var(--success); font-weight: bold; float: right;">0%</span><br>
+                    Asist. Calif: <span id="val-ratio-calif" style="color: var(--accent-primary); font-weight: bold; float: right;">0%</span><br>
+                    Asistencia: <span id="val-ratio-asist" style="color: var(--warning); font-weight: bold; float: right;">0%</span>
+                </div>
+            </div>
         </div>
 
         <h2 class="section-title">Dinámica Diaria</h2>
@@ -251,17 +284,17 @@
                 ]);
 
                 let crudoVentas = [...agAntiguo, ...agNuevo];
-                dbVentas = crudoVentas.map(row => {
+                dbVentas = crudoVentas.map((row, index) => {
+                    // Buscar Email o Nombre para identificar clientes únicos
+                    let idCliente = (row.Email || row['Lead Name'] || row.Name || `cliente-${index}`).trim().toLowerCase();
                     return {
-                        fecha: parseFecha(row.Fecha), monto: parseDinero(row['Monto ($)'] || row.Monto || 0),
-                        estado: clasificarEstado(row.Resultado), closer: row.Closer ? row.Closer.trim() : "Sin Asignar"
+                        fecha: parseFecha(row.Fecha), 
+                        monto: parseDinero(row['Monto ($)'] || row.Monto || 0),
+                        estado: clasificarEstado(row.Resultado), 
+                        closer: row.Closer ? row.Closer.trim() : "Sin Asignar",
+                        id_cliente: idCliente
                     };
-                }).filter(v => v.fecha != null); 
-
-                dbGastos = g2026.map(row => {
-                    let valores = Object.values(row); 
-                    return { fecha: parseFecha(valores[0]), gasto: parseDinero(valores[1]) };
-                }).filter(g => g.fecha != null && g.gasto > 0);
+                }).filter(v => v.fecha != null);
 
                 let closersUnicos = [...new Set(dbVentas.map(v => v.closer))].filter(c => c).sort();
                 let closerSelect = document.getElementById('closer');
@@ -311,26 +344,71 @@
             
             let profit = facturacion - inversionAds;
             let roas = inversionAds > 0 ? (facturacion / inversionAds) : 0;
-            let ventasCerradas = vFiltrado.filter(v => v.estado === "✅ Venta").length;
+            let roasObjetivo = metaAds > 0 ? (metaFact / metaAds) : 0;
 
+            // Lógica de Ventas y Clientes Únicos
+            let txVentasArray = vFiltrado.filter(v => v.estado === "✅ Venta");
+            let txVentas = txVentasArray.length; // Total transacciones (incluye cuotas)
+            let clientesUnicos = [...new Set(txVentasArray.map(v => v.id_cliente))].length; // Agrupa repetidos
+
+            let cSeg = vFiltrado.filter(v => v.estado === "👀 Seguimiento").length;
+            let cNoshow = vFiltrado.filter(v => v.estado === "❌ No Show").length;
+            let cDesc = vFiltrado.filter(v => v.estado === "🚫 Descalificado").length;
+            let cOtro = vFiltrado.filter(v => v.estado === "📅 Re-Agendado" || v.estado === "Otro/Pendiente").length;
+
+            // Cálculos Avanzados
+            let aov = txVentas > 0 ? (facturacion / txVentas) : 0;
+            let cpa = clientesUnicos > 0 ? (inversionAds / clientesUnicos) : 0;
+
+            // Ratios del Embudo
+            let totalLeads = txVentas + cSeg + cNoshow + cDesc + cOtro;
+            let asistenciasTotales = txVentas + cSeg + cDesc + cOtro;
+            let asistenciasCalificadas = txVentas + cSeg + cOtro;
+
+            let ratioCierre = asistenciasTotales > 0 ? (txVentas / asistenciasTotales) * 100 : 0;
+            let ratioCalif = totalLeads > 0 ? (asistenciasCalificadas / totalLeads) * 100 : 0;
+            let ratioAsist = totalLeads > 0 ? (asistenciasTotales / totalLeads) * 100 : 0;
+
+            // Renderizado en DOM
             document.getElementById('val-facturacion').innerText = `$${facturacion.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
-            document.getElementById('val-profit').innerText = `$${profit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            
+            // Color Dinámico para Profit
+            let elProfit = document.getElementById('val-profit');
+            elProfit.innerText = `$${profit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            if (profit > 0) elProfit.style.color = 'var(--success)';
+            else if (profit < 0) elProfit.style.color = 'var(--danger)';
+            else elProfit.style.color = 'white';
+
             document.getElementById('val-roas').innerText = `${roas.toFixed(2)}x`;
-            document.getElementById('val-ventas').innerText = ventasCerradas;
+            document.getElementById('val-roas-obj').innerText = `Objetivo: ${roasObjetivo.toFixed(2)}x`;
+            
+            document.getElementById('val-ventas-clientes').innerText = clientesUnicos;
+            document.getElementById('val-aov-cpa').innerText = `AOV: $${aov.toLocaleString('en-US', {maximumFractionDigits:0})} | CPA: $${cpa.toLocaleString('en-US', {maximumFractionDigits:0})}`;
             document.getElementById('val-inversion').innerText = `$${inversionAds.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
-            document.getElementById('val-l-ventas').innerText = ventasCerradas;
-            document.getElementById('val-l-seg').innerText = vFiltrado.filter(v => v.estado === "👀 Seguimiento").length;
-            document.getElementById('val-l-noshow').innerText = vFiltrado.filter(v => v.estado === "❌ No Show").length;
-            document.getElementById('val-l-desc').innerText = vFiltrado.filter(v => v.estado === "🚫 Descalificado").length;
-            document.getElementById('val-l-otro').innerText = vFiltrado.filter(v => v.estado === "📅 Re-Agendado" || v.estado === "Otro/Pendiente").length;
+            document.getElementById('val-tx-ventas').innerText = txVentas;
+            document.getElementById('val-clientes-nuevos').innerText = `${clientesUnicos} Clientes Nuevos`;
+            
+            document.getElementById('val-l-seg').innerText = cSeg;
+            document.getElementById('val-l-noshow').innerText = cNoshow;
+            document.getElementById('val-l-desc').innerText = cDesc;
+            document.getElementById('val-l-otro').innerText = cOtro;
 
+            // Inyección de Ratios
+            document.getElementById('val-ratio-cierre').innerText = `${ratioCierre.toFixed(1)}%`;
+            document.getElementById('val-ratio-calif').innerText = `${ratioCalif.toFixed(1)}%`;
+            document.getElementById('val-ratio-asist').innerText = `${ratioAsist.toFixed(1)}%`;
+
+            // Cálculos de Proyecciones
             let diasEnMes = new Date(anioActual, mesActual + 1, 0).getDate();
             let diasRestantes = Math.max(diasEnMes - diaHoy, 1);
             let faltaFact = Math.max(metaFact - facturacion, 0);
+            let progresoReal = metaFact > 0 ? Math.min((facturacion / metaFact) * 100, 100) : 0;
             
             document.getElementById('val-meta').innerText = `$${metaFact.toLocaleString('en-US')}`;
-            document.getElementById('val-progreso').innerText = `Progreso: ${(metaFact > 0 ? Math.min((facturacion / metaFact) * 100, 100) : 0).toFixed(2)}%`;
+            document.getElementById('val-progreso').innerText = `${progresoReal.toFixed(1)}%`;
+            document.getElementById('bar-progreso').style.width = `${progresoReal}%`;
+            
             document.getElementById('val-falta').innerText = `$${faltaFact.toLocaleString('en-US')}`;
             document.getElementById('val-necesario-diario').innerText = `Debes facturar $${(faltaFact / diasRestantes).toFixed(0)}/día`;
             
@@ -344,7 +422,6 @@
             else { txtGasto.classList.remove('negative'); }
 
             dibujarGraficos(vFiltrado, gFiltrado, closerSel);
-        }
 
         // === RENDERIZADO DE GRÁFICOS (CHART.JS) ===
         let chartLeadsInst = null, chartFinInst = null, chartInvInst = null;
