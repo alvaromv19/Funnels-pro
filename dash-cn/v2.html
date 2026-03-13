@@ -6,27 +6,76 @@
     <title>CREAMOS NEGOCIOS Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f6; color: #31333F; display: flex; height: 100vh; overflow: hidden; }
-        .sidebar { width: 300px; background-color: #ffffff; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
-        .sidebar h2 { font-size: 1.2rem; margin-bottom: 10px; }
-        .sidebar label { font-size: 0.9rem; font-weight: bold; }
-        .sidebar select, .sidebar input, .sidebar button { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; margin-top: 5px; box-sizing: border-box; }
-        .sidebar button { background-color: #ff4b4b; color: white; border: none; cursor: pointer; font-weight: bold; }
-        .sidebar button:hover { background-color: #e03e3e; }
-        .divider { border-top: 1px solid #e6e6e6; margin: 15px 0; }
+        :root {
+            --bg-base: #030305;
+            --bg-surface: #0a0a0f;
+            --bg-card: #12121a;
+            --border-color: #1f1f2e;
+            
+            --accent-primary: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.4);
+            
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-base); }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: var(--bg-base); 
+            color: var(--text-main); 
+            display: flex; height: 100vh; overflow: hidden; 
+            background-image: radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.1) 0%, transparent 50%), radial-gradient(circle at 100% 100%, rgba(217, 70, 239, 0.05) 0%, transparent 50%);
+        }
+
+        .sidebar { 
+            width: 300px; 
+            background: rgba(10, 10, 15, 0.6); 
+            backdrop-filter: blur(20px); 
+            border-right: 1px solid var(--border-color); 
+            padding: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; z-index: 10;
+        }
+        .sidebar h2 { font-size: 1.2rem; margin-bottom: 10px; color: white; }
+        .sidebar label { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600; letter-spacing: 1px; }
+        .sidebar select, .sidebar input { 
+            width: 100%; background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); 
+            padding: 10px; border-radius: 6px; color: white; font-family: inherit; font-size: 0.9rem; margin-top: 5px; box-sizing: border-box; transition: all 0.3s;
+        }
+        .sidebar select:focus, .sidebar input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1); }
+        .sidebar select option { background-color: var(--bg-surface); color: white; }
+        
+        .sidebar button { 
+            background: linear-gradient(135deg, var(--accent-primary), #d946ef); 
+            color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 15px rgba(217, 70, 239, 0.3); width: 100%; margin-top: 5px; box-sizing: border-box;
+        }
+        .sidebar button:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(217, 70, 239, 0.5); }
+        .divider { border-top: 1px solid var(--border-color); margin: 15px 0; }
+
         .main-content { flex-grow: 1; padding: 30px; overflow-y: auto; }
-        .main-content h1 { font-size: 2rem; margin-top: 0; }
-        .section-title { font-size: 1.3rem; margin: 25px 0 15px; border-bottom: 2px solid #e6e6e6; padding-bottom: 5px;}
+        .main-content h1 { font-size: 2rem; margin-top: 0; color: white; font-weight: 800; }
+        .section-title { font-size: 1.1rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin: 30px 0 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;}
+        
         .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .metric-card { background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
-        .metric-title { font-size: 0.9rem; color: #666; margin-bottom: 5px; }
-        .metric-value { font-size: 1.8rem; font-weight: bold; color: #31333F; }
-        .metric-delta { font-size: 0.85rem; color: #00CC96; margin-top: 5px; } 
-        .metric-delta.negative { color: #EF553B; } 
-        .chart-container { background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); min-height: 350px; margin-bottom: 20px; width: 100%; box-sizing: border-box;}
-        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.95); display: flex; justify-content: center; align-items: center; z-index: 1000; font-size: 1.5rem; font-weight: bold; flex-direction: column; }
+        .metric-card { background-color: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.3); text-align: center; }
+        .metric-title { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;}
+        .metric-value { font-size: 1.8rem; font-weight: 800; color: white; }
+        .metric-delta { font-size: 0.85rem; color: var(--success); margin-top: 5px; font-weight: 500;} 
+        .metric-delta.negative { color: var(--danger); } 
+
+        .chart-container { background-color: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px rgba(0,0,0,0.3); min-height: 350px; margin-bottom: 20px; width: 100%; box-sizing: border-box;}
+        
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3,3,5,0.95); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 1000; font-size: 1.5rem; font-weight: bold; flex-direction: column; color: white; }
     </style>
 </head>
 <body>
@@ -332,11 +381,14 @@
             }
 
             Plotly.newPlot('chart-finance', dataFinanzas, {
-                title: 'Ingresos vs Gasto',
-                xaxis: { title: 'Fecha' },
-                yaxis: { title: 'Monto ($)', tickprefix: '$' },
+                title: { text: 'Ingresos vs Gasto', font: { color: '#f8fafc' } },
+                xaxis: { title: 'Fecha', color: '#94a3b8', gridcolor: '#1f1f2e' },
+                yaxis: { title: 'Monto ($)', tickprefix: '$', color: '#94a3b8', gridcolor: '#1f1f2e' },
                 hovermode: 'x unified',
-                margin: { t: 40, l: 50, r: 20, b: 40 }
+                margin: { t: 40, l: 50, r: 20, b: 40 },
+                paper_bgcolor: 'rgba(0,0,0,0)', /* Fondo transparente para que tome el del CSS */
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                legend: { font: { color: '#f8fafc' } }
             });
 
             let agruparLeads = {};
@@ -348,7 +400,15 @@
 
             let fechasLeads = Object.keys(agruparLeads).sort();
             let estados = ["✅ Venta", "❌ No Show", "🚫 Descalificado", "👀 Seguimiento", "📅 Agendado", "Otro/Pendiente"];
-            let colores = {"✅ Venta": "#00CC96", "❌ No Show": "#EF553B", "🚫 Descalificado": "#FFA15A", "👀 Seguimiento": "#636EFA", "📅 Agendado": "#AB63FA", "Otro/Pendiente": "#d3d3d3"};
+            // Nuevos colores adaptados al tema oscuro
+            let colores = {
+                "✅ Venta": "#10b981", // Success green
+                "❌ No Show": "#ef4444", // Danger red
+                "🚫 Descalificado": "#f59e0b", // Warning orange
+                "👀 Seguimiento": "#6366f1", // Accent primary (Indigo)
+                "📅 Agendado": "#d946ef", // Accent purple
+                "Otro/Pendiente": "#64748b" // Neutral gray
+            };
             
             let dataLeads = estados.map(estado => {
                 return {
@@ -356,17 +416,20 @@
                     y: fechasLeads.map(f => agruparLeads[f][estado]),
                     name: estado,
                     type: 'bar',
-                    marker: { color: colores[estado] }
+                    marker: { color: colores[estado], line: { width: 0 } }
                 };
             });
 
             Plotly.newPlot('chart-leads', dataLeads, {
-                title: 'Evolución de Leads',
+                title: { text: 'Evolución de Leads', font: { color: '#f8fafc' } },
                 barmode: 'stack',
-                xaxis: { title: 'Fecha' },
-                yaxis: { title: 'Cantidad' },
+                xaxis: { title: 'Fecha', color: '#94a3b8', gridcolor: '#1f1f2e' },
+                yaxis: { title: 'Cantidad', color: '#94a3b8', gridcolor: '#1f1f2e' },
                 hovermode: 'x unified',
-                margin: { t: 40, l: 40, r: 20, b: 40 }
+                margin: { t: 40, l: 40, r: 20, b: 40 },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                legend: { font: { color: '#f8fafc' } }
             });
         }
 
