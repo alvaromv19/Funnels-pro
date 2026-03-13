@@ -7,6 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><path fill='%2306b6d4' d='M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 22.7 456.5 22 458c-3.1 5.8-2.8 12.9 1 18.2S33 480 39.8 480c58.2 0 106.8-22.1 136-39.8C201.2 445.6 228 448 256 448c141.4 0 256-93.1 256-208S397.4 32 256 32zm0 368c-26.7 0-53.1-4.1-78.4-12.1l-22.7-7.2-27.4 18.1c-17 11.3-37.5 22.4-61.1 31.8 17-29.8 28-54.3 31.4-71.6l5.4-27.4-18.7-20.8C61.3 285 48 263.3 48 240c0-88.2 93.3-160 208-160s208 71.8 208 160-93.3 160-208 160zm16-104v16c0 8.8-7.2 16-16 16s-16-7.2-16-16v-16c-17.6-4.4-32-19.8-32-39.2 0-22.1 17.9-40 40-40h16c8.8 0 16-7.2 16-16s-7.2-16-16-16h-48c-8.8 0-16-7.2-16-16s7.2-16 16-16v-16c0-8.8 7.2-16 16-16s16 7.2 16 16v16c17.6 4.4 32 19.8 32 39.2 0 22.1-17.9 40-40 40h-16c-8.8 0-16 7.2-16 16s7.2 16 16 16h48c8.8 0 16 7.2 16 16s-7.2 16-16 16z'/></svg>" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     
@@ -85,7 +86,44 @@
         .chart-container { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; width: 100%; box-sizing: border-box;}
         
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3,3,5,0.95); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; z-index: 1000; font-size: 1.5rem; font-weight: bold; flex-direction: column; color: white; }
+
+        /* --- MÓDULO: LEAD SEARCH --- */
+        .search-container { position: relative; margin-bottom: 30px; }
+        .search-input { background: rgba(0, 0, 0, 0.3); border: 2px solid var(--border-color); color: var(--accent-primary); font-size: 1.2rem; padding: 15px 25px; border-radius: 12px; width: 100%; transition: 0.3s; font-family: monospace; }
+        .search-input:focus { border-color: var(--accent-primary); box-shadow: 0 0 20px var(--accent-glow); outline: none; }
+        .search-btn { position: absolute; right: 8px; top: 8px; bottom: 8px; background: var(--accent-primary); color: black; border: none; padding: 0 25px; border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .search-btn:hover { transform: scale(1.02); box-shadow: 0 0 15px var(--accent-glow); }
+
+        .timeline-card { background: rgba(255, 255, 255, 0.03); border-left: 4px solid var(--accent-secondary); padding: 15px; margin-bottom: 15px; border-radius: 0 12px 12px 0; transition: 0.3s; }
+        .timeline-card:hover { transform: translateX(5px); background: rgba(255, 255, 255, 0.06); }
+        .card-success { border-left-color: var(--success); background: linear-gradient(90deg, rgba(16, 185, 129, 0.05), transparent); }
+        .card-fail { border-left-color: var(--danger); background: linear-gradient(90deg, rgba(239, 68, 68, 0.05), transparent); }
+        
+        .timeline-header { font-size: 0.8rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; display: block; font-weight: 700; }
+        .data-row { margin-bottom: 6px; font-size: 0.9rem; }
+        .data-label { color: var(--text-muted); font-weight: 600; margin-right: 8px; }
+        .note-text { color: #e2e8f0; font-style: italic; background: rgba(0,0,0,0.2); padding: 8px 12px; border-radius: 6px; display: block; margin-top: 5px; }
+
+        .whatsapp-btn { background: rgba(37, 211, 102, 0.1); border: 1px solid #25D366; color: #25D366; padding: 8px 20px; border-radius: 50px; text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: 0.3s; margin-top: 10px; font-size: 1rem; }
+        .whatsapp-btn:hover { background: #25D366; color: black; box-shadow: 0 0 15px #25D366; }
+
+        .nav-tabs-custom { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .ls-tab-btn { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 8px 25px; border-radius: 30px; cursor: pointer; transition: 0.3s; font-weight: 600;}
+        .ls-tab-btn.active { border-color: var(--accent-primary); color: var(--accent-primary); background: rgba(6, 182, 212, 0.05); }
+
+        .table-custom { width: 100%; border-collapse: separate; border-spacing: 0 8px; text-align: left; }
+        .table-custom th { padding: 12px 15px; color: var(--text-muted); font-size: 0.8rem; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .table-custom th:hover { color: white; }
+        .table-custom td { background: rgba(255, 255, 255, 0.02); padding: 15px; transition: 0.2s; border-top: 1px solid rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .table-custom tr:hover td { background: rgba(255, 255, 255, 0.06); }
+        .table-custom tr td:first-child { border-radius: 8px 0 0 8px; }
+        .table-custom tr td:last-child { border-radius: 0 8px 8px 0; }
+        
+        .rank-name-clickable { color: white; font-weight: 700; cursor: pointer; text-decoration: underline; text-decoration-color: rgba(6, 182, 212, 0.4); text-underline-offset: 4px; transition: 0.3s; }
+        .rank-name-clickable:hover { color: var(--accent-primary); text-decoration-color: var(--accent-primary); }
+        .d-none { display: none !important; }
     </style>
+    
 </head>
 <body>
 
@@ -260,8 +298,75 @@
         </div>
 
         <div id="view-search" class="view-section">
-            <h2 class="section-title">Buscador de Leads</h2>
-            <p style="color: var(--text-muted);">Módulo en construcción...</p>
+            <div style="max-width: 900px; margin: 0 auto;">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <h2 style="font-size: 2rem; color: white; font-weight: 800;">🕵️ Detective de Leads</h2>
+                    <p style="color: var(--text-muted);">Sistema de Rastreo e Identificación del Embudo</p>
+                </div>
+
+                <div class="nav-tabs-custom">
+                    <button class="ls-tab-btn active" onclick="switchLSTab('ls-tab-search', this)">🔍 Buscador</button>
+                    <button class="ls-tab-btn" onclick="switchLSTab('ls-tab-ranking', this)">🏆 Top Clientes (LTV)</button>
+                </div>
+
+                <div id="ls-tab-search">
+                    <div class="search-container">
+                        <input type="text" id="emailInput" class="search-input" placeholder="Ingresa el correo o nombre del lead...">
+                        <button class="search-btn" onclick="buscarLead()">BUSCAR</button>
+                    </div>
+
+                    <div id="resultsArea" class="d-none">
+                        <div style="text-align: center; margin-bottom: 30px;">
+                            <h2 id="leadName" style="color: var(--accent-primary); font-size: 2.2rem; margin-bottom: 5px;">Nombre Cliente</h2>
+                            <div id="leadPhoneContainer"></div>
+                        </div>
+                        <div class="chart-container">
+                            <div id="card-volumen"></div>
+                            <div id="card-qual"></div>
+                            <div id="card-res"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="noResults" class="d-none" style="text-align: center; color: var(--text-muted); margin-top: 50px;">
+                        <i class="fa-solid fa-magnifying-glass fa-3x" style="opacity: 0.3; margin-bottom: 15px;"></i><br>
+                        No se encontraron datos para esta búsqueda.
+                    </div>
+                </div>
+
+                <div id="ls-tab-ranking" class="d-none">
+                    <div class="chart-container">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="color: white; margin: 0; font-size: 1.2rem;">🏆 Ranking de Clientes (LTV)</h3>
+                            <p style="color: var(--text-muted); font-size: 0.8rem; margin:0;">El filtro de fechas superior controla este ranking.</p>
+                        </div>
+                        
+                        <div style="overflow-x: auto;">
+                            <table class="table-custom" id="rankingTable">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th onclick="sortRanking('name')">Cliente <i class="fas fa-sort" style="opacity:0.5"></i></th>
+                                        <th onclick="sortRanking('email')">Email <i class="fas fa-sort" style="opacity:0.5"></i></th>
+                                        <th onclick="sortRanking('total')">Facturado <i class="fas fa-sort" style="opacity:0.5"></i></th>
+                                        <th onclick="sortRanking('date')">Última Compra <i class="fas fa-sort" style="opacity:0.5"></i></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="clientModal" class="modal-overlay">
+            <div class="modal-content" style="width: 500px; max-width: 95%;">
+                <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; margin-bottom: 15px;">
+                    <h3 style="margin:0; color: white;"><i class="fas fa-id-card" style="color: var(--success); margin-right: 8px;"></i> Ficha del Cliente</h3>
+                    <button onclick="closeClientModal()" style="background:none; border:none; color: var(--text-muted); cursor:pointer; font-size:1.2rem;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div id="modalBodyContent"></div>
+            </div>
         </div>
 
     </div> 
@@ -281,11 +386,16 @@
     const URLS = {
             agendasAntiguo: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv",
             agendasNuevo: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMnIzrwb9zOkYcksVroAL5F52QR-cnc37zW01dzBYv450w_vIZhjCCkW8jcsC16-5pHtGR0fxDb42B/pub?gid=0&single=true&output=csv",
-            gastos2026: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?gid=692917105&single=true&output=csv"
+            gastos2026: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?gid=692917105&single=true&output=csv",
+            volumen: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=0&single=true&output=csv",
+            qual: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv"
         };
 
         let dbVentas = [];
         let dbGastos = [];
+        let dbVolumen = [];
+        let dbQual = [];
+        let currentSort = { col: 'total', dir: 'desc' };
 
         // === LOCAL STORAGE Y MODAL ===
         function loadSettings() {
@@ -305,6 +415,14 @@
         }
         function openSettings() { document.getElementById('modal-settings').style.display = 'flex'; }
         function closeSettings() { document.getElementById('modal-settings').style.display = 'none'; }
+
+        // === CONTROLADOR DE VENTANAS (TABS) ===
+        function switchView(viewId, btnElement) {
+            document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+            document.querySelectorAll('.view-section').forEach(view => view.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+        }
 
         // === LECTURA DE DATOS ===
         function fetchCSV(url) {
@@ -329,32 +447,56 @@
             if (txt.includes("agendado") || txt.includes("re-agendado")) return "📅 Re-Agendado";
             return "Otro/Pendiente";
         }
+        function findColumn(row, possibleKeywords) {
+            const normalizedKeys = Object.keys(row).map(k => ({ original: k, norm: k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim() }));
+            for (let keyword of possibleKeywords) {
+                const normKeyword = keyword.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                const match = normalizedKeys.find(k => k.norm.includes(normKeyword));
+                if (match) return row[match.original];
+            }
+            return "";
+        }
 
         async function inicializarDashboard() {
             document.getElementById('loading-overlay').style.display = 'flex';
             document.getElementById('loading-text').innerText = "Conectando a los Sheets...";
-            loadSettings(); // Cargar memoria guardada
+            loadSettings();
 
             try {
-                const [agAntiguo, agNuevo, g2026] = await Promise.all([
-                    fetchCSV(URLS.agendasAntiguo), fetchCSV(URLS.agendasNuevo), fetchCSV(URLS.gastos2026)
+                const [agAntiguo, agNuevo, g2026, rawVol, rawQual] = await Promise.all([
+                    fetchCSV(URLS.agendasAntiguo), fetchCSV(URLS.agendasNuevo), fetchCSV(URLS.gastos2026), fetchCSV(URLS.volumen), fetchCSV(URLS.qual)
                 ]);
+
+                const normEmail = (r) => { let e = findColumn(r, ['email', 'correo']); return e ? String(e).trim().toLowerCase() : ""; };
+                dbVolumen = rawVol.map(r => ({...r, _email_norm: normEmail(r)}));
+                dbQual = rawQual.map(r => ({...r, _email_norm: normEmail(r)}));
 
                 let crudoVentas = [...agAntiguo, ...agNuevo];
                 dbVentas = crudoVentas.map((row, index) => {
-                    // FIX: Extracción segura del ID de cliente
-                    let rawEmail = row.Email || "";
-                    let rawName = row['Lead Name'] || row.Name || "";
+                    let rawEmail = findColumn(row, ['email', 'correo']);
+                    let rawName = findColumn(row, ['name', 'nombre', 'lead']);
+                    let rawMonto = findColumn(row, ['monto', 'valor', 'price']);
+                    let rawResultado = findColumn(row, ['resultado', 'status', 'estado']);
+                    let rawCloser = findColumn(row, ['closer', 'asesor', 'vendedor']);
+                    let rawNotas = findColumn(row, ['notas', 'justificación', 'justificacion']);
+                    let rawPago = findColumn(row, ['medio pago', 'medio de pago']);
+
                     let idCliente = (rawEmail !== "" ? rawEmail : rawName);
                     if (idCliente === "") idCliente = `cliente-anonimo-${index}`;
                     idCliente = String(idCliente).trim().toLowerCase();
 
                     return {
-                        fecha: parseFecha(row.Fecha), 
-                        monto: parseDinero(row['Monto ($)'] || row.Monto || 0),
-                        estado: clasificarEstado(row.Resultado), 
-                        closer: row.Closer ? String(row.Closer).trim() : "Sin Asignar",
-                        id_cliente: idCliente
+                        fecha: parseFecha(row.Fecha || row.Created || row.Date), 
+                        fechaRaw: row.Fecha || row.Created || row.Date || "",
+                        monto: parseDinero(rawMonto),
+                        estado: clasificarEstado(rawResultado), 
+                        closer: rawCloser ? String(rawCloser).trim() : "Sin Asignar",
+                        id_cliente: idCliente,
+                        nombre: rawName || "Sin Nombre",
+                        email: rawEmail !== "" ? String(rawEmail).trim().toLowerCase() : "",
+                        notas: rawNotas,
+                        medioPago: rawPago,
+                        resultadoRaw: rawResultado || "Sin Estado"
                     };
                 }).filter(v => v.fecha != null); 
 
@@ -375,6 +517,208 @@
                 document.getElementById('loading-text').innerText = "Revisa la consola. Error: " + error.message;
             }
         }
+
+        // =================================================================
+        // LÓGICA DE LEAD SEARCH Y RANKING
+        // =================================================================
+        
+        function switchLSTab(tabId, btn) {
+            document.querySelectorAll('.ls-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('ls-tab-search').classList.add('d-none');
+            document.getElementById('ls-tab-ranking').classList.add('d-none');
+            document.getElementById(tabId).classList.remove('d-none');
+            if(tabId === 'ls-tab-ranking') renderRanking();
+        }
+
+        function extractPhone(row) {
+            let rawPhone = findColumn(row, ['phone', 'telefono', 'móvil', 'celular']);
+            if (!rawPhone) return null;
+            let str = String(rawPhone).trim();
+            if (str.includes("#ERROR")) return null;
+            let linkPhone = str.replace(/\D/g, ''); 
+            let displayPhone = str.startsWith("'") ? str.substring(1) : str;
+            return { link: linkPhone, display: displayPhone };
+        }
+
+        function buscarLead() {
+            const query = document.getElementById('emailInput').value.trim().toLowerCase();
+            if(!query) return;
+
+            const resArea = document.getElementById('resultsArea');
+            const noRes = document.getElementById('noResults');
+            
+            const matchVol = dbVolumen.find(r => r._email_norm === query || (r['Name']||"").toLowerCase().includes(query));
+            const matchQual = dbQual.find(r => r._email_norm === query || (r['Name']||"").toLowerCase().includes(query));
+            const matchesRes = dbVentas.filter(r => r.email === query || r.nombre.toLowerCase().includes(query));
+
+            if(!matchVol && !matchQual && matchesRes.length === 0) {
+                resArea.classList.add('d-none'); noRes.classList.remove('d-none'); return;
+            }
+
+            noRes.classList.add('d-none'); resArea.classList.remove('d-none');
+
+            let name = "Cliente Desconocido";
+            if(matchesRes.length > 0 && matchesRes[0].nombre && matchesRes[0].nombre !== "Sin Nombre") name = matchesRes[0].nombre;
+            else if(matchVol && matchVol['Name']) name = matchVol['Name'];
+            document.getElementById('leadName').innerText = name;
+
+            let phoneData = matchVol ? extractPhone(matchVol) : null;
+            document.getElementById('leadPhoneContainer').innerHTML = (phoneData && phoneData.link.length > 6) 
+                ? `<a href="https://wa.me/${phoneData.link}" target="_blank" class="whatsapp-btn"><i class="fab fa-whatsapp" style="font-size:1.3rem;"></i> ${phoneData.display}</a>`
+                : `<span style="color:var(--text-muted); font-size:0.9rem"><i class="fas fa-phone-slash"></i> Sin teléfono válido</span>`;
+
+            // Render Vol
+            const divVol = document.getElementById('card-volumen');
+            if(matchVol) {
+                divVol.innerHTML = `<div class="timeline-header">1️⃣ INGRESO</div>
+                    <div class="timeline-card">
+                        <div class="data-row"><span class="data-label">📅 Fecha:</span> <span style="color:white">${matchVol['Created'] || 'N/A'}</span></div>
+                        <div class="data-row"><span class="data-label">📢 Campaña:</span> <span style="color:white">${matchVol['Origen Campaña'] || 'N/A'}</span></div>
+                        <div class="data-row"><span class="data-label">🖼️ Anuncio:</span> <span style="color:white">${matchVol['Nombre del Ad'] || 'N/A'}</span></div>
+                    </div>`;
+            } else divVol.innerHTML = `<div class="timeline-header">1️⃣ INGRESO</div><div class="timeline-card" style="opacity:0.5">No encontrado en Volumen.</div>`;
+
+            // Render Qual
+            const divQual = document.getElementById('card-qual');
+            if(matchQual) {
+                divQual.innerHTML = `<div class="timeline-header">2️⃣ CALIFICACIÓN</div>
+                    <div class="timeline-card card-success">
+                        <div class="data-row"><i class="fas fa-check-circle" style="color:var(--success); margin-right:5px;"></i> <span style="color:white; font-weight:bold;">Calificado</span></div>
+                        <div class="data-row"><span class="data-label">📅 Fecha:</span> <span style="color:white">${matchQual['Created'] || 'N/A'}</span></div>
+                    </div>`;
+            } else divQual.innerHTML = `<div class="timeline-header">2️⃣ CALIFICACIÓN</div><div class="timeline-card card-fail">No calificado.</div>`;
+
+            // Render Res
+            const divRes = document.getElementById('card-res');
+            divRes.innerHTML = `<div class="timeline-header">3️⃣ CIERRE</div>`;
+            if(matchesRes.length > 0) {
+                matchesRes.forEach(r => {
+                    let css = "timeline-card"; let ico = "📞";
+                    if(r.estado === "✅ Venta") { css += " card-success"; ico = "💰"; }
+                    else if(r.estado === "❌ No Show" || r.estado === "🚫 Descalificado") { css += " card-fail"; ico = "❌"; }
+                    
+                    divRes.innerHTML += `<div class="${css}">
+                            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                <span style="font-weight:bold; color:white;">${ico} ${r.resultadoRaw}</span>
+                                <span style="color:var(--text-muted); font-size:0.8rem">${r.fechaRaw}</span>
+                            </div>
+                            <div class="data-row"><span class="data-label">👤 Closer:</span> <span style="color:white">${r.closer}</span></div>
+                            <div class="data-row"><span class="data-label">💵 Monto:</span> <span style="color:var(--success); font-weight:bold;">$${r.monto}</span></div>
+                            <div class="data-row"><span class="data-label">📝 Notas:</span> <span class="note-text">${r.notas || 'Sin nota'}</span></div>
+                        </div>`;
+                });
+            } else divRes.innerHTML += `<div style="padding:15px; color:var(--text-muted); border:1px solid var(--border-color); border-radius:8px;">Sin registro en agenda.</div>`;
+        }
+
+        // === RANKING ===
+        function sortRanking(colName) {
+            if(currentSort.col === colName) currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
+            else { currentSort.col = colName; currentSort.dir = 'desc'; }
+            renderRanking();
+        }
+
+        function renderRanking() {
+            // Utilizamos la misma variable global 'vFiltrado' generada por 'procesarDatos'
+            // de forma que si el usuario eligió "Mes Pasado" en la Top Bar, el Ranking obedezca.
+            
+            let map = {};
+            // Filtrar y agrupar usando la base de datos GLOBAL YA FILTRADA
+            window.vFiltradoGlobal.forEach(r => {
+                if(r.estado === "✅ Venta") {
+                    let email = r.email || r.id_cliente;
+                    if(!email) return;
+                    
+                    if(!map[email]) map[email] = { name: r.nombre || "Desc.", total: 0, dateObj: r.fecha, dateStr: r.fechaRaw };
+                    map[email].total += r.monto;
+                    
+                    if(r.fecha && map[email].dateObj && r.fecha > map[email].dateObj) {
+                        map[email].dateObj = r.fecha; map[email].dateStr = r.fechaRaw;
+                    }
+                }
+            });
+            
+            let list = Object.keys(map).map(e => ({ email: e, ...map[e] }));
+            list.sort((a,b) => {
+                let valA, valB;
+                switch(currentSort.col) {
+                    case 'total': valA=a.total; valB=b.total; break;
+                    case 'name': valA=a.name; valB=b.name; break;
+                    case 'email': valA=a.email; valB=b.email; break;
+                    case 'date': valA=a.dateObj?a.dateObj.getTime():0; valB=b.dateObj?b.dateObj.getTime():0; break;
+                }
+                if(valA < valB) return currentSort.dir === 'asc' ? -1 : 1;
+                if(valA > valB) return currentSort.dir === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            const tb = document.querySelector("#rankingTable tbody");
+            tb.innerHTML = "";
+            list.forEach((c, i) => {
+                let medal = i===0?"<span style='font-size:1.3rem'>🥇</span>":i===1?"<span style='font-size:1.3rem'>🥈</span>":i===2?"<span style='font-size:1.3rem'>🥉</span>":"";
+                tb.innerHTML += `<tr>
+                    <td style="color:var(--text-muted); font-weight:bold; font-size:1.1rem;">${i+1} ${medal}</td>
+                    <td><span class="rank-name-clickable" onclick="openClientModal('${c.email}')">${c.name}</span></td>
+                    <td style="color:#94a3b8;">${c.email}</td>
+                    <td style="color:var(--success); font-weight:bold;">$${c.total.toLocaleString('en-US', {minimumFractionDigits:2})}</td>
+                    <td style="color:white;">${c.dateStr}</td>
+                </tr>`;
+            });
+        }
+
+        function openClientModal(email) {
+            const matchVol = dbVolumen.find(r => r._email_norm === email);
+            const sales = dbVentas.filter(r => (r.email === email || r.id_cliente === email) && r.estado === "✅ Venta");
+            if(sales.length === 0 && !matchVol) return;
+
+            const lastSale = sales.length > 0 ? sales[sales.length - 1] : {}; 
+            const name = lastSale.nombre || (matchVol ? matchVol['Name'] : 'Cliente');
+            const totalPaid = sales.reduce((acc, curr) => acc + curr.monto, 0);
+            
+            const medioPago = lastSale.medioPago || 'No especificado'; 
+            const notaCloser = lastSale.notas || 'Sin nota';
+            const campana = matchVol ? (matchVol['Origen Campaña'] || 'Desconocido') : 'Desconocido';
+            const anuncio = matchVol ? (matchVol['Nombre del Ad'] || 'Desconocido') : 'Desconocido';
+
+            document.getElementById('modalBodyContent').innerHTML = `
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <h3 style="color: white; font-size:1.8rem; margin-bottom:5px;">${name}</h3>
+                    <p style="color: var(--text-muted); margin-bottom:10px;">${email}</p>
+                    <h2 style="color: var(--success); font-weight: 800;">$${totalPaid.toLocaleString('en-US')} <span style="font-size:1rem; color:#fff; font-weight:400;">Total Pagado</span></h2>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-bottom:20px;">
+                    <div>
+                        <span style="color:var(--accent-secondary); font-size:0.8rem; text-transform:uppercase;">💳 Medio de Pago</span>
+                        <div style="color:white; font-size:1.1rem; font-weight:500;">${medioPago}</div>
+                    </div>
+                    <div>
+                        <span style="color:var(--accent-secondary); font-size:0.8rem; text-transform:uppercase;">📅 Última Compra</span>
+                        <div style="color:white; font-size:1.1rem; font-weight:500;">${lastSale.fechaRaw || '-'}</div>
+                    </div>
+                </div>
+                <div style="background: rgba(6, 182, 212, 0.05); border: 1px solid rgba(6, 182, 212, 0.2); padding: 15px; border-radius: 8px; margin-bottom:20px;">
+                    <div style="margin-bottom:10px;">
+                        <span style="color:var(--accent-primary); font-size:0.8rem; text-transform:uppercase;"><i class="fas fa-bullhorn"></i> Campaña Origen</span>
+                        <div style="color:white; font-weight:bold;">${campana}</div>
+                    </div>
+                    <div>
+                        <span style="color:var(--accent-primary); font-size:0.8rem; text-transform:uppercase;"><i class="fas fa-image"></i> Anuncio (Ad)</span>
+                        <div style="color:white;">${anuncio}</div>
+                    </div>
+                </div>
+                <div>
+                    <span style="color:var(--text-muted); font-size:0.8rem; text-transform:uppercase;">📝 Nota del Closer</span>
+                    <div style="color:#e2e8f0; font-style:italic; background:rgba(0,0,0,0.3); padding:12px; border-radius:8px; border:1px solid var(--border-color); margin-top:5px;">
+                        "${notaCloser}"
+                    </div>
+                </div>
+            `;
+            document.getElementById('clientModal').style.display = 'flex';
+        }
+        function closeClientModal() { document.getElementById('clientModal').style.display = 'none'; }
+        
+        // Listener de teclado
+        document.getElementById('emailInput').addEventListener('keypress', e => { if(e.key==='Enter') buscarLead(); });
 
         function procesarDatos() {
             const periodoSel = document.getElementById('periodo').value;
@@ -404,6 +748,8 @@
                 gFiltrado = gFiltrado.filter(g => g.fecha >= fechaInicio && g.fecha <= fechaFin);
             }
             if (closerSel !== "Todos") { vFiltrado = vFiltrado.filter(v => v.closer === closerSel); gFiltrado = []; }
+
+            window.vFiltradoGlobal = vFiltrado;
 
             let facturacion = vFiltrado.reduce((sum, v) => sum + v.monto, 0);
             let inversionAds = gFiltrado.reduce((sum, g) => sum + g.gasto, 0);
