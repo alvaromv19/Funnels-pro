@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agency Dashboard 🚀</title>
+    <style>
+        /* --- ESTILOS GENERALES (Reset y tipografía) --- */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f6; /* Color típico de fondo de Streamlit */
+            color: #31333F;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 300px;
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            overflow-y: auto;
+        }
+        .sidebar h2 { font-size: 1.2rem; margin-bottom: 10px; }
+        .sidebar label { font-size: 0.9rem; font-weight: bold; }
+        .sidebar select, .sidebar input, .sidebar button {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .sidebar button {
+            background-color: #ff4b4b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .sidebar button:hover { background-color: #e03e3e; }
+        .divider { border-top: 1px solid #e6e6e6; margin: 15px 0; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+        .main-content h1 { font-size: 2rem; margin-top: 0; }
+        .section-title { font-size: 1.3rem; margin: 25px 0 15px; border-bottom: 2px solid #e6e6e6; padding-bottom: 5px;}
+
+        /* --- TARJETAS DE MÉTRICAS (Grid) --- */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .metric-card {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .metric-title { font-size: 0.9rem; color: #666; margin-bottom: 5px; }
+        .metric-value { font-size: 1.8rem; font-weight: bold; color: #31333F; }
+        .metric-delta { font-size: 0.85rem; color: #00CC96; margin-top: 5px; } /* Verde por defecto */
+        .metric-delta.negative { color: #EF553B; } /* Rojo si es malo */
+
+        /* --- CONTENEDORES DE GRÁFICOS --- */
+        .chart-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            min-height: 300px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            border: 1px dashed #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>🎛️ Panel de Control</h2>
+        <button>🔄 Actualizar Datos</button>
+        
+        <div class="divider"></div>
+
+        <div>
+            <label for="periodo">Selecciona Período:</label>
+            <select id="periodo">
+                <option>Este Mes</option>
+                <option>Mes Anterior</option>
+                <option>Hoy</option>
+                <option>Últimos 30 días</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="closer">Closer:</label>
+            <select id="closer">
+                <option>Todos</option>
+                </select>
+        </div>
+
+        <div class="divider"></div>
+
+        <h2>🎯 Configuración Objetivos</h2>
+        <div>
+            <label for="meta_fact">Meta Facturación ($):</label>
+            <input type="number" id="meta_fact" value="30000">
+        </div>
+        <div>
+            <label for="meta_ads">Presupuesto Ads ($):</label>
+            <input type="number" id="meta_ads" value="3500">
+        </div>
+        <button style="margin-top: 15px; background-color: #31333F;">Aplicar Objetivos</button>
+    </div>
+
+    <div class="main-content">
+        <h1>🚀 Creamos Negocios - Dashboard</h1>
+
+        <h2 class="section-title">🎯 Proyecciones del Mes</h2>
+        <div class="metrics-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="metric-card">
+                <div class="metric-title">Meta Facturación</div>
+                <div class="metric-value">$30,000</div>
+                <div class="metric-delta">Progreso: 0.00%</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Falta para Meta</div>
+                <div class="metric-value">$30,000</div>
+                <div class="metric-delta">💡 Debes facturar $1,000/día</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">Budget Disponible Diario</div>
+                <div class="metric-value">$116/día</div>
+                <div class="metric-delta negative">Gasto actual $0/día</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">💰 Estado Financiero</h2>
+        <div class="metrics-grid" style="grid-template-columns: repeat(5, 1fr);">
+            <div class="metric-card"><div class="metric-title">Facturación</div><div class="metric-value">$0.00</div></div>
+            <div class="metric-card"><div class="metric-title">Profit</div><div class="metric-value">$0.00</div></div>
+            <div class="metric-card"><div class="metric-title">ROAS (3.5X)</div><div class="metric-value">0.00x</div></div>
+            <div class="metric-card"><div class="metric-title">Ventas (Clientes)</div><div class="metric-value">0</div></div>
+            <div class="metric-card"><div class="metric-title">Inversión Ads</div><div class="metric-value">$0.00</div></div>
+        </div>
+
+        <h2 class="section-title">🔍 Desglose de Leads</h2>
+        <div class="metrics-grid" style="grid-template-columns: repeat(5, 1fr);">
+            <div class="metric-card"><div class="metric-title">✅ Tx. Ventas</div><div class="metric-value">0</div></div>
+            <div class="metric-card"><div class="metric-title">👀 Seguimiento</div><div class="metric-value">0</div></div>
+            <div class="metric-card"><div class="metric-title">❌ No Show</div><div class="metric-value">0</div></div>
+            <div class="metric-card"><div class="metric-title">🚫 Descalif.</div><div class="metric-value">0</div></div>
+            <div class="metric-card"><div class="metric-title">📅 Agend/Otro</div><div class="metric-value">0</div></div>
+        </div>
+
+        <h2 class="section-title">📊 Dinámica Diaria</h2>
+        <div class="chart-container" id="chart-leads">
+            [Aquí irá el gráfico de barras de Leads interactivo generado con JavaScript/Plotly]
+        </div>
+        <div class="chart-container" id="chart-finance">
+            [Aquí irá el gráfico de líneas de Facturación vs Gasto Ads]
+        </div>
+
+    </div>
+
+</body>
+</html>
