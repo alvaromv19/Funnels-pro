@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creamos Negocios | Trafic form</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --bg-panel: #0a0a0f;
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --text-main: #ffffff;
+            --text-muted: #8b9bb4;
+            --border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 0%, rgba(0, 243, 255, 0.05) 0%, transparent 50%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-panel);
+            padding: 30px;
+            border-radius: 12px;
+            border: var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .logo {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .logo span { color: var(--neon-blue); text-shadow: 0 0 10px rgba(0, 243, 255, 0.5); }
+        .subtitle { text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; }
+
+        label {
+            font-size: 0.85rem;
+            color: var(--neon-blue);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select, input[type="text"], button {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 6px;
+            border: 1px solid #2d2d3a;
+            background: #13131a;
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        select:focus, input[type="text"]:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.2);
+        }
+
+        .cliente-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .cliente-header { font-weight: 600; margin-bottom: 10px; font-size: 1.1rem; }
+        .input-group { display: flex; gap: 10px; }
+        .input-group select { flex: 1; }
+        .input-group input { flex: 1.5; }
+
+        @media (max-width: 500px) {
+            .input-group { flex-direction: column; }
+        }
+
+        button {
+            background-color: var(--neon-blue);
+            color: black;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        button:hover {
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
+            transform: translateY(-1px);
+        }
+        button:disabled {
+            background-color: #333;
+            color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .loader { text-align: center; color: var(--text-muted); font-style: italic; margin: 20px 0; }
+        #mensaje-exito {
+            color: #00ff9d;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 15px;
+            display: none;
+            background: rgba(0, 255, 157, 0.1);
+            padding: 10px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo">AGENCY <span>CN</span></div>
+        <div class="subtitle">Actualización de Estado de Cuentas</div>
+        
+        <label>1. Selecciona tu perfil:</label>
+        <select id="trafficker-select" onchange="cargarClientes()">
+            <option value="">Cargando base de datos...</option>
+        </select>
+
+        <div id="area-clientes" style="display:none; margin-top: 30px;">
+            <label>2. Actualiza SOLO los que cambiaron hoy:</label>
+            <div id="lista-clientes"></div>
+            
+            <button onclick="guardarDatos()" id="btn-guardar">Guardar Reporte</button>
+            <div id="mensaje-exito"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // PEGA AQUÍ LA URL DE TU APLICACIÓN WEB DE GOOGLE APPS SCRIPT
+        // ==========================================
+        const API_URL = "https://script.google.com/macros/s/AKfycbyrJgSNz81aiJmk8x86DiS_jlsAtLDZ5LGlUDpBuESVsVntRG1I0ria6W4Jj2OVqb1r/exec";
+
+        window.onload = function() {
+            fetch(API_URL + "?action=getTraffickers")
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById('trafficker-select');
+                    select.innerHTML = '<option value="">Elige tu nombre...</option>';
+                    data.forEach(t => {
+                        select.innerHTML += `<option value="${t}">${t}</option>`;
+                    });
+                })
+                .catch(error => console.error('Error cargando traffickers:', error));
+        };
+
+        function cargarClientes() {
+            const trafficker = document.getElementById('trafficker-select').value;
+            if (!trafficker) {
+                document.getElementById('area-clientes').style.display = 'none';
+                return;
+            }
+            
+            document.getElementById('area-clientes').style.display = 'block';
+            document.getElementById('lista-clientes').innerHTML = '<div class="loader">Sincronizando clientes...</div>';
+            
+            fetch(API_URL + "?action=getClientes&trafficker=" + encodeURIComponent(trafficker))
+                .then(response => response.json())
+                .then(data => mostrarClientes(data))
+                .catch(error => console.error('Error cargando clientes:', error));
+        }
+
+        function mostrarClientes(clientes) {
+            const contenedor = document.getElementById('lista-clientes');
+            contenedor.innerHTML = ''; 
+            
+            if(clientes.length === 0) {
+                contenedor.innerHTML = '<div class="loader">No se encontraron clientes asignados.</div>';
+                return;
+            }
+            
+            clientes.forEach(cliente => {
+                contenedor.innerHTML += `
+                    <div class="cliente-card">
+                        <div class="cliente-header">${cliente}</div>
+                        <div class="input-group">
+                            <select class="estado-select" data-cliente="${cliente}">
+                                <option value="">Sin cambios hoy</option>
+                                <option value="Testing">Testing</option>
+                                <option value="Campañas encendidas">Campañas encendidas</option>
+                                <option value="Problema técnico">Problema técnico</option>
+                                <option value="Apagado temporal">Apagado temporal</option>
+                                <option value="Escalando">Escalando</option>
+                            </select>
+                            <input type="text" class="nota-input" data-cliente="${cliente}" placeholder="Nota opcional (ej. Ajuste de creativos)">
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function guardarDatos() {
+            const btn = document.getElementById('btn-guardar');
+            const trafficker = document.getElementById('trafficker-select').value;
+            const selects = document.querySelectorAll('.estado-select');
+            let actualizaciones = [];
+
+            selects.forEach(select => {
+                const cliente = select.getAttribute('data-cliente');
+                const estado = select.value;
+                
+                if (estado !== "") {
+                    const inputNota = document.querySelector(`.nota-input[data-cliente="${cliente}"]`);
+                    actualizaciones.push({
+                        cliente: cliente,
+                        estado: estado,
+                        notas: inputNota ? inputNota.value : ""
+                    });
+                }
+            });
+
+            if (actualizaciones.length === 0) {
+                alert("No has seleccionado ningún estado nuevo para actualizar.");
+                return;
+            }
+
+            btn.innerText = 'GUARDANDO...';
+            btn.disabled = true;
+
+            const payload = {
+                trafficker: trafficker,
+                actualizaciones: actualizaciones
+            };
+
+            // Enviar datos mediante POST a la API de Google
+            fetch(API_URL, {
+                method: 'POST',
+                // Usamos text/plain para evitar errores de CORS con Google Scripts
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(payload)
+            })
+            .then(response => response.json())
+            .then(data => {
+                const msj = document.getElementById('mensaje-exito');
+                msj.innerText = data.message || "Reporte guardado con éxito";
+                msj.style.display = 'block';
+                btn.innerText = 'Guardar Reporte';
+                btn.disabled = false;
+                
+                setTimeout(() => {
+                    document.getElementById('trafficker-select').value = "";
+                    document.getElementById('area-clientes').style.display = 'none';
+                    msj.style.display = 'none';
+                }, 2000);
+            })
+            .catch(error => {
+                alert('Hubo un error al guardar. Revisa tu conexión.');
+                btn.innerText = 'Guardar Reporte';
+                btn.disabled = false;
+            });
+        }
+    </script>
+</body>
+</html>
