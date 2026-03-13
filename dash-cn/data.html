@@ -35,6 +35,9 @@
                 <p class="text-slate-400 mt-1">Multi-DB, Fórmulas, ROAS Tracker & Totales Dinámicos.</p>
             </div>
             <div class="flex flex-wrap items-center gap-3">
+                <button onclick="saveSettingsToLocalStorage()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2 transition">
+                    💾 Guardar Cambios
+                </button>
                 <button onclick="openLeadSearch()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded shadow font-medium flex items-center gap-2 transition">
                     🔍 Buscador CRM
                 </button>
@@ -267,6 +270,31 @@
         let consolidatedCampaigns = [];
         let customColumns = []; // Variables de métricas personalizadas
         let currentSort = { column: 'gasto', desc: true };
+
+        // --- SISTEMA DE GUARDADO EN LOCALSTORAGE ---
+        function saveSettingsToLocalStorage() {
+            const settings = {
+                tableColumns: tableColumns,
+                customColumns: customColumns
+            };
+            localStorage.setItem('proAnalyticsSettings', JSON.stringify(settings));
+            alert('¡Vista, orden y métricas personalizadas guardadas exitosamente en tu navegador!');
+        }
+
+        function loadSettingsFromLocalStorage() {
+            const saved = localStorage.getItem('proAnalyticsSettings');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.tableColumns && parsed.customColumns) {
+                        tableColumns = parsed.tableColumns;
+                        customColumns = parsed.customColumns;
+                    }
+                } catch (e) {
+                    console.error('Error al cargar configuración guardada', e);
+                }
+            }
+        }
 
         // --- SISTEMA DINÁMICO DE COLUMNAS ---
         let tableColumns = [
@@ -758,7 +786,10 @@
             container.innerHTML = Object.values(perfiles).map(p => `<div class="bg-[#1e293b] p-4 rounded-lg mb-4 border border-slate-700"><div class="flex items-center gap-4 border-b border-slate-700 pb-3 mb-3"><div class="w-10 h-10 rounded-full bg-purple-600 flex justify-center items-center text-white font-bold">${p.nombre.substring(0,1).toUpperCase()}</div><div><h4 class="text-lg font-bold text-white">${p.nombre}</h4><p class="text-sm text-blue-400">${p.email}</p></div></div><div><h5 class="text-xs uppercase text-slate-400 font-bold mb-3 tracking-wider">Historial:</h5>${p.journey.join('')}</div></div>`).join('');
         }
 
-        window.onload = loadData;
+        window.onload = function() {
+            loadSettingsFromLocalStorage(); // Carga las métricas y el orden guardado antes de traer los datos
+            loadData();
+        };
     </script>
 </body>
 </html>
