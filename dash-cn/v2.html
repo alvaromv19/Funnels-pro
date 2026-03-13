@@ -4,119 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agency Dashboard 🚀</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+    
     <style>
-        /* --- ESTILOS GENERALES (Reset y tipografía) --- */
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f6; /* Color típico de fondo de Streamlit */
-            color: #31333F;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 300px;
-            background-color: #ffffff;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            overflow-y: auto;
-        }
+        /* --- ESTILOS GENERALES --- */
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f2f6; color: #31333F; display: flex; height: 100vh; overflow: hidden; }
+        .sidebar { width: 300px; background-color: #ffffff; padding: 20px; box-shadow: 2px 0 5px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
         .sidebar h2 { font-size: 1.2rem; margin-bottom: 10px; }
         .sidebar label { font-size: 0.9rem; font-weight: bold; }
-        .sidebar select, .sidebar input, .sidebar button {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-top: 5px;
-        }
-        .sidebar button {
-            background-color: #ff4b4b;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        .sidebar select, .sidebar input, .sidebar button { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px; margin-top: 5px; box-sizing: border-box; }
+        .sidebar button { background-color: #ff4b4b; color: white; border: none; cursor: pointer; font-weight: bold; }
         .sidebar button:hover { background-color: #e03e3e; }
         .divider { border-top: 1px solid #e6e6e6; margin: 15px 0; }
-
-        /* --- MAIN CONTENT --- */
-        .main-content {
-            flex-grow: 1;
-            padding: 30px;
-            overflow-y: auto;
-        }
+        .main-content { flex-grow: 1; padding: 30px; overflow-y: auto; }
         .main-content h1 { font-size: 2rem; margin-top: 0; }
         .section-title { font-size: 1.3rem; margin: 25px 0 15px; border-bottom: 2px solid #e6e6e6; padding-bottom: 5px;}
-
-        /* --- TARJETAS DE MÉTRICAS (Grid) --- */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .metric-card {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            text-align: center;
-        }
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .metric-card { background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); text-align: center; }
         .metric-title { font-size: 0.9rem; color: #666; margin-bottom: 5px; }
         .metric-value { font-size: 1.8rem; font-weight: bold; color: #31333F; }
-        .metric-delta { font-size: 0.85rem; color: #00CC96; margin-top: 5px; } /* Verde por defecto */
-        .metric-delta.negative { color: #EF553B; } /* Rojo si es malo */
-
-        /* --- CONTENEDORES DE GRÁFICOS --- */
-        .chart-container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            min-height: 300px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #999;
-            border: 1px dashed #ccc;
-        }
+        .metric-delta { font-size: 0.85rem; color: #00CC96; margin-top: 5px; } 
+        .metric-delta.negative { color: #EF553B; } 
+        .chart-container { background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); min-height: 350px; margin-bottom: 20px; width: 100%; box-sizing: border-box;}
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); display: flex; justify-content: center; align-items: center; z-index: 1000; font-size: 1.5rem; font-weight: bold; flex-direction: column; }
     </style>
 </head>
 <body>
 
+    <div id="loading-overlay">
+        <div>⏳ Obteniendo datos en tiempo real...</div>
+        <div style="font-size: 1rem; color: #666; margin-top: 10px;" id="loading-text">Conectando a Google Sheets</div>
+    </div>
+
     <div class="sidebar">
         <h2>🎛️ Panel de Control</h2>
-        <button>🔄 Actualizar Datos</button>
-        
+        <button onclick="inicializarDashboard()">🔄 Actualizar Datos</button>
         <div class="divider"></div>
-
         <div>
             <label for="periodo">Selecciona Período:</label>
             <select id="periodo">
-                <option>Este Mes</option>
-                <option>Mes Anterior</option>
-                <option>Hoy</option>
-                <option>Últimos 30 días</option>
+                <option value="mes_actual">Este Mes</option>
+                <option value="historico">Histórico (Todo)</option>
             </select>
         </div>
-
         <div>
             <label for="closer">Closer:</label>
             <select id="closer">
-                <option>Todos</option>
-                </select>
+                <option value="Todos">Todos</option>
+            </select>
         </div>
-
         <div class="divider"></div>
-
         <h2>🎯 Configuración Objetivos</h2>
         <div>
             <label for="meta_fact">Meta Facturación ($):</label>
@@ -126,7 +64,7 @@
             <label for="meta_ads">Presupuesto Ads ($):</label>
             <input type="number" id="meta_ads" value="3500">
         </div>
-        <button style="margin-top: 15px; background-color: #31333F;">Aplicar Objetivos</button>
+        <button style="margin-top: 15px; background-color: #31333F;" onclick="procesarDatos()">Aplicar Objetivos</button>
     </div>
 
     <div class="main-content">
@@ -136,48 +74,346 @@
         <div class="metrics-grid" style="grid-template-columns: repeat(3, 1fr);">
             <div class="metric-card">
                 <div class="metric-title">Meta Facturación</div>
-                <div class="metric-value">$30,000</div>
-                <div class="metric-delta">Progreso: 0.00%</div>
+                <div class="metric-value" id="val-meta">$30,000</div>
+                <div class="metric-delta" id="val-progreso">Progreso: 0.00%</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Falta para Meta</div>
-                <div class="metric-value">$30,000</div>
-                <div class="metric-delta">💡 Debes facturar $1,000/día</div>
+                <div class="metric-value" id="val-falta">$0</div>
+                <div class="metric-delta" id="val-necesario-diario">💡 Debes facturar $0/día</div>
             </div>
             <div class="metric-card">
                 <div class="metric-title">Budget Disponible Diario</div>
-                <div class="metric-value">$116/día</div>
-                <div class="metric-delta negative">Gasto actual $0/día</div>
+                <div class="metric-value" id="val-budget-diario">$0/día</div>
+                <div class="metric-delta" id="val-gasto-actual">Gasto actual $0/día</div>
             </div>
         </div>
 
         <h2 class="section-title">💰 Estado Financiero</h2>
         <div class="metrics-grid" style="grid-template-columns: repeat(5, 1fr);">
-            <div class="metric-card"><div class="metric-title">Facturación</div><div class="metric-value">$0.00</div></div>
-            <div class="metric-card"><div class="metric-title">Profit</div><div class="metric-value">$0.00</div></div>
-            <div class="metric-card"><div class="metric-title">ROAS (3.5X)</div><div class="metric-value">0.00x</div></div>
-            <div class="metric-card"><div class="metric-title">Ventas (Clientes)</div><div class="metric-value">0</div></div>
-            <div class="metric-card"><div class="metric-title">Inversión Ads</div><div class="metric-value">$0.00</div></div>
+            <div class="metric-card"><div class="metric-title">Facturación</div><div class="metric-value" id="val-facturacion">$0.00</div></div>
+            <div class="metric-card"><div class="metric-title">Profit</div><div class="metric-value" id="val-profit">$0.00</div></div>
+            <div class="metric-card"><div class="metric-title">ROAS</div><div class="metric-value" id="val-roas">0.00x</div></div>
+            <div class="metric-card"><div class="metric-title">Ventas (Clientes)</div><div class="metric-value" id="val-ventas">0</div></div>
+            <div class="metric-card"><div class="metric-title">Inversión Ads</div><div class="metric-value" id="val-inversion">$0.00</div></div>
         </div>
 
         <h2 class="section-title">🔍 Desglose de Leads</h2>
         <div class="metrics-grid" style="grid-template-columns: repeat(5, 1fr);">
-            <div class="metric-card"><div class="metric-title">✅ Tx. Ventas</div><div class="metric-value">0</div></div>
-            <div class="metric-card"><div class="metric-title">👀 Seguimiento</div><div class="metric-value">0</div></div>
-            <div class="metric-card"><div class="metric-title">❌ No Show</div><div class="metric-value">0</div></div>
-            <div class="metric-card"><div class="metric-title">🚫 Descalif.</div><div class="metric-value">0</div></div>
-            <div class="metric-card"><div class="metric-title">📅 Agend/Otro</div><div class="metric-value">0</div></div>
+            <div class="metric-card"><div class="metric-title">✅ Tx. Ventas</div><div class="metric-value" id="val-l-ventas">0</div></div>
+            <div class="metric-card"><div class="metric-title">👀 Seguimiento</div><div class="metric-value" id="val-l-seg">0</div></div>
+            <div class="metric-card"><div class="metric-title">❌ No Show</div><div class="metric-value" id="val-l-noshow">0</div></div>
+            <div class="metric-card"><div class="metric-title">🚫 Descalif.</div><div class="metric-value" id="val-l-desc">0</div></div>
+            <div class="metric-card"><div class="metric-title">📅 Agend/Otro</div><div class="metric-value" id="val-l-otro">0</div></div>
         </div>
 
         <h2 class="section-title">📊 Dinámica Diaria</h2>
-        <div class="chart-container" id="chart-leads">
-            [Aquí irá el gráfico de barras de Leads interactivo generado con JavaScript/Plotly]
-        </div>
-        <div class="chart-container" id="chart-finance">
-            [Aquí irá el gráfico de líneas de Facturación vs Gasto Ads]
-        </div>
-
+        <div class="chart-container" id="chart-leads"></div>
+        <div class="chart-container" id="chart-finance"></div>
     </div>
 
+    <script>
+        // URLs Activas
+        const URLS = {
+            agendasAntiguo: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQuXaPCen61slzpr1TElxXoCROIxAgmgWT7pyWvel1dxq_Z_U1yZPrVrTbJfx9MwaL8_cluY3v2ywoB/pub?gid=0&single=true&output=csv",
+            agendasNuevo: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRMnIzrwb9zOkYcksVroAL5F52QR-cnc37zW01dzBYv450w_vIZhjCCkW8jcsC16-5pHtGR0fxDb42B/pub?gid=0&single=true&output=csv",
+            gastos2025: "https://docs.google.com/spreadsheets/d/e/2PACX-1vGOLgPTDLie5gEbkViCbpebWfN9S_eb2h2GGlpWLjmfVgzfnwR_ncVTs4IqmKgmAFfxZTQHJlMBrIi/pub?gid=0&single=true&output=csv",
+            gastos2026: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?gid=692917105&single=true&output=csv"
+        };
+
+        // URLs Guardadas para futuras implementaciones
+        const URLS_FUTURAS = {
+            gastosDetallado: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTQKTt_taqoH2qNwWbs3t4doLsi0SuGavgdUNvpCKrqtlp5U9GaTqkTt9q-c1eWBnvPN88Qg5t0vXzK/pub?gid=1230809162&single=true&output=csv",
+            leadsVolumen: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=0&single=true&output=csv",
+            leadsQualified: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTjCMjoi7DXiCeBRQdzAQZlx_L6SfpmbLlqmeRgZDHmCEdmN5_grVD_Yqa-5tzNprDS02o98ms80j1x/pub?gid=1272057128&single=true&output=csv"
+        };
+
+        let dbVentas = [];
+        let dbGastos = [];
+
+        // Función para leer CSV usando PapaParse
+        function fetchCSV(url) {
+            return new Promise((resolve, reject) => {
+                Papa.parse(url, {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: results => resolve(results.data),
+                    error: err => reject(err)
+                });
+            });
+        }
+
+        // Limpiar strings de dinero a números
+        function parseDinero(val) {
+            if (!val) return 0;
+            let num = String(val).replace(/[$,]/g, '').trim();
+            return isNaN(parseFloat(num)) ? 0 : parseFloat(num);
+        }
+
+        // Parsear fecha formato DD/MM/YY o YYYY-MM-DD
+        function parseFecha(val) {
+            if (!val) return null;
+            let partes = val.split(/[-/]/);
+            if (partes.length !== 3) return null;
+            
+            // Si el año está primero (ej. 2026-01-01)
+            if (partes[0].length === 4) {
+                return new Date(partes[0], partes[1] - 1, partes[2]);
+            }
+            // Si es formato latino DD/MM/YYYY
+            let year = partes[2].length === 2 ? `20${partes[2]}` : partes[2];
+            return new Date(year, partes[1] - 1, partes[0]);
+        }
+
+        // Clasificador de estado de ventas
+        function clasificarEstado(texto) {
+            if(!texto) return "Otro/Pendiente";
+            let txt = String(texto).toLowerCase();
+            if (txt.includes("venta")) return "✅ Venta";
+            if (txt.includes("no show")) return "❌ No Show";
+            if (txt.includes("descalificado")) return "🚫 Descalificado";
+            if (txt.includes("seguimiento")) return "👀 Seguimiento";
+            if (txt.includes("re-agendado") || txt.includes("reagendado") || txt.includes("agendado")) return "📅 Agendado";
+            return "Otro/Pendiente";
+        }
+
+        async function inicializarDashboard() {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            document.getElementById('loading-text').innerText = "Descargando Ventas y Gastos...";
+
+            try {
+                // Ejecutar todas las llamadas en paralelo
+                const [agAntiguo, agNuevo, g2025, g2026] = await Promise.all([
+                    fetchCSV(URLS.agendasAntiguo),
+                    fetchCSV(URLS.agendasNuevo),
+                    fetchCSV(URLS.gastos2025),
+                    fetchCSV(URLS.gastos2026)
+                ]);
+
+                // PROCESAR VENTAS (Unificando los dos documentos)
+                let crudoVentas = [...agAntiguo, ...agNuevo];
+                dbVentas = crudoVentas.map(row => {
+                    return {
+                        fecha_raw: row.Fecha,
+                        fecha: parseFecha(row.Fecha),
+                        monto: parseDinero(row['Monto ($)'] || row.Monto || 0),
+                        estado: clasificarEstado(row.Resultado),
+                        closer: row.Closer ? row.Closer.trim() : "Sin Asignar"
+                    };
+                }).filter(v => v.fecha != null); // Quitar filas sin fecha válida
+
+                // PROCESAR GASTOS (Unificando 2025 y 2026)
+                // Nota: 2026 usa headers 'Day' y 'Amount spent' o similar
+                let crudoGastos = [...g2025, ...g2026];
+                dbGastos = crudoGastos.map(row => {
+                    let fechaStr = row.Fecha || row.Day;
+                    let gastoStr = row.Gasto || row['Amount spent'];
+                    return {
+                        fecha: parseFecha(fechaStr),
+                        gasto: parseDinero(gastoStr)
+                    };
+                }).filter(g => g.fecha != null);
+
+                // Llenar selector de Closers
+                let closersUnicos = [...new Set(dbVentas.map(v => v.closer))].filter(c => c).sort();
+                let closerSelect = document.getElementById('closer');
+                closerSelect.innerHTML = '<option value="Todos">Todos</option>';
+                closersUnicos.forEach(c => {
+                    closerSelect.innerHTML += `<option value="${c}">${c}</option>`;
+                });
+
+                document.getElementById('loading-overlay').style.display = 'none';
+                
+                // Procesar la UI
+                procesarDatos();
+
+            } catch (error) {
+                console.error("Error cargando datos:", error);
+                document.getElementById('loading-text').innerText = "Error cargando datos. Revisa la consola.";
+            }
+        }
+
+        function procesarDatos() {
+            // Filtros de UI
+            const periodoSel = document.getElementById('periodo').value;
+            const closerSel = document.getElementById('closer').value;
+            const metaFact = parseFloat(document.getElementById('meta_fact').value) || 0;
+            const metaAds = parseFloat(document.getElementById('meta_ads').value) || 0;
+
+            let hoy = new Date();
+            let mesActual = hoy.getMonth();
+            let anioActual = hoy.getFullYear();
+
+            // Filtrar bases de datos según inputs
+            let vFiltrado = dbVentas;
+            let gFiltrado = dbGastos;
+
+            if (periodoSel === "mes_actual") {
+                vFiltrado = vFiltrado.filter(v => v.fecha.getMonth() === mesActual && v.fecha.getFullYear() === anioActual);
+                gFiltrado = gFiltrado.filter(g => g.fecha.getMonth() === mesActual && g.fecha.getFullYear() === anioActual);
+            }
+
+            if (closerSel !== "Todos") {
+                vFiltrado = vFiltrado.filter(v => v.closer === closerSel);
+                // Si filtramos por closer individual, técnicamente la inversión de ads general no le corresponde al 100%, 
+                // pero por ahora lo ocultaremos o pondremos en 0 para no alterar su ROAS personal.
+                gFiltrado = []; 
+            }
+
+            // Cálculos principales
+            let facturacion = vFiltrado.reduce((sum, v) => sum + v.monto, 0);
+            let inversionAds = gFiltrado.reduce((sum, g) => sum + g.gasto, 0);
+            
+            // Si estamos en "Todos", calculamos el total de inversión del mes aunque filtremos
+            let gastoMesTotal = dbGastos.filter(g => g.fecha.getMonth() === mesActual && g.fecha.getFullYear() === anioActual)
+                                        .reduce((sum, g) => sum + g.gasto, 0);
+
+            let profit = facturacion - inversionAds;
+            let roas = inversionAds > 0 ? (facturacion / inversionAds) : 0;
+            let ventasCerradas = vFiltrado.filter(v => v.estado === "✅ Venta").length;
+
+            // Desglose Leads
+            let cVentas = ventasCerradas;
+            let cSeg = vFiltrado.filter(v => v.estado === "👀 Seguimiento").length;
+            let cNoshow = vFiltrado.filter(v => v.estado === "❌ No Show").length;
+            let cDesc = vFiltrado.filter(v => v.estado === "🚫 Descalificado").length;
+            let cOtro = vFiltrado.filter(v => v.estado === "📅 Agendado" || v.estado === "Otro/Pendiente").length;
+
+            // Proyecciones
+            let diasEnMes = new Date(anioActual, mesActual + 1, 0).getDate();
+            let diaHoy = hoy.getDate();
+            let diasRestantes = diasEnMes - diaHoy;
+            diasRestantes = diasRestantes > 0 ? diasRestantes : 1;
+
+            let progreso = metaFact > 0 ? Math.min((facturacion / metaFact) * 100, 100) : 0;
+            let faltaFact = Math.max(metaFact - facturacion, 0);
+            let factNecDiaria = faltaFact / diasRestantes;
+            
+            let budgetRestante = Math.max(metaAds - gastoMesTotal, 0);
+            let gastoIdealDiario = budgetRestante / diasRestantes;
+            let gastoPromedioActual = diaHoy > 0 ? (gastoMesTotal / diaHoy) : 0;
+
+            // --- ACTUALIZAR UI (DOM) ---
+            document.getElementById('val-facturacion').innerText = `$${facturacion.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('val-profit').innerText = `$${profit.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            document.getElementById('val-roas').innerText = `${roas.toFixed(2)}x`;
+            document.getElementById('val-ventas').innerText = ventasCerradas;
+            document.getElementById('val-inversion').innerText = `$${inversionAds.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+            document.getElementById('val-l-ventas').innerText = cVentas;
+            document.getElementById('val-l-seg').innerText = cSeg;
+            document.getElementById('val-l-noshow').innerText = cNoshow;
+            document.getElementById('val-l-desc').innerText = cDesc;
+            document.getElementById('val-l-otro').innerText = cOtro;
+
+            document.getElementById('val-meta').innerText = `$${metaFact.toLocaleString('en-US')}`;
+            document.getElementById('val-progreso').innerText = `Progreso: ${progreso.toFixed(2)}%`;
+            document.getElementById('val-falta').innerText = `$${faltaFact.toLocaleString('en-US')}`;
+            document.getElementById('val-necesario-diario').innerText = `💡 Debes facturar $${factNecDiaria.toFixed(0)}/día`;
+            
+            document.getElementById('val-budget-diario').innerText = `$${gastoIdealDiario.toFixed(0)}/día`;
+            let txtGasto = document.getElementById('val-gasto-actual');
+            txtGasto.innerText = `Gasto actual $${gastoPromedioActual.toFixed(0)}/día`;
+            if(gastoPromedioActual > gastoIdealDiario) {
+                txtGasto.classList.add('negative');
+                txtGasto.innerText += " (Excedido)";
+            } else {
+                txtGasto.classList.remove('negative');
+            }
+
+            dibujarGraficos(vFiltrado, gFiltrado, closerSel);
+        }
+
+        function dibujarGraficos(vFiltrado, gFiltrado, closerSel) {
+            // Agrupar ventas por día
+            let agruparVentas = {};
+            vFiltrado.forEach(v => {
+                let d = v.fecha.toISOString().split('T')[0];
+                if (!agruparVentas[d]) agruparVentas[d] = 0;
+                agruparVentas[d] += v.monto;
+            });
+
+            // Agrupar gastos por día
+            let agruparGastos = {};
+            gFiltrado.forEach(g => {
+                let d = g.fecha.toISOString().split('T')[0];
+                if (!agruparGastos[d]) agruparGastos[d] = 0;
+                agruparGastos[d] += g.gasto;
+            });
+
+            // Preparar arrays para Plotly
+            let fechasFinanzas = [...new Set([...Object.keys(agruparVentas), ...Object.keys(agruparGastos)])].sort();
+            let traceVentasLine = {
+                x: fechasFinanzas,
+                y: fechasFinanzas.map(f => agruparVentas[f] || 0),
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: 'Facturación',
+                line: {color: '#00CC96'}
+            };
+            
+            let dataFinanzas = [traceVentasLine];
+            
+            if (closerSel === "Todos") {
+                let traceGastosLine = {
+                    x: fechasFinanzas,
+                    y: fechasFinanzas.map(f => agruparGastos[f] || 0),
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: 'Gasto Ads',
+                    line: {color: '#EF553B'}
+                };
+                dataFinanzas.push(traceGastosLine);
+            }
+
+            Plotly.newPlot('chart-finance', dataFinanzas, {
+                title: 'Dinámica Diaria: Ingresos vs Gasto',
+                xaxis: { title: 'Fecha' },
+                yaxis: { title: 'Monto ($)', tickprefix: '$' },
+                hovermode: 'x unified',
+                margin: { t: 40, l: 50, r: 20, b: 40 }
+            });
+
+            // Agrupar leads por estado
+            let agruparLeads = {};
+            vFiltrado.forEach(v => {
+                let d = v.fecha.toISOString().split('T')[0];
+                if (!agruparLeads[d]) agruparLeads[d] = {"✅ Venta":0, "❌ No Show":0, "🚫 Descalificado":0, "👀 Seguimiento":0, "📅 Agendado":0, "Otro/Pendiente":0};
+                agruparLeads[d][v.estado] += 1;
+            });
+
+            let fechasLeads = Object.keys(agruparLeads).sort();
+            let estados = ["✅ Venta", "❌ No Show", "🚫 Descalificado", "👀 Seguimiento", "📅 Agendado", "Otro/Pendiente"];
+            let colores = {"✅ Venta": "#00CC96", "❌ No Show": "#EF553B", "🚫 Descalificado": "#FFA15A", "👀 Seguimiento": "#636EFA", "📅 Agendado": "#AB63FA", "Otro/Pendiente": "#d3d3d3"};
+            
+            let dataLeads = estados.map(estado => {
+                return {
+                    x: fechasLeads,
+                    y: fechasLeads.map(f => agruparLeads[f][estado]),
+                    name: estado,
+                    type: 'bar',
+                    marker: { color: colores[estado] }
+                };
+            });
+
+            Plotly.newPlot('chart-leads', dataLeads, {
+                title: 'Evolución Diaria de Leads',
+                barmode: 'stack',
+                xaxis: { title: 'Fecha' },
+                yaxis: { title: 'Cantidad' },
+                hovermode: 'x unified',
+                margin: { t: 40, l: 40, r: 20, b: 40 }
+            });
+        }
+
+        // Agregar Event Listeners a los controles de la barra lateral
+        document.getElementById('periodo').addEventListener('change', procesarDatos);
+        document.getElementById('closer').addEventListener('change', procesarDatos);
+
+        // Arrancar
+        window.onload = inicializarDashboard;
+
+    </script>
 </body>
 </html>
