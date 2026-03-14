@@ -122,6 +122,31 @@
         .rank-name-clickable { color: white; font-weight: 700; cursor: pointer; text-decoration: underline; text-decoration-color: rgba(6, 182, 212, 0.4); text-underline-offset: 4px; transition: 0.3s; }
         .rank-name-clickable:hover { color: var(--accent-primary); text-decoration-color: var(--accent-primary); }
         .d-none { display: none !important; }
+
+        /* --- MÓDULO: CLOSER TRACKER & AI MODAL --- */
+        .closer-rank-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; display: grid; grid-template-columns: 50px 1fr 2fr; gap: 20px; align-items: center; margin-bottom: 10px; transition: 0.3s; }
+        .closer-rank-card:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); transform: translateX(5px); }
+        .closer-rank-card.top-1 { border-left: 4px solid var(--warning); background: linear-gradient(90deg, rgba(251, 191, 36, 0.05), transparent); }
+        .closer-rank-card.top-2 { border-left: 4px solid #94a3b8; }
+        .closer-rank-card.top-3 { border-left: 4px solid #b45309; }
+        .rank-pos { font-size: 1.5rem; font-weight: 800; color: var(--text-muted); text-align: center; }
+        .closer-rank-card.top-1 .rank-pos { color: var(--warning); }
+        
+        .progress-container { background: rgba(0,0,0,0.3); border-radius: 4px; height: 6px; width: 100%; overflow: hidden; margin-top: 5px; }
+        .bar-cyan { background: var(--accent-primary); height: 100%; box-shadow: 0 0 8px var(--accent-primary); }
+        .bar-blue { background: var(--accent-secondary); height: 100%; box-shadow: 0 0 8px var(--accent-secondary); }
+
+        .ai-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-content: start; }
+        .ai-card { background: rgba(6, 182, 212, 0.03); border: 1px solid rgba(6, 182, 212, 0.15); border-radius: 12px; padding: 1.5rem; }
+        .ai-card.danger { background: rgba(239, 68, 68, 0.03); border-color: rgba(239, 68, 68, 0.15); }
+        .ai-card.success { background: rgba(16, 185, 129, 0.03); border-color: rgba(16, 185, 129, 0.15); }
+        .ai-card.full-width { grid-column: span 2; }
+        .ai-card h3 { font-size: 0.9rem; text-transform: uppercase; margin-bottom: 1.2rem; display: flex; align-items: center; gap: 8px; letter-spacing: 1px;}
+        .ai-label { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; }
+        .ai-value { font-size: 0.95rem; line-height: 1.6; color: #e2e8f0; margin-bottom: 1.2rem;}
+        .ai-quote { font-style: italic; border-left: 2px solid var(--accent-primary); padding-left: 10px; color: #cbd5e1; }
+        .score-circle { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-weight: 800; font-size: 0.8rem; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
+    
     </style>
     
 </head>
@@ -178,6 +203,9 @@
             
             <label style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Presupuesto Ads ($):</label>
             <input type="number" id="meta_ads" value="3500" class="filter-select" style="width: 100%; margin-top: 5px; margin-bottom: 25px; font-size: 1.2rem;">
+            
+            <label style="font-size: 0.8rem; color: #94a3b8; text-transform: uppercase;">Meta Indiv. por Closer ($):</label>
+            <input type="number" id="meta_closer" value="10000" class="filter-select" style="width: 100%; margin-top: 5px; margin-bottom: 25px; font-size: 1.2rem; border-color: var(--accent-secondary);">
             
             <div style="display: flex; justify-content: flex-end; gap: 10px;">
                 <button onclick="closeSettings()" style="background: transparent; color: var(--text-muted); border: none; cursor: pointer; padding: 10px;">Cancelar</button>
@@ -288,8 +316,95 @@
         </div>
 
         <div id="view-closer" class="view-section">
-            <h2 class="section-title">Closer Tracker</h2>
-            <p style="color: var(--text-muted);">Módulo en construcción...</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 class="section-title" style="margin: 0; border: none; padding: 0;"><i class="fa-solid fa-headset text-accent"></i> Closer Tracker (Rendimiento)</h2>
+            </div>
+
+            <div class="metrics-grid" style="grid-template-columns: repeat(7, 1fr);" id="ct-kpis">
+                </div>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 30px; margin-bottom: 30px;">
+                <div class="chart-container" style="margin-bottom: 0;">
+                    <h3 style="color: white; font-size: 1.1rem; margin-bottom: 20px;">🏆 Leaderboard de Facturación</h3>
+                    <div id="ct-leaderboard">
+                        </div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 style="color: white; font-size: 1.1rem; margin-bottom: 15px;">📡 Registro de Llamadas y Score IA</h3>
+                <div style="overflow-x: auto;">
+                    <table class="table-custom" id="ct-table">
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Lead</th>
+                                <th>Closer</th>
+                                <th>Resultado</th>
+                                <th>Score IA</th>
+                                <th>Termómetro</th>
+                                <th>Valor ($)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="modalAI" class="modal-overlay">
+            <div class="modal-content" style="width: 1000px; max-width: 95vw; height: 90vh; overflow: hidden; display: flex; flex-direction: column;">
+                <div style="padding-bottom: 15px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h2 id="ai-m-name" style="font-size: 2rem; color: white; margin: 0 0 5px 0;">Nombre Lead</h2>
+                        <div style="color: var(--text-muted); font-size: 0.9rem; display: flex; gap: 15px;">
+                            <span id="ai-m-email">email</span> • <span id="ai-m-date">Fecha</span> • <span id="ai-m-closer" style="color: var(--accent-primary); font-weight: bold;">Closer</span>
+                        </div>
+                    </div>
+                    <button onclick="document.getElementById('modalAI').style.display='none'" style="background:none; border:none; color: var(--text-muted); cursor:pointer; font-size:1.5rem;"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 300px 1fr; gap: 20px; overflow-y: auto; padding-top: 20px; flex: 1;">
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+                            <h4 style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 15px;">Datos de la Llamada</h4>
+                            <div class="data-row"><span class="data-label">Resultado:</span> <span id="ai-m-badge"></span></div>
+                            <div class="data-row"><span class="data-label">Justificación:</span> <span id="ai-m-just" class="note-text"></span></div>
+                            <a id="ai-m-fathom" href="#" target="_blank" class="whatsapp-btn" style="width: 100%; justify-content: center; margin-top: 15px; display: none; background: rgba(6,182,212,0.1); color: var(--accent-primary); border-color: var(--accent-primary);">▶ Ver Grabación</a>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+                            <h4 style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 15px;">Métricas IA</h4>
+                            <div style="display: flex; gap: 20px;">
+                                <div><span class="data-label">Score IA</span><div id="ai-m-score" style="font-size:1.8rem; font-weight:800; color:var(--accent-primary);">0/10</div></div>
+                                <div><span class="data-label">Cierre</span><div id="ai-m-term" style="font-size:1.8rem; font-weight:800; color:var(--warning);">0%</div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-grid">
+                        <div class="ai-card full-width" style="border-color: var(--accent-primary);">
+                            <h3 style="color: var(--accent-primary);">🎯 Radiografía del Lead</h3>
+                            <div class="ai-label">Perfil y Situación</div><div class="ai-value" id="ai-c-perfil"></div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <div><div class="ai-label">Nivel Consciencia</div><div class="ai-value" id="ai-c-consciencia"></div></div>
+                                <div><div class="ai-label">Ángulo Marketing</div><div class="ai-value" id="ai-c-angulo"></div></div>
+                            </div>
+                            <div class="ai-label" style="margin-top: 10px;">Frase Textual del Dolor</div><div class="ai-value ai-quote" id="ai-c-frase"></div>
+                        </div>
+                        <div class="ai-card danger">
+                            <h3 style="color: var(--danger);">🔪 Autopsia (Objeciones)</h3>
+                            <div class="ai-label">Objeción Raíz</div><div class="ai-value" id="ai-c-obj"></div>
+                            <div class="ai-label">Fricciones</div><div class="ai-value" id="ai-c-fric"></div>
+                            <div class="ai-label">Mejoras Closer</div><div class="ai-value" id="ai-c-mej"></div>
+                        </div>
+                        <div class="ai-card success">
+                            <h3 style="color: var(--success);">🚀 Plan de Acción</h3>
+                            <div class="ai-label">Diagnóstico Final</div><div class="ai-value" style="font-weight:700; color:white;" id="ai-c-diag"></div>
+                            <div class="ai-label">Siguientes Pasos</div><div class="ai-value" id="ai-c-pasos"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="view-media" class="view-section">
@@ -397,32 +512,47 @@
         let dbQual = [];
         let currentSort = { col: 'total', dir: 'desc' };
 
-        // === LOCAL STORAGE Y MODAL ===
+        // === LOCAL STORAGE Y MODAL GENERAL ===
         function loadSettings() {
             const saved = localStorage.getItem('evo_settings');
             if (saved) {
                 const s = JSON.parse(saved);
                 document.getElementById('meta_fact').value = s.fact || 30000;
                 document.getElementById('meta_ads').value = s.ads || 3500;
+                document.getElementById('meta_closer').value = s.closer || 10000;
             }
         }
         function saveSettings() {
             const fact = document.getElementById('meta_fact').value;
             const ads = document.getElementById('meta_ads').value;
-            localStorage.setItem('evo_settings', JSON.stringify({fact, ads}));
+            const closer = document.getElementById('meta_closer').value;
+            localStorage.setItem('evo_settings', JSON.stringify({fact, ads, closer}));
             closeSettings();
             procesarDatos();
         }
         function openSettings() { document.getElementById('modal-settings').style.display = 'flex'; }
         function closeSettings() { document.getElementById('modal-settings').style.display = 'none'; }
 
-        // === CONTROLADOR DE VENTANAS (TABS) ===
-        function switchView(viewId, btnElement) {
-            document.querySelectorAll('.nav-tab-btn').forEach(btn => btn.classList.remove('active'));
-            btnElement.classList.add('active');
-            document.querySelectorAll('.view-section').forEach(view => view.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
+        // === EXTRACTOR DE INTELIGENCIA ARTIFICIAL ===
+        function parseAIBlock(text) {
+            if (!text || text.length < 10) return null;
+            const extract = (regex) => { const m = text.match(regex); return m ? m[1].replace(/["']/g, "").trim() : 'No especificado'; };
+            return {
+                score: extract(/Score del Lead \(IA\):\s*\*?\*?(\d+(?:\/\d+)?)/i) || '-',
+                termometro: extract(/Termómetro de Cierre:\s*\*?\*?(\d+%?)/i) || '-',
+                valor: extract(/Valor de Compra\/Oferta:\s*\*?\*?([^\n]+)/i) || '-',
+                perfil: extract(/Perfil y Situación Actual:\s*\*?\*?([^\n]+)/i),
+                consciencia: extract(/Nivel de Consciencia:\s*\*?\*?([^\n]+)/i),
+                angulo: extract(/Ángulo de Marketing \/ Gap:\s*\*?\*?([^\n]+)/i),
+                frase: extract(/Frase Textual del Dolor:\s*\*?\*?([^\n]+)/i),
+                objecion: extract(/Objeción Raíz:\s*\*?\*?([^\n]+)/i),
+                fricciones: extract(/Fricciones en la Llamada:\s*\*?\*?([^\n]+)/i),
+                mejoras: extract(/Áreas de Mejora del Closer:\s*\*?\*?([\s\S]*?)(?=\n\*|\n🚀|$)/i),
+                diagnostico: extract(/Diagnóstico Final:\s*\*?\*?([^\n]+)/i),
+                pasos: extract(/Siguientes Pasos:\s*\*?\*?([^\n]+)/i)
+            };
         }
+
 
         // === LECTURA DE DATOS ===
         function fetchCSV(url) {
@@ -481,6 +611,10 @@
                     let rawNotas = findColumn(row, ['notas', 'justificación', 'justificacion']);
                     let rawPago = findColumn(row, ['medio pago', 'medio de pago']);
 
+                    // ---> LO NUEVO: Extraemos la Grabación y el Análisis IA <---
+                    let rawGrabacion = findColumn(row, ['grabación', 'grabacion', 'fathom', 'link']);
+                    let rawAI = findColumn(row, ['análisis ia', 'analisis ia']);
+
                     let idCliente = (rawEmail !== "" ? rawEmail : rawName);
                     if (idCliente === "") idCliente = `cliente-anonimo-${index}`;
                     idCliente = String(idCliente).trim().toLowerCase();
@@ -496,7 +630,11 @@
                         email: rawEmail !== "" ? String(rawEmail).trim().toLowerCase() : "",
                         notas: rawNotas,
                         medioPago: rawPago,
-                        resultadoRaw: rawResultado || "Sin Estado"
+                        resultadoRaw: rawResultado || "Sin Estado",
+
+                        // ---> LO NUEVO: Guardamos en el objeto <---
+                        grabacion: rawGrabacion,
+                        ai: parseAIBlock(rawAI)
                     };
                 }).filter(v => v.fecha != null); 
 
@@ -837,7 +975,169 @@
             dibujarGraficos(vFiltrado, gFiltrado, closerSel);
             
             // Sincroniza la tabla de ranking con el filtro superior
+            // (Al final de procesarDatos)
             renderRanking(); 
+            renderCloserTracker(vFiltrado, parseFloat(document.getElementById('meta_closer').value) || 0);
+        }
+
+        // === RENDERIZADO DEL MÓDULO: CLOSER TRACKER ===
+        let globalTrackerData = []; // Para que el modal pueda leer la fila exacta
+
+        function renderCloserTracker(data, metaCloser) {
+            globalTrackerData = data; // Guardamos la data filtrada actual
+            
+            // 1. Cálculos Base
+            let totalRevenue = data.reduce((sum, d) => sum + d.monto, 0);
+            let totalScore = 0, countScore = 0;
+            
+            let statsPorCloser = {};
+            data.forEach(d => {
+                let c = d.closer;
+                if(!statsPorCloser[c]) statsPorCloser[c] = { rev: 0, ventas: 0, asistencias: 0, leads: [], clientes: new Set() };
+                
+                statsPorCloser[c].leads.push(d);
+                statsPorCloser[c].rev += d.monto;
+                if(d.estado === "✅ Venta") {
+                    statsPorCloser[c].ventas++;
+                    statsPorCloser[c].clientes.add(d.id_cliente);
+                }
+                if(["✅ Venta", "👀 Seguimiento", "📅 Re-Agendado", "🚫 Descalificado"].includes(d.estado)) {
+                    statsPorCloser[c].asistencias++;
+                }
+
+                if(d.ai && d.ai.score !== '-') {
+                    let s = parseFloat(d.ai.score);
+                    if(!isNaN(s)) { totalScore += s; countScore++; }
+                }
+            });
+
+            // 2. Renderizar KPIs Superiores
+            let totalClosersActivos = Object.keys(statsPorCloser).length;
+            let txTotales = data.filter(d => d.estado === "✅ Venta").length;
+            let cliTotales = new Set(data.filter(d => d.estado === "✅ Venta").map(d => d.id_cliente)).size;
+            let asisTotales = data.filter(d => ["✅ Venta", "👀 Seguimiento", "📅 Re-Agendado", "🚫 Descalificado"].includes(d.estado)).length;
+            
+            let winRateGlobal = asisTotales > 0 ? (txTotales / asisTotales) * 100 : 0;
+            let aovVentaGlobal = txTotales > 0 ? (totalRevenue / txTotales) : 0;
+            let aovClienteGlobal = cliTotales > 0 ? (totalRevenue / cliTotales) : 0;
+            let avgScoreGlobal = countScore > 0 ? (totalScore / countScore).toFixed(1) : '0.0';
+
+            // Identificar Top 1
+            let arrClosers = Object.keys(statsPorCloser).map(name => ({ name, ...statsPorCloser[name] }));
+            arrClosers.sort((a,b) => b.rev - a.rev);
+            let top1Name = arrClosers.length > 0 && arrClosers[0].rev > 0 ? arrClosers[0].name : "Ninguno";
+
+            document.getElementById('ct-kpis').innerHTML = `
+                <div class="metric-card"><div class="metric-title">Closers Activos</div><div class="metric-value">${totalClosersActivos}</div></div>
+                <div class="metric-card"><div class="metric-title">Ventas Totales</div><div class="metric-value">${txTotales}</div><div class="metric-delta text-muted">${cliTotales} Clientes Únicos</div></div>
+                <div class="metric-card"><div class="metric-title">Cash Collect</div><div class="metric-value text-success">$${totalRevenue.toLocaleString('en-US', {maximumFractionDigits:0})}</div></div>
+                <div class="metric-card"><div class="metric-title">AOV Venta</div><div class="metric-value">$${aovVentaGlobal.toLocaleString('en-US', {maximumFractionDigits:0})}</div></div>
+                <div class="metric-card"><div class="metric-title">AOV Cliente</div><div class="metric-value">$${aovClienteGlobal.toLocaleString('en-US', {maximumFractionDigits:0})}</div></div>
+                <div class="metric-card"><div class="metric-title">% Cierre (Asist.)</div><div class="metric-value">${winRateGlobal.toFixed(1)}%</div></div>
+                <div class="metric-card" style="border-color: var(--accent-primary);"><div class="metric-title" style="color: var(--accent-primary);">👑 MVP</div><div class="metric-value">${top1Name}</div><div class="metric-delta">Avg Score: ${avgScoreGlobal}</div></div>
+            `;
+
+            // 3. Renderizar Leaderboard
+            const lbContainer = document.getElementById('ct-leaderboard');
+            lbContainer.innerHTML = '';
+            if(arrClosers.length === 0) lbContainer.innerHTML = '<p class="text-muted">No hay datos de closers para esta fecha.</p>';
+            
+            arrClosers.forEach((c, index) => {
+                if(c.rev === 0 && c.asistencias === 0) return; // Omitir inactivos
+                
+                let topClass = index === 0 ? 'top-1' : index === 1 ? 'top-2' : index === 2 ? 'top-3' : '';
+                let percTotal = totalRevenue > 0 ? (c.rev / totalRevenue) * 100 : 0;
+                let percMeta = metaCloser > 0 ? Math.min((c.rev / metaCloser) * 100, 100) : 0;
+                let cRate = c.asistencias > 0 ? (c.ventas / c.asistencias) * 100 : 0;
+
+                lbContainer.innerHTML += `
+                    <div class="closer-rank-card ${topClass}">
+                        <div class="rank-pos">#${index + 1}</div>
+                        <div>
+                            <h4 style="margin:0; color:white; font-size:1.2rem;">${c.name}</h4>
+                            <p style="margin:0; font-size:0.8rem; color:var(--text-muted);">${c.ventas} Ventas | ${cRate.toFixed(1)}% Cierre</p>
+                        </div>
+                        <div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                                <span style="color:var(--success); font-weight:bold; font-size:1.2rem;">$${c.rev.toLocaleString('en-US', {maximumFractionDigits:0})}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted);">
+                                <span>Impacto en Empresa: ${percTotal.toFixed(1)}%</span>
+                                <span>Meta ($${metaCloser/1000}k): <span style="color:var(--accent-secondary); font-weight:bold;">${percMeta.toFixed(1)}%</span></span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                                <div class="progress-container"><div class="bar-cyan" style="width: ${percTotal}%;"></div></div>
+                                <div class="progress-container"><div class="bar-blue" style="width: ${percMeta}%;"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // 4. Renderizar Tabla de Tracking
+            const tb = document.querySelector("#ct-table tbody");
+            tb.innerHTML = "";
+            data.forEach((r, i) => {
+                let bClass = 'noshow'; let st = r.estado.toLowerCase();
+                if(st.includes('venta')) bClass = 'venta';
+                else if(st.includes('descalificado')) bClass = 'descalificado';
+                else if(st.includes('seguimiento')) bClass = 'seguimiento';
+
+                let s = r.ai && r.ai.score ? r.ai.score.split('/')[0] : '-';
+                let scoreBadge = s !== '-' ? `<div class="score-circle" style="border-color:${s>=7?'var(--success)':s>=4?'var(--warning)':'var(--danger)'}; color:${s>=7?'var(--success)':s>=4?'var(--warning)':'var(--danger)'}">${s}</div>` : '-';
+
+                let tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td style="color:var(--text-muted); font-size:0.8rem;">${r.fechaRaw}</td>
+                    <td style="font-weight:700; color:white; cursor:pointer;" onclick="openAIModal(${i})"><span class="rank-name-clickable">${r.nombre}</span></td>
+                    <td style="color:#94a3b8;">${r.closer}</td>
+                    <td><span class="badge ${bClass}">${r.resultadoRaw}</span></td>
+                    <td>${scoreBadge}</td>
+                    <td style="color:var(--warning); font-weight:600;">${r.ai ? r.ai.termometro : '-'}</td>
+                    <td style="color:${r.monto > 0 ? 'var(--success)' : '#64748b'}; font-weight:bold;">$${r.monto.toLocaleString()}</td>
+                `;
+                tb.appendChild(tr);
+            });
+        }
+
+        function openAIModal(index) {
+            let item = globalTrackerData[index];
+            if(!item) return;
+
+            document.getElementById('ai-m-name').innerText = item.nombre;
+            document.getElementById('ai-m-email').innerText = item.email || "Sin email";
+            document.getElementById('ai-m-date').innerText = item.fechaRaw;
+            document.getElementById('ai-m-closer').innerText = item.closer;
+
+            let bClass = 'noshow'; let st = item.estado.toLowerCase();
+            if(st.includes('venta')) bClass = 'venta'; else if(st.includes('descalificado')) bClass = 'descalificado'; else if(st.includes('seguimiento')) bClass = 'seguimiento';
+            
+            document.getElementById('ai-m-badge').innerHTML = `<span class="badge ${bClass}">${item.resultadoRaw}</span>`;
+            document.getElementById('ai-m-just').innerText = `"${item.notas || 'Sin justificación'}"`;
+
+            // Enlaces Fathom
+            const fBtn = document.getElementById('ai-m-fathom');
+            if(item.grabacion && item.grabacion.includes('http')) { fBtn.style.display = 'flex'; fBtn.href = item.grabacion.trim(); } 
+            else { fBtn.style.display = 'none'; }
+
+            if(item.ai) {
+                document.getElementById('ai-m-score').innerText = item.ai.score;
+                document.getElementById('ai-m-term').innerText = item.ai.termometro;
+                document.getElementById('ai-c-perfil').innerText = item.ai.perfil;
+                document.getElementById('ai-c-consciencia').innerText = item.ai.consciencia;
+                document.getElementById('ai-c-angulo').innerText = item.ai.angulo;
+                document.getElementById('ai-c-frase').innerText = `"${item.ai.frase}"`;
+                document.getElementById('ai-c-obj').innerText = item.ai.objecion;
+                document.getElementById('ai-c-fric').innerText = item.ai.fricciones;
+                document.getElementById('ai-c-mej').innerText = item.ai.mejoras;
+                document.getElementById('ai-c-diag').innerText = item.ai.diagnostico;
+                document.getElementById('ai-c-pasos').innerText = item.ai.pasos;
+            } else {
+                const fields = ['ai-m-score','ai-m-term','ai-c-perfil','ai-c-consciencia','ai-c-angulo','ai-c-frase','ai-c-obj','ai-c-fric','ai-c-mej','ai-c-diag','ai-c-pasos'];
+                fields.forEach(id => { document.getElementById(id).innerText = 'Sin análisis IA.'; });
+            }
+
+            document.getElementById('modalAI').style.display = 'flex';
         }
 
         // === RENDERIZADO DE GRÁFICOS (CHART.JS) ===
