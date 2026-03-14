@@ -835,7 +835,9 @@
             else { txtGasto.classList.remove('negative'); }
 
             dibujarGraficos(vFiltrado, gFiltrado, closerSel);
-
+            
+            // Sincroniza la tabla de ranking con el filtro superior
+            renderRanking(); 
         }
 
         // === RENDERIZADO DE GRÁFICOS (CHART.JS) ===
