@@ -117,7 +117,7 @@
             position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
             display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 40px;
         }
-        .btn-close-modal { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.05); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; transition: background 0.2s; }
+        .btn-close-modal { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.05); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; transition: background 0.2s; z-index: 10;}
         .btn-close-modal:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
 
         .modal-left { display: flex; flex-direction: column; gap: 20px; }
@@ -141,14 +141,23 @@
 
         .modal-right { display: flex; flex-direction: column; gap: 30px; }
         .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .img-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 12px; padding: 15px; }
-        .img-card h4 { font-size: 0.9rem; margin-bottom: 10px; color: var(--text-muted); display: flex; justify-content: space-between;}
-        .img-card img { width: 100%; height: auto; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); object-fit: cover; aspect-ratio: 16/9; background: #1e293b; }
         
+        /* Ajuste para imágenes panorámicas */
+        .img-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 12px; padding: 15px; text-align: center; }
+        .img-card h4 { font-size: 0.9rem; margin-bottom: 15px; color: var(--text-muted); display: flex; justify-content: space-between; text-align: left;}
+        
+        .zoom-wrapper { position: relative; display: inline-block; width: 100%; border-radius: 8px; overflow: hidden; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); cursor: zoom-in; transition: border 0.3s; }
+        .zoom-wrapper:hover { border-color: var(--accent-cyan); }
+        .zoom-wrapper img { width: 100%; height: auto; display: block; object-fit: contain; max-height: 120px; }
+        .zoom-hint { background: rgba(0,0,0,0.7); color: white; font-size: 0.75rem; padding: 6px; position: absolute; bottom: 0; left: 0; width: 100%; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; opacity: 0; transition: opacity 0.3s; }
+        .zoom-wrapper:hover .zoom-hint { opacity: 1; }
+
         .ads-section h4 { font-size: 1rem; margin-bottom: 15px; color: white; }
         .ads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .ads-grid img, .ads-grid video { width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e293b; }
-
+        
+        /* Los videos mantienen su aspecto nativo pero adaptados al grid */
+        .ads-grid video { width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e293b; }
+        
         /* --- PROCESS & OFFER VIEWS --- */
         .step-list { list-style: none; display: flex; flex-direction: column; gap: 20px; max-width: 800px; padding-bottom: 50px; }
         .step-item { display: flex; gap: 20px; background: rgba(30,41,59,0.4); padding: 25px; border-radius: 16px; border: 1px solid var(--border-glass); align-items: center; }
@@ -191,19 +200,28 @@
         .final-price-container.show {
             display: block; animation: dropIn 0.8s forwards var(--ease-elastic);
         }
-        @keyframes dropIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes dropIn { to { opacity: 1; transform: translateY(0); } }
         .fp-title { font-size: 1.2rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
         .fp-amount { font-size: 5rem; font-weight: 800; background: linear-gradient(to right, #fff, var(--accent-green)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; margin-bottom: 20px; }
         .fp-guarantee { color: var(--text-muted); font-size: 1rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; margin-top: 20px; }
+
+        /* --- LIGHTBOX (VISTA PREVIA) --- */
+        .lightbox-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.95); z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .lightbox-overlay.active { opacity: 1; pointer-events: all; }
+        .lightbox-close { position: absolute; top: 30px; right: 40px; color: white; font-size: 2.5rem; cursor: pointer; background: none; border: none; transition: transform 0.2s; }
+        .lightbox-close:hover { transform: scale(1.2); color: var(--accent-cyan); }
+        .lightbox-content { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 50px rgba(0,0,0,0.5); object-fit: contain; }
 
     </style>
 </head>
 <body>
 
     <aside class="sidebar">
-        <div class="brand-logo"><img src="assets/logo-cn.png" alt="CN" onerror="this.style.display='none'"></div>
+        <div class="brand-logo"><img src="logo-cn.png" alt="CN" onerror="this.style.display='none'"></div>
         
         <div class="nav-item active" onclick="switchView('intro', this)" title="Inicio">
             <i class="fa-solid fa-house"></i>
@@ -237,8 +255,7 @@
                 <h1 class="section-title">Negocios Validados</h1>
                 <p style="color: var(--text-muted); margin-top: 10px;">Este es el estándar de los ecosistemas que construimos. Nosotros analizamos tu perfil y te asignamos el modelo más rentable para ti.</p>
             </div>
-            <div class="vault-grid" id="vaultGrid">
-                </div>
+            <div class="vault-grid" id="vaultGrid"></div>
         </div>
 
         <div id="view-process" class="view-wrapper">
@@ -291,9 +308,7 @@
                     <strong>Garantía por Contrato:</strong> No nos limitamos a la entrega del activo. Nos comprometemos a acompañarte estratégicamente hasta que recuperes la totalidad de tu inversión inicial.
                 </div>
             </div>
-
         </div>
-
     </main>
 
     <div class="modal-overlay" id="bizModal">
@@ -323,111 +338,43 @@
                 <div class="metrics-grid">
                     <div class="img-card">
                         <h4>Resultados Hotmart <i class="fa-solid fa-fire" style="color:#f55;"></i></h4>
-                        <img id="img-hotmart" src="" alt="Hotmart">
+                        <div class="zoom-wrapper" onclick="openLightbox(document.getElementById('img-hotmart').src)">
+                            <img id="img-hotmart" src="" alt="Hotmart">
+                            <div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div>
+                        </div>
                     </div>
                     <div class="img-card">
                         <h4>Métricas Meta Ads <i class="fa-brands fa-meta" style="color:#06b6d4;"></i></h4>
-                        <img id="img-meta" src="" alt="Meta Ads">
+                        <div class="zoom-wrapper" onclick="openLightbox(document.getElementById('img-meta').src)">
+                            <img id="img-meta" src="" alt="Meta Ads">
+                            <div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div>
+                        </div>
                     </div>
                 </div>
                 
                 <div class="ads-section">
                     <h4>Creativos Ganadores (Ads)</h4>
-                    <div class="ads-grid" id="ads-container">
-                    </div>
+                    <div class="ads-grid" id="ads-container"></div>
                 </div>
             </div>
-
         </div>
+    </div>
+
+    <div class="lightbox-overlay" id="lightbox" onclick="closeLightbox(event)">
+        <button class="lightbox-close" onclick="closeLightbox(event)"><i class="fa-solid fa-xmark"></i></button>
+        <img id="lightbox-img" src="" class="lightbox-content">
     </div>
 
     <script>
         // BASE DE DATOS DE NEGOCIOS
         const businesses = [
-            {
-                id: "dental",
-                icon: "fa-tooth",
-                title: "Kit Dental", // [cite: 205]
-                niche: "Profesionales de la Salud", // [cite: 210]
-                promise: "Herramientas prácticas para que odontólogos puedan atraer más pacientes particulares, convertir consultas y reactivar pacientes.", // [cite: 207]
-                urlWeb: "https://kitdental.lovable.app/", // [cite: 212]
-                urlIg: "#", 
-                proj3m: "$1,300 - $1,820 USD/m", // [cite: 222]
-                proj6m: "$2,275 - $3,250 USD/m", // [cite: 226]
-                prefix: "dental"
-            },
-            {
-                id: "inmo",
-                icon: "fa-building",
-                title: "Video Inmobiliaria IA", // [cite: 230]
-                niche: "Real Estate", // [cite: 235]
-                promise: "Enseña a agentes inmobiliarios a crear videos profesionales para promocionar propiedades utilizando inteligencia artificial sin experiencia.", // [cite: 232]
-                urlWeb: "https://videoinmobiliariaia.lovable.app/", // [cite: 237]
-                urlIg: "#",
-                proj3m: "$1,300 - $1,820 USD/m", // [cite: 247]
-                proj6m: "$2,275 - $3,250 USD/m", // [cite: 251]
-                prefix: "inmo"
-            },
-            {
-                id: "bodas",
-                icon: "fa-ring",
-                title: "Ceremonialista Pro", // [cite: 255]
-                niche: "Organización de Eventos", // [cite: 260]
-                promise: "Más de 20 herramientas listas para usar para organizar, profesionalizar y estructurar un negocio de planificación de bodas.", // [cite: 257, 258]
-                urlWeb: "https://ceremonialistapro.lovable.app/", // [cite: 262]
-                urlIg: "#",
-                proj3m: "$1,360 - $2,140 USD/m", // [cite: 272]
-                proj6m: "$2,380 - $3,400 USD/m", // [cite: 276]
-                prefix: "bodas"
-            },
-            {
-                id: "enfermeria",
-                icon: "fa-user-nurse",
-                title: "Apuntes de enfermería", // [cite: 280]
-                niche: "Salud y Enfermería", // [cite: 285]
-                promise: "Entrenamiento para profesionales de enfermería que enseña cómo redactar correctamente anotaciones y evoluciones clínicas.", // [cite: 282]
-                urlWeb: "https://apuntesdeenfermeria.lovable.app/", // [cite: 287]
-                urlIg: "#",
-                proj3m: "$1,222 - $1,711 USD/m", // [cite: 298]
-                proj6m: "$1,956 - $2,934 USD/m", // [cite: 303]
-                prefix: "enfermeria"
-            },
-            {
-                id: "lenceria",
-                icon: "fa-scissors",
-                title: "Lencería en Casa", // [cite: 307]
-                niche: "Costura y Moda", // [cite: 312]
-                promise: "Enseña cómo confeccionar lencería desde casa utilizando moldes digitales y guías paso a paso, sin experiencia previa.", // [cite: 309]
-                urlWeb: "https://lenceriacreativa.lovable.app/", // [cite: 314]
-                urlIg: "#",
-                proj3m: "$1,608 - $2,278 USD/m", // [cite: 324]
-                proj6m: "$2,948 - $4,288 USD/m", // [cite: 328]
-                prefix: "lenceria"
-            },
-            {
-                id: "ninos",
-                icon: "fa-child-reaching",
-                title: "Niños Brillantes", // [cite: 332]
-                niche: "Educación Infantil", // [cite: 337]
-                promise: "MegaPack con más de 1.000 actividades imprimibles para apoyar el aprendizaje de niños con TDAH, dislexia y autismo.", // [cite: 334]
-                urlWeb: "https://ninosbrillantes.lovable.app/", // [cite: 339]
-                urlIg: "#",
-                proj3m: "$1,180 - $1,580 USD/m", // [cite: 349]
-                proj6m: "$1,970 - $2,960 USD/m", // [cite: 353]
-                prefix: "ninos"
-            },
-            {
-                id: "lazos",
-                icon: "fa-people-roof",
-                title: "Lazos Conscientes", // [cite: 357]
-                niche: "Relaciones Familiares", // [cite: 362]
-                promise: "200 ideas de citas entre padres e hijos diseñadas para crear momentos de conexión y fortalecer el vínculo emocional.", // [cite: 359]
-                urlWeb: "https://lazosconscientes.replit.app/", // [cite: 364]
-                urlIg: "#",
-                proj3m: "$1,200 - $1,600 USD/m", // [cite: 374]
-                proj6m: "$2,000 - $3,000 USD/m", // [cite: 378]
-                prefix: "lazos"
-            }
+            { id: "dental", icon: "fa-tooth", title: "Kit Dental", niche: "Profesionales de la Salud", promise: "Herramientas prácticas para que odontólogos puedan atraer más pacientes particulares, convertir consultas y reactivar pacientes.", urlWeb: "https://kitdental.lovable.app/", urlIg: "#", proj3m: "$1,300 - $1,820 USD/m", proj6m: "$2,275 - $3,250 USD/m", prefix: "dental" },
+            { id: "inmo", icon: "fa-building", title: "Video Inmobiliaria IA", niche: "Real Estate", promise: "Enseña a agentes inmobiliarios a crear videos profesionales para promocionar propiedades utilizando inteligencia artificial sin experiencia.", urlWeb: "https://videoinmobiliariaia.lovable.app/", urlIg: "#", proj3m: "$1,300 - $1,820 USD/m", proj6m: "$2,275 - $3,250 USD/m", prefix: "inmo" },
+            { id: "bodas", icon: "fa-ring", title: "Ceremonialista Pro", niche: "Organización de Eventos", promise: "Más de 20 herramientas listas para usar para organizar, profesionalizar y estructurar un negocio de planificación de bodas.", urlWeb: "https://ceremonialistapro.lovable.app/", urlIg: "#", proj3m: "$1,360 - $2,140 USD/m", proj6m: "$2,380 - $3,400 USD/m", prefix: "bodas" },
+            { id: "enfermeria", icon: "fa-user-nurse", title: "Apuntes de enfermería", niche: "Salud y Enfermería", promise: "Entrenamiento para profesionales de enfermería que enseña cómo redactar correctamente anotaciones y evoluciones clínicas.", urlWeb: "https://apuntesdeenfermeria.lovable.app/", urlIg: "#", proj3m: "$1,222 - $1,711 USD/m", proj6m: "$1,956 - $2,934 USD/m", prefix: "enfermeria" },
+            { id: "lenceria", icon: "fa-scissors", title: "Lencería en Casa", niche: "Costura y Moda", promise: "Enseña cómo confeccionar lencería desde casa utilizando moldes digitales y guías paso a paso, sin experiencia previa.", urlWeb: "https://lenceriacreativa.lovable.app/", urlIg: "#", proj3m: "$1,608 - $2,278 USD/m", proj6m: "$2,948 - $4,288 USD/m", prefix: "lenceria" },
+            { id: "ninos", icon: "fa-child-reaching", title: "Niños Brillantes", niche: "Educación Infantil", promise: "MegaPack con más de 1.000 actividades imprimibles para apoyar el aprendizaje de niños con TDAH, dislexia y autismo.", urlWeb: "https://ninosbrillantes.lovable.app/", urlIg: "#", proj3m: "$1,180 - $1,580 USD/m", proj6m: "$1,970 - $2,960 USD/m", prefix: "ninos" },
+            { id: "lazos", icon: "fa-people-roof", title: "Lazos Conscientes", niche: "Relaciones Familiares", promise: "200 ideas de citas entre padres e hijos diseñadas para crear momentos de conexión y fortalecer el vínculo emocional.", urlWeb: "https://lazosconscientes.replit.app/", urlIg: "#", proj3m: "$1,200 - $1,600 USD/m", proj6m: "$2,000 - $3,000 USD/m", prefix: "lazos" }
         ];
 
         // RENDERIZAR GRILLA DE NEGOCIOS
@@ -468,43 +415,54 @@
             document.getElementById('btn-web').href = biz.urlWeb;
             document.getElementById('btn-ig').href = biz.urlIg;
 
-            document.getElementById('bizModal').classList.add('active');
-        }
+            // CARGA DE MÉTRICAS
+            document.getElementById('img-hotmart').src = `${biz.prefix}-hotmart.png`;
+            document.getElementById('img-meta').src = `${biz.prefix}-meta.png`;
 
-        // CARGA DINÁMICA DE ANUNCIOS (VIDEOS vs IMÁGENES)
+            // CARGA DINÁMICA DE ANUNCIOS (CORREGIDO: AHORA ESTÁ ADENTRO DE LA FUNCIÓN)
             const adsContainer = document.getElementById('ads-container');
-            
             if (biz.id === 'lazos') {
-                // Carga videos solo para Lazos Conscientes
                 adsContainer.innerHTML = `
                     <video src="${biz.prefix}-ad1.mp4" controls muted loop></video>
                     <video src="${biz.prefix}-ad2.mp4" controls muted loop></video>
                     <video src="${biz.prefix}-ad3.mp4" controls muted loop></video>
                 `;
             } else {
-                // Carga imágenes para todos los demás negocios
                 adsContainer.innerHTML = `
-                    <img src="${biz.prefix}-ad1.jpg" alt="Ad 1">
-                    <img src="${biz.prefix}-ad2.jpg" alt="Ad 2">
-                    <img src="${biz.prefix}-ad3.jpg" alt="Ad 3">
+                    <div class="zoom-wrapper" onclick="openLightbox('${biz.prefix}-ad1.jpg')"><img src="${biz.prefix}-ad1.jpg" alt="Ad 1"><div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div></div>
+                    <div class="zoom-wrapper" onclick="openLightbox('${biz.prefix}-ad2.jpg')"><img src="${biz.prefix}-ad2.jpg" alt="Ad 2"><div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div></div>
+                    <div class="zoom-wrapper" onclick="openLightbox('${biz.prefix}-ad3.jpg')"><img src="${biz.prefix}-ad3.jpg" alt="Ad 3"><div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div></div>
                 `;
             }
 
+            document.getElementById('bizModal').classList.add('active');
+        }
+
         function closeModal() {
             document.getElementById('bizModal').classList.remove('active');
+        }
+
+        // CONTROL DEL LIGHTBOX (VISTA PREVIA PANTALLA COMPLETA)
+        function openLightbox(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('lightbox').classList.add('active');
+        }
+
+        function closeLightbox(e) {
+            // Cierra si hacen clic en la X o en el fondo oscuro
+            if (e.target.id === 'lightbox' || e.target.closest('.lightbox-close')) {
+                document.getElementById('lightbox').classList.remove('active');
+                setTimeout(() => document.getElementById('lightbox-img').src = '', 300); // Limpia la imagen al cerrar
+            }
         }
 
         // REVELAR PRECIO
         function revealPrice() {
             document.getElementById('btnReveal').style.display = 'none';
             document.getElementById('finalPriceBox').classList.add('show');
-            // Hacer un pequeño scroll hacia abajo para asegurar que se vea el precio
             const viewOffer = document.getElementById('view-offer');
             setTimeout(() => {
-                viewOffer.scrollTo({
-                    top: viewOffer.scrollHeight,
-                    behavior: 'smooth'
-                });
+                viewOffer.scrollTo({ top: viewOffer.scrollHeight, behavior: 'smooth' });
             }, 100);
         }
     </script>
