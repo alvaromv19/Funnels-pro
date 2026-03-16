@@ -147,7 +147,7 @@
         
         .ads-section h4 { font-size: 1rem; margin-bottom: 15px; color: white; }
         .ads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-        .ads-grid img { width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e293b; }
+        .ads-grid img, .ads-grid video { width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e293b; }
 
         /* --- PROCESS & OFFER VIEWS --- */
         .step-list { list-style: none; display: flex; flex-direction: column; gap: 20px; max-width: 800px; padding-bottom: 50px; }
@@ -333,10 +333,7 @@
                 
                 <div class="ads-section">
                     <h4>Creativos Ganadores (Ads)</h4>
-                    <div class="ads-grid">
-                        <img id="img-ad1" src="" alt="Ad 1">
-                        <img id="img-ad2" src="" alt="Ad 2">
-                        <img id="img-ad3" src="" alt="Ad 3">
+                    <div class="ads-grid" id="ads-container">
                     </div>
                 </div>
             </div>
@@ -471,15 +468,27 @@
             document.getElementById('btn-web').href = biz.urlWeb;
             document.getElementById('btn-ig').href = biz.urlIg;
 
-            // CARGA DE IMÁGENES
-            document.getElementById('img-hotmart').src = `assets/${biz.prefix}-hotmart.png`;
-            document.getElementById('img-meta').src = `assets/${biz.prefix}-meta.png`;
-            document.getElementById('img-ad1').src = `assets/${biz.prefix}-ad1.jpg`;
-            document.getElementById('img-ad2').src = `assets/${biz.prefix}-ad2.jpg`;
-            document.getElementById('img-ad3').src = `assets/${biz.prefix}-ad3.jpg`;
-
             document.getElementById('bizModal').classList.add('active');
         }
+
+        // CARGA DINÁMICA DE ANUNCIOS (VIDEOS vs IMÁGENES)
+            const adsContainer = document.getElementById('ads-container');
+            
+            if (biz.id === 'lazos') {
+                // Carga videos solo para Lazos Conscientes
+                adsContainer.innerHTML = `
+                    <video src="${biz.prefix}-ad1.mp4" controls muted loop></video>
+                    <video src="${biz.prefix}-ad2.mp4" controls muted loop></video>
+                    <video src="${biz.prefix}-ad3.mp4" controls muted loop></video>
+                `;
+            } else {
+                // Carga imágenes para todos los demás negocios
+                adsContainer.innerHTML = `
+                    <img src="${biz.prefix}-ad1.jpg" alt="Ad 1">
+                    <img src="${biz.prefix}-ad2.jpg" alt="Ad 2">
+                    <img src="${biz.prefix}-ad3.jpg" alt="Ad 3">
+                `;
+            }
 
         function closeModal() {
             document.getElementById('bizModal').classList.remove('active');
