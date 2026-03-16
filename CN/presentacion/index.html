@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creamos Negocios | Bóveda High-Ticket</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><path d='M20 60 L50 20 L80 60 L55 55 L50 80 L45 55 Z' fill='none' stroke='%2300e5ff' stroke-width='12' stroke-linejoin='round' stroke-linecap='round'/></svg>">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* --- 1. DESIGN TOKENS --- */
+        :root {
+            --bg-body: #030712;       
+            --bg-glass: rgba(17, 24, 39, 0.7); 
+            --border-glass: rgba(255, 255, 255, 0.08);
+            
+            --primary: #6366f1;       
+            --primary-glow: rgba(99, 102, 241, 0.5);
+            
+            --accent-cyan: #06b6d4;   
+            --accent-gold: #f59e0b;   
+            --accent-green: #10b981;  
+            
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            
+            --ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- 2. GLOBAL RESET --- */
+        * { box-sizing: border-box; outline: none; -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.08) 0%, transparent 25%);
+            animation: bgPulse 10s ease-in-out infinite alternate;
+        }
+
+        @keyframes bgPulse { 0% { background-position: 0% 0%; } 100% { background-position: 10% 10%; } }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+        /* --- 3. SIDEBAR --- */
+        .sidebar {
+            width: 80px; height: 100%;
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-glass);
+            display: flex; flex-direction: column; align-items: center;
+            padding-top: 30px; gap: 30px; z-index: 50;
+        }
+
+        .brand-logo img { width: 50px; height: auto; border-radius: 8px; } /* Ajuste de Logo */
+
+        .nav-item {
+            width: 50px; height: 50px; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted); font-size: 1.3rem; cursor: pointer;
+            transition: all 0.3s var(--ease-smooth); position: relative;
+        }
+        .nav-item:hover { color: white; background: rgba(255,255,255,0.05); }
+        .nav-item.active {
+            color: white; background: rgba(99, 102, 241, 0.15);
+            border: 1px solid rgba(99, 102, 241, 0.3); box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+        }
+        .nav-item.active::before {
+            content: ''; position: absolute; left: -15px; width: 4px; height: 20px;
+            background: var(--primary); border-radius: 0 4px 4px 0; box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* --- 4. STAGE AREA --- */
+        .stage { flex: 1; position: relative; overflow: hidden; }
+        .view-wrapper {
+            position: absolute; inset: 0; display: flex; flex-direction: column;
+            opacity: 0; pointer-events: none;
+            transform: translateY(20px); transition: all 0.5s var(--ease-smooth);
+            padding: 50px 80px; overflow-y: auto;
+        }
+        .view-wrapper.active { opacity: 1; pointer-events: all; transform: translateY(0); }
+
+        .section-header { margin-bottom: 40px; }
+        .section-tag { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 3px; color: var(--accent-cyan); font-weight: 700; margin-bottom: 8px; display: block; }
+        .section-title { font-size: 2.5rem; font-weight: 700; background: linear-gradient(to right, #fff, #94a3b8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        /* --- 5. INTRO VIEW --- */
+        .intro-container { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; max-width: 900px; margin: 0 auto; }
+        .intro-title { font-size: 4rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .intro-title span { background: linear-gradient(135deg, var(--primary), var(--accent-cyan)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .intro-subtitle { font-size: 1.2rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 40px; }
+        .btn-main { background: linear-gradient(135deg, var(--primary), var(--accent-cyan)); border: none; padding: 18px 40px; font-size: 1.1rem; color: white; font-weight: 700; border-radius: 12px; cursor: pointer; transition: transform 0.3s, box-shadow 0.3s; box-shadow: 0 10px 25px -5px var(--primary-glow); }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -5px rgba(6, 182, 212, 0.5); }
+
+        /* --- 6. VAULT GRID --- */
+        .vault-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; width: 100%; }
+        .biz-card {
+            background: rgba(30, 41, 59, 0.5); border: 1px solid var(--border-glass); border-radius: 16px;
+            padding: 30px; display: flex; flex-direction: column; gap: 15px; cursor: pointer;
+            transition: all 0.4s var(--ease-elastic); backdrop-filter: blur(10px);
+        }
+        .biz-card:hover { transform: translateY(-10px); background: rgba(30, 41, 59, 0.8); border-color: var(--primary); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); }
+        .biz-icon { font-size: 2.5rem; color: var(--accent-cyan); margin-bottom: 10px; }
+        .biz-title { font-size: 1.4rem; font-weight: 700; color: white; }
+        .biz-niche { font-size: 0.85rem; color: var(--primary); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        .biz-proj { background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); color: var(--accent-green); padding: 10px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; text-align: center; margin-top: auto; }
+
+        /* --- 7. MODAL DETALLE DE NEGOCIO --- */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(3, 7, 18, 0.9); backdrop-filter: blur(10px);
+            z-index: 100; display: flex; align-items: center; justify-content: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s; padding: 40px;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-content {
+            background: #0f172a; border: 1px solid var(--border-glass); border-radius: 24px;
+            width: 100%; max-width: 1200px; max-height: 90vh; overflow-y: auto;
+            position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px; padding: 40px;
+        }
+        .btn-close-modal { position: absolute; top: 20px; right: 20px; background: rgba(255,255,255,0.05); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.2rem; transition: background 0.2s; }
+        .btn-close-modal:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+
+        .modal-left { display: flex; flex-direction: column; gap: 20px; }
+        .modal-badge { display: inline-block; background: rgba(99, 102, 241, 0.15); color: var(--primary); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; width: max-content;}
+        .m-title { font-size: 2.5rem; font-weight: 800; line-height: 1.2; }
+        .m-desc { color: var(--text-muted); font-size: 1.1rem; line-height: 1.6; }
+        
+        .action-buttons { display: flex; gap: 15px; margin-top: 10px; }
+        .btn-link { padding: 12px 24px; border-radius: 10px; font-weight: 600; text-decoration: none; display: flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .btn-web { background: rgba(255,255,255,0.05); color: white; border: 1px solid var(--border-glass); }
+        .btn-web:hover { background: white; color: black; }
+        .btn-ig { background: rgba(225, 48, 108, 0.1); color: #e1306c; border: 1px solid rgba(225, 48, 108, 0.3); }
+        .btn-ig:hover { background: #e1306c; color: white; }
+
+        .m-projections { margin-top: 20px; background: rgba(16, 185, 129, 0.05); border: 1px dashed var(--accent-green); padding: 20px; border-radius: 16px; }
+        .m-projections h4 { color: var(--accent-green); margin-bottom: 15px; font-size: 1rem; }
+        .proj-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .proj-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; }
+        .proj-box span { display: block; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 5px;}
+        .proj-box strong { font-size: 1.3rem; color: white; }
+
+        .modal-right { display: flex; flex-direction: column; gap: 30px; }
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .img-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 12px; padding: 15px; }
+        .img-card h4 { font-size: 0.9rem; margin-bottom: 10px; color: var(--text-muted); display: flex; justify-content: space-between;}
+        .img-card img { width: 100%; height: auto; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); object-fit: cover; aspect-ratio: 16/9; background: #1e293b; }
+        
+        .ads-section h4 { font-size: 1rem; margin-bottom: 15px; color: white; }
+        .ads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .ads-grid img { width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e293b; }
+
+        /* --- 8. PROCESS & OFFER VIEWS (Simplified for space) --- */
+        .step-list { list-style: none; display: flex; flex-direction: column; gap: 20px; max-width: 800px; }
+        .step-item { display: flex; gap: 20px; background: rgba(30,41,59,0.4); padding: 25px; border-radius: 16px; border: 1px solid var(--border-glass); align-items: center; }
+        .step-num { width: 50px; height: 50px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; flex-shrink: 0; }
+        
+        .offer-table { width: 100%; max-width: 800px; background: rgba(30,41,59,0.4); border-radius: 16px; border: 1px solid var(--border-glass); overflow: hidden; }
+        .offer-row { display: flex; justify-content: space-between; padding: 20px 30px; border-bottom: 1px solid var(--border-glass); }
+        .offer-row:last-child { border-bottom: none; background: rgba(16,185,129,0.1); }
+        .offer-row span:last-child { font-weight: 700; color: white; }
+        .offer-total span { font-size: 1.5rem; color: var(--accent-green) !important; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="brand-logo"><img src="assets/logo-cn.png" alt="CN" onerror="this.style.display='none'"></div>
+        
+        <div class="nav-item active" onclick="switchView('intro', this)" title="Inicio">
+            <i class="fa-solid fa-house"></i>
+        </div>
+        <div class="nav-item" onclick="switchView('vault', this)" title="La Bóveda">
+            <i class="fa-solid fa-vault"></i>
+        </div>
+        <div class="nav-item" onclick="switchView('process', this)" title="Implementación">
+            <i class="fa-solid fa-gears"></i>
+        </div>
+        <div class="nav-item" onclick="switchView('offer', this)" title="Inversión">
+            <i class="fa-solid fa-file-contract"></i>
+        </div>
+    </aside>
+
+    <main class="stage">
+        
+        <div id="view-intro" class="view-wrapper active">
+            <div class="intro-container">
+                <h1 class="intro-title">No vendemos cursos.<br><span>Construimos Activos.</span></h1>
+                <p class="intro-subtitle">Creamos Negocios™ nació con una misión clara: eliminar el riesgo, la incertidumbre y el proceso interminable que viven los emprendedores. Desarrollamos, validamos y escalamos ecosistemas digitales antes de que inviertas un centavo.</p>
+                <button class="btn-main" onclick="document.querySelectorAll('.nav-item')[1].click()">
+                    Acceder a la Bóveda <i class="fa-solid fa-arrow-right" style="margin-left: 10px;"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="view-vault" class="view-wrapper">
+            <div class="section-header">
+                <span class="section-tag">Stock Oficial</span>
+                <h1 class="section-title">Negocios Validados</h1>
+                <p style="color: var(--text-muted); margin-top: 10px;">Selecciona un activo para ver sus métricas en vivo, creativos y embudo de ventas.</p>
+            </div>
+            <div class="vault-grid" id="vaultGrid">
+                </div>
+        </div>
+
+        <div id="view-process" class="view-wrapper">
+            <div class="section-header">
+                <span class="section-tag">Ejecución</span>
+                <h1 class="section-title">El Sistema de Entrega</h1>
+            </div>
+            <ul class="step-list">
+                <li class="step-item"><div class="step-num">1</div><div><h3>Elección del Activo</h3><p class="t-desc">Elegís el negocio validado de nuestra bóveda que mejor se adapte a tus metas.</p></div></li>
+                <li class="step-item"><div class="step-num">2</div><div><h3>Ecosistema Hotmart</h3><p class="t-desc">Cargamos el producto, configuramos el checkout y dejamos todo listo para recibir pagos.</p></div></li>
+                <li class="step-item"><div class="step-num">3</div><div><h3>Lanzamiento Trafficker</h3><p class="t-desc">Conectamos tus cuentas y lanzamos campañas con la estructura exacta que ya validó el negocio.</p></div></li>
+                <li class="step-item"><div class="step-num" style="background: var(--accent-green);">4</div><div><h3>Acompañamiento a ROI</h3><p class="t-desc">Optimizamos y escalamos hasta que recuperes la inversión y el sistema quede estable.</p></div></li>
+            </ul>
+        </div>
+
+        <div id="view-offer" class="view-wrapper">
+            <div class="section-header">
+                <span class="section-tag">Transparencia</span>
+                <h1 class="section-title">Valor Real del Activo</h1>
+            </div>
+            <div class="offer-table">
+                <div class="offer-row"><span>Investigación y Branding</span><span>$500 USD</span></div>
+                <div class="offer-row"><span>Infoproducto + Bonos + Order Bumps</span><span>$700 USD</span></div>
+                <div class="offer-row"><span>Landing Page + Ecosistema Redes</span><span>$600 USD</span></div>
+                <div class="offer-row"><span>Producción de Creativos y Testimonios</span><span>$300 USD</span></div>
+                <div class="offer-row"><span>Gestión de Campañas + Acompañamiento</span><span>$1,800 USD</span></div>
+                <div class="offer-row offer-total"><span>Costo de hacerlo por tu cuenta:</span><span>$3,900+ USD</span></div>
+            </div>
+            <div style="margin-top: 40px; background: rgba(99,102,241,0.1); border: 1px solid var(--primary); padding: 30px; border-radius: 16px; max-width: 800px;">
+                <h3 style="color: white; margin-bottom: 15px;"><i class="fa-solid fa-file-signature"></i> Garantía por Contrato</h3>
+                <p style="color: var(--text-muted); line-height: 1.6;">No nos limitamos a la entrega. Nos comprometemos estratégicamente hasta que recuperes la totalidad de tu inversión inicial.</p>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="modal-overlay" id="bizModal">
+        <div class="modal-content">
+            <button class="btn-close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            
+            <div class="modal-left">
+                <div class="modal-badge" id="m-niche">Nicho</div>
+                <h2 class="m-title" id="m-title">Título</h2>
+                <p class="m-desc" id="m-promise">Promesa</p>
+                
+                <div class="action-buttons">
+                    <a href="#" target="_blank" class="btn-link btn-web" id="btn-web"><i class="fa-solid fa-globe"></i> Ver Landing Page</a>
+                    <a href="#" target="_blank" class="btn-link btn-ig" id="btn-ig"><i class="fa-brands fa-instagram"></i> Ver Instagram</a>
+                </div>
+
+                <div class="m-projections">
+                    <h4><i class="fa-solid fa-chart-line"></i> Proyección de Facturación</h4>
+                    <div class="proj-grid">
+                        <div class="proj-box"><span>A 3 Meses:</span><strong id="m-proj3">--</strong></div>
+                        <div class="proj-box"><span>A 6 Meses:</span><strong id="m-proj6">--</strong></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-right">
+                <div class="metrics-grid">
+                    <div class="img-card">
+                        <h4>Resultados Hotmart <i class="fa-solid fa-fire" style="color:#f55;"></i></h4>
+                        <img id="img-hotmart" src="" alt="Hotmart">
+                    </div>
+                    <div class="img-card">
+                        <h4>Métricas Meta Ads <i class="fa-brands fa-meta" style="color:#06b6d4;"></i></h4>
+                        <img id="img-meta" src="" alt="Meta Ads">
+                    </div>
+                </div>
+                
+                <div class="ads-section">
+                    <h4>Creativos Ganadores (Ads)</h4>
+                    <div class="ads-grid">
+                        <img id="img-ad1" src="" alt="Ad 1">
+                        <img id="img-ad2" src="" alt="Ad 2">
+                        <img id="img-ad3" src="" alt="Ad 3">
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // BASE DE DATOS DE NEGOCIOS
+        const businesses = [
+            {
+                id: "dental",
+                icon: "fa-tooth",
+                title: "Kit Dental Plantillas",
+                niche: "Profesionales de la Salud",
+                promise: "Ayuda a odontólogos a atraer pacientes y gestionar sus redes sin contratar agencias mediante plantillas y estrategias probadas.",
+                urlWeb: "https://kitdental.site/",
+                urlIg: "https://www.instagram.com/dentalkit.pro/",
+                proj3m: "$1,300 - $1,820 USD/m",
+                proj6m: "$2,500 - $3,500 USD/m",
+                prefix: "dental"
+            },
+            {
+                id: "inmo",
+                icon: "fa-building",
+                title: "Agencia Video Inmobiliaria IA",
+                niche: "Real Estate",
+                promise: "Permite a agentes inmobiliarios generar videos profesionales con IA sin grabar, ahorrando tiempo y destacando propiedades.",
+                urlWeb: "https://realtorai.site/",
+                urlIg: "https://www.instagram.com/ia.realtors/",
+                proj3m: "$1,800 - $2,200 USD/m",
+                proj6m: "$3,000 - $4,500 USD/m",
+                prefix: "inmo"
+            },
+            {
+                id: "ninos",
+                icon: "fa-child-reaching",
+                title: "Programa Niños Brillantes",
+                niche: "Padres y Familia",
+                promise: "Sistema de actividades en casa para potenciar el desarrollo cognitivo infantil alejando a los niños de las pantallas.",
+                urlWeb: "https://ninosbrillantes.site/",
+                urlIg: "https://www.instagram.com/ninosbrillantes.ok/",
+                proj3m: "$1,500 - $2,100 USD/m",
+                proj6m: "$2,800 - $4,000 USD/m",
+                prefix: "ninos"
+            },
+            {
+                id: "excel",
+                icon: "fa-file-excel",
+                title: "Máster Excel & Power BI",
+                niche: "Desarrollo Profesional",
+                promise: "Domina el análisis de datos desde cero para conseguir mejores oportunidades laborales o gestionar negocios.",
+                urlWeb: "https://masterenexcel.online/",
+                urlIg: "https://www.instagram.com/excel_master_pro/",
+                proj3m: "$1,200 - $1,600 USD/m",
+                proj6m: "$2,200 - $3,000 USD/m",
+                prefix: "excel"
+            },
+            {
+                id: "finanzas",
+                icon: "fa-wallet",
+                title: "Educación Financiera Básico",
+                niche: "Finanzas Personales",
+                promise: "Programa paso a paso para organizar ingresos, salir de deudas y comenzar a ahorrar con inteligencia.",
+                urlWeb: "https://finanzaspersonales.site/",
+                urlIg: "https://www.instagram.com/finanzas.libres/",
+                proj3m: "$1,000 - $1,500 USD/m",
+                proj6m: "$2,000 - $2,800 USD/m",
+                prefix: "finanzas"
+            },
+            {
+                id: "forex",
+                icon: "fa-chart-candlestick",
+                title: "Trading Básico Forex",
+                niche: "Inversiones",
+                promise: "Bases sólidas para entender el mercado de divisas, gestionar el riesgo y operar sin falsas promesas.",
+                urlWeb: "https://tradingforex.site/",
+                urlIg: "https://www.instagram.com/forex.start/",
+                proj3m: "$2,000 - $3,000 USD/m",
+                proj6m: "$4,000 - $6,000 USD/m",
+                prefix: "forex"
+            },
+            {
+                id: "parejas",
+                icon: "fa-heart",
+                title: "Lazos Conscientes",
+                niche: "Relaciones",
+                promise: "Herramientas prácticas para mejorar la comunicación en pareja, resolver conflictos y fortalecer la conexión emocional.",
+                urlWeb: "https://lazosconscientes.site/",
+                urlIg: "https://www.instagram.com/lazos.conscientes/",
+                proj3m: "$1,100 - $1,500 USD/m",
+                proj6m: "$2,000 - $2,800 USD/m",
+                prefix: "parejas"
+            }
+        ];
+
+        // RENDERIZAR GRILLA DE NEGOCIOS
+        const grid = document.getElementById('vaultGrid');
+        businesses.forEach(biz => {
+            const card = document.createElement('div');
+            card.className = 'biz-card';
+            card.onclick = () => openModal(biz.id);
+            card.innerHTML = `
+                <div class="biz-icon"><i class="fa-solid ${biz.icon}"></i></div>
+                <div>
+                    <div class="biz-niche">${biz.niche}</div>
+                    <div class="biz-title">${biz.title}</div>
+                </div>
+                <div class="biz-proj">Proyección: ${biz.proj3m}</div>
+            `;
+            grid.appendChild(card);
+        });
+
+        // NAVEGACIÓN
+        function switchView(viewId, btn) {
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.view-wrapper').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('view-' + viewId).classList.add('active');
+        }
+
+        // CONTROL DEL MODAL
+        function openModal(id) {
+            const biz = businesses.find(b => b.id === id);
+            
+            document.getElementById('m-title').innerText = biz.title;
+            document.getElementById('m-niche').innerText = biz.niche;
+            document.getElementById('m-promise').innerText = biz.promise;
+            document.getElementById('m-proj3').innerText = biz.proj3m;
+            document.getElementById('m-proj6').innerText = biz.proj6m;
+            
+            document.getElementById('btn-web').href = biz.urlWeb;
+            document.getElementById('btn-ig').href = biz.urlIg;
+
+            // CARGA DE IMÁGENES CON LA NOMENCLATURA EXACTA
+            document.getElementById('img-hotmart').src = `assets/${biz.prefix}-hotmart.png`;
+            document.getElementById('img-meta').src = `assets/${biz.prefix}-meta.png`;
+            document.getElementById('img-ad1').src = `assets/${biz.prefix}-ad1.jpg`;
+            document.getElementById('img-ad2').src = `assets/${biz.prefix}-ad2.jpg`;
+            document.getElementById('img-ad3').src = `assets/${biz.prefix}-ad3.jpg`;
+
+            document.getElementById('bizModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('bizModal').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
