@@ -408,10 +408,29 @@
             let stats = {};
             const {start, end} = getTimestampsFromFilter();
 
+            // 1. Crear Diccionario de Meta: Lee Meta para saber qué campañas/anuncios llevan "+"
+            let metaCampMap = {};
+            let metaAdMap = {};
+            
+            rawMeta.forEach(r => {
+                let mCamp = (r['Campaign name'] || r['Campaña'] || r['Campaign'] || '').trim();
+                let mAd = (r['Ad name'] || r['Ad Name'] || r['Anuncio'] || '').trim();
+                
+                // Si tienen "+", guardamos cómo se vería con espacios, apuntando al nombre real con "+"
+                if (mCamp.includes('+')) metaCampMap[mCamp.replace(/\+/g, ' ')] = mCamp;
+                if (mAd.includes('+')) metaAdMap[mAd.replace(/\+/g, ' ')] = mAd;
+            });
+
+            // 2. Modificar el recolector de GHL para que restaure el "+"
             const getRowDetails = (r) => {
                 let camp = (r['Campaña (UTM)'] || r['Campaña'] || r['Origen Campaña'] || 'Desconocida').trim();
                 let ad = (r['Ad Content'] || r['Anuncio'] || r['Nombre del Ad'] || 'Desconocido').trim();
                 let fecha = r['Fecha Creación'] || r['Fecha'] || r['Created'] || '';
+                
+                // Si el nombre con espacios está en el diccionario de Meta, lo reemplazamos por el nombre correcto con "+"
+                if (metaCampMap[camp]) camp = metaCampMap[camp];
+                if (metaAdMap[ad]) ad = metaAdMap[ad];
+
                 return { key: `${camp}___${ad}`, camp, ad, fecha };
             };
 
