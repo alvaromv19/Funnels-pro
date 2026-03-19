@@ -221,7 +221,7 @@
 <body>
 
     <aside class="sidebar">
-        <div class="brand-logo"><img src="logo-cn.png" alt="CN" onerror="this.style.display='none'"></div>
+    <div class="brand-logo"><img src="assets/logo-cn.png" alt="CN" onerror="this.style.display='none'"></div>
         
         <div class="nav-item active" onclick="switchView('intro', this)" title="Inicio">
             <i class="fa-solid fa-house"></i>
@@ -416,23 +416,23 @@
             document.getElementById('btn-ig').href = biz.urlIg;
 
             // CARGA DE MÉTRICAS
-            document.getElementById('img-hotmart').src = `${biz.prefix}-hotmart.png`;
-            document.getElementById('img-meta').src = `${biz.prefix}-meta.png`;
+            document.getElementById('img-hotmart').src = `assets/${biz.prefix}-hotmart.png`;
+            document.getElementById('img-meta').src = `assets/${biz.prefix}-meta.png`;
 
             // CARGA DINÁMICA DE ANUNCIOS (CORREGIDO: AHORA ESTÁ ADENTRO DE LA FUNCIÓN)
             const adsContainer = document.getElementById('ads-container');
-            if (biz.id === 'lazos') {
+                if (biz.id === 'lazos') {
                 adsContainer.innerHTML = `
-                    <video src="${biz.prefix}-ad1.mp4" controls muted loop></video>
-                    <video src="${biz.prefix}-ad2.mp4" controls muted loop></video>
-                    <video src="${biz.prefix}-ad3.mp4" controls muted loop></video>
-                `;
-            } else {
-                adsContainer.innerHTML = `
-                    <div class="zoom-wrapper" onclick="openLightbox('${biz.prefix}-ad1.jpg')"><img src="${biz.prefix}-ad1.jpg" alt="Ad 1"><div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div></div>
-                    <div class="zoom-wrapper" onclick="openLightbox('${biz.prefix}-ad2.jpg')"><img src="${biz.prefix}-ad2.jpg" alt="Ad 2"><div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div></div>
-                    <div class="zoom-wrapper" onclick="openLightbox('${biz.prefix}-ad3.jpg')"><img src="${biz.prefix}-ad3.jpg" alt="Ad 3"><div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div></div>
-                `;
+                <video src="assets/${biz.prefix}-ad1.mp4" controls muted loop></video>
+                <video src="assets/${biz.prefix}-ad2.mp4" controls muted loop></video>
+                <video src="assets/${biz.prefix}-ad3.mp4" controls muted loop></video>
+            `;
+        } else {
+            adsContainer.innerHTML = `
+            <div class="zoom-wrapper" onclick="openLightbox('assets/${biz.prefix}-ad1.jpg')"><img src="assets/${biz.prefix}-ad1.jpg" alt="Ad 1"><div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div></div>
+            <div class="zoom-wrapper" onclick="openLightbox('assets/${biz.prefix}-ad2.jpg')"><img src="assets/${biz.prefix}-ad2.jpg" alt="Ad 2"><div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div></div>
+            <div class="zoom-wrapper" onclick="openLightbox('assets/${biz.prefix}-ad3.jpg')"><img src="assets/${biz.prefix}-ad3.jpg" alt="Ad 3"><div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i> Ampliar</div></div>
+            `;
             }
 
             document.getElementById('bizModal').classList.add('active');
