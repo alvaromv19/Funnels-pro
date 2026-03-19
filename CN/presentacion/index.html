@@ -146,17 +146,22 @@
         .img-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border-glass); border-radius: 12px; padding: 15px; text-align: center; }
         .img-card h4 { font-size: 0.9rem; margin-bottom: 15px; color: var(--text-muted); display: flex; justify-content: space-between; text-align: left;}
         
-        .zoom-wrapper { position: relative; display: inline-block; width: 100%; border-radius: 8px; overflow: hidden; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); cursor: zoom-in; transition: border 0.3s; }
+        .zoom-wrapper { position: relative; display: block; width: 100%; border-radius: 8px; overflow: hidden; background: #1e293b; border: 1px solid rgba(255,255,255,0.1); cursor: zoom-in; transition: border 0.3s; }
         .zoom-wrapper:hover { border-color: var(--accent-cyan); }
-        .zoom-wrapper img { width: 100%; height: auto; display: block; object-fit: contain; max-height: 120px; }
+        
+        /* Limitamos la altura a 120px SOLO en las métricas para que no se deformen */
+        .img-card .zoom-wrapper img { width: 100%; height: auto; display: block; object-fit: contain; max-height: 120px; }
+        
         .zoom-hint { background: rgba(0,0,0,0.7); color: white; font-size: 0.75rem; padding: 6px; position: absolute; bottom: 0; left: 0; width: 100%; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; opacity: 0; transition: opacity 0.3s; }
         .zoom-wrapper:hover .zoom-hint { opacity: 1; }
 
         .ads-section h4 { font-size: 1rem; margin-bottom: 15px; color: white; }
         .ads-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         
-        /* Los videos mantienen su aspecto nativo pero adaptados al grid */
-        .ads-grid video { width: 100%; aspect-ratio: 9/16; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e293b; }
+        /* Ajuste 4:5 para que los Ads (Imágenes y Videos) ocupen todo el alto disponible */
+        .ads-grid .zoom-wrapper { aspect-ratio: 4/5; }
+        .ads-grid .zoom-wrapper img { width: 100%; height: 100%; object-fit: cover; display: block; max-height: none; }
+        .ads-grid video { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-glass); background: #1e293b; display: block; }
         
         /* --- PROCESS & OFFER VIEWS --- */
         .step-list { list-style: none; display: flex; flex-direction: column; gap: 20px; max-width: 800px; padding-bottom: 50px; }
