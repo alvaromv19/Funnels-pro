@@ -226,11 +226,16 @@
 <body>
 
     <aside class="sidebar">
-    <div class="brand-logo"><img src="assets/logo-cn.png" alt="CN" onerror="this.style.display='none'"></div>
+        <div class="brand-logo"><img src="assets/logo-cn.png" alt="CN" onerror="this.style.display='none'"></div>
         
         <div class="nav-item active" onclick="switchView('intro', this)" title="Inicio">
             <i class="fa-solid fa-house"></i>
         </div>
+        
+        <div class="nav-item" onclick="switchView('about', this)" title="Quiénes Somos">
+            <i class="fa-solid fa-users"></i>
+        </div>
+
         <div class="nav-item" onclick="switchView('vault', this)" title="La Bóveda">
             <i class="fa-solid fa-vault"></i>
         </div>
@@ -254,6 +259,37 @@
             </div>
         </div>
 
+        <div id="view-about" class="view-wrapper">
+            <div class="section-header">
+                <span class="section-tag">Identidad Corporativa</span>
+                <h1 class="section-title">¿Quiénes Somos?</h1>
+                <p style="color: var(--text-muted); margin-top: 10px; max-width: 800px; font-size: 1.1rem; line-height: 1.6;">
+                    Nacimos con una misión clara: <strong>eliminar el riesgo, la incertidumbre y el proceso interminable</strong> que viven los emprendedores al intentar iniciar desde cero. Nos especializamos exclusivamente en crear y validar negocios con demanda real comprobada.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 850px; padding-bottom: 40px;">
+                <div style="background: rgba(30,41,59,0.4); padding: 30px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                    <i class="fa-solid fa-ban" style="font-size: 2rem; color: #ef4444; margin-bottom: 15px;"></i>
+                    <h3 style="margin-bottom: 10px;">No vendemos ideas ni cursos</h3>
+                    <p style="color: var(--text-muted); line-height: 1.5; font-size: 0.95rem;">Construimos activos digitales completos: branding profesional, producto validado, página optimizada, sistema de ventas y campañas estratégicas listas para ejecutarse.</p>
+                </div>
+                <div style="background: rgba(30,41,59,0.4); padding: 30px; border-radius: 16px; border: 1px solid var(--border-glass);">
+                    <i class="fa-solid fa-vial-circle-check" style="font-size: 2rem; color: var(--accent-cyan); margin-bottom: 15px;"></i>
+                    <h3 style="margin-bottom: 10px;">Validación Interna</h3>
+                    <p style="color: var(--text-muted); line-height: 1.5; font-size: 0.95rem;">Antes de entregar cualquier negocio, nuestro equipo lo desarrolla y lo lanza. Solo cuando demuestra consistencia y es escalable, lo ponemos a tu disposición.</p>
+                </div>
+                <div style="grid-column: 1 / -1; background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(6,182,212,0.1)); padding: 30px; border-radius: 16px; border: 1px solid var(--primary);">
+                    <h3 style="color: white; margin-bottom: 10px;"><i class="fa-solid fa-handshake-angle" style="color: var(--accent-green); margin-right: 8px;"></i> Y lo más importante...</h3>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 1rem;">No nos limitamos a entregar el negocio. Acompañamos estratégicamente la ejecución, optimización y escalamiento hasta que el sistema recupere tu inversión inicial y quede funcionando de manera estable.</p>
+                </div>
+            </div>
+            
+            <button class="btn-main" style="width: max-content;" onclick="document.querySelectorAll('.nav-item')[2].click()">
+                Ir a la Fábrica de Negocios <i class="fa-solid fa-arrow-right" style="margin-left: 10px;"></i>
+            </button>
+        </div>
+        
         <div id="view-vault" class="view-wrapper">
             <div class="section-header">
                 <span class="section-tag">Nuestra Fábrica</span>
