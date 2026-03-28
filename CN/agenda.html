@@ -60,7 +60,17 @@
             font-weight: 800;
             line-height: 1.25;
             letter-spacing: -0.5px;
+            margin-bottom: 20px;
+        }
+
+        p.lead {
+            font-size: 1.1rem;
+            color: #8892b0;
+            line-height: 1.6;
             margin-bottom: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .text-orange { 
@@ -73,13 +83,11 @@
             animation: shineText 4s linear infinite;
         }
 
-        @keyframes shineText {
-            to { background-position: 200% center; }
-        }
+        @keyframes shineText { to { background-position: 200% center; } }
 
         /* --- CONTENEDOR DEL CALENDARIO --- */
         .calendar-box {
-            position: relative; /* Clave para el Loader */
+            position: relative; 
             width: 100%;
             background: #ffffff; 
             border-radius: 12px; 
@@ -87,7 +95,7 @@
             box-shadow: 0 25px 50px rgba(0,0,0,0.8);
             border: 1px solid rgba(255, 255, 255, 0.1); 
             margin: 0 auto;
-            min-height: 550px; /* Mantiene la caja estirada mientras carga */
+            min-height: 550px; 
         }
 
         /* --- ESTILOS DEL LOADER DE PRECARGA --- */
@@ -99,45 +107,33 @@
             justify-content: center;
             align-items: center;
             background: #ffffff;
-            z-index: 0; /* Queda detrás del iframe cuando este aparece */
+            z-index: 0; 
         }
 
         .spinner {
             width: 50px;
             height: 50px;
             border: 4px solid rgba(242, 85, 34, 0.15);
-            border-top: 4px solid #f25522; /* Color Naranja */
+            border-top: 4px solid #f25522; 
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
-        .loader-text {
-            margin-top: 18px;
-            color: #4a5568;
-            font-size: 1rem;
-            font-weight: 600;
-            animation: pulseText 1.5s infinite;
-        }
+        .loader-text { margin-top: 18px; color: #4a5568; font-size: 1rem; font-weight: 600; animation: pulseText 1.5s infinite; }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
         /* Responsividad Móvil */
         @media (max-width: 768px) {
-            h1 { font-size: 1.6rem; margin-bottom: 20px; }
+            h1 { font-size: 1.6rem; margin-bottom: 15px; }
+            p.lead { font-size: 0.95rem; margin-bottom: 25px; }
             .content { padding: 20px 15px 40px; } 
             .content img.logo { max-width: 120px; margin-bottom: 20px; }
             .calendar-box { border-radius: 8px; min-height: 500px; }
         }
 
-        .footer {
-            width: 100%;
-            padding: 25px 20px;
-            text-align: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.03);
-            margin-top: auto; 
-        }
-        
+        .footer { width: 100%; padding: 25px 20px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.03); margin-top: auto; }
         .footer p { font-size: 0.75rem; color: #4a5568; margin: 5px 0; font-weight: 300; }
         .footer a { color: #4a5568; text-decoration: none; transition: color 0.3s ease; }
         .footer a:hover { color: #8892b0; }
@@ -149,7 +145,14 @@
         <div class="bg-glow"></div>
         <img src="presentacion/assets/logo-cn.png" alt="Creamos Negocios" class="logo">
         
-        <h1>Agendá tu llamada para adquirir un<br><span class="text-orange">negocio digital validado</span></h1>
+        <div id="header-normal">
+            <h1>Agendá tu llamada para adquirir un<br><span class="text-orange">negocio digital validado</span></h1>
+        </div>
+
+        <div id="header-rescate" style="display: none;">
+            <h1>¿Llegaste hasta aquí <span class="text-orange">solamente para regresar?</span></h1>
+            <p class="lead">Te tomaste el tiempo de ver el video y entender el modelo de negocio. No dejes que una duda te impida escalar. <strong>Agendá tu llamada abajo sin compromiso</strong> y lo charlamos.</p>
+        </div>
         
         <div class="calendar-box">
             
@@ -178,6 +181,35 @@
             <a href="#">Aviso Legal</a>
         </p>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let trapArmed = false;
+
+            function armTrap() {
+                if (trapArmed) return;
+                trapArmed = true;
+                
+                // Inyectamos estado en el historial (no recarga la página, mantiene URLs)
+                window.history.pushState('trap', null, window.location.href);
+                window.history.pushState('trap', null, window.location.href);
+                
+                window.addEventListener('popstate', function() {
+                    // Si intentan darle Atrás, ocultamos el título normal y mostramos el "Golpe de Realidad"
+                    document.getElementById('header-normal').style.display = 'none';
+                    document.getElementById('header-rescate').style.display = 'block';
+                    
+                    // Hacemos scroll suave hacia arriba para asegurarnos de que lean el nuevo título
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+
+            // Armamos la trampa con la primera interacción del usuario
+            document.addEventListener('click', armTrap);
+            document.addEventListener('touchstart', armTrap);
+            document.addEventListener('scroll', armTrap);
+        });
+    </script>
 
 </body>
 </html>
