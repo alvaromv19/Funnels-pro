@@ -230,5 +230,48 @@
         </p>
     </footer>
 
+    <script>
+        let waClicked = false;
+        let trapArmed = false;
+
+        // 1. Detectar si ya cumplió el objetivo (Clic en WhatsApp)
+        const btnWa = document.querySelector('.btn-whatsapp');
+        if(btnWa) {
+            btnWa.addEventListener('click', function() {
+                waClicked = true;
+            });
+        }
+
+        // 2. Alerta Nativa al intentar cerrar pestaña o recargar (Exit Intent)
+        window.addEventListener('beforeunload', function (e) {
+            if (!waClicked) {
+                // Cancela el evento y muestra la alerta nativa del navegador
+                e.preventDefault(); 
+                e.returnValue = ''; 
+            }
+        });
+
+        // 3. Lógica para secuestrar el botón "Atrás"
+        function armTrap() {
+            if (trapArmed) return;
+            trapArmed = true;
+            
+            // Inyectamos estados en el historial del navegador
+            window.history.pushState('trap', null, window.location.href);
+            window.history.pushState('trap', null, window.location.href);
+            
+            window.addEventListener('popstate', function() {
+                // 🔴 AQUÍ DEFINES EL NOMBRE DE TU NUEVA PÁGINA
+                window.location.href = 'nutricion.html'; 
+            });
+        }
+
+        // Los navegadores exigen que el usuario interactúe con la página (un clic o scroll) 
+        // antes de permitir modificar el historial. Escuchamos estos eventos:
+        document.addEventListener('click', armTrap);
+        document.addEventListener('touchstart', armTrap);
+        document.addEventListener('scroll', armTrap);
+    </script>
+    
 </body>
 </html>
