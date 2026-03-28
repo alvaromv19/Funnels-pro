@@ -143,15 +143,15 @@
             margin-right: auto;
         }
 
-        /* VSL Box Minimalista */
+        /* VSL Box Minimalista (Corregido para VTurb) */
         .video-box {
             width: 100%;
             background: #000;
             border-radius: 6px; 
-            overflow: hidden;
-            aspect-ratio: 16/9;
+            /* Eliminamos overflow y aspect-ratio para dejar que el botón expanda la caja */
             box-shadow: 0 20px 40px rgba(0,0,0,0.9);
             border: 1px solid rgba(255, 255, 255, 0.08); 
+            padding-bottom: 5px; /* Da un pequeño respiro inferior cuando el botón aparece */
         }
 
         /* Responsividad Móvil */
