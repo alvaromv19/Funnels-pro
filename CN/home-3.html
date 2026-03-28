@@ -107,6 +107,31 @@
             .top-bar { padding: 8px 0; }
             .top-bar img { max-width: 120px; }
         }
+        /* --- FOOTER MINIMALISTA --- */
+        .footer {
+            width: 100%;
+            padding: 25px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: auto; /* Empuja el footer siempre al fondo */
+        }
+        
+        .footer p {
+            font-size: 0.75rem;
+            color: #4a5568; /* Gris muy sutil */
+            margin: 5px 0;
+            font-weight: 300;
+        }
+        
+        .footer a {
+            color: #4a5568;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: #8892b0;
+        }
     </style>
 </head>
 <body>
@@ -132,5 +157,13 @@
 
     </div>
 
+    <footer class="footer">
+        <p>&copy; 2026 Creamos Negocios. Todos los derechos reservados.</p>
+        <p>
+            <a href="#">Términos y Condiciones</a> | 
+            <a href="#">Políticas de Privacidad</a> | 
+            <a href="#">Aviso Legal</a>
+        </p>
+    </footer>
 </body>
 </html>
