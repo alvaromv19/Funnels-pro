@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atención: Tu llamada no está confirmada | Creamos Negocios</title>
+
+    <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
+    <link rel="preload" href="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/6947357f76990ab694f71c65/v4/player.js" as="script">
+    <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+    <link rel="dns-prefetch" href="https://cdn.converteai.net">
+    <link rel="dns-prefetch" href="https://scripts.converteai.net">
+    <link rel="dns-prefetch" href="https://images.converteai.net">
+    <link rel="dns-prefetch" href="https://m3u8.vturb.net">
+    <link rel="dns-prefetch" href="https://api.vturb.com.br">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,800;1,400;1,600&display=swap" rel="stylesheet">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #010308; /* Fondo oscuro puro minimalista */
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .content {
+            width: 100%;
+            max-width: 900px;
+            padding: 40px 20px 60px; 
+            text-align: center;
+            position: relative; 
+            z-index: 1;
+            flex: 1;
+        }
+
+        /* EL GLOW DE FONDO (Azul Premium) */
+        .bg-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 60%;
+            background: rgba(34, 116, 242, 0.25); 
+            filter: blur(100px);
+            z-index: -1;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        /* Titular de Urgencia */
+        .headline {
+            font-size: 2.2rem;
+            font-weight: 800;
+            line-height: 1.25;
+            letter-spacing: -0.5px;
+            margin-bottom: 15px;
+        }
+
+        .text-orange { 
+            color: #f25522; 
+        }
+
+        .sub-headline {
+            font-size: 1.1rem;
+            color: #8892b0;
+            font-weight: 400;
+            margin-bottom: 40px;
+        }
+
+        /* Estilos de los Pasos */
+        .step-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .step-title span {
+            font-weight: 400;
+            font-style: italic;
+            color: #e2e8f0;
+        }
+
+        /* VSL Box (Aquí sí usamos aspect-ratio porque no hay botón que lo expanda) */
+        .video-box {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto 40px auto;
+            background: #000;
+            border-radius: 8px; 
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+
+        /* Caja de Instrucciones (Paso 2) */
+        .instructions-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .instructions-box p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #cbd5e1;
+        }
+
+        .instructions-box p:last-child {
+            margin-bottom: 0;
+            font-size: 0.95rem;
+            color: #8892b0;
+        }
+
+        .highlight-bold {
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .highlight-red {
+            font-weight: 800;
+            color: #ff4757; /* Un rojo sutil para la advertencia de cancelación */
+        }
+
+        /* Responsividad Móvil */
+        @media (max-width: 768px) {
+            .headline { font-size: 1.8rem; }
+            .sub-headline { font-size: 1rem; margin-bottom: 30px; }
+            .step-title { font-size: 1.3rem; flex-direction: column; gap: 5px; }
+            .content { padding: 30px 15px 40px; } 
+            .instructions-box { padding: 20px 15px; }
+            .instructions-box p { font-size: 1rem; }
+        }
+
+        /* --- FOOTER MINIMALISTA --- */
+        .footer {
+            width: 100%;
+            padding: 25px 20px;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: auto; 
+        }
+        
+        .footer p { font-size: 0.75rem; color: #4a5568; margin: 5px 0; font-weight: 300; }
+        .footer a { color: #4a5568; text-decoration: none; transition: color 0.3s ease; }
+        .footer a:hover { color: #8892b0; }
+    </style>
+</head>
+<body>
+
+    <div class="content">
+        <div class="bg-glow"></div>
+        
+        <h1 class="headline">¡Tu llamada <span class="text-orange">todavía no está confirmada!</span></h1>
+        <p class="sub-headline">Solo necesitamos que confirmes tu asistencia para reservar definitivamente tu lugar.</p>
+
+        <div class="step-title">
+            ✅ PASO N°1: <span>Mirá el video de abajo (menos de 30 segundos)</span>
+        </div>
+
+        <div class="video-box">
+            <vturb-smartplayer id="vid-6947357f76990ab694f71c65" style="display: block; margin: 0 auto; width: 100%; "></vturb-smartplayer> 
+            <script type="text/javascript"> 
+                var s=document.createElement("script"); 
+                s.src="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/players/6947357f76990ab694f71c65/v4/player.js", 
+                s.async=!0,document.head.appendChild(s); 
+            </script>
+        </div>
+
+        <div class="step-title">
+            ✅ PASO N°2: <span>Confirmá tu llamada</span>
+        </div>
+
+        <div class="instructions-box">
+            <p>Para reservar tu lugar, respondé <span class="highlight-bold">“CONFIRMO”</span> al mensaje que te enviamos por WhatsApp.</p>
+            
+            <p><span class="highlight-bold">Importante:</span><br>
+            Solo tomamos llamadas confirmadas.<br>
+            <span class="highlight-red">Si no respondés, tu cita será cancelada automáticamente.</span></p>
+
+            <p>Esto lo hacemos porque estamos recibiendo muchas agendas falsas y queremos dedicar tiempo real solo a personas comprometidas.</p>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 Creamos Negocios. Todos los derechos reservados.</p>
+        <p>
+            <a href="#">Términos y Condiciones</a> | 
+            <a href="#">Políticas de Privacidad</a> | 
+            <a href="#">Aviso Legal</a>
+        </p>
+    </footer>
+
+</body>
+</html>
