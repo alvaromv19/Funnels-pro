@@ -45,30 +45,26 @@
             min-height: 100vh;
         }
 
-        /* Top Bar Ultra Compacta */
-        .top-bar {
-            width: 100%;
-            padding: 5px 0; /* Espaciado ultra reducido */
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        .top-bar img {
-            max-width: 140px;
-        }
-
         /* Contenido Principal empujado hacia arriba */
         .content {
             width: 100%;
             max-width: 900px;
-            /* Se redujo el padding superior de 25px a 5px para solucionar el espacio vacío */
-            padding: 5px 20px 60px; 
+            /* Padding superior ajustado a 10px para máxima compresión vertical */
+            padding: 10px 20px 60px; 
             text-align: center;
             position: relative; /* Necesario para contener el glow de fondo */
             z-index: 1;
         }
 
-        /* EL GLOW DE FONDO DETRÁS DEL VIDEO */
+        /* ESTILOS DEL LOGO DENTRO DE LA LANDING */
+        .content img {
+            max-width: 140px;
+            height: auto;
+            /* Margen inferior muy reducido para compactar */
+            margin-bottom: 5px; 
+        }
+
+        /* EL GLOW DE FONDO DETRÁS DEL VIDEO - AHORA AZUL */
         .bg-glow {
             position: absolute;
             top: 65%;
@@ -76,7 +72,8 @@
             transform: translate(-50%, -50%);
             width: 80%;
             height: 60%;
-            background: rgba(242, 85, 34, 0.25); /* Resplandor naranja tenue */
+            /* Resplandor azul tenue y profundo (rgba(34, 116, 242, 0.25)) */
+            background: rgba(34, 116, 242, 0.25); 
             filter: blur(90px);
             z-index: -1;
             border-radius: 50%;
@@ -161,10 +158,9 @@
         @media (max-width: 768px) {
             h1 { font-size: 1.7rem; }
             p.lead { font-size: 0.95rem; margin-bottom: 25px; }
-            /* Se redujo a 0px el top padding en celular para máxima cercanía */
+            /* Padding ajustado en móvil */
             .content { padding: 0px 15px 40px; } 
-            .top-bar { padding: 5px 0; }
-            .top-bar img { max-width: 120px; }
+            .content img { max-width: 120px; }
         }
 
         /* --- FOOTER MINIMALISTA --- */
@@ -196,12 +192,10 @@
 </head>
 <body>
 
-    <div class="top-bar">
-        <img src="presentacion/assets/logo-cn.png" alt="Creamos Negocios">
-    </div>
-
     <div class="content">
         <div class="bg-glow"></div>
+        
+        <img src="presentacion/assets/logo-cn.png" alt="Creamos Negocios">
         
         <h1>Te Entregamos un <span class="text-orange">Negocio Digital 100%<br>Armado y Validado</span>, Listo Para Generar<br><span class="text-italic-underline">Ventas Desde el Primer Día</span></h1>
         
