@@ -48,7 +48,7 @@
         /* Top Bar Ultra Compacta */
         .top-bar {
             width: 100%;
-            padding: 10px 0; /* Espaciado mínimo */
+            padding: 5px 0; /* Espaciado ultra reducido */
             text-align: center;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
@@ -61,8 +61,26 @@
         .content {
             width: 100%;
             max-width: 900px;
-            padding: 25px 20px 60px; /* Reducido el padding superior drásticamente */
+            /* Se redujo el padding superior de 25px a 5px para solucionar el espacio vacío */
+            padding: 5px 20px 60px; 
             text-align: center;
+            position: relative; /* Necesario para contener el glow de fondo */
+            z-index: 1;
+        }
+
+        /* EL GLOW DE FONDO DETRÁS DEL VIDEO */
+        .bg-glow {
+            position: absolute;
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 60%;
+            background: rgba(242, 85, 34, 0.15); /* Resplandor naranja tenue */
+            filter: blur(90px);
+            z-index: -1;
+            border-radius: 50%;
+            pointer-events: none;
         }
 
         /* Tipografía de la Promesa Completa */
@@ -74,8 +92,48 @@
             margin-bottom: 20px;
         }
 
-        .text-orange { color: #f25522; }
-        .text-italic-underline { text-decoration: underline; font-style: italic; font-weight: 600; }
+        /* ANIMACIÓN 1: Brillo continuo en el texto naranja */
+        .text-orange { 
+            color: #f25522; 
+            background: linear-gradient(90deg, #f25522 0%, #ffad91 40%, #f25522 80%);
+            background-size: 200% auto;
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: shineText 4s linear infinite;
+        }
+
+        @keyframes shineText {
+            to { background-position: 200% center; }
+        }
+
+        /* ANIMACIÓN 2: Subrayado dinámico que se dibuja solo */
+        .text-italic-underline { 
+            font-style: italic; 
+            font-weight: 600; 
+            position: relative;
+            display: inline-block;
+        }
+
+        .text-italic-underline::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 4px;
+            bottom: 2px;
+            left: 0;
+            background-color: #f25522;
+            border-radius: 2px;
+            transform: scaleX(0);
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+            animation: drawLine 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards 0.5s; /* Se dibuja medio segundo después de cargar */
+            box-shadow: 0px 2px 8px rgba(242, 85, 34, 0.6);
+        }
+
+        @keyframes drawLine {
+            to { transform: scaleX(1); transform-origin: bottom left; }
+        }
 
         p.lead {
             font-size: 1.1rem;
@@ -88,7 +146,7 @@
             margin-right: auto;
         }
 
-        /* VSL Box Minimalista sin distracciones */
+        /* VSL Box Minimalista */
         .video-box {
             width: 100%;
             background: #000;
@@ -96,29 +154,31 @@
             overflow: hidden;
             aspect-ratio: 16/9;
             box-shadow: 0 20px 40px rgba(0,0,0,0.9);
-            border: 1px solid rgba(255, 255, 255, 0.08); /* Borde súper sutil, nada de luces fuertes */
+            border: 1px solid rgba(255, 255, 255, 0.08); 
         }
 
         /* Responsividad Móvil */
         @media (max-width: 768px) {
             h1 { font-size: 1.7rem; }
             p.lead { font-size: 0.95rem; margin-bottom: 25px; }
-            .content { padding: 15px 15px 40px; }
-            .top-bar { padding: 8px 0; }
+            /* Se redujo a 0px el top padding en celular para máxima cercanía */
+            .content { padding: 0px 15px 40px; } 
+            .top-bar { padding: 5px 0; }
             .top-bar img { max-width: 120px; }
         }
+
         /* --- FOOTER MINIMALISTA --- */
         .footer {
             width: 100%;
             padding: 25px 20px;
             text-align: center;
             border-top: 1px solid rgba(255, 255, 255, 0.03);
-            margin-top: auto; /* Empuja el footer siempre al fondo */
+            margin-top: auto; 
         }
         
         .footer p {
             font-size: 0.75rem;
-            color: #4a5568; /* Gris muy sutil */
+            color: #4a5568; 
             margin: 5px 0;
             font-weight: 300;
         }
@@ -141,6 +201,7 @@
     </div>
 
     <div class="content">
+        <div class="bg-glow"></div>
         
         <h1>Te Entregamos un <span class="text-orange">Negocio Digital 100%<br>Armado y Validado</span>, Listo Para Generar<br><span class="text-italic-underline">Ventas Desde el Primer Día</span></h1>
         
