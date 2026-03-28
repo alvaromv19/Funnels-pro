@@ -31,7 +31,6 @@
             min-height: 100vh;
         }
 
-        /* Contenedor dinámico */
         .content {
             width: 100%;
             max-width: 900px;
@@ -129,6 +128,10 @@
                     <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
                     ENVIAR "CONFIRMO" POR WHATSAPP
                 </a>
+
+                <p id="texto-cuenta-regresiva" style="display: none; font-size: 0.95rem; color: #8892b0; margin-top: 18px; line-height: 1.5;">
+                    Serás redirigido a WhatsApp automáticamente en <span id="tiempo-timer" style="color: #f25522; font-weight: 800; font-size: 1.1rem;">60</span> segundos para confirmar tu llamada...
+                </p>
             </div>
         </div>
 
@@ -164,30 +167,75 @@
             const estado1 = document.getElementById('estado-1-noconfirmado');
             const estado2 = document.getElementById('estado-2-confirmado');
             const btnWa = document.getElementById('btn-wa-confirmar');
+            
+            // 🚨 IMPORTANTE: Reemplaza TU_NUMERO_AQUI por el de tu equipo (solo números, con el código de país, ej: 51999888777)
+            const urlWhatsAppDestino = "https://api.whatsapp.com/send?phone=TU_NUMERO_AQUI&text=Hola,%20CONFIRMO%20mi%20llamada%20para%20adquirir%20mi%20negocio%20digital.";
+
+            // Variables para la auto-redirección
+            let videoFinalizado = false;
+            let tiempoRestante = 60; // 👈 Puedes cambiar a 30 si prefieres que sea más rápido
+            let timerRedireccion;
+            const textoTimer = document.getElementById('texto-cuenta-regresiva');
+            const spanTiempo = document.getElementById('tiempo-timer');
 
             // 1. REVISAR HUELLA DIGITAL AL CARGAR LA PÁGINA
-            // Si el sello "cn_confirmado" existe en su navegador, mostramos la fase de Nutrición.
             if (localStorage.getItem('cn_confirmado') === 'true') {
                 estado1.style.display = 'none';
                 estado2.style.display = 'block';
-                waClicked = true; // Desactiva alertas de salida
+                waClicked = true;
             }
 
-            // 2. REGISTRAR EL CLIC EN WHATSAPP Y APLICAR EL SELLO
+            // 2. MONITOREAR VTURB PARA INICIAR CUENTA REGRESIVA
+            const checkVturbTerminado = setInterval(() => {
+                if (window.smartplayer && window.smartplayer.instances && window.smartplayer.instances.length > 0) {
+                    const player = window.smartplayer.instances[0];
+                    // Si el video tiene duración y el usuario llega al final (faltando 1 segundo o menos)
+                    if (player.video && player.video.duration > 0) {
+                        if (player.video.currentTime >= (player.video.duration - 1) && !videoFinalizado) {
+                            videoFinalizado = true;
+                            clearInterval(checkVturbTerminado);
+                            iniciarAutoRedireccion();
+                        }
+                    }
+                }
+            }, 1000);
+
+            function iniciarAutoRedireccion() {
+                textoTimer.style.display = 'block'; 
+                
+                timerRedireccion = setInterval(() => {
+                    tiempoRestante--;
+                    spanTiempo.innerText = tiempoRestante;
+
+                    if (tiempoRestante <= 0) {
+                        clearInterval(timerRedireccion);
+                        
+                        // Guardamos el sello en el navegador como si hubiera hecho clic
+                        waClicked = true;
+                        localStorage.setItem('cn_confirmado', 'true');
+                        
+                        // Ocultamos la vista actual y preparamos la de nutrición por si regresan
+                        estado1.style.display = 'none';
+                        estado2.style.display = 'block';
+                        
+                        // Disparamos la auto-redirección a WhatsApp
+                        window.location.href = urlWhatsAppDestino;
+                    }
+                }, 1000);
+            }
+
+            // 3. REGISTRAR EL CLIC EN WHATSAPP (Manual)
             if(btnWa) {
                 btnWa.addEventListener('click', function() {
                     waClicked = true;
-                    // Guardamos la huella en el navegador para que no vuelva a ver el video
                     localStorage.setItem('cn_confirmado', 'true');
                     
-                    // Opcional: Si quieres que la página cambie inmediatamente en cuanto dan clic 
-                    // (incluso antes de que recarguen), descomenta estas dos líneas:
-                    // estado1.style.display = 'none';
-                    // estado2.style.display = 'block';
+                    // Si deciden hacer clic, cancelamos el temporizador para que no haya doble redirección
+                    if(timerRedireccion) clearInterval(timerRedireccion);
                 });
             }
 
-            // 3. ALERTA NATIVA (SOLO SI NO HA HECHO CLIC EN WHATSAPP)
+            // 4. ALERTA NATIVA DE SALIDA (Si intentan cerrar sin confirmar)
             window.addEventListener('beforeunload', function (e) {
                 if (!waClicked) {
                     e.preventDefault(); 
@@ -195,9 +243,8 @@
                 }
             });
 
-            // 4. TRAMPA DEL BOTÓN "ATRÁS" (Secuestro de Historial)
+            // 5. SECUESTRO DE HISTORIAL (Botón Atrás)
             function armTrap() {
-                // Si ya confirmó en el pasado o hizo clic, no armamos la trampa de regreso
                 if (trapArmed || waClicked) return;
                 trapArmed = true;
                 
@@ -205,12 +252,11 @@
                 window.history.pushState('trap', null, window.location.href);
                 
                 window.addEventListener('popstate', function() {
-                    // Si intentan retroceder sin haber confirmado, los forzamos a ver el Estado 2.
-                    // Aplicamos el sello y cambiamos la vista sin cambiar la URL.
                     localStorage.setItem('cn_confirmado', 'true');
                     estado1.style.display = 'none';
                     estado2.style.display = 'block';
-                    waClicked = true; // Liberamos la alerta de salida
+                    waClicked = true; 
+                    if(timerRedireccion) clearInterval(timerRedireccion); // Frenamos timer si retroceden
                 });
             }
 
