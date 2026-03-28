@@ -8,26 +8,47 @@
     <script>!function(i,n){i._plt=i._plt||(n&&n.timeOrigin?n.timeOrigin+n.now():Date.now())}(window,performance);</script>
     <link rel="preload" href="https://scripts.converteai.net/ccd6abe5-9eed-4f1f-aa58-4573d241489b/ab-test/69c72cde96fd2c2d9b26ed17/player.js" as="script">
     <link rel="preload" href="https://scripts.converteai.net/lib/js/smartplayer-wc/v4/smartplayer.js" as="script">
+    <link rel="dns-prefetch" href="https://cdn.converteai.net">
+    <link rel="dns-prefetch" href="https://scripts.converteai.net">
+    <link rel="dns-prefetch" href="https://images.converteai.net">
+    <link rel="dns-prefetch" href="https://m3u8.vturb.net">
+    <link rel="dns-prefetch" href="https://api.vturb.com.br">
     
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1189592235920816');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1189592235920816&ev=PageView&noscript=1"/></noscript>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,600;0,800;1,600&display=swap" rel="stylesheet">
 
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            margin: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #010308; /* Casi negro puro */
+            background-color: #010308; /* Fondo oscuro puro minimalista */
             color: #fff;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
 
-        /* Top Bar Minimalista */
+        /* Top Bar Ultra Compacta */
         .top-bar {
             width: 100%;
-            padding: 5px 0;
+            padding: 10px 0; /* Espaciado mínimo */
             text-align: center;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
@@ -36,57 +57,55 @@
             max-width: 140px;
         }
 
+        /* Contenido Principal empujado hacia arriba */
         .content {
-            max-width: 800px;
-            padding: 15px 20px;
+            width: 100%;
+            max-width: 900px;
+            padding: 25px 20px 60px; /* Reducido el padding superior drásticamente */
             text-align: center;
-            position: relative;
         }
 
-        /* Efecto Glow detrás del video, como en tu onboarding */
-        .bg-glow {
-            position: absolute;
-            top: 60%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 70%;
-            height: 50%;
-            background: rgba(242, 85, 34, 0.4);
-            filter: blur(100px);
-            z-index: -1;
-            border-radius: 50%;
-        }
-
+        /* Tipografía de la Promesa Completa */
         h1 {
-            font-size: 2.8rem;
+            font-size: 2.3rem;
             font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 15px;
+            line-height: 1.25;
+            letter-spacing: -0.5px;
+            margin-bottom: 20px;
         }
 
         .text-orange { color: #f25522; }
+        .text-italic-underline { text-decoration: underline; font-style: italic; font-weight: 600; }
 
         p.lead {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #8892b0;
-            font-weight: 300;
-            margin-bottom: 50px;
+            font-weight: 400;
+            line-height: 1.6;
+            margin-bottom: 35px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
+        /* VSL Box Minimalista sin distracciones */
         .video-box {
             width: 100%;
             background: #000;
-            border-radius: 4px; /* Bordes menos redondeados, más tech */
+            border-radius: 6px; 
             overflow: hidden;
             aspect-ratio: 16/9;
             box-shadow: 0 20px 40px rgba(0,0,0,0.9);
-            border: 1px solid rgba(242, 85, 34, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08); /* Borde súper sutil, nada de luces fuertes */
         }
 
+        /* Responsividad Móvil */
         @media (max-width: 768px) {
-            h1 { font-size: 2rem; }
-            p.lead { font-size: 1rem; margin-bottom: 30px; }
-            .content { padding: 40px 15px; }
+            h1 { font-size: 1.7rem; }
+            p.lead { font-size: 0.95rem; margin-bottom: 25px; }
+            .content { padding: 15px 15px 40px; }
+            .top-bar { padding: 8px 0; }
+            .top-bar img { max-width: 120px; }
         }
     </style>
 </head>
@@ -97,11 +116,10 @@
     </div>
 
     <div class="content">
-        <div class="bg-glow"></div>
         
-        <h1>Negocio Digital <span class="text-orange">100% Validado</span></h1>
+        <h1>Te Entregamos un <span class="text-orange">Negocio Digital 100%<br>Armado y Validado</span>, Listo Para Generar<br><span class="text-italic-underline">Ventas Desde el Primer Día</span></h1>
         
-        <p class="lead">Estructura completa, campañas listas y acompañamiento garantizado por contrato.</p>
+        <p class="lead">Adquirís un negocio digital probado, con estructura completa, campañas listas y acompañamiento profesional garantizado por contrato hasta optimizar el sistema, escalar resultados y recuperar tu inversión.</p>
 
         <div class="video-box">
             <vturb-smartplayer id="ab-69c72cde96fd2c2d9b26ed17" style="display: block; margin: 0 auto; width: 100%; "></vturb-smartplayer> 
@@ -111,6 +129,7 @@
                 s.async=!0,document.head.appendChild(s); 
             </script>
         </div>
+
     </div>
 
 </body>
