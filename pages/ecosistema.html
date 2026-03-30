@@ -33,139 +33,64 @@
             position: relative;
         }
 
-        h1 {
-            text-align: center;
-            color: var(--accent-blue);
-            margin-bottom: 10px;
+        h1 { text-align: center; color: var(--accent-blue); margin-bottom: 10px; }
+        .subtitle { text-align: center; color: var(--text-muted); margin-bottom: 20px; }
+
+        .btn-primary {
+            background: var(--accent-green);
+            color: white; border: none; padding: 12px 24px;
+            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px;
+            margin: 0 auto 40px auto; display: block; width: max-content;
+            transition: all 0.3s ease; box-shadow: 0 4px 10px rgba(46, 160, 67, 0.4);
         }
-        .subtitle {
-            text-align: center;
-            color: var(--text-muted);
-            margin-bottom: 50px;
-        }
+        .btn-primary:hover { transform: scale(1.05); }
 
         /* Fases */
         .phase {
-            border: 1px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 40px;
-            position: relative;
+            border: 1px dashed var(--border-color); border-radius: 12px;
+            padding: 20px; margin-bottom: 40px; position: relative;
             background: rgba(22, 27, 34, 0.5);
         }
-
         .phase-title {
-            position: absolute;
-            top: -12px;
-            left: 20px;
-            background: var(--bg-color);
-            padding: 0 10px;
-            color: var(--accent-green);
-            font-weight: bold;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            position: absolute; top: -12px; left: 20px; background: var(--bg-color);
+            padding: 0 10px; color: var(--accent-green); font-weight: bold;
+            font-size: 14px; text-transform: uppercase; letter-spacing: 1px;
         }
 
         /* Nodos */
-        .node-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
+        .node-wrapper { display: flex; flex-direction: column; align-items: center; }
         .node {
-            background-color: var(--panel-bg);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            padding: 15px 25px;
-            min-width: 250px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-            position: relative;
-            z-index: 2;
+            background-color: var(--panel-bg); border: 2px solid var(--border-color);
+            border-radius: 8px; padding: 15px 25px; min-width: 250px;
+            text-align: center; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3); position: relative; z-index: 2;
         }
-
         .node:hover {
-            border-color: var(--accent-blue);
-            transform: translateY(-2px);
+            border-color: var(--accent-blue); transform: translateY(-2px);
             box-shadow: 0 0 15px rgba(88, 166, 255, 0.2);
         }
-
-        .node-title {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .node-tools {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
+        .node-title { font-size: 16px; font-weight: bold; margin-bottom: 5px; }
+        .node-tools { font-size: 12px; color: var(--text-muted); }
 
         /* Flechas */
-        .arrow {
-            height: 30px;
-            width: 2px;
-            background-color: var(--border-color);
-            margin: 5px 0;
-            position: relative;
-        }
+        .arrow { height: 30px; width: 2px; background-color: var(--border-color); margin: 5px 0; position: relative; }
         .arrow::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -4px;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 5px solid var(--border-color);
+            content: ''; position: absolute; bottom: 0; left: -4px;
+            border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid var(--border-color);
         }
 
-        /* Panel Lateral de Detalles */
+        /* Panel Lateral */
         .details-panel {
-            width: 400px;
-            background-color: var(--panel-bg);
-            border-left: 1px solid var(--border-color);
-            padding: 30px;
-            overflow-y: auto;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-            position: fixed;
-            right: 0;
-            top: 0;
-            height: 100vh;
-            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
-            z-index: 10;
+            width: 400px; background-color: var(--panel-bg); border-left: 1px solid var(--border-color);
+            padding: 30px; overflow-y: auto; transform: translateX(100%);
+            transition: transform 0.3s ease; position: fixed; right: 0; top: 0;
+            height: 100vh; box-shadow: -5px 0 15px rgba(0,0,0,0.5); z-index: 10;
         }
-
-        .details-panel.active {
-            transform: translateX(0);
-        }
-
-        .close-btn {
-            float: right;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .close-btn:hover {
-            color: white;
-        }
-
-        .tag {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-            margin-right: 5px;
-            margin-bottom: 15px;
-        }
+        .details-panel.active { transform: translateX(0); }
+        .close-btn { float: right; background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; }
+        .close-btn:hover { color: white; }
+        
+        .tag { display: inline-block; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; margin-right: 5px; margin-bottom: 15px; }
         .tag-ai { background: rgba(88, 166, 255, 0.2); color: var(--accent-blue); }
         .tag-human { background: rgba(46, 160, 67, 0.2); color: var(--accent-green); }
 
@@ -175,17 +100,37 @@
         .detail-section p, .detail-section li { font-size: 14px; line-height: 1.5; color: #a5d6ff; }
         ul { padding-left: 20px; }
 
+        /* Modal Tabla Costos */
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 100; justify-content: center;
+            align-items: center; backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: var(--bg-color); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 30px; width: 90%; max-width: 1100px;
+            max-height: 85vh; overflow-y: auto; position: relative;
+        }
+        .table-container { margin-top: 20px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
+        th, td { padding: 15px; border-bottom: 1px solid var(--border-color); }
+        th { background-color: var(--panel-bg); color: var(--accent-blue); font-weight: bold; }
+        tr:hover { background-color: rgba(255,255,255,0.03); }
+        .table-ai { color: var(--accent-blue); font-weight: bold; }
+        .table-human { color: var(--accent-green); font-weight: bold; }
+
     </style>
 </head>
 <body>
 
     <div class="flowchart-container">
         <h1>Arquitectura SaaS: Agencia Autónoma</h1>
-        <div class="subtitle">Haz clic en cada nodo para ver la ingeniería y lógica detrás del proceso</div>
+        <div class="subtitle">Haz clic en cada nodo para ver la ingeniería, o revisa la viabilidad financiera y operativa.</div>
+
+        <button class="btn-primary" onclick="openTable()">📊 Ver Tabla de Costos y Tiempos</button>
 
         <div class="phase">
             <div class="phase-title">Fase 1: La Fábrica (Creación)</div>
-            
             <div class="node-wrapper">
                 <div class="node" onclick="showDetails('investigacion')">
                     <div class="node-title">1. Inteligencia de Mercado IA</div>
@@ -201,7 +146,6 @@
 
         <div class="phase">
             <div class="phase-title">Fase 2: Ensamblaje y Validación (Bóveda)</div>
-            
             <div class="node-wrapper">
                 <div class="node" onclick="showDetails('ensamblaje')">
                     <div class="node-title">3. Ensamblaje Asistido (MVP)</div>
@@ -222,7 +166,6 @@
 
         <div class="phase">
             <div class="phase-title">Fase 3: Adquisición y Traspaso</div>
-            
             <div class="node-wrapper">
                 <div class="node" onclick="showDetails('adquisicion')">
                     <div class="node-title">6. Embudos High-Ticket & AI Setter</div>
@@ -238,11 +181,10 @@
 
         <div class="phase">
             <div class="phase-title">Fase 4: Soporte y Optimización Automática</div>
-            
             <div class="node-wrapper">
                 <div class="node" onclick="showDetails('soporte')">
                     <div class="node-title">8. Bot de Soporte 24/7 (WhatsApp)</div>
-                    <div class="node-tools">n8n + SyncWith/Sheets + Claude API</div>
+                    <div class="node-tools">n8n + SyncWith/Sheets + GPT-4o</div>
                 </div>
                 <div class="arrow"></div>
                 <div class="node" onclick="showDetails('fatiga')">
@@ -256,7 +198,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <div class="details-panel" id="details-panel">
@@ -268,17 +209,95 @@
             <h4>¿Qué hace la IA?</h4>
             <p id="detail-ai-role">Descripción...</p>
         </div>
-        
         <div class="detail-section">
             <h4>¿Qué hace el Humano?</h4>
             <p id="detail-human-role">Descripción...</p>
         </div>
-
         <div class="detail-section">
             <h4>Flujo Lógico Detallado</h4>
             <ul id="detail-flow">
                 <li>Paso 1</li>
             </ul>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="cost-modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeTable()" style="position: absolute; top: 20px; right: 20px;">×</button>
+            <h2 style="color: var(--accent-blue); text-align: center; margin-top: 0;">Inversión Operativa y Tiempos de Ejecución</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 30px;">Comparativa del stack tecnológico para escalar la agencia sin aumentar la nómina humana.</p>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Herramienta / Plataforma</th>
+                            <th>Rol en el Ecosistema</th>
+                            <th>Responsable</th>
+                            <th>Tiempo de Ejecución</th>
+                            <th>Costo Estimado Mensual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>n8n (Servidor VPS)</strong></td>
+                            <td>Orquestador central. Conecta todas las aplicaciones y ejecuta los flujos automáticamente.</td>
+                            <td class="table-ai">Sistema / IA</td>
+                            <td>Instantáneo (Opera 24/7)</td>
+                            <td>~$15 - $25 (Costo del servidor)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Claude 3.5 Sonnet</strong></td>
+                            <td>Agente Copywriter. Escribe páginas de venta persuasivas, copys de anuncios y contenido de bonos.</td>
+                            <td class="table-ai">IA Pura</td>
+                            <td>~45 a 90 segundos por negocio</td>
+                            <td>~$20 - $40 (Pago por consumo API)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GPT-4o / Gemini Pro</strong></td>
+                            <td>Análisis rápido de métricas (SyncWith) y Bot de soporte conversacional por WhatsApp.</td>
+                            <td class="table-ai">IA Pura</td>
+                            <td>~5 a 10 segundos por consulta</td>
+                            <td>~$10 - $20 (Pago por consumo API)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vapi / Retell AI</strong></td>
+                            <td>AI Setter. Realiza llamadas de pre-cualificación conversacional a los leads que agendan.</td>
+                            <td class="table-ai">IA de Voz</td>
+                            <td>~2 a 5 minutos (Duración de llamada)</td>
+                            <td>~$0.10 por minuto de llamada</td>
+                        </tr>
+                        <tr>
+                            <td><strong>GoHighLevel</strong></td>
+                            <td>CRM central, embudos, registro de ventas, calendarios y control de subcuentas.</td>
+                            <td class="table-ai">Sistema Base</td>
+                            <td>Instantáneo</td>
+                            <td>$297 (Plan Unlimited)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Lovable.dev</strong></td>
+                            <td>Desarrollo de Páginas Web (MVP). Recibe el código de la IA y el humano lo exporta.</td>
+                            <td class="table-human">Humano (Asistido por IA)</td>
+                            <td>~1 a 2 horas (antes tomaba días)</td>
+                            <td>~$20 (Licencia Pro)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Gamma App</strong></td>
+                            <td>Maquetación visual de los Bonos y PDFs basados en los textos perfectos de Claude.</td>
+                            <td class="table-human">Humano (Asistido por IA)</td>
+                            <td>~15 a 30 minutos</td>
+                            <td>~$16 - $20 (Licencia Pro)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Humano (Trafficker/Diseñador)</strong></td>
+                            <td>Crear Fanpages sin bloqueo, auditar UI, ensamblar creatividades en Drive y supervisión estratégica.</td>
+                            <td class="table-human">Control de Calidad</td>
+                            <td>~2 a 3 horas totales por negocio</td>
+                            <td>Salario/Fee (Reducción masiva de horas)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -297,8 +316,8 @@
             },
             'copywriter': {
                 title: 'Agente Copywriter & Oferta',
-                tags: ['100% IA', 'Generativo'],
-                aiRole: 'Desarrolla la oferta completa. Redacta copys para anuncios, estructura la Landing Page y escribe el contenido del Producto Principal y los Bonos.',
+                tags: ['100% IA', 'Claude 3.5'],
+                aiRole: 'Claude 3.5 Sonnet desarrolla la oferta completa. Redacta copys para anuncios, estructura la Landing Page y escribe los Bonos.',
                 humanRole: 'Cambia el estado en Notion de "Investigado" a "Redactar" para activar el webhook.',
                 flow: [
                     'n8n detecta el cambio en Notion.',
@@ -309,96 +328,91 @@
             },
             'ensamblaje': {
                 title: 'Ensamblaje Asistido (MVP)',
-                tags: ['10% Humano', '90% IA'],
-                aiRole: 'Proporciona los cimientos exactos, códigos hexadecimales, estructuras y textos persuasivos.',
-                humanRole: 'El equipo creativo toma los textos de Notion y los inyecta en herramientas visuales. Reduce un trabajo de días a un par de horas.',
+                tags: ['Humano', 'Lovable/Gamma'],
+                aiRole: 'Proporciona los cimientos exactos, códigos y textos persuasivos.',
+                humanRole: 'El equipo creativo toma los textos y los inyecta en Lovable y Gamma. Reduce un trabajo de días a un par de horas.',
                 flow: [
-                    'Humano crea Fanpage e IG, y los vincula al Portafolio Comercial.',
-                    'Humano usa Lovable inyectando el prompt maestro de la IA para exportar la Web.',
-                    'Humano pega el texto de la IA en Gamma para maquetar el PDF visual.'
+                    'Humano crea Fanpage e IG manualmente para evitar baneos de Meta.',
+                    'Humano usa Lovable inyectando el prompt de Claude para exportar la Web.',
+                    'Humano pega el texto en Gamma para maquetar el PDF visual.'
                 ]
             },
             'validacion': {
                 title: 'Lanzamiento de Validación IA',
-                tags: ['100% IA', 'Meta Ads'],
+                tags: ['100% IA', 'Meta Ads API'],
                 aiRole: 'Configura y lanza las campañas de validación sin que el trafficker toque el administrador de anuncios.',
                 humanRole: 'Sube las imágenes/videos finales a una carpeta de Google Drive.',
                 flow: [
                     'n8n lee las creatividades del Drive y los copys de Notion.',
                     'Se conecta a Meta Marketing API.',
-                    'Crea campaña, conjunto de anuncios (segmentación base) y anuncios.',
-                    'Publica la campaña en modo validación con presupuesto mínimo.'
+                    'Crea campaña, segmentación base y publica con presupuesto mínimo.'
                 ]
             },
             'boveda': {
                 title: 'Aprobación y Bóveda Stock',
                 tags: ['Lógica Condicional', 'Notion'],
-                aiRole: 'Monitoriza el ROAS de la campaña de validación. Si supera el KPI, automatiza el guardado.',
+                aiRole: 'Monitoriza el ROAS. Si supera el KPI, automatiza el guardado del negocio.',
                 humanRole: 'Supervisión estratégica de alto nivel.',
                 flow: [
-                    'n8n evalúa métricas (ej. 3 ventas, ROAS > 2).',
+                    'n8n evalúa métricas (ej. ROAS > 2).',
                     'Si es positivo, apaga la campaña y mueve la tarjeta a "0. Bóveda (Stock)".',
-                    'Empaqueta los IDs de las campañas ganadoras para su futura clonación.'
+                    'Empaqueta los IDs de las campañas ganadoras.'
                 ]
             },
             'adquisicion': {
                 title: 'Embudos High-Ticket & AI Setter',
-                tags: ['100% IA', 'Ventas'],
-                aiRole: 'Pre-califica al lead en tiempo real por voz y nutre con casos de éxito precisos antes de la llamada con el closer.',
-                humanRole: 'El Closer entra a una llamada con un prospecto caliente, pre-cualificado y con sus objeciones rebatidas.',
+                tags: ['100% IA', 'Vapi/GoHighLevel'],
+                aiRole: 'Pre-califica al lead en tiempo real por voz y nutre con casos de éxito precisos.',
+                humanRole: 'El Closer entra a la llamada final con un prospecto caliente.',
                 flow: [
                     'Lead agenda en GoHighLevel.',
-                    'Vapi o Retell AI hace una llamada automática de 2 mins para extraer el dolor del lead.',
-                    'n8n analiza la transcripción y envía por WhatsApp un caso de éxito hiper-personalizado.',
-                    'El estatus en GHL se actualiza con el resumen para el closer.'
+                    'Vapi o Retell AI hace una llamada automática de 3 mins para extraer el dolor.',
+                    'GPT-4o analiza la transcripción y n8n envía por WhatsApp un caso de éxito hiper-personalizado.'
                 ]
             },
             'entrega': {
                 title: 'Traspaso y Clonación de Activos',
-                tags: ['100% IA', 'API Meta'],
-                aiRole: 'Entrega el negocio validado al cliente instantáneamente sin fricción.',
-                humanRole: 'El cliente otorga acceso de anunciante a su Business Manager.',
+                tags: ['100% IA', 'Meta API'],
+                aiRole: 'Entrega el negocio validado al cliente instantáneamente mediante clonación API.',
+                humanRole: 'El cliente otorga acceso a su Business Manager.',
                 flow: [
-                    'Webhook GHL avisa que el cliente compró.',
-                    'n8n busca en Notion el negocio validado correspondiente.',
-                    'Usa Meta API para hacer un "Duplicate" exacto de las campañas ganadoras directamente en la cuenta publicitaria del cliente.',
-                    'Envía un email automático al cliente con accesos a la Web y el contenido orgánico (imágenes/textos) para las próximas semanas.'
+                    'Webhook GHL avisa de la compra.',
+                    'n8n usa Meta API para hacer un "Duplicate" exacto de las campañas de la Bóveda en la cuenta publicitaria del cliente.',
+                    'Se envían accesos web y contenido orgánico automáticamente.'
                 ]
             },
             'soporte': {
                 title: 'Bot de Soporte 24/7 (WhatsApp)',
-                tags: ['100% IA', 'Operativa'],
-                aiRole: 'Elimina al Trafficker y al Soporte Humano de las consultas de rutina. Lee datos en tiempo real.',
-                humanRole: 'El cliente chatea de forma natural. El humano interviene solo si hay alertas críticas.',
+                tags: ['100% IA', 'GPT-4o/Gemini'],
+                aiRole: 'Elimina al Soporte Humano de las consultas de rutina. Lee datos financieros en tiempo real.',
+                humanRole: 'Solo interviene en quejas críticas o escaladas.',
                 flow: [
                     'Data fluye de Meta a Google Sheets vía SyncWith.',
-                    'Cliente pregunta en WhatsApp: "¿Cómo van mis ventas?".',
-                    'n8n cruza el teléfono del cliente con el Dashboard de SyncWith.',
-                    'La IA redacta un reporte amable al instante con ROAS, Inversión y Ventas del día.'
+                    'Cliente pregunta en WhatsApp por sus ventas.',
+                    'GPT-4o cruza el teléfono con el Dashboard y redacta el reporte al instante.'
                 ]
             },
             'fatiga': {
                 title: 'Supervisor de Fatiga (Auto-Apagado)',
                 tags: ['100% IA', 'Optimización'],
-                aiRole: 'Analiza el performance 24/7 y protege el presupuesto del cliente. Reemplaza las revisiones manuales de los traffickers.',
-                humanRole: 'No interviene en el micro-management de los conjuntos de anuncios.',
+                aiRole: 'Analiza performance 24/7 y pausa anuncios quemados sin esperar al Trafficker.',
+                humanRole: 'No interviene en el micro-management.',
                 flow: [
-                    'Nodo Cron en n8n revisa CPA y Frecuencia cada 4 horas.',
-                    'Si el Anuncio A supera el CPA objetivo o una Frecuencia > 3, n8n lanza un API call a Meta.',
-                    'Pausa el anuncio automáticamente.',
-                    'Actualiza el estado en el Dashboard y avisa por el log interno.'
+                    'Nodo Cron en n8n revisa CPA cada 4 horas.',
+                    'Si un anuncio supera el CPA objetivo, n8n lanza un API call a Meta para pausarlo.',
+                    'Avisa por Slack interno.'
                 ]
             },
             'reciclaje': {
                 title: 'Bucle de Renovación Creativa',
-                tags: ['Agentes Múltiples', 'Asignación'],
-                aiRole: 'Detecta falta de anuncios, idea nuevos ángulos y asigna tareas al equipo audiovisual.',
-                humanRole: 'El equipo de video graba o edita basándose estrictamente en las directrices de la IA.',
+                tags: ['Agentes', 'Slack/Drive'],
+                aiRole: 'Detecta falta de anuncios e idea nuevos ángulos para que el equipo grabe.',
+                humanRole: 'Grabar/editar el video basado en el guion exacto de Claude.',
                 flow: [
-                    'Al apagarse un anuncio ganador, n8n despierta al Agente Copywriter.',
-                    'La IA genera 3 nuevas variaciones del anuncio quemado.',
-                    'n8n envía un mensaje a Slack: "Editores, urgen estos 3 videos. Guiones adjuntos".',
-                    'Cuando el editor sube los MP4 al Drive, n8n los inyecta en Meta y relanza la campaña para el cliente.'
+                    'Al apagarse un anuncio, n8n despierta a Claude 3.5.',
+                    'Genera 3 nuevas variaciones de copy.',
+                    'n8n envía a Slack: "Editores, urgen estos videos. Guiones adjuntos".',
+                    'Al subir el MP4 al Drive, n8n relanza la campaña.'
                 ]
             }
         };
@@ -411,17 +425,15 @@
             document.getElementById('detail-ai-role').innerText = data.aiRole;
             document.getElementById('detail-human-role').innerText = data.humanRole;
             
-            // Render Tags
             const tagsDiv = document.getElementById('tags-container');
             tagsDiv.innerHTML = '';
             data.tags.forEach(tag => {
                 const span = document.createElement('span');
-                span.className = tag.includes('IA') ? 'tag tag-ai' : 'tag tag-human';
+                span.className = tag.includes('IA') || tag.includes('Claude') || tag.includes('GPT') ? 'tag tag-ai' : 'tag tag-human';
                 span.innerText = tag;
                 tagsDiv.appendChild(span);
             });
 
-            // Render Flow
             const flowUl = document.getElementById('detail-flow');
             flowUl.innerHTML = '';
             data.flow.forEach(step => {
@@ -433,9 +445,9 @@
             document.getElementById('details-panel').classList.add('active');
         }
 
-        function closeDetails() {
-            document.getElementById('details-panel').classList.remove('active');
-        }
+        function closeDetails() { document.getElementById('details-panel').classList.remove('active'); }
+        function openTable() { document.getElementById('cost-modal').style.display = 'flex'; }
+        function closeTable() { document.getElementById('cost-modal').style.display = 'none'; }
     </script>
 </body>
 </html>
