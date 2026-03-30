@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecosistema IA - Creamos Negocios</title>
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --panel-bg: #161b22;
+            --accent-green: #2ea043;
+            --accent-blue: #58a6ff;
+            --text-main: #c9d1d9;
+            --text-muted: #8b949e;
+            --border-color: #30363d;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Contenedor del Flowchart */
+        .flowchart-container {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent-blue);
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 50px;
+        }
+
+        /* Fases */
+        .phase {
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 40px;
+            position: relative;
+            background: rgba(22, 27, 34, 0.5);
+        }
+
+        .phase-title {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: var(--bg-color);
+            padding: 0 10px;
+            color: var(--accent-green);
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Nodos */
+        .node-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .node {
+            background-color: var(--panel-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px 25px;
+            min-width: 250px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .node:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(88, 166, 255, 0.2);
+        }
+
+        .node-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .node-tools {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Flechas */
+        .arrow {
+            height: 30px;
+            width: 2px;
+            background-color: var(--border-color);
+            margin: 5px 0;
+            position: relative;
+        }
+        .arrow::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: -4px;
+            border-left: 5px solid transparent;
+            border-right: 5px solid transparent;
+            border-top: 5px solid var(--border-color);
+        }
+
+        /* Panel Lateral de Detalles */
+        .details-panel {
+            width: 400px;
+            background-color: var(--panel-bg);
+            border-left: 1px solid var(--border-color);
+            padding: 30px;
+            overflow-y: auto;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            position: fixed;
+            right: 0;
+            top: 0;
+            height: 100vh;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+
+        .details-panel.active {
+            transform: translateX(0);
+        }
+
+        .close-btn {
+            float: right;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: white;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-right: 5px;
+            margin-bottom: 15px;
+        }
+        .tag-ai { background: rgba(88, 166, 255, 0.2); color: var(--accent-blue); }
+        .tag-human { background: rgba(46, 160, 67, 0.2); color: var(--accent-green); }
+
+        h2#detail-title { margin-top: 0; color: white; font-size: 20px; }
+        .detail-section { margin-top: 20px; }
+        .detail-section h4 { color: var(--accent-blue); margin-bottom: 5px; font-size: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px;}
+        .detail-section p, .detail-section li { font-size: 14px; line-height: 1.5; color: #a5d6ff; }
+        ul { padding-left: 20px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="flowchart-container">
+        <h1>Arquitectura SaaS: Agencia Autónoma</h1>
+        <div class="subtitle">Haz clic en cada nodo para ver la ingeniería y lógica detrás del proceso</div>
+
+        <div class="phase">
+            <div class="phase-title">Fase 1: La Fábrica (Creación)</div>
+            
+            <div class="node-wrapper">
+                <div class="node" onclick="showDetails('investigacion')">
+                    <div class="node-title">1. Inteligencia de Mercado IA</div>
+                    <div class="node-tools">n8n + Perplexity API + Notion</div>
+                </div>
+                <div class="arrow"></div>
+                <div class="node" onclick="showDetails('copywriter')">
+                    <div class="node-title">2. Agente Copywriter & Oferta</div>
+                    <div class="node-tools">n8n + Claude 3.5 Sonnet</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="phase">
+            <div class="phase-title">Fase 2: Ensamblaje y Validación (Bóveda)</div>
+            
+            <div class="node-wrapper">
+                <div class="node" onclick="showDetails('ensamblaje')">
+                    <div class="node-title">3. Ensamblaje Asistido (MVP)</div>
+                    <div class="node-tools">Humano + Lovable + Gamma + IG/FB</div>
+                </div>
+                <div class="arrow"></div>
+                <div class="node" onclick="showDetails('validacion')">
+                    <div class="node-title">4. Lanzamiento de Validación IA</div>
+                    <div class="node-tools">n8n + Meta Ads API</div>
+                </div>
+                <div class="arrow"></div>
+                <div class="node" onclick="showDetails('boveda')">
+                    <div class="node-title">5. Aprobación y Bóveda Stock</div>
+                    <div class="node-tools">Notion Database (Estado: Validado)</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="phase">
+            <div class="phase-title">Fase 3: Adquisición y Traspaso</div>
+            
+            <div class="node-wrapper">
+                <div class="node" onclick="showDetails('adquisicion')">
+                    <div class="node-title">6. Embudos High-Ticket & AI Setter</div>
+                    <div class="node-tools">GoHighLevel + Vapi (Voz) + n8n</div>
+                </div>
+                <div class="arrow"></div>
+                <div class="node" onclick="showDetails('entrega')">
+                    <div class="node-title">7. Traspaso y Clonación de Activos</div>
+                    <div class="node-tools">Webhook GHL + n8n + Meta API</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="phase">
+            <div class="phase-title">Fase 4: Soporte y Optimización Automática</div>
+            
+            <div class="node-wrapper">
+                <div class="node" onclick="showDetails('soporte')">
+                    <div class="node-title">8. Bot de Soporte 24/7 (WhatsApp)</div>
+                    <div class="node-tools">n8n + SyncWith/Sheets + Claude API</div>
+                </div>
+                <div class="arrow"></div>
+                <div class="node" onclick="showDetails('fatiga')">
+                    <div class="node-title">9. Supervisor de Fatiga (Auto-Apagado)</div>
+                    <div class="node-tools">n8n + Lógica de ROAS/CPA</div>
+                </div>
+                <div class="arrow"></div>
+                <div class="node" onclick="showDetails('reciclaje')">
+                    <div class="node-title">10. Bucle de Renovación Creativa</div>
+                    <div class="node-tools">n8n + Slack + Meta API</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="details-panel" id="details-panel">
+        <button class="close-btn" onclick="closeDetails()">×</button>
+        <div id="tags-container"></div>
+        <h2 id="detail-title">Título del Nodo</h2>
+        
+        <div class="detail-section">
+            <h4>¿Qué hace la IA?</h4>
+            <p id="detail-ai-role">Descripción...</p>
+        </div>
+        
+        <div class="detail-section">
+            <h4>¿Qué hace el Humano?</h4>
+            <p id="detail-human-role">Descripción...</p>
+        </div>
+
+        <div class="detail-section">
+            <h4>Flujo Lógico Detallado</h4>
+            <ul id="detail-flow">
+                <li>Paso 1</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const detailsData = {
+            'investigacion': {
+                title: 'Inteligencia de Mercado IA',
+                tags: ['100% IA', 'Backend'],
+                aiRole: 'Rastrea tendencias en Meta Ads Library y TikTok. Identifica nichos no explotados y ángulos de dolor del mercado.',
+                humanRole: 'Cero intervención. Solo revisa la nueva tarjeta creada en Notion.',
+                flow: [
+                    'n8n ejecuta un cronograma semanal para escanear nichos.',
+                    'Extrae data mediante APIs de búsqueda (Perplexity).',
+                    'Crea una tarjeta en "La Fábrica" (Notion) con toda la investigación documentada.'
+                ]
+            },
+            'copywriter': {
+                title: 'Agente Copywriter & Oferta',
+                tags: ['100% IA', 'Generativo'],
+                aiRole: 'Desarrolla la oferta completa. Redacta copys para anuncios, estructura la Landing Page y escribe el contenido del Producto Principal y los Bonos.',
+                humanRole: 'Cambia el estado en Notion de "Investigado" a "Redactar" para activar el webhook.',
+                flow: [
+                    'n8n detecta el cambio en Notion.',
+                    'Envía el contexto a Claude 3.5 Sonnet con un mega-prompt estructurado.',
+                    'Claude devuelve el copy web, 3 copys de anuncios y la estructura del PDF.',
+                    'n8n actualiza la tarjeta de Notion con todo el texto listo para usar.'
+                ]
+            },
+            'ensamblaje': {
+                title: 'Ensamblaje Asistido (MVP)',
+                tags: ['10% Humano', '90% IA'],
+                aiRole: 'Proporciona los cimientos exactos, códigos hexadecimales, estructuras y textos persuasivos.',
+                humanRole: 'El equipo creativo toma los textos de Notion y los inyecta en herramientas visuales. Reduce un trabajo de días a un par de horas.',
+                flow: [
+                    'Humano crea Fanpage e IG, y los vincula al Portafolio Comercial.',
+                    'Humano usa Lovable inyectando el prompt maestro de la IA para exportar la Web.',
+                    'Humano pega el texto de la IA en Gamma para maquetar el PDF visual.'
+                ]
+            },
+            'validacion': {
+                title: 'Lanzamiento de Validación IA',
+                tags: ['100% IA', 'Meta Ads'],
+                aiRole: 'Configura y lanza las campañas de validación sin que el trafficker toque el administrador de anuncios.',
+                humanRole: 'Sube las imágenes/videos finales a una carpeta de Google Drive.',
+                flow: [
+                    'n8n lee las creatividades del Drive y los copys de Notion.',
+                    'Se conecta a Meta Marketing API.',
+                    'Crea campaña, conjunto de anuncios (segmentación base) y anuncios.',
+                    'Publica la campaña en modo validación con presupuesto mínimo.'
+                ]
+            },
+            'boveda': {
+                title: 'Aprobación y Bóveda Stock',
+                tags: ['Lógica Condicional', 'Notion'],
+                aiRole: 'Monitoriza el ROAS de la campaña de validación. Si supera el KPI, automatiza el guardado.',
+                humanRole: 'Supervisión estratégica de alto nivel.',
+                flow: [
+                    'n8n evalúa métricas (ej. 3 ventas, ROAS > 2).',
+                    'Si es positivo, apaga la campaña y mueve la tarjeta a "0. Bóveda (Stock)".',
+                    'Empaqueta los IDs de las campañas ganadoras para su futura clonación.'
+                ]
+            },
+            'adquisicion': {
+                title: 'Embudos High-Ticket & AI Setter',
+                tags: ['100% IA', 'Ventas'],
+                aiRole: 'Pre-califica al lead en tiempo real por voz y nutre con casos de éxito precisos antes de la llamada con el closer.',
+                humanRole: 'El Closer entra a una llamada con un prospecto caliente, pre-cualificado y con sus objeciones rebatidas.',
+                flow: [
+                    'Lead agenda en GoHighLevel.',
+                    'Vapi o Retell AI hace una llamada automática de 2 mins para extraer el dolor del lead.',
+                    'n8n analiza la transcripción y envía por WhatsApp un caso de éxito hiper-personalizado.',
+                    'El estatus en GHL se actualiza con el resumen para el closer.'
+                ]
+            },
+            'entrega': {
+                title: 'Traspaso y Clonación de Activos',
+                tags: ['100% IA', 'API Meta'],
+                aiRole: 'Entrega el negocio validado al cliente instantáneamente sin fricción.',
+                humanRole: 'El cliente otorga acceso de anunciante a su Business Manager.',
+                flow: [
+                    'Webhook GHL avisa que el cliente compró.',
+                    'n8n busca en Notion el negocio validado correspondiente.',
+                    'Usa Meta API para hacer un "Duplicate" exacto de las campañas ganadoras directamente en la cuenta publicitaria del cliente.',
+                    'Envía un email automático al cliente con accesos a la Web y el contenido orgánico (imágenes/textos) para las próximas semanas.'
+                ]
+            },
+            'soporte': {
+                title: 'Bot de Soporte 24/7 (WhatsApp)',
+                tags: ['100% IA', 'Operativa'],
+                aiRole: 'Elimina al Trafficker y al Soporte Humano de las consultas de rutina. Lee datos en tiempo real.',
+                humanRole: 'El cliente chatea de forma natural. El humano interviene solo si hay alertas críticas.',
+                flow: [
+                    'Data fluye de Meta a Google Sheets vía SyncWith.',
+                    'Cliente pregunta en WhatsApp: "¿Cómo van mis ventas?".',
+                    'n8n cruza el teléfono del cliente con el Dashboard de SyncWith.',
+                    'La IA redacta un reporte amable al instante con ROAS, Inversión y Ventas del día.'
+                ]
+            },
+            'fatiga': {
+                title: 'Supervisor de Fatiga (Auto-Apagado)',
+                tags: ['100% IA', 'Optimización'],
+                aiRole: 'Analiza el performance 24/7 y protege el presupuesto del cliente. Reemplaza las revisiones manuales de los traffickers.',
+                humanRole: 'No interviene en el micro-management de los conjuntos de anuncios.',
+                flow: [
+                    'Nodo Cron en n8n revisa CPA y Frecuencia cada 4 horas.',
+                    'Si el Anuncio A supera el CPA objetivo o una Frecuencia > 3, n8n lanza un API call a Meta.',
+                    'Pausa el anuncio automáticamente.',
+                    'Actualiza el estado en el Dashboard y avisa por el log interno.'
+                ]
+            },
+            'reciclaje': {
+                title: 'Bucle de Renovación Creativa',
+                tags: ['Agentes Múltiples', 'Asignación'],
+                aiRole: 'Detecta falta de anuncios, idea nuevos ángulos y asigna tareas al equipo audiovisual.',
+                humanRole: 'El equipo de video graba o edita basándose estrictamente en las directrices de la IA.',
+                flow: [
+                    'Al apagarse un anuncio ganador, n8n despierta al Agente Copywriter.',
+                    'La IA genera 3 nuevas variaciones del anuncio quemado.',
+                    'n8n envía un mensaje a Slack: "Editores, urgen estos 3 videos. Guiones adjuntos".',
+                    'Cuando el editor sube los MP4 al Drive, n8n los inyecta en Meta y relanza la campaña para el cliente.'
+                ]
+            }
+        };
+
+        function showDetails(nodeId) {
+            const data = detailsData[nodeId];
+            if(!data) return;
+
+            document.getElementById('detail-title').innerText = data.title;
+            document.getElementById('detail-ai-role').innerText = data.aiRole;
+            document.getElementById('detail-human-role').innerText = data.humanRole;
+            
+            // Render Tags
+            const tagsDiv = document.getElementById('tags-container');
+            tagsDiv.innerHTML = '';
+            data.tags.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = tag.includes('IA') ? 'tag tag-ai' : 'tag tag-human';
+                span.innerText = tag;
+                tagsDiv.appendChild(span);
+            });
+
+            // Render Flow
+            const flowUl = document.getElementById('detail-flow');
+            flowUl.innerHTML = '';
+            data.flow.forEach(step => {
+                const li = document.createElement('li');
+                li.innerText = step;
+                flowUl.appendChild(li);
+            });
+
+            document.getElementById('details-panel').classList.add('active');
+        }
+
+        function closeDetails() {
+            document.getElementById('details-panel').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
