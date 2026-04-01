@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Disparador Manual de Píxel</title>
+    <script>
+        !function(f,b,e,v,n,t,s)
+        {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+        n.queue=[];t=b.createElement(e);t.async=!0;
+        t.src=v;s=b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t,s)}(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        
+        // 1. Inicializa con tu ID
+        fbq('init', '1357003149404713'); 
+        
+        // 2. Dispara el evento estándar (puedes cambiar 'Purchase' por 'Lead', 'CompleteRegistration', etc.)
+        fbq('track', 'Purchase', {
+            value: 2000.00,
+            currency: 'USD'
+        });
+    </script>
+    </head>
+<body>
+    <h1>Enviando evento al Píxel...</h1>
+    <p>Revisa la extensión Meta Pixel Helper o el Administrador de Eventos.</p>
+</body>
+</html>
