@@ -273,10 +273,7 @@
 
         // --- SISTEMA DE GUARDADO EN LOCALSTORAGE ---
         function saveSettingsToLocalStorage() {
-            const settings = {
-                tableColumns: tableColumns,
-                customColumns: customColumns
-            };
+            const settings = { tableColumns: tableColumns, customColumns: customColumns };
             localStorage.setItem('proAnalyticsSettings', JSON.stringify(settings));
             alert('¡Vista, orden y métricas personalizadas guardadas exitosamente en tu navegador!');
         }
@@ -287,18 +284,21 @@
                 try {
                     const parsed = JSON.parse(saved);
                     if (parsed.tableColumns && parsed.customColumns) {
+                        // Respaldo: Si tenías una vista guardada vieja, insertamos el 'Conjunto' a la fuerza
+                        if (!parsed.tableColumns.find(c => c.id === 'conjunto')) {
+                            parsed.tableColumns.splice(1, 0, { id: 'conjunto', label: 'Conjunto ↕', type: 'text', visible: true, align: 'text-left', classes: 'text-slate-300 max-w-[150px] truncate' });
+                        }
                         tableColumns = parsed.tableColumns;
                         customColumns = parsed.customColumns;
                     }
-                } catch (e) {
-                    console.error('Error al cargar configuración guardada', e);
-                }
+                } catch (e) { console.error('Error al cargar configuración', e); }
             }
         }
 
         // --- SISTEMA DINÁMICO DE COLUMNAS ---
         let tableColumns = [
             { id: 'campana', label: 'Campaña ↕', type: 'text', visible: true, align: 'text-left', classes: 'font-medium text-white max-w-[200px] truncate' },
+            { id: 'conjunto', label: 'Conjunto ↕', type: 'text', visible: true, align: 'text-left', classes: 'text-slate-300 max-w-[150px] truncate' },
             { id: 'anuncio', label: 'Anuncio ↕', type: 'text', visible: true, align: 'text-left', classes: 'text-slate-400 max-w-[150px] truncate' },
             { id: 'gasto', label: 'Inversión ↕', type: 'currency', visible: true, align: 'text-right', classes: 'text-red-400 font-bold' },
             { id: 'clics', label: 'Clics ↕', type: 'number', visible: true, align: 'text-right', classes: 'text-blue-200' },
@@ -408,30 +408,43 @@
             let stats = {};
             const {start, end} = getTimestampsFromFilter();
 
-            // 1. Crear Diccionario de Meta: Lee Meta para saber qué campañas/anuncios llevan "+"
+            // 1. Diccionarios para restaurar nombres con "+" o "%20" provenientes de UTMs
             let metaCampMap = {};
             let metaAdMap = {};
             
-            // --- NUEVO BLOQUE LECTOR DE META ADS (FORMATO VERTICAL) ---
             rawMeta.forEach(r => {
                 let camp = (r['Campaign name'] || r['Campaña'] || r['Campaign'] || 'Desconocida').trim();
+                let adset = (r['Adset Name'] || r['Adset name'] || r['Conjunto de anuncios'] || '-').trim();
                 let ad = (r['Ad name'] || r['Ad Name'] || r['Anuncio'] || 'Desconocido').trim();
                 
-                let fechaTabular = r['Day'] || r['Date'] || r['Fecha'] || r['Reporting starts'];
+                // Poblamos el diccionario mapeando la versión sin símbolos hacia el nombre real de Meta
+                if (camp !== 'Desconocida') {
+                    metaCampMap[camp.replace(/\+/g, ' ')] = camp;
+                    metaCampMap[camp.replace(/%20/g, ' ')] = camp;
+                }
+                if (ad !== 'Desconocido') {
+                    metaAdMap[ad.replace(/\+/g, ' ')] = ad;
+                    metaAdMap[ad.replace(/%20/g, ' ')] = ad;
+                }
+
+                // Extracción segura de fecha ignorando caracteres ocultos (BOM) del CSV
+                let dateKey = Object.keys(r).find(k => k.toLowerCase().includes('day') || k.toLowerCase().includes('date') || k.toLowerCase().includes('fecha')) || Object.keys(r)[0];
+                let fechaTabular = r[dateKey];
                 
-                // Verificamos que tenga fecha, que esté en el rango y que tenga nombre de campaña o anuncio
                 if (fechaTabular && isDateInRange(fechaTabular, start, end) && (camp !== 'Desconocida' || ad !== 'Desconocido')) {
                     
-                    // Extraemos las métricas limpiando símbolos de moneda o comas
                     let gasto = parseFloat((r['Amount spent'] || r['Amount spent (USD)'] || r['Importe gastado'] || '0').toString().replace(/[$,]/g, '')) || 0;
                     let clics = parseFloat((r['Link clicks'] || r['Clics en el enlace'] || '0').toString().replace(/,/g, '')) || 0;
                     let visitas = parseFloat((r['Landing page views'] || r['Visitas a la página de destino'] || '0').toString().replace(/,/g, '')) || 0;
                     let impresiones = parseFloat((r['Impressions'] || r['Impresiones'] || '0').toString().replace(/,/g, '')) || 0;
 
-                    // Si hay data relevante, la sumamos al diccionario
                     if (gasto > 0 || clics > 0 || impresiones > 0) {
                         let key = `${camp}___${ad}`;
                         initRow(key, camp, ad); 
+                        
+                        // Guardamos el nombre del conjunto si Meta lo provee
+                        if (adset !== '-') stats[key].conjunto = adset;
+                        
                         stats[key].gasto += gasto;
                         stats[key].clics += clics;
                         stats[key].visitas += visitas;
@@ -440,22 +453,26 @@
                 }
             });
 
-            // 2. Modificar el recolector de GHL para que restaure el "+"
+            // 2. Modificar el recolector del CRM para que restaure el formato usando el Diccionario
             const getRowDetails = (r) => {
                 let camp = (r['Campaña (UTM)'] || r['Campaña'] || r['Origen Campaña'] || 'Desconocida').trim();
                 let ad = (r['Ad Content'] || r['Anuncio'] || r['Nombre del Ad'] || 'Desconocido').trim();
                 let fecha = r['Fecha Creación'] || r['Fecha'] || r['Created'] || '';
                 
-                // Si el nombre con espacios está en el diccionario de Meta, lo reemplazamos por el nombre correcto con "+"
-                if (metaCampMap[camp]) camp = metaCampMap[camp];
-                if (metaAdMap[ad]) ad = metaAdMap[ad];
+                // Limpieza de símbolos "+" y "%20" si vienen codificados en la URL
+                let campClean = camp.replace(/\+/g, ' ').replace(/%20/g, ' ');
+                let adClean = ad.replace(/\+/g, ' ').replace(/%20/g, ' ');
+
+                // Reemplazamos por el nombre nativo de Meta si hace match en el diccionario
+                if (metaCampMap[campClean]) camp = metaCampMap[campClean];
+                if (metaAdMap[adClean]) ad = metaAdMap[adClean];
 
                 return { key: `${camp}___${ad}`, camp, ad, fecha };
             };
 
             const initRow = (key, camp, ad) => {
                 if(!stats[key]) stats[key] = { 
-                    campana: camp, anuncio: ad, leads: 0, calificados: 0, agendas_total: 0, asistieron: 0, ventas: 0, 
+                    campana: camp, conjunto: '-', anuncio: ad, leads: 0, calificados: 0, agendas_total: 0, asistieron: 0, ventas: 0, 
                     ingresos: 0, gasto: 0, clics: 0, visitas: 0, impresiones: 0, ctr: 0,
                     cpl: 0, cpq: 0, cp_agenda: 0, cp_asistencia: 0, cpa: 0, roas: 0,
                     arr_leads: [], arr_calif: [], arr_agendas: [], arr_ventas: [] 
