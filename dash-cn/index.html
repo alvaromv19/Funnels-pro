@@ -639,9 +639,15 @@
                 }).filter(v => v.fecha != null); 
 
                 dbGastos = g2026.map(row => {
-                    let valores = Object.values(row); 
-                    return { fecha: parseFecha(valores[0]), gasto: parseDinero(valores[1]) };
-                }).filter(g => g.fecha != null && g.gasto > 0);
+                 // Buscamos directamente por el nombre de la cabecera según tu Google Sheet
+                    let rawFecha = row['Day'] || findColumn(row, ['day', 'fecha', 'date']) || Object.values(row)[0];
+                    let rawGasto = row['Amount spent'] || findColumn(row, ['amount spent', 'importe gastado', 'gasto']);
+
+                    return { 
+                        fecha: parseFecha(rawFecha), 
+                        gasto: parseDinero(rawGasto) 
+                      };
+                        }).filter(g => g.fecha != null && g.gasto > 0);
 
                 let closersUnicos = [...new Set(dbVentas.map(v => v.closer))].filter(c => c).sort();
                 let closerSelect = document.getElementById('closer');
