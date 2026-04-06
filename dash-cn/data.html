@@ -412,13 +412,32 @@
             let metaCampMap = {};
             let metaAdMap = {};
             
+            // --- NUEVO BLOQUE LECTOR DE META ADS (FORMATO VERTICAL) ---
             rawMeta.forEach(r => {
-                let mCamp = (r['Campaign name'] || r['Campaña'] || r['Campaign'] || '').trim();
-                let mAd = (r['Ad name'] || r['Ad Name'] || r['Anuncio'] || '').trim();
+                let camp = (r['Campaign name'] || r['Campaña'] || r['Campaign'] || 'Desconocida').trim();
+                let ad = (r['Ad name'] || r['Ad Name'] || r['Anuncio'] || 'Desconocido').trim();
                 
-                // Si tienen "+", guardamos cómo se vería con espacios, apuntando al nombre real con "+"
-                if (mCamp.includes('+')) metaCampMap[mCamp.replace(/\+/g, ' ')] = mCamp;
-                if (mAd.includes('+')) metaAdMap[mAd.replace(/\+/g, ' ')] = mAd;
+                let fechaTabular = r['Day'] || r['Date'] || r['Fecha'] || r['Reporting starts'];
+                
+                // Verificamos que tenga fecha, que esté en el rango y que tenga nombre de campaña o anuncio
+                if (fechaTabular && isDateInRange(fechaTabular, start, end) && (camp !== 'Desconocida' || ad !== 'Desconocido')) {
+                    
+                    // Extraemos las métricas limpiando símbolos de moneda o comas
+                    let gasto = parseFloat((r['Amount spent'] || r['Amount spent (USD)'] || r['Importe gastado'] || '0').toString().replace(/[$,]/g, '')) || 0;
+                    let clics = parseFloat((r['Link clicks'] || r['Clics en el enlace'] || '0').toString().replace(/,/g, '')) || 0;
+                    let visitas = parseFloat((r['Landing page views'] || r['Visitas a la página de destino'] || '0').toString().replace(/,/g, '')) || 0;
+                    let impresiones = parseFloat((r['Impressions'] || r['Impresiones'] || '0').toString().replace(/,/g, '')) || 0;
+
+                    // Si hay data relevante, la sumamos al diccionario
+                    if (gasto > 0 || clics > 0 || impresiones > 0) {
+                        let key = `${camp}___${ad}`;
+                        initRow(key, camp, ad); 
+                        stats[key].gasto += gasto;
+                        stats[key].clics += clics;
+                        stats[key].visitas += visitas;
+                        stats[key].impresiones += impresiones;
+                    }
+                }
             });
 
             // 2. Modificar el recolector de GHL para que restaure el "+"
