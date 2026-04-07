@@ -393,6 +393,21 @@
             }
         }
 
+        // BUSCADOR DE COLUMNAS A PRUEBA DE BALAS
+        function buscarColumna(row, posiblesNombres) {
+            const keys = Object.keys(row);
+            for (let key of keys) {
+                // Limpiamos la cabecera real: minúsculas, sin acentos, sin espacios
+                let keyLimpia = key.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
+                for (let nombre of posiblesNombres) {
+                    let nombreLimpio = nombre.toLowerCase().replace(/[^a-z0-9]/g, "");
+                    // Si encuentra coincidencia, devuelve el valor original
+                    if (keyLimpia.includes(nombreLimpio)) return row[key];
+                }
+            }
+            return "";
+        }
+        
         // MOTOR DE EVALUACIÓN MATEMÁTICA
         function evaluateFormula(formula, row) {
             try {
@@ -408,16 +423,20 @@
             let stats = {};
             const {start, end} = getTimestampsFromFilter();
 
-            // 1. Diccionarios para restaurar nombres con "+" o "%20" provenientes de UTMs
             let metaCampMap = {};
             let metaAdMap = {};
             
+            // --- LECTOR DE META ADS BLINDADO ---
             rawMeta.forEach(r => {
-                let camp = (r['Campaign name'] || r['Campaña'] || r['Campaign'] || 'Desconocida').trim();
-                let adset = (r['Adset Name'] || r['Adset name'] || r['Conjunto de anuncios'] || '-').trim();
-                let ad = (r['Ad name'] || r['Ad Name'] || r['Anuncio'] || 'Desconocido').trim();
+                // Usamos la nueva función para que no importen las mayúsculas o espacios
+                let rawCamp = buscarColumna(r, ['campaignname', 'campaña', 'campaign']);
+                let rawAdset = buscarColumna(r, ['adsetname', 'conjuntodeanuncios', 'adset']);
+                let rawAd = buscarColumna(r, ['adname', 'anuncio']);
                 
-                // Poblamos el diccionario mapeando la versión sin símbolos hacia el nombre real de Meta
+                let camp = (rawCamp || 'Desconocida').toString().trim();
+                let adset = (rawAdset || '-').toString().trim();
+                let ad = (rawAd || 'Desconocido').toString().trim();
+                
                 if (camp !== 'Desconocida') {
                     metaCampMap[camp.replace(/\+/g, ' ')] = camp;
                     metaCampMap[camp.replace(/%20/g, ' ')] = camp;
@@ -427,24 +446,26 @@
                     metaAdMap[ad.replace(/%20/g, ' ')] = ad;
                 }
 
-                // Extracción segura de fecha ignorando caracteres ocultos (BOM) del CSV
-                let dateKey = Object.keys(r).find(k => k.toLowerCase().includes('day') || k.toLowerCase().includes('date') || k.toLowerCase().includes('fecha')) || Object.keys(r)[0];
-                let fechaTabular = r[dateKey];
+                let fechaTabular = buscarColumna(r, ['day', 'date', 'fecha', 'reportingstarts']);
                 
                 if (fechaTabular && isDateInRange(fechaTabular, start, end) && (camp !== 'Desconocida' || ad !== 'Desconocido')) {
                     
-                    let gasto = parseFloat((r['Amount spent'] || r['Amount spent (USD)'] || r['Importe gastado'] || '0').toString().replace(/[$,]/g, '')) || 0;
-                    let clics = parseFloat((r['Link clicks'] || r['Clics en el enlace'] || '0').toString().replace(/,/g, '')) || 0;
-                    let visitas = parseFloat((r['Landing page views'] || r['Visitas a la página de destino'] || '0').toString().replace(/,/g, '')) || 0;
-                    let impresiones = parseFloat((r['Impressions'] || r['Impresiones'] || '0').toString().replace(/,/g, '')) || 0;
+                    let gasto = parseFloat((buscarColumna(r, ['amountspent', 'importegastado']) || '0').toString().replace(/[$,]/g, '')) || 0;
+                    let clics = parseFloat((buscarColumna(r, ['linkclicks', 'clicsenelenlace']) || '0').toString().replace(/,/g, '')) || 0;
+                    let visitas = parseFloat((buscarColumna(r, ['landingpageviews', 'visitas']) || '0').toString().replace(/,/g, '')) || 0;
+                    let impresiones = parseFloat((buscarColumna(r, ['impressions', 'impresiones']) || '0').toString().replace(/,/g, '')) || 0;
 
                     if (gasto > 0 || clics > 0 || impresiones > 0) {
                         let key = `${camp}___${ad}`;
-                        initRow(key, camp, ad); 
+                        // Si initRow aún no existe en el loop, usa las variables
+                        if(!stats[key]) stats[key] = { 
+                            campana: camp, conjunto: '-', anuncio: ad, leads: 0, calificados: 0, agendas_total: 0, asistieron: 0, ventas: 0, 
+                            ingresos: 0, gasto: 0, clics: 0, visitas: 0, impresiones: 0, ctr: 0,
+                            cpl: 0, cpq: 0, cp_agenda: 0, cp_asistencia: 0, cpa: 0, roas: 0,
+                            arr_leads: [], arr_calif: [], arr_agendas: [], arr_ventas: [] 
+                        };
                         
-                        // Guardamos el nombre del conjunto si Meta lo provee
                         if (adset !== '-') stats[key].conjunto = adset;
-                        
                         stats[key].gasto += gasto;
                         stats[key].clics += clics;
                         stats[key].visitas += visitas;
@@ -453,17 +474,19 @@
                 }
             });
 
-            // 2. Modificar el recolector del CRM para que restaure el formato usando el Diccionario
+            // --- LECTOR DE CRM BLINDADO ---
             const getRowDetails = (r) => {
-                let camp = (r['Campaña (UTM)'] || r['Campaña'] || r['Origen Campaña'] || 'Desconocida').trim();
-                let ad = (r['Ad Content'] || r['Anuncio'] || r['Nombre del Ad'] || 'Desconocido').trim();
-                let fecha = r['Fecha Creación'] || r['Fecha'] || r['Created'] || '';
+                let rawCamp = buscarColumna(r, ['campañautm', 'campaña', 'origencampaña']);
+                let rawAd = buscarColumna(r, ['adcontent', 'anuncio', 'nombredelad']);
+                let rawFecha = buscarColumna(r, ['fechacreacion', 'fecha', 'created']);
+
+                let camp = (rawCamp || 'Desconocida').toString().trim();
+                let ad = (rawAd || 'Desconocido').toString().trim();
+                let fecha = (rawFecha || '').toString().trim();
                 
-                // Limpieza de símbolos "+" y "%20" si vienen codificados en la URL
                 let campClean = camp.replace(/\+/g, ' ').replace(/%20/g, ' ');
                 let adClean = ad.replace(/\+/g, ' ').replace(/%20/g, ' ');
 
-                // Reemplazamos por el nombre nativo de Meta si hace match en el diccionario
                 if (metaCampMap[campClean]) camp = metaCampMap[campClean];
                 if (metaAdMap[adClean]) ad = metaAdMap[adClean];
 
