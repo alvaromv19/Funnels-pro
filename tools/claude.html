@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecosistema IA - Interfaz de Control</title>
+    <style>
+        /* Variables de color para la estética Tech-Noir */
+        :root {
+            --bg-dark: #09090e;
+            --bg-panel: #14141e;
+            --neon-cyan: #00f3ff;
+            --neon-magenta: #bc13fe;
+            --neon-purple: #8a2be2;
+            --text-main: #e2e8f0;
+            --text-muted: #8b949e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(138, 43, 226, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.08), transparent 25%);
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 900px;
+            height: 90vh;
+            background-color: rgba(20, 20, 30, 0.7);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 40px rgba(0, 0, 0, 0.5), 
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(90deg, rgba(20, 20, 30, 1) 0%, rgba(30, 20, 40, 1) 100%);
+        }
+
+        .header-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--neon-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--neon-cyan);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Scrollbar personalizado */
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 12px;
+            line-height: 1.5;
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.bot {
+            align-self: flex-start;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--neon-cyan);
+            border-bottom-left-radius: 2px;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: linear-gradient(135deg, rgba(138, 43, 226, 0.2), rgba(188, 19, 254, 0.2));
+            border: 1px solid rgba(188, 19, 254, 0.3);
+            border-bottom-right-radius: 2px;
+            box-shadow: 0 4px 15px rgba(188, 19, 254, 0.1);
+        }
+
+        .chat-input-wrapper {
+            padding: 20px;
+            background-color: var(--bg-panel);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 15px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group:focus-within {
+            border-color: rgba(0, 243, 255, 0.4);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
+        }
+
+        input[type="text"] {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1rem;
+            padding: 10px;
+            outline: none;
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-muted);
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--neon-cyan), #00a2ff);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            padding: 0 25px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.85rem;
+        }
+
+        button:hover {
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .loading {
+            align-self: flex-start;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            margin-left: 10px;
+        }
+
+        .loading-dots span {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            background-color: var(--neon-magenta);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); box-shadow: 0 0 5px var(--neon-magenta); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="header-title">
+                <div class="status-dot"></div>
+                SISTEMA NERVIOSO CENTRAL (n8n)
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">EN LÍNEA</div>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot">
+                Saludos, Arquitecto. Los flujos de validación y la memoria empírica en Supabase están en verde. ¿Qué directiva operativa ejecutamos hoy?
+            </div>
+        </div>
+
+        <div class="loading" id="loading-indicator">
+            Procesando <div class="loading-dots"><span></span><span></span><span></span></div>
+        </div>
+
+        <div class="chat-input-wrapper">
+            <div class="input-group">
+                <input type="text" id="message-input" placeholder="Ingresa un comando o consulta métricas..." autocomplete="off">
+                <button id="send-button">Ejecutar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputField = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const chatMessages = document.getElementById('chat-messages');
+        const loadingIndicator = document.getElementById('loading-indicator');
+
+        // URL de tu Webhook en n8n (reemplazar con tu URL de producción/test)
+        const N8N_WEBHOOK_URL = 'https://tu-servidor-n8n.com/webhook/chat-entrada';
+
+        function appendMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message', sender);
+            msgDiv.textContent = text;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function sendMessageToN8n(userText) {
+            // Mostrar mensaje del usuario
+            appendMessage(userText, 'user');
+            inputField.value = '';
+            
+            // Mostrar indicador de carga
+            loadingIndicator.style.display = 'flex';
+
+            try {
+                // Aquí es donde la interfaz habla con tu Fábrica (n8n)
+                /* DESCOMENTAR ESTO CUANDO TU WEBHOOK ESTÉ LISTO
+                const response = await fetch(N8N_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        mensaje: userText,
+                        timestamp: new Date().toISOString()
+                    })
+                });
+                
+                const data = await response.json();
+                */
+
+                // Simulación de retraso para efecto visual (eliminar en producción)
+                await new Promise(r => setTimeout(r, 1500));
+                const data = { respuesta: "Comando recibido. Inicializando consulta en la base de datos de memoria..." };
+
+                // Ocultar carga y mostrar respuesta del bot
+                loadingIndicator.style.display = 'none';
+                appendMessage(data.respuesta, 'bot');
+
+            } catch (error) {
+                loadingIndicator.style.display = 'none';
+                appendMessage("Error de conexión con la infraestructura principal.", 'bot');
+                console.error('Error:', error);
+            }
+        }
+
+        // Event Listeners
+        sendButton.addEventListener('click', () => {
+            const text = inputField.value.trim();
+            if (text) sendMessageToN8n(text);
+        });
+
+        inputField.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const text = inputField.value.trim();
+                if (text) sendMessageToN8n(text);
+            }
+        });
+    </script>
+</body>
+</html>
