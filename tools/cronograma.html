@@ -1,282 +1,68 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard de Pago - Acelerador</title>
-    <style>
-        :root {
-            --bg-color: #0b0c10;
-            --panel-bg: #1f2833;
-            --text-main: #c5c6c7;
-            --neon-purple: #bc13fe;
-            --neon-cyan: #66fcf1;
-            --neon-cyan-dark: #45a29e;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .dashboard {
-            background-color: var(--panel-bg);
-            width: 100%;
-            max-width: 500px;
-            border-radius: 16px;
-            padding: 30px;
-            border: 1px solid rgba(102, 252, 241, 0.2);
-            box-shadow: 0 0 20px rgba(188, 19, 254, 0.15), inset 0 0 10px rgba(102, 252, 241, 0.05);
-        }
-
-        h1 {
-            text-align: center;
-            color: #fff;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 24px;
-        }
-
-        h2 {
-            text-align: center;
-            color: var(--neon-cyan);
-            font-size: 36px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 10px rgba(102, 252, 241, 0.4);
-        }
-
-        .meta-text {
-            text-align: center;
-            font-size: 14px;
-            margin-bottom: 20px;
-            color: #888;
-        }
-
-        .progress-container {
-            background-color: #111;
-            border-radius: 10px;
-            height: 24px;
-            width: 100%;
-            overflow: hidden;
-            margin-bottom: 30px;
-            border: 1px solid var(--neon-purple);
-            box-shadow: 0 0 8px rgba(188, 19, 254, 0.3);
-        }
-
-        .progress-bar {
-            background: linear-gradient(90deg, var(--neon-purple), var(--neon-cyan));
-            height: 100%;
-            width: 0%;
-            transition: width 0.4s ease;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        input[type="number"], input[type="date"] {
-            flex: 1;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--neon-cyan-dark);
-            background-color: var(--bg-color);
-            color: #fff;
-            outline: none;
-            font-size: 16px;
-        }
-
-        input[type="number"]:focus, input[type="date"]:focus {
-            border-color: var(--neon-cyan);
-            box-shadow: 0 0 8px rgba(102, 252, 241, 0.5);
-        }
-
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            background-color: var(--neon-purple);
-            color: #fff;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 12px rgba(188, 19, 254, 0.5);
-        }
-
-        button:hover {
-            background-color: var(--neon-cyan);
-            color: #000;
-            box-shadow: 0 0 15px rgba(102, 252, 241, 0.8);
-        }
-
-        .history-panel {
-            background-color: var(--bg-color);
-            border-radius: 8px;
-            padding: 15px;
-            max-height: 250px;
-            overflow-y: auto;
-        }
-
-        .history-panel h3 {
-            color: var(--text-main);
-            margin-bottom: 15px;
-            font-size: 16px;
-            border-bottom: 1px solid #333;
-            padding-bottom: 5px;
-        }
-
-        .entry {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #222;
-        }
-
-        .entry:last-child {
-            border-bottom: none;
-        }
-
-        .entry-date { color: #888; font-size: 14px; }
-        .entry-amount { color: #fff; font-weight: bold; }
-        
-        .delete-btn {
-            background: none;
-            color: #ff4c4c;
-            box-shadow: none;
-            padding: 5px;
-            font-size: 12px;
-            margin-left: 10px;
-        }
-
-        .delete-btn:hover {
-            background: none;
-            color: #ff0000;
-            text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
-            box-shadow: none;
-        }
-
-        /* Scrollbar styling */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-color); }
-        ::-webkit-scrollbar-thumb { background: var(--neon-cyan-dark); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--neon-cyan); }
-    </style>
-</head>
-<body>
-
-    <div class="dashboard">
-        <h1>Progreso Mensual</h1>
-        <h2 id="total-saved">S/ 0.00</h2>
-        <div class="meta-text">Meta: S/ 915.35</div>
-
-        <div class="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-
-        <div class="input-group">
-            <input type="date" id="date-input">
-            <input type="number" id="amount-input" placeholder="Ej. 30.50 o 50.00" step="0.01">
-        </div>
-        <button onclick="addEntry()" style="width: 100%; margin-bottom: 20px;">Registrar Monto</button>
-
-        <div class="history-panel">
-            <h3>Historial de Registros</h3>
-            <div id="history-list">
-                </div>
-        </div>
+<div class="dashboard-grid">
+    <div class="card">
+        <h3>Cuota Actual: #<span id="inst-number">1</span></h3>
+        <p>Vence: <span id="inst-date">--</span></p>
+        <div class="main-stat">S/ <span id="current-total">0.00</span></div>
+        <p>Faltan: S/ <span id="needed">0.00</span></p>
     </div>
 
-    <script>
-        const GOAL = 915.35;
-        let entries = JSON.parse(localStorage.getItem('loanTrackerEntries')) || [];
+    <div class="card neon-border">
+        <h3>Ahorro Diario Necesario</h3>
+        <div class="main-stat" style="color: var(--neon-cyan)">S/ <span id="daily-needed">0.00</span></div>
+        <p>Durante los próximos <span id="days-left">0</span> días</p>
+    </div>
+</div>
 
-        // Set today's date as default
-        document.getElementById('date-input').valueAsDate = new Date();
+<canvas id="trendChart"></canvas>
 
-        function updateUI() {
-            const listElement = document.getElementById('history-list');
-            listElement.innerHTML = '';
-            
-            let total = 0;
+<form id="saveForm">
+    <input type="number" id="amt" step="0.1" placeholder="¿Cuánto juntaste hoy?">
+    <button type="submit">Registrar en Google Sheets</button>
+</form>
 
-            // Sort entries by date descending
-            entries.sort((a, b) => new Date(b.date) - new Date(a.date));
+<script>
+    const WEB_APP_URL = "TU_URL_DE_APPS_SCRIPT";
 
-            entries.forEach((entry, index) => {
-                total += parseFloat(entry.amount);
-                
-                const div = document.createElement('div');
-                div.className = 'entry';
-                div.innerHTML = `
-                    <span class="entry-date">${formatDate(entry.date)}</span>
-                    <div>
-                        <span class="entry-amount">S/ ${parseFloat(entry.amount).toFixed(2)}</span>
-                        <button class="delete-btn" onclick="deleteEntry(${index})">✕</button>
-                    </div>
-                `;
-                listElement.appendChild(div);
-            });
+    // Función para registrar
+    document.getElementById('saveForm').onsubmit = async (e) => {
+        e.preventDefault();
+        const amount = document.getElementById('amt').value;
+        await fetch(WEB_APP_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Apps Script requiere esto o manejo de redirects
+            body: JSON.stringify({ date: new Date(), amount: amount })
+        });
+        location.reload(); // Recargar para ver progreso
+    };
 
-            // Update Total
-            document.getElementById('total-saved').innerText = `S/ ${total.toFixed(2)}`;
+    // Función para traer datos y graficar
+    async function loadDash() {
+        const res = await fetch(WEB_APP_URL);
+        const data = await res.json();
+        
+        document.getElementById('inst-number').innerText = data.currentInstallment;
+        document.getElementById('current-total').innerText = data.totalSavedInPeriod.toFixed(2);
+        document.getElementById('needed').innerText = data.remainingForGoal.toFixed(2);
+        document.getElementById('daily-needed').innerText = data.dailyNeeded.toFixed(2);
+        document.getElementById('days-left').innerText = data.daysLeft;
+        document.getElementById('inst-date').innerText = data.installmentEnd;
 
-            // Update Progress Bar
-            let progressPercentage = (total / GOAL) * 100;
-            if (progressPercentage > 100) progressPercentage = 100;
-            document.getElementById('progress-bar').style.width = `${progressPercentage}%`;
-
-            // Save to localStorage
-            localStorage.setItem('loanTrackerEntries', JSON.stringify(entries));
-        }
-
-        function addEntry() {
-            const dateInput = document.getElementById('date-input').value;
-            const amountInput = document.getElementById('amount-input').value;
-
-            if (!dateInput || !amountInput || amountInput <= 0) {
-                alert("Por favor ingresa una fecha y un monto válido.");
-                return;
-            }
-
-            entries.push({
-                date: dateInput,
-                amount: amountInput
-            });
-
-            document.getElementById('amount-input').value = '';
-            updateUI();
-        }
-
-        function deleteEntry(index) {
-            entries.splice(index, 1);
-            updateUI();
-        }
-
-        function formatDate(dateString) {
-            const options = { day: '2-digit', month: 'short', year: 'numeric' };
-            // Adjust for timezone offset to prevent date shifting
-            const date = new Date(dateString + 'T00:00:00');
-            return date.toLocaleDateString('es-ES', options);
-        }
-
-        // Initialize UI on load
-        updateUI();
-    </script>
-</body>
-</html>
+        // Renderizar gráfico de tendencia (Chart.js)
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: Object.keys(data.dailyData),
+                datasets: [{
+                    label: 'Ahorro Diario',
+                    data: Object.values(data.dailyData),
+                    borderColor: '#bc13fe',
+                    backgroundColor: 'rgba(188, 19, 254, 0.1)',
+                    fill: true
+                }]
+            },
+            options: { /* Estilos dark mode */ }
+        });
+    }
+    loadDash();
+</script>
