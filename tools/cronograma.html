@@ -1,68 +1,302 @@
-<div class="dashboard-grid">
-    <div class="card">
-        <h3>Cuota Actual: #<span id="inst-number">1</span></h3>
-        <p>Vence: <span id="inst-date">--</span></p>
-        <div class="main-stat">S/ <span id="current-total">0.00</span></div>
-        <p>Faltan: S/ <span id="needed">0.00</span></p>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acelerador de Pagos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #0b0c10;
+            --panel-bg: #1f2833;
+            --text-main: #c5c6c7;
+            --neon-purple: #bc13fe;
+            --neon-cyan: #66fcf1;
+            --neon-cyan-dark: #45a29e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 22px;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(102, 252, 241, 0.1);
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .card.neon-border {
+            border: 1px solid var(--neon-purple);
+            box-shadow: 0 0 15px rgba(188, 19, 254, 0.2);
+        }
+
+        .card h3 {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .main-stat {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        .sub-stat {
+            font-size: 12px;
+            color: var(--neon-cyan-dark);
+        }
+
+        .chart-container {
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(102, 252, 241, 0.1);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="number"], input[type="date"] {
+            flex: 1;
+            padding: 14px;
+            border-radius: 8px;
+            border: 1px solid var(--neon-cyan-dark);
+            background-color: var(--bg-color);
+            color: #fff;
+            font-size: 16px;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 8px rgba(102, 252, 241, 0.5);
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--neon-purple);
+            color: #fff;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 12px rgba(188, 19, 254, 0.4);
+        }
+
+        button:hover {
+            background-color: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 15px rgba(102, 252, 241, 0.8);
+        }
+
+        .loading {
+            text-align: center;
+            margin-top: 50px;
+            color: var(--neon-cyan);
+        }
+
+        #dashboard-content {
+            display: none; /* Oculto hasta que carguen los datos */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Tracker de Cuotas</h1>
+
+        <div id="loading" class="loading">Cargando datos desde Google Sheets...</div>
+
+        <div id="dashboard-content">
+            <div class="dashboard-grid">
+                <div class="card">
+                    <h3>Cuota Actual: #<span id="inst-number">-</span></h3>
+                    <div class="main-stat">S/ <span id="current-total">0.00</span></div>
+                    <div class="sub-stat">Falta: S/ <span id="needed">0.00</span></div>
+                    <div class="sub-stat" style="margin-top:5px; color:#888">Vence: <span id="inst-date">--</span></div>
+                </div>
+
+                <div class="card neon-border">
+                    <h3 style="color: var(--neon-purple)">Meta Diaria Restante</h3>
+                    <div class="main-stat" style="color: var(--neon-cyan)">S/ <span id="daily-needed">0.00</span></div>
+                    <div class="sub-stat">Por los próximos <span id="days-left">0</span> días</div>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+
+            <form id="saveForm">
+                <div class="input-group">
+                    <input type="date" id="date-input" required>
+                    <input type="number" id="amt" step="0.01" placeholder="Ej: 50.00" required>
+                </div>
+                <button type="submit" id="submitBtn">Registrar Ahorro</button>
+            </form>
+        </div>
     </div>
 
-    <div class="card neon-border">
-        <h3>Ahorro Diario Necesario</h3>
-        <div class="main-stat" style="color: var(--neon-cyan)">S/ <span id="daily-needed">0.00</span></div>
-        <p>Durante los próximos <span id="days-left">0</span> días</p>
-    </div>
-</div>
+    <script>
+        // =========================================================
+        // REEMPLAZA ESTO CON LA URL QUE TE DIO GOOGLE APPS SCRIPT
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwHPxa_wN9paLxyVbFt6iKs9f-slCLHc3Yn90CDM9Oj1KxIoNEbknAOOarmOGgPXjfN/exec"; 
+        // =========================================================
 
-<canvas id="trendChart"></canvas>
+        let chartInstance = null;
 
-<form id="saveForm">
-    <input type="number" id="amt" step="0.1" placeholder="¿Cuánto juntaste hoy?">
-    <button type="submit">Registrar en Google Sheets</button>
-</form>
+        // Establecer fecha de hoy por defecto en el input
+        document.getElementById('date-input').valueAsDate = new Date();
 
-<script>
-    const WEB_APP_URL = "TU_URL_DE_APPS_SCRIPT";
+        // 1. Cargar datos del Dashboard
+        async function loadDash() {
+            try {
+                const res = await fetch(WEB_APP_URL);
+                const data = await res.json();
+                
+                // Ocultar carga y mostrar dashboard
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('dashboard-content').style.display = 'block';
 
-    // Función para registrar
-    document.getElementById('saveForm').onsubmit = async (e) => {
-        e.preventDefault();
-        const amount = document.getElementById('amt').value;
-        await fetch(WEB_APP_URL, {
-            method: 'POST',
-            mode: 'no-cors', // Apps Script requiere esto o manejo de redirects
-            body: JSON.stringify({ date: new Date(), amount: amount })
-        });
-        location.reload(); // Recargar para ver progreso
-    };
+                // Llenar los datos
+                document.getElementById('inst-number').innerText = data.currentInstallment;
+                document.getElementById('current-total').innerText = data.totalSavedInPeriod.toFixed(2);
+                document.getElementById('needed').innerText = data.remainingForGoal.toFixed(2);
+                document.getElementById('daily-needed').innerText = data.dailyNeeded.toFixed(2);
+                document.getElementById('days-left').innerText = data.daysLeft;
+                document.getElementById('inst-date').innerText = data.installmentEnd;
 
-    // Función para traer datos y graficar
-    async function loadDash() {
-        const res = await fetch(WEB_APP_URL);
-        const data = await res.json();
-        
-        document.getElementById('inst-number').innerText = data.currentInstallment;
-        document.getElementById('current-total').innerText = data.totalSavedInPeriod.toFixed(2);
-        document.getElementById('needed').innerText = data.remainingForGoal.toFixed(2);
-        document.getElementById('daily-needed').innerText = data.dailyNeeded.toFixed(2);
-        document.getElementById('days-left').innerText = data.daysLeft;
-        document.getElementById('inst-date').innerText = data.installmentEnd;
+                renderChart(data.dailyData);
+            } catch (error) {
+                document.getElementById('loading').innerText = "Error cargando los datos. Verifica la URL.";
+                console.error(error);
+            }
+        }
 
-        // Renderizar gráfico de tendencia (Chart.js)
-        const ctx = document.getElementById('trendChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: Object.keys(data.dailyData),
-                datasets: [{
-                    label: 'Ahorro Diario',
-                    data: Object.values(data.dailyData),
-                    borderColor: '#bc13fe',
-                    backgroundColor: 'rgba(188, 19, 254, 0.1)',
-                    fill: true
-                }]
-            },
-            options: { /* Estilos dark mode */ }
-        });
-    }
-    loadDash();
-</script>
+        // 2. Renderizar Gráfico
+        function renderChart(dailyData) {
+            const ctx = document.getElementById('trendChart').getContext('2d');
+            
+            // Destruir gráfico anterior si existe para evitar superposición
+            if(chartInstance) chartInstance.destroy();
+
+            const labels = Object.keys(dailyData).sort(); // Fechas ordenadas
+            const values = labels.map(date => dailyData[date]);
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ahorro Diario Registrado (S/)',
+                        data: values,
+                        borderColor: '#bc13fe',
+                        backgroundColor: 'rgba(188, 19, 254, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#66fcf1'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { labels: { color: '#c5c6c7' } }
+                    },
+                    scales: {
+                        x: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } },
+                        y: { ticks: { color: '#888' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                    }
+                }
+            });
+        }
+
+        // 3. Enviar datos a Google Sheets
+        document.getElementById('saveForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            const amount = document.getElementById('amt').value;
+            const date = document.getElementById('date-input').value;
+
+            btn.innerText = "Registrando...";
+            btn.style.backgroundColor = "#555";
+            btn.disabled = true;
+
+            try {
+                await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // Evita bloqueos de seguridad del navegador al enviar a Google
+                    body: JSON.stringify({ date: date, amount: amount })
+                });
+
+                // Limpiar input y recargar datos
+                document.getElementById('amt').value = '';
+                btn.innerText = "¡Registrado!";
+                btn.style.backgroundColor = "var(--neon-cyan)";
+                
+                setTimeout(() => {
+                    btn.innerText = "Registrar Ahorro";
+                    btn.style.backgroundColor = "var(--neon-purple)";
+                    btn.disabled = false;
+                    loadDash(); // Refrescar gráfica y números
+                }, 1500);
+
+            } catch (error) {
+                alert("Hubo un error al registrar.");
+                btn.innerText = "Registrar Ahorro";
+                btn.disabled = false;
+            }
+        };
+
+        // Iniciar la carga al abrir la página
+        loadDash();
+    </script>
+</body>
+</html>
