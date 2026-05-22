@@ -1085,51 +1085,89 @@
 <tr><td>01 · "No te quite tiempo"</td><td>Broad LATAM 30-50</td><td class="mono">$12.5</td><td>Sin intereses</td><td>CTR ≥1.8% + 1 PI en 72h</td></tr>
 <tr><td>06 · Carrusel 4 pilares</td><td>Broad LATAM 30-50</td><td class="mono">$12.5</td><td>Sin intereses</td><td>CTR ≥1.5% + tiempo en slide 3+</td></tr>
 <tr><td>02 · "Mi tiempo"</td><td>Broad LATAM 32-52</td><td class="mono">$12.5</td><td>Sin intereses</td><td>Calidad lead ≥4 (más importante que CTR)</td></tr>
-<tr><td colspan="5" style="background:var(--bg3);padding:10px 14px;font-size:12px;color:var(--muted);">Total inversión testing Semana 1: <strong style="color:var(--accent);">$50/día</strong> · $350/semana</td></tr>
-</tbody>
+<tr><td colspan="5" style="background:var(--bg3);padding:10px 14px;font-size:12px;color:var(--muted);">Estructura <strong style="color:var(--accent);">1-4-4</strong> · 1 campaña matriz · 4 conjuntos · 4 anuncios · <strong style="color:var(--accent);">$50/día total</strong> ($12.5 por conjunto) · $350/semana</td></tr></tbody>
 </table>
 </div>
 
-<h3>Criterio de aprobación a las 72 horas</h3>
+<h3>Criterios reales de aprobación · High Ticket $3,000</h3>
+<p class="sub">Las métricas que decidimos basadas en la realidad del negocio: CPA por agenda y CPA por venta. El CTR es secundario — el lead high-ticket no se mide por clics, se mide por agendas calificadas y ventas.</p>
+
 <div class="grid-3">
   <div class="card" style="border-color:rgba(62,220,129,0.25);background:var(--green-bg);">
-    <h5 class="ok">✓ Escalar (mover a Campaña B)</h5>
+    <h5 class="ok">✓ Escalar verticalmente (+presupuesto en mismo adset)</h5>
     <ul style="font-size:12.5px;padding-left:18px;line-height:1.7;color:var(--muted);">
-      <li>CTR ≥1.5% sostenido</li>
-      <li>Costo por PI ≤30% del ticket</li>
-      <li>≥1 lead con calificación IA ≥5</li>
-      <li>Sin alertas de Kill Rules</li>
+      <li><strong style="color:var(--text);">CPA Agenda ≤ $50</strong> (óptimo)</li>
+      <li>O <strong style="color:var(--text);">CPA Asistencia ≤ $100</strong></li>
+      <li>Calidad lead IA ≥ 5 promedio</li>
+      <li>Subir presupuesto +20-25% cada 48-72h</li>
     </ul>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);"><strong style="color:var(--green);">NO mover de campaña.</strong> El anuncio queda en la campaña matriz para no perder aprendizaje.</p>
   </div>
   <div class="card" style="border-color:rgba(255,192,67,0.25);background:var(--yellow-bg);">
-    <h5 class="alert">⚠ Extender (48h más)</h5>
+    <h5 class="alert">⚠ Mantener (sin escalar)</h5>
     <ul style="font-size:12.5px;padding-left:18px;line-height:1.7;color:var(--muted);">
-      <li>CTR entre 1.0-1.5%</li>
-      <li>0 PI pero CPC bajo</li>
-      <li>Frecuencia &lt;1.5</li>
-      <li>Posible aprendizaje lento del algoritmo</li>
+      <li><strong style="color:var(--text);">CPA Agenda $50 - $65</strong> (tolerable)</li>
+      <li>Si <strong style="color:var(--text);">CPA Asistencia &gt; $100</strong>: alertar</li>
+      <li>0 PI pero CPC bajo + agendas calificadas</li>
+      <li>Extender observación 48-96h más</li>
     </ul>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);"><strong style="color:var(--yellow);">Zona gris.</strong> Esperar a tener al menos 1 venta atribuida antes de decidir.</p>
   </div>
   <div class="card card-red">
     <h5 class="bad">✗ Pausar</h5>
     <ul style="font-size:12.5px;padding-left:18px;line-height:1.7;color:var(--muted);">
-      <li>CTR &lt;1% por 48h+</li>
-      <li>Gasto ≥50% del ticket sin PI</li>
+      <li><strong style="color:var(--text);">CPA Agenda &gt; $65</strong> sostenido 72h+</li>
+      <li>O <strong style="color:var(--text);">CPA Asistencia &gt; $100</strong> sin venta</li>
       <li>Calidad de leads &lt;3 promedio</li>
-      <li>CPA agenda &gt;$80</li>
+      <li>Gasto ≥ 50% del ticket sin PI</li>
     </ul>
+    <p style="font-size:11px;color:var(--muted);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);"><strong style="color:var(--red);">Pausar dentro de la campaña matriz.</strong> No eliminar — el aprendizaje queda.</p>
   </div>
 </div>
 
-<h3>Decisiones operativas previas que no se pueden saltar</h3>
-<div class="warn-box">
-<p><strong>Antes del 1 de junio, sí o sí:</strong></p>
-<ol style="font-size:13px;padding-left:20px;margin-top:6px;line-height:1.8;">
-<li>Implementar <strong>UTM tracking obligatorio</strong> en todos los links de agendamiento — 36% de las ventas actuales no tiene atribución, lo que rompe cualquier análisis futuro.</li>
-<li>Configurar <strong>placements automáticos con preferencia a Instagram</strong> — convirtió 9x más por lead que Facebook.</li>
-<li>Subir el <strong>presupuesto de remarketing al 25-30%</strong> del total (hoy está sub-invertido).</li>
-<li>Documentar las <strong>10 razones más frecuentes de descalificación</strong> para que cada copy nuevo filtre desde el creativo.</li>
-</ol>
+<h3>Criterio definitivo de escalamiento</h3>
+<div class="ins">
+<p style="font-size:14px;line-height:1.75;"><strong>CPA por venta ≤ $500</strong> es el umbral mágico. Si un anuncio está generando ventas a un costo de $500 o menos (es decir, 16.6% del ticket de $3,000), <strong>se escala vertical sin límite</strong>. A partir de ese punto, ya no es testeo — es maquinaria de facturación.</p>
+<p style="font-size:14px;line-height:1.75;margin-top:10px;">Cuando un anuncio supere las <strong>3 ventas atribuidas con CPA ≤ $500</strong>, ahí sí pasa a su propia campaña secundaria (clonación del adset) para empezar el escalamiento horizontal: duplicar audiencias, lookalikes, otros placements. Hasta que ese umbral no se cumpla, todo se queda en la campaña matriz para preservar el aprendizaje del algoritmo.</p>
+</div>
+
+<h3>Estructura 1-4-4 · Cómo se organiza la campaña matriz</h3>
+<div class="card" style="padding:20px;">
+<div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">
+  <div style="flex:1;min-width:280px;">
+    <h5 class="acc">Configuración actual</h5>
+    <ul style="font-size:13px;padding-left:18px;line-height:1.85;color:var(--muted);">
+      <li><strong style="color:var(--text);">1 Campaña Matriz</strong> (centraliza aprendizaje)</li>
+      <li><strong style="color:var(--text);">4 Conjuntos de anuncios</strong> (uno por creativo)</li>
+      <li><strong style="color:var(--text);">4 Anuncios</strong> (1 por conjunto inicialmente)</li>
+      <li><strong style="color:var(--text);">$12.5/día por conjunto</strong> = $50/día total</li>
+    </ul>
+  </div>
+  <div style="flex:1;min-width:280px;">
+    <h5 class="acc">Lógica de crecimiento</h5>
+    <ul style="font-size:13px;padding-left:18px;line-height:1.85;color:var(--muted);">
+      <li>Cada nueva tanda de creativos entra como <strong style="color:var(--text);">nuevo conjunto dentro de la matriz</strong></li>
+      <li>Los ganadores se escalan <strong style="color:var(--text);">verticalmente</strong> en su conjunto original</li>
+      <li>Solo cuando CPA venta ≤ $500 sostenido → <strong style="color:var(--text);">clonar a campaña secundaria</strong></li>
+      <li>Los perdedores se pausan <strong style="color:var(--text);">dentro de la matriz</strong> (no se borran)</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<h3>Estado de decisiones operativas previas</h3>
+<div class="success-box">
+<p><strong>Ya implementado (no requiere acción):</strong></p>
+<ul style="font-size:13px;padding-left:20px;margin-top:6px;line-height:1.8;">
+<li>✓ <strong>UTM tracking</strong> configurado en todos los links de agendamiento</li>
+<li>✓ <strong>Placements automáticos</strong> con preferencia a Instagram activados</li>
+</ul>
+</div>
+<div class="info-box">
+<p><strong>Pendiente para próxima iteración:</strong></p>
+<ul style="font-size:13px;padding-left:20px;margin-top:6px;line-height:1.8;">
+<li>→ <strong>Plan de acción específico para remarketing</strong> — desarrollar como entregable aparte. Hoy está sub-invertido y representa la palanca más rentable del funnel (audiencias calientes ya expuestas al VSL).</li>
+</ul>
 </div>
 
 <h3>Resumen ejecutivo final</h3>
