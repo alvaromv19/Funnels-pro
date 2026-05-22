@@ -83,7 +83,7 @@
 <body>
 
 <div class="header">
-  <h1>10 Copys Detallados · Cada Elemento de Cada Imagen</h1>
+  <h1>Copys Detallados · Cada Elemento de Cada Imagen</h1>
   <div class="header-sub">Creamos Negocios · Lo que va exactamente dentro de cada anuncio · Tono argentino pulido</div>
 </div>
 
