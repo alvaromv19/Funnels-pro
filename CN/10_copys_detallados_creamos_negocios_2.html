@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 Copys Detallados · Creamos Negocios</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600;700&family=Anton&family=Cormorant+Garamond:wght@400;500;600;700&family=Inter+Tight:wght@400;500;600;700;800&display=swap');
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0a0b0d; --bg2:#14161a; --bg3:#1c1f24; --bg4:#252830;
+    --border:#2a2d33; --border2:#3a3e46;
+    --text:#ececef; --muted:#8e929c;
+    --accent:#c8ff3a;
+    --warm:#f3ead5;
+    --red:#ff5757;
+    --yellow:#ffc043;
+    --green:#3edc81;
+    --blue:#58a6ff;
+    --purple:#b48cf8;
+  }
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.65;}
+  .header{padding:36px 40px 24px;border-bottom:1px solid var(--border);}
+  .header h1{font-size:24px;font-weight:600;color:#fff;letter-spacing:-0.4px;}
+  .header-sub{color:var(--muted);font-size:13px;margin-top:6px;}
+  .toc{padding:18px 40px;border-bottom:1px solid var(--border);background:var(--bg2);}
+  .toc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+  .toc-item{padding:8px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;font-size:11.5px;color:var(--muted);cursor:pointer;text-decoration:none;display:block;}
+  .toc-item:hover{background:var(--bg4);color:var(--text);border-color:var(--border2);}
+  .toc-item strong{color:var(--accent);}
+  .content{padding:32px 40px 80px;max-width:1000px;}
+  .ad-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;margin-bottom:32px;overflow:hidden;}
+  .ad-header{padding:20px 24px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,var(--bg3) 0%,var(--bg2) 100%);}
+  .ad-header-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
+  .ad-num{display:inline-block;background:var(--accent);color:#000;font-size:12px;font-weight:700;padding:3px 10px;border-radius:14px;font-family:'DM Mono',monospace;margin-bottom:8px;}
+  .ad-name{font-size:18px;font-weight:600;color:#fff;letter-spacing:-0.3px;}
+  .ad-summary{font-size:13px;color:var(--muted);margin-top:6px;}
+  .ad-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+  .tag{font-size:10.5px;padding:3px 10px;border-radius:12px;font-family:'DM Mono',monospace;font-weight:500;letter-spacing:0.3px;}
+  .tag-accent{background:rgba(200,255,58,0.12);color:var(--accent);border:1px solid rgba(200,255,58,0.3);}
+  .tag-blue{background:rgba(88,166,255,0.12);color:var(--blue);border:1px solid rgba(88,166,255,0.3);}
+  .tag-purple{background:rgba(180,140,248,0.12);color:var(--purple);border:1px solid rgba(180,140,248,0.3);}
+  .tag-yellow{background:rgba(255,192,67,0.12);color:var(--yellow);border:1px solid rgba(255,192,67,0.3);}
+  .tag-red{background:rgba(255,87,87,0.12);color:var(--red);border:1px solid rgba(255,87,87,0.3);}
+  .tag-warm{background:rgba(243,234,213,0.08);color:var(--warm);border:1px solid rgba(243,234,213,0.3);}
+  .ad-body{padding:24px;}
+  .block{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px;}
+  .block-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.8px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .block-label-num{background:var(--bg4);color:var(--accent);border:1px solid var(--border2);width:18px;height:18px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:10px;}
+  .block-content{font-size:14px;line-height:1.65;color:var(--text);}
+  .block-content.large{font-size:18px;line-height:1.4;font-weight:500;}
+  .block-content.serif{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;line-height:1.3;color:var(--warm);font-weight:500;}
+  .block-content.anton{font-family:'Anton',sans-serif;font-size:34px;line-height:1.0;text-transform:uppercase;letter-spacing:-0.5px;color:#fff;}
+  .block-content.inter-bold{font-family:'Inter Tight',sans-serif;font-weight:700;font-size:24px;line-height:1.1;letter-spacing:-0.5px;}
+  .block-content.mono{font-family:'DM Mono',monospace;font-size:13px;color:var(--text);}
+  .block-content.accent{color:var(--accent);}
+  .block-content.red{color:var(--red);}
+  .block-content.warm{color:var(--warm);}
+  .block-content em{color:var(--accent);font-style:normal;font-weight:600;}
+  .copy-meta{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:14px;}
+  .copy-meta-title{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.7px;font-weight:700;margin-bottom:10px;}
+  .copy-meta-body{font-size:13.5px;line-height:1.7;white-space:pre-line;}
+  .copy-meta-body strong{color:var(--accent);}
+  .specs-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+  .spec-item{background:var(--bg4);padding:10px 12px;border-radius:6px;border:1px solid var(--border);}
+  .spec-key{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;font-weight:600;margin-bottom:3px;}
+  .spec-val{font-size:12.5px;color:var(--text);font-family:'DM Mono',monospace;}
+  .carousel-slides{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;}
+  .slide-card{background:var(--bg4);border:1px solid var(--border);border-radius:8px;padding:14px;}
+  .slide-num-label{font-size:10px;color:var(--accent);font-family:'DM Mono',monospace;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;}
+  .slide-title{font-size:14px;font-weight:600;color:#fff;margin-bottom:6px;}
+  .slide-text{font-size:12.5px;color:var(--muted);line-height:1.55;}
+  .note{font-size:12px;color:var(--muted);padding:10px 14px;background:rgba(200,255,58,0.04);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;margin-top:14px;}
+  .note strong{color:var(--accent);}
+  .palette-row{display:flex;gap:6px;margin-top:8px;}
+  .palette-chip{padding:4px 10px;border-radius:5px;font-family:'DM Mono',monospace;font-size:10.5px;font-weight:600;}
+  hr.section-divider{border:none;height:1px;background:var(--border);margin:18px 0;}
+  .scroll-top{position:fixed;bottom:24px;right:24px;background:var(--accent);color:#000;border:none;border-radius:8px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;}
+  .legend{padding:12px 16px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;margin-bottom:24px;font-size:13px;color:var(--muted);line-height:1.7;}
+  .legend strong{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>10 Copys Detallados · Cada Elemento de Cada Imagen</h1>
+  <div class="header-sub">Creamos Negocios · Lo que va exactamente dentro de cada anuncio · Tono argentino pulido</div>
+</div>
+
+<div class="toc">
+  <div class="toc-grid">
+    <a class="toc-item" href="#ad1"><strong>01</strong> · No te quite tiempo</a>
+    <a class="toc-item" href="#ad2"><strong>02</strong> · Mi tiempo no se vende</a>
+    <a class="toc-item" href="#ad3"><strong>03</strong> · Captura Dashboard</a>
+    <a class="toc-item" href="#ad4"><strong>04</strong> · Ya perdí $3,000</a>
+    <a class="toc-item" href="#ad5"><strong>05</strong> · Cuotas que no desangran</a>
+    <a class="toc-item" href="#ad6"><strong>06</strong> · Carrusel 4 pilares</a>
+    <a class="toc-item" href="#ad7"><strong>07</strong> · Carrusel 5 preguntas</a>
+    <a class="toc-item" href="#ad8"><strong>08</strong> · $5K extra al mes</a>
+    <a class="toc-item" href="#ad9"><strong>09</strong> · Para vos y tu socio</a>
+    <a class="toc-item" href="#ad10"><strong>10</strong> · Timeline ROI</a>
+  </div>
+</div>
+
+<div class="content">
+
+<div class="legend">
+<strong>Cómo leer este documento:</strong> cada anuncio tiene 3 partes — <strong>(1) lo que va DENTRO de la imagen</strong> (cada elemento de texto numerado), <strong>(2) el copy del post</strong> que acompaña al anuncio en Meta, y <strong>(3) los detalles visuales</strong> que necesita el diseñador (formato, colores, tipografía). Todo está en tono argentino con voseo, listo para producir.
+</div>
+
+<!-- ============== ANUNCIO 1 ============== -->
+<div class="ad-card" id="ad1">
+<div class="ad-header">
+  <div class="ad-header-top">
+    <div>
+      <span class="ad-num">01</span>
+      <div class="ad-name">"Un ingreso que no te quite más tiempo"</div>
+      <div class="ad-summary">Imagen estática tipográfica · Frío directo · Ángulo Alivio Técnico + Calificación</div>
+    </div>
+  </div>
+  <div class="ad-tags">
+    <span class="tag tag-accent">PRIORIDAD 1</span>
+    <span class="tag tag-blue">FRÍO · CAMP. A</span>
+    <span class="tag">FORMATO: IMAGEN 4:5</span>
+  </div>
+</div>
+<div class="ad-body">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">📄 LO QUE VA DENTRO DE LA IMAGEN</h3>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">1</span>KICKER · LÍNEA SUPERIOR</div>
+  <div class="block-content mono">PARA QUIENES YA TRABAJAN</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">2</span>HOOK PRINCIPAL · CENTRO DE LA IMAGEN</div>
+  <div class="block-content anton">UN INGRESO<br>QUE NO TE<br>QUITE <span class="accent">MÁS</span><br>TIEMPO.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">3</span>SUBTÍTULO · DEBAJO DEL HOOK</div>
+  <div class="block-content">Un negocio digital ya validado, conectado a tu Hotmart, vendiendo desde el día uno. Vos seguís en lo tuyo.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">4</span>PIE IZQUIERDO · LOGO</div>
+  <div class="block-content mono">CREAMOS NEGOCIOS</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">5</span>PIE DERECHO · CTA</div>
+  <div class="block-content mono">Tocá para conocerlo →</div>
+</div>
+
+<hr class="section-divider">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">📱 COPY DEL POST EN META</h3>
+
+<div class="copy-meta">
+<div class="copy-meta-body">Probablemente ya tenés un trabajo, una profesión o un negocio que te ocupa la mayor parte del día.
+
+Y lo último que querés es agregar más cosas que te coman tiempo.
+
+Por eso te entregamos un negocio digital <strong>ya validado y funcionando</strong>:
+
+→ Producto creado
+→ Página de ventas armada
+→ Anuncios probados
+→ Embudo conectado
+
+Vos solo lo enchufás a tu cuenta de Hotmart y los pagos empiezan a llegar.
+
+Sin marketing. Sin crear contenido. Sin convertirte en influencer.
+
+Y firmado por contrato: te acompañamos hasta que recuperes el 100% de tu inversión.
+
+<strong>Tocá el anuncio y mirá el video completo →</strong></div>
+</div>
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">🎨 DETALLES VISUALES</h3>
+
+<div class="specs-grid">
+  <div class="spec-item"><div class="spec-key">Formato</div><div class="spec-val">1080 × 1350 px (4:5)</div></div>
+  <div class="spec-item"><div class="spec-key">Fondo</div><div class="spec-val">#000000 (negro absoluto)</div></div>
+  <div class="spec-item"><div class="spec-key">Hook tipografía</div><div class="spec-val">Anton Regular · 46pt</div></div>
+  <div class="spec-item"><div class="spec-key">Color hook</div><div class="spec-val">#FFFFFF + "MÁS" en #C8FF3A</div></div>
+  <div class="spec-item"><div class="spec-key">Kicker tipografía</div><div class="spec-val">DM Sans Medium · 11pt · #666</div></div>
+  <div class="spec-item"><div class="spec-key">Subtítulo</div><div class="spec-val">DM Sans Light · 13pt · #BBB</div></div>
+  <div class="spec-item"><div class="spec-key">Padding</div><div class="spec-val">38px vertical · 28px horizontal</div></div>
+  <div class="spec-item"><div class="spec-key">Sin elementos decorativos</div><div class="spec-val">Solo tipografía + contraste</div></div>
+</div>
+
+<div class="palette-row">
+  <span class="palette-chip" style="background:#000;color:#fff;">#000000</span>
+  <span class="palette-chip" style="background:#fff;color:#000;">#FFFFFF</span>
+  <span class="palette-chip" style="background:#c8ff3a;color:#000;">#C8FF3A</span>
+  <span class="palette-chip" style="background:#666;color:#fff;">#666666</span>
+</div>
+
+</div>
+</div>
+
+<!-- ============== ANUNCIO 2 ============== -->
+<div class="ad-card" id="ad2">
+<div class="ad-header">
+  <div class="ad-header-top">
+    <div>
+      <span class="ad-num">02</span>
+      <div class="ad-name">"Mi tiempo no se vende"</div>
+      <div class="ad-summary">Imagen editorial · Cita textual de comprador · Calificación filosófica</div>
+    </div>
+  </div>
+  <div class="ad-tags">
+    <span class="tag tag-warm">PRIORIDAD 2</span>
+    <span class="tag tag-purple">FRÍO + RMKT</span>
+    <span class="tag">FORMATO: IMAGEN 4:5</span>
+  </div>
+</div>
+<div class="ad-body">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--warm);">📄 LO QUE VA DENTRO DE LA IMAGEN</h3>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">1</span>KICKER · LÍNEA SUPERIOR</div>
+  <div class="block-content mono">UNA REFLEXIÓN HONESTA</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">2</span>CITA PRINCIPAL · CENTRO (serif italic)</div>
+  <div class="block-content serif">"Mi tiempo no se vende.<br><em>Quiero tener dinero<br>para comprarlo."</em></div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">3</span>SUBTÍTULO · DEBAJO DE LA CITA</div>
+  <div class="block-content">Si llegaste a los 30, 40 o 50 sin haberlo dicho en voz alta — leélo de nuevo.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">4</span>ATRIBUCIÓN · DEBAJO DEL SUBTÍTULO</div>
+  <div class="block-content mono">— Virgilio, 39 · cliente de Creamos Negocios</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">5</span>PIE IZQUIERDO · LOGO</div>
+  <div class="block-content mono">CREAMOS NEGOCIOS</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">6</span>PIE DERECHO · CTA</div>
+  <div class="block-content mono">Tocá y mirá cómo →</div>
+</div>
+
+<hr class="section-divider">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--warm);">📱 COPY DEL POST EN META</h3>
+
+<div class="copy-meta">
+<div class="copy-meta-body">Hay una frase que dijo uno de nuestros clientes en su llamada antes de comprar.
+
+<em>"No quiero vender mi tiempo para ganar dinero. Quiero tener dinero para comprar tiempo."</em>
+
+Virgilio tiene 39 años, 16 años de experiencia en administración de empresas, y estaba cansado de cambiar horas por sueldo cada mes.
+
+No quería arrancar otro negocio desde cero. No quería aprender marketing digital, ni hacer reels, ni convertirse en otro influencer más.
+
+Lo que quería era simple: <strong>un activo digital que generara ingresos sin pedirle más horas del día</strong>.
+
+Eso es exactamente lo que hacemos. Te entregamos un negocio digital ya validado — con producto, página, anuncios y embudo funcionando. Vos lo conectás a tu Hotmart y empieza a vender.
+
+Y firmado por contrato: nuestro equipo trabaja en tu negocio hasta que recuperes el 100% de tu inversión.
+
+Si la frase de Virgilio también es tu frase — <strong>tocá el anuncio y mirá el video completo →</strong></div>
+</div>
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--warm);">🎨 DETALLES VISUALES</h3>
+
+<div class="specs-grid">
+  <div class="spec-item"><div class="spec-key">Formato</div><div class="spec-val">1080 × 1350 px (4:5)</div></div>
+  <div class="spec-item"><div class="spec-key">Fondo</div><div class="spec-val">#F3EAD5 (crema cálido plano)</div></div>
+  <div class="spec-item"><div class="spec-key">Cita tipografía</div><div class="spec-val">Cormorant Garamond Medium Italic · 54pt</div></div>
+  <div class="spec-item"><div class="spec-key">Color cita</div><div class="spec-val">#1A1612 (marrón muy oscuro)</div></div>
+  <div class="spec-item"><div class="spec-key">Énfasis ("Quiero tener...")</div><div class="spec-val">Cormorant SemiBold Italic · 54pt</div></div>
+  <div class="spec-item"><div class="spec-key">Kicker</div><div class="spec-val">DM Sans SemiBold · 10pt · #8A7C5E</div></div>
+  <div class="spec-item"><div class="spec-key">Subtítulo</div><div class="spec-val">DM Sans Regular · 13pt · #5C4E36</div></div>
+  <div class="spec-item"><div class="spec-key">Atribución</div><div class="spec-val">DM Mono Medium · 10pt · #8A7C5E</div></div>
+</div>
+
+<div class="note"><strong>⚠ Importante:</strong> NO usar fondos texturizados (papel, lino, grano). El fondo debe ser plano para evitar look de "frase motivacional de Pinterest". NO usar Playfair Display ni Lora — específicamente Cormorant Garamond porque su italic es neutra-elegante.</div>
+
+<div class="palette-row">
+  <span class="palette-chip" style="background:#f3ead5;color:#1a1612;">#F3EAD5</span>
+  <span class="palette-chip" style="background:#1a1612;color:#f3ead5;">#1A1612</span>
+  <span class="palette-chip" style="background:#8a7c5e;color:#fff;">#8A7C5E</span>
+  <span class="palette-chip" style="background:#5c4e36;color:#fff;">#5C4E36</span>
+</div>
+
+</div>
+</div>
+
+<!-- ============== ANUNCIO 3 ============== -->
+<div class="ad-card" id="ad3">
+<div class="ad-header">
+  <div class="ad-header-top">
+    <div>
+      <span class="ad-num">03</span>
+      <div class="ad-name">Captura Dashboard real</div>
+      <div class="ad-summary">Pseudo-screenshot · Anti-Gurú nativo · Frío directo</div>
+    </div>
+  </div>
+  <div class="ad-tags">
+    <span class="tag tag-accent">PRIORIDAD 3</span>
+    <span class="tag tag-blue">FRÍO · CAMP. A</span>
+    <span class="tag">FORMATO: IMAGEN 4:5</span>
+  </div>
+</div>
+<div class="ad-body">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">📄 LO QUE VA DENTRO DE LA IMAGEN</h3>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">1</span>HEADER (parte superior · imita header de Hotmart)</div>
+  <div class="block-content mono">📊 PANEL HOTMART · ÚLTIMOS 30 DÍAS</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">2</span>TÍTULO DE MÉTRICA</div>
+  <div class="block-content mono">Facturación total</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">3</span>CIFRA GRANDE · MÉTRICA PRINCIPAL</div>
+  <div class="block-content inter-bold accent" style="font-size:38px;">$3,094</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">4</span>SUBTEXTO DE MÉTRICA</div>
+  <div class="block-content mono">↑ 47 ventas · ROAS 3.2x</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">5</span>MÉTRICAS SECUNDARIAS (3 cajas mini)</div>
+  <div class="block-content mono">CPA: $48 · CTR: 2.1% · CVR: 3.8%</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">6</span>OVERLAY VERDE LIMA (banner sobre la captura)</div>
+  <div class="block-content" style="background:#c8ff3a;color:#000;padding:8px 12px;border-radius:4px;font-weight:600;display:inline-block;">Esto no es un curso. Es uno de los negocios que entregamos este mes.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">7</span>PIE IZQUIERDO · LOGO</div>
+  <div class="block-content mono">CREAMOS NEGOCIOS</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">8</span>PIE DERECHO · CTA</div>
+  <div class="block-content mono">Tocá y conocelo →</div>
+</div>
+
+<hr class="section-divider">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">📱 COPY DEL POST EN META</h3>
+
+<div class="copy-meta">
+<div class="copy-meta-body">Esto es lo que facturó uno de nuestros negocios el mes pasado:
+
+<strong>$3,094 en 30 días. 47 ventas. ROAS 3.2x.</strong>
+
+Sin que el dueño tenga que crear contenido, ni armar embudos, ni saber de Meta Ads.
+
+Lo único que hizo fue <strong>conectar su cuenta de Hotmart al negocio que le entregamos ya validado</strong>.
+
+No te pedimos que nos creas. Te mostramos los datos en pantalla.
+
+→ Negocio ya validado (no idea, no curso)
+→ Producto, página, anuncios y embudo armados
+→ Acompañamiento de nuestro equipo
+→ Garantía por contrato hasta recuperar tu inversión
+
+<strong>Tocá y mirá cómo funciona el modelo →</strong></div>
+</div>
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">🎨 DETALLES VISUALES</h3>
+
+<div class="specs-grid">
+  <div class="spec-item"><div class="spec-key">Formato</div><div class="spec-val">1080 × 1350 px (4:5)</div></div>
+  <div class="spec-item"><div class="spec-key">Estilo</div><div class="spec-val">Imitar UI real de Hotmart</div></div>
+  <div class="spec-item"><div class="spec-key">Fondo</div><div class="spec-val">#0A0B0D (oscuro tipo panel admin)</div></div>
+  <div class="spec-item"><div class="spec-key">Cifra principal</div><div class="spec-val">Inter Tight Bold · 64pt · #3EDC81 (verde)</div></div>
+  <div class="spec-item"><div class="spec-key">Cajas de métricas</div><div class="spec-val">Border-radius 6px · borde #2A2D33</div></div>
+  <div class="spec-item"><div class="spec-key">Overlay verde lima</div><div class="spec-val">#C8FF3A sobre la captura · texto negro</div></div>
+  <div class="spec-item"><div class="spec-key">Tipografía métricas</div><div class="spec-val">DM Mono Medium 14pt</div></div>
+  <div class="spec-item"><div class="spec-key">Headers de sección</div><div class="spec-val">DM Sans Regular 9pt uppercase</div></div>
+</div>
+
+<div class="note"><strong>⚠ Ideal:</strong> usar capturas REALES de cliente (con permiso) en lugar de diseñar desde cero. El valor está en que parezca foto de pantalla, no diseño de agencia. Si se diseña, mantener la estética cruda del panel real de Hotmart.</div>
+
+<div class="palette-row">
+  <span class="palette-chip" style="background:#0a0b0d;color:#fff;">#0A0B0D</span>
+  <span class="palette-chip" style="background:#14161a;color:#fff;">#14161A</span>
+  <span class="palette-chip" style="background:#3edc81;color:#000;">#3EDC81</span>
+  <span class="palette-chip" style="background:#c8ff3a;color:#000;">#C8FF3A</span>
+</div>
+
+</div>
+</div>
+
+<!-- ============== ANUNCIO 4 ============== -->
+<div class="ad-card" id="ad4">
+<div class="ad-header">
+  <div class="ad-header-top">
+    <div>
+      <span class="ad-num">04</span>
+      <div class="ad-name">"Ya perdí $3,000 antes"</div>
+      <div class="ad-summary">Ataque a cicatriz emocional · Riesgo Cero como antídoto</div>
+    </div>
+  </div>
+  <div class="ad-tags">
+    <span class="tag tag-red">PRIORIDAD 4</span>
+    <span class="tag tag-blue">FRÍO · CAMP. A</span>
+    <span class="tag">FORMATO: IMAGEN 4:5</span>
+  </div>
+</div>
+<div class="ad-body">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--red);">📄 LO QUE VA DENTRO DE LA IMAGEN</h3>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">1</span>ELEMENTO VISUAL · LÍNEA SUTIL (gradiente rojo)</div>
+  <div class="block-content mono">────── línea horizontal en gradiente #FF5757 (simula cicatriz)</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">2</span>KICKER · LÍNEA SUPERIOR</div>
+  <div class="block-content mono">PARA QUIENES YA SE QUEMARON</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">3</span>HOOK PRINCIPAL · CENTRO</div>
+  <div class="block-content anton">YA PERDÍ<br><span class="red">$3,000</span> ANTES.<br>NO PIENSO<br>HACERLO<br>DE NUEVO.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">4</span>SUBTÍTULO · DEBAJO DEL HOOK</div>
+  <div class="block-content">Por eso firmamos por contrato que te acompañamos hasta que recuperes cada dólar.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">5</span>PIE IZQUIERDO · LOGO</div>
+  <div class="block-content mono">CREAMOS NEGOCIOS</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">6</span>PIE DERECHO · CTA</div>
+  <div class="block-content mono">Tocá y mirá la garantía →</div>
+</div>
+
+<hr class="section-divider">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--red);">📱 COPY DEL POST EN META</h3>
+
+<div class="copy-meta">
+<div class="copy-meta-body">Si ya pusiste plata en algo digital que no funcionó — esto te va a sonar familiar.
+
+Cursos que prometían el oro y al final no te enseñaban nada concreto.
+Esquemas de crypto que se vinieron abajo.
+Mentorías caras que te dejaron en la misma situación.
+Dropshipping, afiliación, e-commerce que nunca despegó.
+
+<strong>El miedo no es a invertir. El miedo es a perder de nuevo.</strong>
+
+Por eso lo que firmamos por contrato no es una promesa de resultados — es una garantía de acompañamiento <strong>hasta que recuperes el 100% de tu inversión</strong>.
+
+Si el negocio no factura, nuestro equipo sigue trabajando en él. No te dejamos solo. No nos vamos.
+
+Esa cláusula está por escrito en el contrato. La podés leer antes de firmar.
+
+<strong>Tocá el anuncio y mirá la cláusula completa →</strong></div>
+</div>
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--red);">🎨 DETALLES VISUALES</h3>
+
+<div class="specs-grid">
+  <div class="spec-item"><div class="spec-key">Formato</div><div class="spec-val">1080 × 1350 px (4:5)</div></div>
+  <div class="spec-item"><div class="spec-key">Fondo</div><div class="spec-val">#1A1A1F (muy oscuro pero no negro)</div></div>
+  <div class="spec-item"><div class="spec-key">Línea "cicatriz"</div><div class="spec-val">Gradiente lineal #FF5757 con extremos transparentes · 1.5px altura · 80% ancho</div></div>
+  <div class="spec-item"><div class="spec-key">Hook tipografía</div><div class="spec-val">Anton Regular · 38pt</div></div>
+  <div class="spec-item"><div class="spec-key">"$3,000" color</div><div class="spec-val">#FF5757 mismo size que el resto</div></div>
+  <div class="spec-item"><div class="spec-key">Kicker</div><div class="spec-val">DM Sans Medium · 11pt · #888</div></div>
+  <div class="spec-item"><div class="spec-key">Subtítulo</div><div class="spec-val">DM Sans Light · 13pt · #AAA</div></div>
+  <div class="spec-item"><div class="spec-key">Tono general</div><div class="spec-val">Sobrio · evitar dramatismo gráfico</div></div>
+</div>
+
+<div class="palette-row">
+  <span class="palette-chip" style="background:#1a1a1f;color:#fff;">#1A1A1F</span>
+  <span class="palette-chip" style="background:#ff5757;color:#fff;">#FF5757</span>
+  <span class="palette-chip" style="background:#fff;color:#000;">#FFFFFF</span>
+  <span class="palette-chip" style="background:#aaa;color:#000;">#AAAAAA</span>
+</div>
+
+</div>
+</div>
+
+<!-- ============== ANUNCIO 5 ============== -->
+<div class="ad-card" id="ad5">
+<div class="ad-header">
+  <div class="ad-header-top">
+    <div>
+      <span class="ad-num">05</span>
+      <div class="ad-name">"Cuotas para que no te desangres"</div>
+      <div class="ad-summary">Destruye objeción de liquidez · Filtro suave + Reactivación</div>
+    </div>
+  </div>
+  <div class="ad-tags">
+    <span class="tag tag-blue">PRIORIDAD 5</span>
+    <span class="tag tag-purple">RMKT · CAMP. C</span>
+    <span class="tag">FORMATO: IMAGEN 4:5</span>
+  </div>
+</div>
+<div class="ad-body">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--blue);">📄 LO QUE VA DENTRO DE LA IMAGEN</h3>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">1</span>KICKER · LÍNEA SUPERIOR</div>
+  <div class="block-content mono">PARA QUE LA INVERSIÓN NO TE FRENE</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">2</span>VISUAL · 3 TARJETAS GRID (tipo financial card)</div>
+  <div class="block-content mono">┌──────────┐  ┌──────────┐  ┌──────────┐
+│ MES 1    │  │ MES 2 ★  │  │ MES 3    │
+│ $1,500   │  │ $1,500   │  │ Libre    │
+└──────────┘  └──────────┘  └──────────┘
+
+(la del medio destacada en negro con verde lima)</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">3</span>HOOK PRINCIPAL · DEBAJO DE LAS TARJETAS</div>
+  <div class="block-content inter-bold">Pagás tu negocio en cuotas.<br>Empieza a venderte desde el día uno.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">4</span>SUBTÍTULO · PRUEBA SOCIAL</div>
+  <div class="block-content">9 de 16 clientes lo hicieron así. Ningún cliente quedó pagando un negocio que no facturara.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">5</span>PIE IZQUIERDO · LOGO</div>
+  <div class="block-content mono">CREAMOS NEGOCIOS</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">6</span>PIE DERECHO · CTA</div>
+  <div class="block-content mono">Ver opciones de pago →</div>
+</div>
+
+<hr class="section-divider">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--blue);">📱 COPY DEL POST EN META</h3>
+
+<div class="copy-meta">
+<div class="copy-meta-body">La objeción más común en nuestras llamadas:
+
+<em>"Me interesa pero no tengo los $3,000 enteros disponibles ahora."</em>
+
+Por eso ofrecemos pago en cuotas.
+
+Pagás dos cuotas de $1,500 (mes 1 y mes 2) — y el negocio <strong>empieza a vender desde el día uno</strong>.
+
+9 de cada 16 clientes que tenemos eligen esta modalidad. Y ninguno terminó pagando un negocio que no facturara, porque:
+
+→ El negocio que te entregamos <strong>ya está validado con ventas reales</strong>
+→ Nuestro equipo lo opera durante tus primeras semanas
+→ Tenés garantía firmada hasta recuperar tu inversión
+
+No es financiamiento bancario. No te cobramos intereses. Son dos pagos en dos meses para que la inversión no te frene.
+
+<strong>Tocá el anuncio y mirá las opciones de pago →</strong></div>
+</div>
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--blue);">🎨 DETALLES VISUALES</h3>
+
+<div class="specs-grid">
+  <div class="spec-item"><div class="spec-key">Formato</div><div class="spec-val">1080 × 1350 px (4:5)</div></div>
+  <div class="spec-item"><div class="spec-key">Fondo</div><div class="spec-val">#FAFAF7 (blanco roto cálido)</div></div>
+  <div class="spec-item"><div class="spec-key">Tarjetas normales</div><div class="spec-val">#FFFFFF · borde #D8D3C4 · radius 6px</div></div>
+  <div class="spec-item"><div class="spec-key">Tarjeta destacada (mes 2)</div><div class="spec-val">#1A1612 fondo · #FFF texto · indicador #C8FF3A</div></div>
+  <div class="spec-item"><div class="spec-key">Monto tarjetas</div><div class="spec-val">DM Mono Bold · 18pt</div></div>
+  <div class="spec-item"><div class="spec-key">Hook</div><div class="spec-val">Inter Tight Bold · 24pt · #1A1612</div></div>
+  <div class="spec-item"><div class="spec-key">Subtítulo</div><div class="spec-val">DM Sans Regular · 10pt · #5C4E36</div></div>
+  <div class="spec-item"><div class="spec-key">Estilo</div><div class="spec-val">Limpio · financial-app · sin ornamentos</div></div>
+</div>
+
+<div class="palette-row">
+  <span class="palette-chip" style="background:#fafaf7;color:#1a1612;">#FAFAF7</span>
+  <span class="palette-chip" style="background:#1a1612;color:#fff;">#1A1612</span>
+  <span class="palette-chip" style="background:#c8ff3a;color:#000;">#C8FF3A</span>
+  <span class="palette-chip" style="background:#d8d3c4;color:#000;">#D8D3C4</span>
+</div>
+
+</div>
+</div>
+
+<!-- ============== ANUNCIO 6 ============== -->
+<div class="ad-card" id="ad6">
+<div class="ad-header">
+  <div class="ad-header-top">
+    <div>
+      <span class="ad-num">06</span>
+      <div class="ad-name">Carrusel "Los 4 pilares" (T04.SC05 adaptado)</div>
+      <div class="ad-summary">6 slides · Traducción del video ganador a formato estático</div>
+    </div>
+  </div>
+  <div class="ad-tags">
+    <span class="tag tag-accent">PRIORIDAD 6</span>
+    <span class="tag tag-blue">FRÍO · CAMP. A</span>
+    <span class="tag">FORMATO: CARRUSEL 4:5 (6 slides)</span>
+  </div>
+</div>
+<div class="ad-body">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">📄 LO QUE VA DENTRO DE CADA SLIDE</h3>
+
+<div class="carousel-slides">
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 0 · PORTADA</div>
+    <div class="slide-title">Fondo negro</div>
+    <div class="slide-text">
+    <strong>Texto principal:</strong><br>
+    El modelo que sobrevivió a<br>todos los intentos digitales.<br><br>
+    <strong>Subtítulo:</strong><br>
+    Funciona así → desliza
+    </div>
+  </div>
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 1 · NEGOCIO VALIDADO</div>
+    <div class="slide-title">Fondo negro</div>
+    <div class="slide-text">
+    <strong>Número grande:</strong> 01<br>
+    <strong>Título:</strong> NEGOCIO VALIDADO<br>
+    <strong>Texto:</strong> No te damos una idea ni un curso. Te entregamos un negocio digital con ventas reales ya comprobadas.
+    </div>
+  </div>
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 2 · ECOSISTEMA COMPLETO</div>
+    <div class="slide-title">Fondo negro</div>
+    <div class="slide-text">
+    <strong>Número grande:</strong> 02<br>
+    <strong>Título:</strong> ECOSISTEMA COMPLETO<br>
+    <strong>Texto:</strong> Landing, redes, anuncios, pasarela. Todo conectado. Vos solo lo enchufás a tu Hotmart.
+    </div>
+  </div>
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 3 · ACOMPAÑAMIENTO REAL</div>
+    <div class="slide-title">Fondo negro</div>
+    <div class="slide-text">
+    <strong>Número grande:</strong> 03<br>
+    <strong>Título:</strong> ACOMPAÑAMIENTO REAL<br>
+    <strong>Texto:</strong> Nuestro equipo trabaja en tu negocio: optimiza campañas, escala lo que funciona, ajusta lo que no.
+    </div>
+  </div>
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 4 · GARANTÍA (DESTACADO)</div>
+    <div class="slide-title">Fondo verde lima #C8FF3A · texto negro</div>
+    <div class="slide-text">
+    <strong>Número grande:</strong> 04<br>
+    <strong>Título:</strong> GARANTÍA CONCRETA<br>
+    <strong>Texto:</strong> No te soltamos hasta que recuperes cada dólar invertido. Firmado por contrato.
+    </div>
+  </div>
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 5 · CTA FINAL</div>
+    <div class="slide-title">Fondo negro</div>
+    <div class="slide-text">
+    <strong>Texto principal:</strong><br>
+    Tocá y descubrí cómo<br>funciona el modelo →<br><br>
+    <strong>Subtítulo:</strong><br>
+    Te explicamos todo en el video completo.
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">📱 COPY DEL POST EN META</h3>
+
+<div class="copy-meta">
+<div class="copy-meta-body">Si ya intentaste arrancar algo digital antes — un curso, ser afiliado, dropshipping, lo que sea — y no funcionó, esto te puede interesar.
+
+Hay un modelo distinto que sí está funcionando. Te lo explicamos en 4 pasos →
+
+<strong>01 — Negocio validado.</strong> No te damos una idea ni un curso. Te entregamos un negocio digital que ya tiene ventas reales comprobadas.
+
+<strong>02 — Ecosistema completo.</strong> Producto, página, anuncios, embudo y pasarela. Todo armado, todo conectado.
+
+<strong>03 — Acompañamiento real.</strong> Nuestro equipo trabaja en tu negocio: opera las campañas, optimiza lo que funciona, ajusta lo que no.
+
+<strong>04 — Garantía concreta.</strong> Firmado por contrato: no te soltamos hasta que recuperes el 100% de tu inversión.
+
+<strong>Tocá el anuncio y mirá el video completo →</strong></div>
+</div>
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">🎨 DETALLES VISUALES</h3>
+
+<div class="specs-grid">
+  <div class="spec-item"><div class="spec-key">Formato</div><div class="spec-val">6 slides 1080 × 1350 px</div></div>
+  <div class="spec-item"><div class="spec-key">Slides 0-3 y 5</div><div class="spec-val">Fondo #0A0B0D negro</div></div>
+  <div class="spec-item"><div class="spec-key">Slide 4 (Garantía)</div><div class="spec-val">Fondo #C8FF3A · texto #000</div></div>
+  <div class="spec-item"><div class="spec-key">Número (01/02/...)</div><div class="spec-val">DM Mono Medium · 80pt en esquina sup. izq.</div></div>
+  <div class="spec-item"><div class="spec-key">Color número</div><div class="spec-val">Slides negros: #2A2D33 / Slide 4: #1A1612</div></div>
+  <div class="spec-item"><div class="spec-key">Títulos pilares</div><div class="spec-val">Anton Regular · 56pt uppercase</div></div>
+  <div class="spec-item"><div class="spec-key">Texto descriptivo</div><div class="spec-val">DM Sans Regular · 16pt</div></div>
+  <div class="spec-item"><div class="spec-key">Composición</div><div class="spec-val">Sin imágenes · número y tipografía dominan</div></div>
+</div>
+
+<div class="palette-row">
+  <span class="palette-chip" style="background:#0a0b0d;color:#fff;">#0A0B0D</span>
+  <span class="palette-chip" style="background:#c8ff3a;color:#000;">#C8FF3A</span>
+  <span class="palette-chip" style="background:#fff;color:#000;">#FFFFFF</span>
+  <span class="palette-chip" style="background:#2a2d33;color:#fff;">#2A2D33</span>
+</div>
+
+</div>
+</div>
+
+<!-- ============== ANUNCIO 7 ============== -->
+<div class="ad-card" id="ad7">
+<div class="ad-header">
+  <div class="ad-header-top">
+    <div>
+      <span class="ad-num">07</span>
+      <div class="ad-name">Carrusel "Las 5 preguntas"</div>
+      <div class="ad-summary">6 slides · Destruye 5 objeciones letales en orden</div>
+    </div>
+  </div>
+  <div class="ad-tags">
+    <span class="tag tag-purple">PRIORIDAD 7</span>
+    <span class="tag tag-purple">RMKT · CAMP. C</span>
+    <span class="tag">FORMATO: CARRUSEL 4:5 (6 slides)</span>
+  </div>
+</div>
+<div class="ad-body">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--purple);">📄 LO QUE VA DENTRO DE CADA SLIDE</h3>
+
+<div class="carousel-slides">
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 1 · GARANTÍA</div>
+    <div class="slide-title">Pregunta + respuesta</div>
+    <div class="slide-text">
+    <strong>Kicker:</strong> LO QUE TE PREGUNTÁS ANTES DE INVERTIR<br>
+    <strong>Pregunta (grande):</strong> ¿Y si no funciona?<br>
+    <strong>Respuesta:</strong> Te acompañamos hasta que recuperes cada dólar invertido. Firmado por contrato.
+    </div>
+  </div>
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 2 · PRECIO</div>
+    <div class="slide-title">Pregunta + respuesta</div>
+    <div class="slide-text">
+    <strong>Pregunta:</strong> ¿No es muy caro?<br>
+    <strong>Respuesta:</strong> No es un gasto. Es invertir en una infraestructura que ya factura. Lo que pagás es lo que otros ya construyeron.
+    </div>
+  </div>
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 3 · TECNOLOGÍA</div>
+    <div class="slide-title">Pregunta + respuesta</div>
+    <div class="slide-text">
+    <strong>Pregunta:</strong> ¿Tengo que saber de tecnología?<br>
+    <strong>Respuesta:</strong> No. Te entregamos la llave. Vos solo operás. Nosotros nos encargamos de los embudos, los anuncios y las integraciones.
+    </div>
+  </div>
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 4 · TIEMPO A VENTAS</div>
+    <div class="slide-title">Pregunta + respuesta</div>
+    <div class="slide-text">
+    <strong>Pregunta:</strong> ¿Cuánto tarda en empezar a vender?<br>
+    <strong>Respuesta:</strong> Comprás hoy. Lo conectás mañana. Vende desde el día uno. Los anuncios ya están probados.
+    </div>
+  </div>
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 5 · APROBACIÓN TERCERO</div>
+    <div class="slide-title">Pregunta + respuesta</div>
+    <div class="slide-text">
+    <strong>Pregunta:</strong> ¿Necesito consultarlo con mi pareja/socio?<br>
+    <strong>Respuesta:</strong> Hacelo. Y mejor traelo a la llamada. Los dos pueden ver los datos y decidir juntos.
+    </div>
+  </div>
+  <div class="slide-card">
+    <div class="slide-num-label">SLIDE 6 · CTA</div>
+    <div class="slide-title">Cierre + acción</div>
+    <div class="slide-text">
+    <strong>Texto:</strong><br>
+    Si llegaste hasta acá, la próxima pregunta te la respondemos en una llamada de diagnóstico.<br><br>
+    <strong>CTA:</strong> Agendá tu llamada →
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--purple);">📱 COPY DEL POST EN META</h3>
+
+<div class="copy-meta">
+<div class="copy-meta-body">Las 5 preguntas que nos hace todo el mundo antes de comprar. Y las respuestas, sin vueltas:
+
+<strong>¿Y si no funciona?</strong>
+Te acompañamos hasta que recuperes cada dólar. Por contrato.
+
+<strong>¿No es muy caro?</strong>
+No es gasto. Es comprar lo que otros ya construyeron y validaron.
+
+<strong>¿Tengo que saber de tecnología?</strong>
+No. Te entregamos la llave. Vos operás. Nosotros nos encargamos del resto.
+
+<strong>¿Cuánto tarda en vender?</strong>
+Comprás hoy. Conectás mañana. Vende desde el día uno.
+
+<strong>¿Necesito consultarlo con alguien?</strong>
+Hacelo. Y traelo a la llamada de diagnóstico — así ven los datos juntos.
+
+<strong>Tocá el carrusel y leelas en orden. Si te queda alguna duda, agendá una llamada →</strong></div>
+</div>
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--purple);">🎨 DETALLES VISUALES</h3>
+
+<div class="specs-grid">
+  <div class="spec-item"><div class="spec-key">Formato</div><div class="spec-val">6 slides 1080 × 1350 px</div></div>
+  <div class="spec-item"><div class="spec-key">Fondo todos</div><div class="spec-val">#14161A (gris muy oscuro)</div></div>
+  <div class="spec-item"><div class="spec-key">Pregunta tipografía</div><div class="spec-val">Inter Tight Bold · 42pt · #FFFFFF</div></div>
+  <div class="spec-item"><div class="spec-key">Separador entre P y R</div><div class="spec-val">Línea horizontal #C8FF3A · 30px ancho · 2px alto</div></div>
+  <div class="spec-item"><div class="spec-key">Respuesta tipografía</div><div class="spec-val">DM Sans Regular · 16pt · #BBB</div></div>
+  <div class="spec-item"><div class="spec-key">Kicker slide 1</div><div class="spec-val">DM Sans Medium · 10pt uppercase · #666</div></div>
+  <div class="spec-item"><div class="spec-key">Indicador paginación</div><div class="spec-val">5 barras horizontales abajo · activa en #C8FF3A</div></div>
+  <div class="spec-item"><div class="spec-key">Padding</div><div class="spec-val">40px lateral · 36px vertical</div></div>
+</div>
+
+<div class="palette-row">
+  <span class="palette-chip" style="background:#14161a;color:#fff;">#14161A</span>
+  <span class="palette-chip" style="background:#fff;color:#000;">#FFFFFF</span>
+  <span class="palette-chip" style="background:#c8ff3a;color:#000;">#C8FF3A</span>
+  <span class="palette-chip" style="background:#bbb;color:#000;">#BBBBBB</span>
+</div>
+
+</div>
+</div>
+
+<!-- ============== ANUNCIO 8 ============== -->
+<div class="ad-card" id="ad8">
+<div class="ad-header">
+  <div class="ad-header-top">
+    <div>
+      <span class="ad-num">08</span>
+      <div class="ad-name">"$5,000 extra al mes"</div>
+      <div class="ad-summary">Cifra concreta · Filtro por intención de ingreso real</div>
+    </div>
+  </div>
+  <div class="ad-tags">
+    <span class="tag tag-yellow">PRIORIDAD 8</span>
+    <span class="tag tag-blue">FRÍO + RMKT</span>
+    <span class="tag">FORMATO: IMAGEN 4:5</span>
+  </div>
+</div>
+<div class="ad-body">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--yellow);">📄 LO QUE VA DENTRO DE LA IMAGEN</h3>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">1</span>KICKER · LÍNEA SUPERIOR (centrado)</div>
+  <div class="block-content mono">LO QUE TE PUEDE FACTURAR ESTO</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">2</span>CIFRA GIGANTE · CENTRO</div>
+  <div class="block-content inter-bold accent" style="font-size:80px;">$5K<span style="font-size:30px;color:#fff;">/mes</span></div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">3</span>SUBTÍTULO · DEBAJO DE LA CIFRA</div>
+  <div class="block-content">No es promesa. Es lo que pidió Kathy en su llamada antes de comprar. Y es lo que está facturando hoy.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">4</span>PIE IZQUIERDO · LOGO</div>
+  <div class="block-content mono">CREAMOS NEGOCIOS</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">5</span>PIE DERECHO · CTA</div>
+  <div class="block-content mono">Ver el dashboard →</div>
+</div>
+
+<hr class="section-divider">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--yellow);">📱 COPY DEL POST EN META</h3>
+
+<div class="copy-meta">
+<div class="copy-meta-body">"Necesito un mínimo de $5,000 extra mensuales."
+
+Eso es lo que nos dijo Kathy en su llamada de diagnóstico. Madre soltera, 49 años, Chile. Necesitaba una fuente de ingresos que no le quitara horas a su día.
+
+Le entregamos un negocio digital ya validado. Lo conectó a su Hotmart. Empezó a facturar.
+
+Hoy ese negocio le está dando exactamente lo que pidió.
+
+¿Cómo es posible?
+→ El producto ya tiene demanda comprobada
+→ Los anuncios ya están probados con ROAS positivo
+→ El embudo está optimizado
+→ Y nuestro equipo opera todo durante las primeras semanas
+
+No es magia. Es comprar un negocio que ya funciona en vez de armar uno desde cero.
+
+<strong>Tocá el anuncio y mirá el dashboard real →</strong></div>
+</div>
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--yellow);">🎨 DETALLES VISUALES</h3>
+
+<div class="specs-grid">
+  <div class="spec-item"><div class="spec-key">Formato</div><div class="spec-val">1080 × 1350 px (4:5)</div></div>
+  <div class="spec-item"><div class="spec-key">Fondo</div><div class="spec-val">#0A0B0D (negro)</div></div>
+  <div class="spec-item"><div class="spec-key">"$5K"</div><div class="spec-val">Inter Tight ExtraBold · 200pt · #C8FF3A</div></div>
+  <div class="spec-item"><div class="spec-key">"/mes"</div><div class="spec-val">Inter Tight SemiBold · 60pt · #FFFFFF</div></div>
+  <div class="spec-item"><div class="spec-key">Kicker</div><div class="spec-val">DM Sans Medium · 11pt uppercase · #888</div></div>
+  <div class="spec-item"><div class="spec-key">Subtítulo</div><div class="spec-val">DM Sans Regular · 14pt · #BBB · max-width 80%</div></div>
+  <div class="spec-item"><div class="spec-key">Centrado</div><div class="spec-val">Composición vertical centrada</div></div>
+  <div class="spec-item"><div class="spec-key">Padding</div><div class="spec-val">40px vertical · 30px horizontal</div></div>
+</div>
+
+<div class="palette-row">
+  <span class="palette-chip" style="background:#0a0b0d;color:#fff;">#0A0B0D</span>
+  <span class="palette-chip" style="background:#c8ff3a;color:#000;">#C8FF3A</span>
+  <span class="palette-chip" style="background:#fff;color:#000;">#FFFFFF</span>
+  <span class="palette-chip" style="background:#bbb;color:#000;">#BBBBBB</span>
+</div>
+
+</div>
+</div>
+
+<!-- ============== ANUNCIO 9 ============== -->
+<div class="ad-card" id="ad9">
+<div class="ad-header">
+  <div class="ad-header-top">
+    <div>
+      <span class="ad-num">09</span>
+      <div class="ad-name">"Para vos y tu socio/pareja"</div>
+      <div class="ad-summary">Destruye objeción de aprobación de tercero · Para retargeting</div>
+    </div>
+  </div>
+  <div class="ad-tags">
+    <span class="tag tag-warm">PRIORIDAD 9</span>
+    <span class="tag tag-purple">RMKT · CAMP. C</span>
+    <span class="tag">FORMATO: IMAGEN 4:5</span>
+  </div>
+</div>
+<div class="ad-body">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--warm);">📄 LO QUE VA DENTRO DE LA IMAGEN</h3>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">1</span>KICKER · LÍNEA SUPERIOR</div>
+  <div class="block-content mono">PARA QUIENES NO DECIDEN SOLOS</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">2</span>HOOK PRINCIPAL · CENTRO</div>
+  <div class="block-content inter-bold" style="color:#1a1612;">Vos<br><span style="font-family:'Cormorant Garamond',serif;font-style:italic;color:#8a7c5e;font-weight:500;">y</span><br>tu socio.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">3</span>SUBTÍTULO · DEBAJO DEL HOOK</div>
+  <div class="block-content">El que te cuestiona antes de invertir también merece ver los números. Llevalo a la llamada.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">4</span>PIE IZQUIERDO · LOGO</div>
+  <div class="block-content mono">CREAMOS NEGOCIOS</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">5</span>PIE DERECHO · CTA</div>
+  <div class="block-content mono">Agendar para los dos →</div>
+</div>
+
+<hr class="section-divider">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--warm);">📱 COPY DEL POST EN META</h3>
+
+<div class="copy-meta">
+<div class="copy-meta-body">"Quiero hacerlo pero tengo que consultarlo con mi pareja/socio."
+
+Lo escuchamos en muchas llamadas. Y entendemos que una inversión de $3,000 no se decide solo.
+
+Por eso te invitamos a algo distinto:
+
+<strong>Agendá la llamada de diagnóstico con tu pareja o socio incluido.</strong>
+
+En esa llamada los dos van a ver:
+→ Los negocios validados con sus métricas reales (no proyecciones)
+→ El dashboard de los clientes actuales facturando
+→ La cláusula del contrato con la garantía de ROI
+→ Las opciones de pago (incluyendo cuotas)
+
+El que cuestiona antes de invertir es el que más necesita ver los datos. No el que se entusiasma rápido.
+
+<strong>Tocá el anuncio y agendá la llamada para los dos →</strong></div>
+</div>
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--warm);">🎨 DETALLES VISUALES</h3>
+
+<div class="specs-grid">
+  <div class="spec-item"><div class="spec-key">Formato</div><div class="spec-val">1080 × 1350 px (4:5)</div></div>
+  <div class="spec-item"><div class="spec-key">Fondo</div><div class="spec-val">#F3EAD5 (crema cálido)</div></div>
+  <div class="spec-item"><div class="spec-key">"Vos" y "tu socio."</div><div class="spec-val">Inter Tight Bold · 80pt · #1A1612</div></div>
+  <div class="spec-item"><div class="spec-key">"y" (entre los dos)</div><div class="spec-val">Cormorant Garamond Italic · 70pt · #8A7C5E</div></div>
+  <div class="spec-item"><div class="spec-key">Kicker</div><div class="spec-val">DM Sans SemiBold · 10pt uppercase · #8A7C5E</div></div>
+  <div class="spec-item"><div class="spec-key">Subtítulo</div><div class="spec-val">DM Sans Regular · 14pt · #5C4E36</div></div>
+  <div class="spec-item"><div class="spec-key">Composición</div><div class="spec-val">Hook centrado-izquierda · respira a la derecha</div></div>
+  <div class="spec-item"><div class="spec-key">Padding</div><div class="spec-val">44px lateral · 38px vertical</div></div>
+</div>
+
+<div class="palette-row">
+  <span class="palette-chip" style="background:#f3ead5;color:#1a1612;">#F3EAD5</span>
+  <span class="palette-chip" style="background:#1a1612;color:#fff;">#1A1612</span>
+  <span class="palette-chip" style="background:#8a7c5e;color:#fff;">#8A7C5E</span>
+  <span class="palette-chip" style="background:#5c4e36;color:#fff;">#5C4E36</span>
+</div>
+
+</div>
+</div>
+
+<!-- ============== ANUNCIO 10 ============== -->
+<div class="ad-card" id="ad10">
+<div class="ad-header">
+  <div class="ad-header-top">
+    <div>
+      <span class="ad-num">10</span>
+      <div class="ad-name">Timeline ROI · 3 meses</div>
+      <div class="ad-summary">Cronología visual del retorno · Destruye duda de ROI</div>
+    </div>
+  </div>
+  <div class="ad-tags">
+    <span class="tag tag-accent">PRIORIDAD 10</span>
+    <span class="tag tag-purple">RMKT + WHATSAPP</span>
+    <span class="tag">FORMATO: IMAGEN 4:5</span>
+  </div>
+</div>
+<div class="ad-body">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">📄 LO QUE VA DENTRO DE LA IMAGEN</h3>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">1</span>KICKER · LÍNEA SUPERIOR</div>
+  <div class="block-content mono">ASÍ FUE EL RETORNO DE NUESTROS ÚLTIMOS CLIENTES</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">2</span>TIMELINE VERTICAL · 3 PUNTOS</div>
+  <div class="block-content mono">
+●━ MES 1 → Primeras 5-7 ventas
+│
+●━ MES 2 → <span class="accent">ROI completo recuperado</span>
+│
+○━ MES 3 → $3,000 - $5,000 / mes operando
+  </div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">3</span>HOOK PRINCIPAL · DEBAJO DEL TIMELINE</div>
+  <div class="block-content inter-bold">El retorno no es una promesa.<br>Es un calendario.</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">4</span>PIE IZQUIERDO · LOGO</div>
+  <div class="block-content mono">CREAMOS NEGOCIOS</div>
+</div>
+
+<div class="block">
+  <div class="block-label"><span class="block-label-num">5</span>PIE DERECHO · CTA</div>
+  <div class="block-content mono">Ver casos reales →</div>
+</div>
+
+<hr class="section-divider">
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">📱 COPY DEL POST EN META</h3>
+
+<div class="copy-meta">
+<div class="copy-meta-body">"¿En cuánto tiempo recupero la inversión?"
+
+La pregunta más común de toda nuestra llamada de diagnóstico. Y la respuesta no es genérica — es un calendario:
+
+<strong>MES 1:</strong> Primeras 5 a 7 ventas. El negocio empieza a facturar desde el día uno con los anuncios probados.
+
+<strong>MES 2:</strong> ROI completo recuperado. Acá es cuando la inversión inicial vuelve a tu cuenta y lo que viene después es ganancia neta.
+
+<strong>MES 3 en adelante:</strong> Entre $3,000 y $5,000 al mes de facturación neta operando, según el negocio que recibas.
+
+Estas cifras no son proyecciones — son los números reales de nuestros últimos clientes. Y si en algún momento el calendario se atrasa, nuestro equipo sigue operando el negocio hasta que llegue. Firmado por contrato.
+
+<strong>Tocá el anuncio y mirá los casos reales →</strong></div>
+</div>
+
+<h3 style="font-size:14px;margin-bottom:12px;color:var(--accent);">🎨 DETALLES VISUALES</h3>
+
+<div class="specs-grid">
+  <div class="spec-item"><div class="spec-key">Formato</div><div class="spec-val">1080 × 1350 px (4:5)</div></div>
+  <div class="spec-item"><div class="spec-key">Fondo</div><div class="spec-val">#0A0B0D (negro)</div></div>
+  <div class="spec-item"><div class="spec-key">Línea timeline</div><div class="spec-val">Vertical 1.5px · #2A2D33</div></div>
+  <div class="spec-item"><div class="spec-key">Dots filled (mes 1 y 2)</div><div class="spec-val">14px círculo · fondo #C8FF3A</div></div>
+  <div class="spec-item"><div class="spec-key">Dot vacío (mes 3)</div><div class="spec-val">14px · fondo transparente · borde 2px #C8FF3A</div></div>
+  <div class="spec-item"><div class="spec-key">Mes label</div><div class="spec-val">DM Mono Medium · 11pt uppercase · #8E929C</div></div>
+  <div class="spec-item"><div class="spec-key">Resultado</div><div class="spec-val">Inter Tight Bold · 22pt · #FFFFFF</div></div>
+  <div class="spec-item"><div class="spec-key">"ROI completo" destacado</div><div class="spec-val">Mismo tamaño pero color #C8FF3A</div></div>
+  <div class="spec-item"><div class="spec-key">Hook inferior</div><div class="spec-val">Inter Tight Bold · 28pt · #FFFFFF</div></div>
+  <div class="spec-item"><div class="spec-key">Kicker</div><div class="spec-val">DM Sans Medium · 11pt uppercase · #888</div></div>
+</div>
+
+<div class="palette-row">
+  <span class="palette-chip" style="background:#0a0b0d;color:#fff;">#0A0B0D</span>
+  <span class="palette-chip" style="background:#c8ff3a;color:#000;">#C8FF3A</span>
+  <span class="palette-chip" style="background:#fff;color:#000;">#FFFFFF</span>
+  <span class="palette-chip" style="background:#2a2d33;color:#fff;">#2A2D33</span>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<button class="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ Arriba</button>
+
+</body>
+</html>
