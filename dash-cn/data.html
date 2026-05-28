@@ -425,10 +425,10 @@
 
             let metaCampMap = {};
             let metaAdMap = {};
+            let adToCampMap = {}; // 🚀 NUEVO: Mapa de rescate de campañas perdidas
             
             // --- LECTOR DE META ADS BLINDADO ---
             rawMeta.forEach(r => {
-                // Usamos la nueva función para que no importen las mayúsculas o espacios
                 let rawCamp = buscarColumna(r, ['campaignname', 'campaña', 'campaign']);
                 let rawAdset = buscarColumna(r, ['adsetname', 'conjuntodeanuncios', 'adset']);
                 let rawAd = buscarColumna(r, ['adname', 'anuncio']);
@@ -437,13 +437,15 @@
                 let adset = (rawAdset || '-').toString().trim();
                 let ad = (rawAd || 'Desconocido').toString().trim();
                 
-                if (camp !== 'Desconocida') {
-                    metaCampMap[camp.replace(/\+/g, ' ')] = camp;
-                    metaCampMap[camp.replace(/%20/g, ' ')] = camp;
-                }
+                // Limpieza estricta: minúsculas, sin signos +, sin espacios codificados
+                let campClean = camp.replace(/\+/g, ' ').replace(/%20/g, ' ').toLowerCase();
+                let adClean = ad.replace(/\+/g, ' ').replace(/%20/g, ' ').toLowerCase();
+
+                if (camp !== 'Desconocida') metaCampMap[campClean] = camp;
                 if (ad !== 'Desconocido') {
-                    metaAdMap[ad.replace(/\+/g, ' ')] = ad;
-                    metaAdMap[ad.replace(/%20/g, ' ')] = ad;
+                    metaAdMap[adClean] = ad;
+                    // Asociar el Anuncio con su Campaña original en Meta
+                    if (camp !== 'Desconocida') adToCampMap[adClean] = camp; 
                 }
 
                 let fechaTabular = buscarColumna(r, ['day', 'date', 'fecha', 'reportingstarts']);
@@ -457,7 +459,6 @@
 
                     if (gasto > 0 || clics > 0 || impresiones > 0) {
                         let key = `${camp}___${ad}`;
-                        // Si initRow aún no existe en el loop, usa las variables
                         if(!stats[key]) stats[key] = { 
                             campana: camp, conjunto: '-', anuncio: ad, leads: 0, calificados: 0, agendas_total: 0, asistieron: 0, ventas: 0, 
                             ingresos: 0, gasto: 0, clics: 0, visitas: 0, impresiones: 0, ctr: 0,
@@ -484,11 +485,18 @@
                 let ad = (rawAd || 'Desconocido').toString().trim();
                 let fecha = (rawFecha || '').toString().trim();
                 
-                let campClean = camp.replace(/\+/g, ' ').replace(/%20/g, ' ');
-                let adClean = ad.replace(/\+/g, ' ').replace(/%20/g, ' ');
+                let campClean = camp.replace(/\+/g, ' ').replace(/%20/g, ' ').toLowerCase();
+                let adClean = ad.replace(/\+/g, ' ').replace(/%20/g, ' ').toLowerCase();
 
+                // 1. Corregir signos y mayúsculas tomando la nomenclatura oficial de Meta
                 if (metaCampMap[campClean]) camp = metaCampMap[campClean];
                 if (metaAdMap[adClean]) ad = metaAdMap[adClean];
+
+                // 2. ATRIBUCIÓN INVERSA: Rescatar la Campaña perdida
+                // Si GHL no nos dio la campaña, le preguntamos al diccionario de Meta de quién es ese anuncio
+                if ((camp === 'Desconocida' || camp === '') && adToCampMap[adClean]) {
+                    camp = adToCampMap[adClean];
+                }
 
                 return { key: `${camp}___${ad}`, camp, ad, fecha };
             };
