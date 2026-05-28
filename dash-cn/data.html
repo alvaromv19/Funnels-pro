@@ -393,20 +393,26 @@
             }
         }
 
-        // BUSCADOR DE COLUMNAS A PRUEBA DE BALAS
-        function buscarColumna(row, posiblesNombres) {
-            const keys = Object.keys(row);
-            for (let key of keys) {
-                // Limpiamos la cabecera real: minúsculas, sin acentos, sin espacios
-                let keyLimpia = key.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
-                for (let nombre of posiblesNombres) {
-                    let nombreLimpio = nombre.toLowerCase().replace(/[^a-z0-9]/g, "");
-                    // Si encuentra coincidencia, devuelve el valor original
-                    if (keyLimpia.includes(nombreLimpio)) return row[key];
-                }
-            }
-            return "";
+        // Helper compartido: misma limpieza para encabezados Y candidatos
+function limpiarClave(txt) {
+    return (txt || '').toString()
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // acentos Y la ñ -> n
+        .replace(/[^a-z0-9]/g, "");
+}
+
+function buscarColumna(row, posiblesNombres) {
+    const keys = Object.keys(row);
+    for (let key of keys) {
+        let keyLimpia = limpiarClave(key);
+        for (let nombre of posiblesNombres) {
+            let nombreLimpio = limpiarClave(nombre); // <-- antes NO se normalizaba la ñ
+            if (keyLimpia.includes(nombreLimpio)) return row[key];
         }
+    }
+    return "";
+}
+
         
         // MOTOR DE EVALUACIÓN MATEMÁTICA
         function evaluateFormula(formula, row) {
