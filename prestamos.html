@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#100F0D">
+<title>Cartera — Préstamo Diario</title>
+<style>
+:root{
+  --bg:#100F0D; --panel:#191714; --panel2:#211E1A; --rule:#2E2A24; --rule2:#3D372F;
+  --ink:#EFE9DE; --dim:#8F857A; --dim2:#655D54;
+  --acc:#E0A458; --acc-d:#7A5A2E;
+  --ok:#6FA96F; --ok-d:#2F4A32;
+  --bad:#D0553F; --bad-d:#54221A;
+  --warn:#C99A3E;
+  --cell:16px; --rail:104px;
+  --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.4;
+  padding-bottom:48px;-webkit-font-smoothing:antialiased}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.wrap{max-width:1180px;margin:0 auto;padding:0 12px}
+h1,h2,h3{margin:0;font-weight:600}
+button{font-family:inherit;font-size:inherit;color:inherit;background:none;border:none;cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+input,select{font-family:var(--mono);font-size:13px;background:var(--panel2);color:var(--ink);
+  border:1px solid var(--rule2);border-radius:5px;padding:8px 9px;min-height:38px;width:100%}
+
+/* ── header ───────────────────────────── */
+header{border-bottom:1px solid var(--rule);background:var(--panel);position:sticky;top:0;z-index:40}
+.hd{display:flex;align-items:center;gap:10px;padding:10px 0;min-height:52px}
+.brand{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);white-space:nowrap}
+.hd .sp{flex:1}
+.pill{font-family:var(--mono);font-size:11px;padding:5px 8px;border:1px solid var(--rule2);
+  border-radius:4px;color:var(--dim);white-space:nowrap}
+.iconbtn{border:1px solid var(--rule2);border-radius:5px;padding:0 11px;height:36px;min-width:40px;
+  font-size:12px;color:var(--dim);display:inline-flex;align-items:center;gap:6px}
+.iconbtn:hover{color:var(--ink);border-color:var(--dim2)}
+.iconbtn[aria-pressed="true"]{color:var(--acc);border-color:var(--acc-d)}
+
+/* ── secciones ────────────────────────── */
+section{margin-top:22px}
+.shead{display:flex;align-items:baseline;gap:9px;margin-bottom:9px;padding-bottom:6px;
+  border-bottom:1px solid var(--rule)}
+.shead h2{font-size:12px;letter-spacing:.15em;text-transform:uppercase;color:var(--dim)}
+.shead .note{font-size:11px;color:var(--dim2);margin-left:auto;font-family:var(--mono)}
+
+/* ── barra del día ────────────────────── */
+.today{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--rule2);
+  border-radius:9px;padding:14px;margin-top:14px}
+.today .big{display:flex;align-items:flex-end;gap:6px;flex-wrap:wrap}
+.today .lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);
+  margin-bottom:3px}
+.today .amt{font-family:var(--mono);font-size:38px;font-weight:600;line-height:.95;letter-spacing:-.03em}
+.today .sub{font-family:var(--mono);font-size:12px;color:var(--dim);padding-bottom:5px}
+.tsplit{display:grid;grid-template-columns:1fr 1fr;gap:1px;margin-top:12px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+.tsplit div{background:var(--panel);padding:8px 10px}
+.tsplit b{display:block;font-family:var(--mono);font-size:17px;font-weight:600}
+.tsplit span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim2)}
+
+/* ── ruta ─────────────────────────────── */
+.ruta{display:flex;flex-direction:column;gap:6px}
+.rrow{display:flex;align-items:center;gap:10px;background:var(--panel);border:1px solid var(--rule);
+  border-left:3px solid var(--rule2);border-radius:7px;padding:10px 12px;min-height:56px}
+.rrow.pend{border-left-color:var(--acc)}
+.rrow.done{border-left-color:var(--ok);opacity:.5}
+.rrow.late{border-left-color:var(--bad)}
+.rrow .nm{font-weight:600;font-size:15px}
+.rrow .meta{font-family:var(--mono);font-size:11px;color:var(--dim);margin-top:2px}
+.rrow .grow{flex:1;min-width:0}
+.rrow .ask{text-align:right}
+.rrow .ask b{font-family:var(--mono);font-size:19px;font-weight:600;display:block;letter-spacing:-.02em}
+.rrow .ask s{font-family:var(--mono);font-size:11px;color:var(--dim2);display:block}
+.chk{width:26px;height:26px;border:1.5px solid var(--rule2);border-radius:6px;flex:none;
+  display:flex;align-items:center;justify-content:center;font-size:14px;color:transparent}
+.chk[aria-pressed="true"]{background:var(--ok-d);border-color:var(--ok);color:var(--ok)}
+.tagx{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;padding:2px 5px;border-radius:3px;
+  text-transform:uppercase;white-space:nowrap;border:1px solid}
+.t-ok{color:var(--ok);border-color:var(--ok-d)}
+.t-bad{color:var(--bad);border-color:var(--bad-d)}
+.t-warn{color:var(--warn);border-color:#5A4620}
+.t-dim{color:var(--dim);border-color:var(--rule2)}
+.t-acc{color:var(--acc);border-color:var(--acc-d)}
+
+/* ── alertas ──────────────────────────── */
+.alert{display:flex;gap:9px;align-items:flex-start;background:var(--panel);border:1px solid var(--rule);
+  border-left:3px solid var(--warn);border-radius:7px;padding:10px 12px;margin-bottom:6px}
+.alert.hi{border-left-color:var(--bad)}
+.alert .ic{font-family:var(--mono);font-size:12px;color:var(--warn);padding-top:1px}
+.alert.hi .ic{color:var(--bad)}
+.alert p{margin:0;font-size:13px}
+.alert p b{font-family:var(--mono)}
+.alert small{display:block;color:var(--dim);font-size:11.5px;margin-top:2px}
+
+/* ── kpis ─────────────────────────────── */
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);
+  border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.kpi{background:var(--panel);padding:11px 12px}
+.kpi span{display:block;font-size:9.5px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim2);
+  margin-bottom:4px}
+.kpi b{font-family:var(--mono);font-size:19px;font-weight:600;letter-spacing:-.02em;display:block}
+.kpi i{font-style:normal;font-family:var(--mono);font-size:10.5px;color:var(--dim);display:block;margin-top:2px}
+.kpi.neg b{color:var(--bad)} .kpi.pos b{color:var(--ok)} .kpi.acc b{color:var(--acc)}
+
+/* ── libreta / heatmap (elemento firma) ─ */
+.ledger{border:1px solid var(--rule);border-radius:8px;background:var(--panel);overflow:hidden}
+.lscroll{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+.lgrid{display:grid;width:max-content;min-width:100%}
+.lcell{height:var(--cell);border-right:1px solid var(--panel);border-bottom:1px solid var(--panel);
+  position:relative}
+.lrail{position:sticky;left:0;z-index:3;background:var(--panel);border-right:1px solid var(--rule2);
+  padding:0 8px;display:flex;align-items:center;gap:6px;height:var(--cell);white-space:nowrap;overflow:hidden}
+.lrail.hdr{background:var(--panel2);height:34px}
+.lrail .rn{font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.lrail .rs{font-family:var(--mono);font-size:10px;color:var(--dim);margin-left:auto}
+.lhdr{height:34px;background:var(--panel2);font-family:var(--mono);font-size:8.5px;color:var(--dim2);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;
+  border-right:1px solid var(--panel2)}
+.lhdr.today{color:var(--acc);background:#2A2318}
+.lhdr.mfirst{border-left:1px solid var(--rule2)}
+.c-out{background:transparent}
+.c-fut{background:var(--panel2)}
+.c-pay{background:var(--ok)}
+.c-part{background:var(--ok-d)}
+.c-fail{background:var(--bad)}
+.c-todo{background:var(--acc-d);box-shadow:inset 0 0 0 1.5px var(--acc)}
+.c-today{box-shadow:inset 0 0 0 1.5px var(--acc)}
+.lrow.hi .c-fut{background:#2A2620}
+.legend{display:flex;flex-wrap:wrap;gap:10px;padding:9px 10px;border-top:1px solid var(--rule);
+  font-family:var(--mono);font-size:10px;color:var(--dim)}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+
+/* ── tabla ────────────────────────────── */
+.tbar{display:flex;gap:6px;margin-bottom:9px;flex-wrap:wrap}
+.tbar input{flex:1;min-width:140px}
+.chip{font-family:var(--mono);font-size:11px;padding:7px 10px;border:1px solid var(--rule2);
+  border-radius:5px;color:var(--dim);min-height:34px}
+.chip[aria-pressed="true"]{background:var(--panel2);color:var(--acc);border-color:var(--acc-d)}
+.cards{display:flex;flex-direction:column;gap:7px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:11px 12px}
+.card .top{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.card .top .nm{font-size:15px;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis}
+.bar{height:4px;background:var(--panel2);border-radius:2px;overflow:hidden;margin:8px 0 9px}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:2px}
+.card.s-ok .bar i{background:var(--ok)} .card.s-bad .bar i{background:var(--bad)}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.g4 div span{display:block;font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--dim2)}
+.g4 div b{font-family:var(--mono);font-size:13px;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim2);text-align:right;
+  padding:7px 8px;border-bottom:1px solid var(--rule2);white-space:nowrap;cursor:pointer;user-select:none}
+th:first-child,td:first-child{text-align:left}
+th:hover{color:var(--ink)}
+td{padding:9px 8px;border-bottom:1px solid var(--rule);text-align:right;white-space:nowrap}
+tbody tr:hover{background:var(--panel2)}
+.dtbl{display:none}
+
+/* ── flujo ────────────────────────────── */
+.flow{display:flex;align-items:flex-end;gap:3px;height:96px;padding:0 2px;overflow-x:auto}
+.fbar{flex:1;min-width:16px;display:flex;flex-direction:column;justify-content:flex-end;height:100%;
+  gap:4px;align-items:center}
+.fbar i{display:block;width:100%;background:var(--acc-d);border-radius:2px 2px 0 0;min-height:2px}
+.fbar.now i{background:var(--acc)}
+.fbar s{font-family:var(--mono);font-size:8.5px;color:var(--dim2);text-decoration:none;white-space:nowrap}
+.fbar.now s{color:var(--acc)}
+.fbar em{font-family:var(--mono);font-size:8.5px;color:var(--dim);font-style:normal}
+
+/* ── paneles plegables ────────────────── */
+details{background:var(--panel);border:1px solid var(--rule);border-radius:8px;margin-top:8px}
+summary{padding:12px 13px;cursor:pointer;font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--dim);list-style:none;display:flex;align-items:center;gap:8px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";margin-left:auto;font-family:var(--mono);font-size:15px;color:var(--dim2)}
+details[open] summary::after{content:"−"}
+details[open] summary{border-bottom:1px solid var(--rule);color:var(--ink)}
+.dbody{padding:13px}
+.frow{display:grid;grid-template-columns:1fr;gap:9px;margin-bottom:12px}
+.frow label{display:block}
+.frow label span{display:block;font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--dim2);margin-bottom:4px}
+.out{background:var(--panel2);border:1px solid var(--rule2);border-radius:7px;padding:11px 12px;
+  font-family:var(--mono);font-size:12.5px;line-height:1.75}
+.out b{color:var(--acc)}
+.out hr{border:none;border-top:1px solid var(--rule);margin:8px 0}
+.out .w{color:var(--warn);font-size:11.5px;display:block;line-height:1.5}
+
+.status{font-family:var(--mono);font-size:11.5px;padding:11px 12px;border-radius:7px;
+  border:1px solid var(--rule2);background:var(--panel);color:var(--dim);margin-top:14px}
+.status.err{border-color:var(--bad-d);color:var(--bad);background:#1C1310}
+.status.err b{display:block;color:var(--ink);margin-bottom:5px;font-size:12.5px}
+.hide{display:none!important}
+.empty{color:var(--dim2);font-size:12.5px;font-family:var(--mono);padding:14px 0}
+
+@media(min-width:700px){
+  :root{--cell:20px;--rail:150px}
+  body{font-size:14.5px}
+  .kpis{grid-template-columns:repeat(4,1fr)}
+  .tsplit{grid-template-columns:repeat(4,1fr)}
+  .frow{grid-template-columns:repeat(3,1fr)}
+  .cards{display:none}
+  .dtbl{display:block;overflow-x:auto}
+  .today .amt{font-size:46px}
+}
+@media(prefers-reduced-motion:no-preference){
+  .rrow,.card,.iconbtn{transition:border-color .12s,opacity .12s}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hd">
+    <div class="brand">Cartera diaria</div>
+    <div class="sp"></div>
+    <span class="pill num" id="pFecha">—</span>
+    <button class="iconbtn" id="bRefresh" title="Recargar desde Sheets">↻</button>
+    <button class="iconbtn" id="bCfg" aria-pressed="false" title="Configuración">⚙</button>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div id="cfgPanel" class="hide">
+    <details open>
+      <summary>Configuración y origen de datos</summary>
+      <div class="dbody">
+        <div class="frow">
+          <label style="grid-column:1/-1"><span>URL del CSV publicado (Sheets → Publicar en la web → CSV)</span>
+            <input id="iUrl" type="url" spellcheck="false"></label>
+        </div>
+        <div class="frow">
+          <label><span>Fecha de trabajo (auditoría)</span><input id="iHoy" type="date"></label>
+          <label><span>Auto-recarga</span>
+            <select id="iAuto">
+              <option value="0">Desactivada</option>
+              <option value="300000" selected>Cada 5 minutos</option>
+              <option value="900000">Cada 15 minutos</option>
+            </select></label>
+          <label><span>&nbsp;</span><button class="chip" id="bClear" style="width:100%">Borrar caché local</button></label>
+        </div>
+        <div class="frow" style="grid-template-columns:1fr">
+          <label><span>Respaldo — pegar CSV manualmente si la descarga falla</span>
+            <textarea id="iPaste" rows="4" spellcheck="false"
+              style="width:100%;font-family:var(--mono);font-size:11px;background:var(--panel2);
+              color:var(--ink);border:1px solid var(--rule2);border-radius:5px;padding:8px"></textarea></label>
+        </div>
+        <button class="chip" id="bPaste">Cargar CSV pegado</button>
+      </div>
+    </details>
+  </div>
+
+  <div id="status" class="status">Cargando datos…</div>
+
+  <div id="app" class="hide">
+
+    <div class="today">
+      <div class="big">
+        <div>
+          <div class="lbl">A cobrar hoy</div>
+          <div class="amt" id="kHoy">—</div>
+        </div>
+        <div class="sub" id="kHoySub"></div>
+      </div>
+      <div class="tsplit">
+        <div><b class="num" id="kCobrado">—</b><span>Ya cobrado</span></div>
+        <div><b class="num" id="kPend">—</b><span>Pendiente</span></div>
+        <div><b class="num" id="kSem">—</b><span>Próx. 7 días</span></div>
+        <div><b class="num" id="kLibera">—</b><span>Cierra en 7 días</span></div>
+      </div>
+    </div>
+
+    <section id="secRuta">
+      <div class="shead"><h2>Ruta de hoy</h2><span class="note" id="nRuta"></span></div>
+      <div class="ruta" id="ruta"></div>
+    </section>
+
+    <section id="secAlert" class="hide">
+      <div class="shead"><h2>Alertas</h2></div>
+      <div id="alertas"></div>
+    </section>
+
+    <section>
+      <div class="shead"><h2>Cartera</h2><span class="note" id="nCartera"></span></div>
+      <div class="kpis" id="kpis"></div>
+    </section>
+
+    <section>
+      <div class="shead"><h2>Libreta</h2><span class="note">desliza →</span></div>
+      <div class="ledger">
+        <div class="lscroll"><div class="lgrid" id="ledger"></div></div>
+        <div class="legend">
+          <span><i style="background:var(--ok)"></i>pagado</span>
+          <span><i style="background:var(--ok-d)"></i>parcial</span>
+          <span><i style="background:var(--bad)"></i>sin pago</span>
+          <span><i style="background:var(--acc-d);box-shadow:inset 0 0 0 1.5px var(--acc)"></i>hoy</span>
+          <span><i style="background:var(--panel2)"></i>por venir</span>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="shead"><h2>Préstamos</h2><span class="note" id="nTabla"></span></div>
+      <div class="tbar">
+        <input id="iBuscar" type="search" placeholder="Buscar cliente…">
+        <button class="chip" data-f="todos" aria-pressed="true">Todos</button>
+        <button class="chip" data-f="activos" aria-pressed="false">Activos</button>
+        <button class="chip" data-f="riesgo" aria-pressed="false">En riesgo</button>
+      </div>
+      <div class="cards" id="cards"></div>
+      <div class="dtbl"><table id="tabla">
+        <thead><tr>
+          <th data-s="nombre">Cliente</th><th data-s="capital">Capital</th><th data-s="cuota">Cuota</th>
+          <th data-s="avance">Avance</th><th data-s="saldo">Saldo</th><th data-s="diasRest">Días</th>
+          <th data-s="ritmo">Ritmo req.</th><th data-s="holgura">Holgura</th>
+          <th data-s="cierre">Cierre</th><th data-s="orden">Estado</th>
+        </tr></thead><tbody></tbody>
+      </table></div>
+    </section>
+
+    <section>
+      <div class="shead"><h2>Exposición por persona</h2></div>
+      <div class="cards" id="personas"></div>
+    </section>
+
+    <section>
+      <div class="shead"><h2>Flujo esperado — 14 días</h2><span class="note" id="nFlujo"></span></div>
+      <div class="flow" id="flujo"></div>
+    </section>
+
+    <section>
+      <div class="shead"><h2>Herramientas</h2></div>
+
+      <details>
+        <summary>Cotizar préstamo nuevo</summary>
+        <div class="dbody">
+          <div class="frow">
+            <label><span>Capital (S/)</span><input id="sCap" type="number" value="100" step="10" min="10"></label>
+            <label><span>Plazo (días de cobro)</span>
+              <select id="sPlazo"><option value="20">20 días</option><option value="24" selected>24 días</option></select></label>
+            <label><span>Fecha de entrega</span><input id="sFecha" type="date"></label>
+          </div>
+          <div class="out" id="sOut"></div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Simular renovación</summary>
+        <div class="dbody">
+          <div class="frow">
+            <label><span>Préstamo a renovar</span><select id="rSel"></select></label>
+            <label><span>Capital nuevo (S/)</span><input id="rCap" type="number" value="200" step="10" min="10"></label>
+            <label><span>Plazo nuevo</span>
+              <select id="rPlazo"><option value="20">20 días</option><option value="24" selected>24 días</option></select></label>
+          </div>
+          <div class="out" id="rOut"></div>
+        </div>
+      </details>
+
+      <details>
+        <summary>Cómo registrar una renovación en el Sheets</summary>
+        <div class="dbody">
+          <div class="out" style="line-height:1.65">
+Añade dos columnas al final de tu hoja, después de <b>Progreso</b>:<hr>
+<b>Renueva a</b> — en la fila del préstamo NUEVO, escribe el nombre exacto del préstamo viejo que se cancela.<br>
+<b>Efectivo entregado</b> — opcional. Si lo dejas vacío se calcula como <b>capital nuevo − saldo del viejo</b>.<hr>
+Con eso el préstamo viejo pasa a estado RENOVADO, deja de contar como cobrable, y la caja usa el efectivo real y no el capital nominal.<span class="w">Sin esas columnas el saldo viejo se sigue contando y tu "por cobrar" queda inflado.</span>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <p class="empty" id="foot"></p>
+  </div>
+</main>
+
+<script>
+"use strict";
+
+/* ═══ configuración ═══ */
+const DEFAULT_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vShLXazqFdFTZcOTMVwrPskz9udS3qB_ROgdfn5feLfwhWK1kpCxBk7y712R3FHqAZxxjlxtrQfUrIi/pub?gid=0&single=true&output=csv";
+const TASA = 0.20;
+const LS = "cartera.v1";
+
+const cfg = Object.assign({url:DEFAULT_URL, hoy:"", auto:300000, csv:"", ts:0},
+  JSON.parse(localStorage.getItem(LS) || "{}"));
+const saveCfg = () => localStorage.setItem(LS, JSON.stringify(cfg));
+
+/* ═══ utilidades ═══ */
+const S = n => "S/ " + (Math.round(n*100)/100).toLocaleString("es-PE",
+  {minimumFractionDigits:2, maximumFractionDigits:2});
+const S0 = n => "S/ " + Math.round(n).toLocaleString("es-PE");
+const dm = d => String(d.getDate()).padStart(2,"0") + "/" + String(d.getMonth()+1).padStart(2,"0");
+const dkey = d => d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate();
+const midnight = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const addDays = (d,n) => { const x=new Date(d); x.setDate(x.getDate()+n); return x; };
+const esDomingo = d => d.getDay() === 0;
+const num = v => { const n = parseFloat(String(v||"").replace(/[^0-9.\-]/g,"")); return isNaN(n)?0:n; };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function hoyFecha(){
+  if(cfg.hoy){ const [y,m,d] = cfg.hoy.split("-").map(Number); return new Date(y, m-1, d); }
+  return midnight(new Date());
+}
+
+/** Cronograma: días consecutivos saltando domingos. */
+function cronograma(desde, n){
+  const out = []; let d = new Date(desde);
+  while(out.length < n){ d = addDays(d,1); if(!esDomingo(d)) out.push(new Date(d)); }
+  return out;
+}
+
+/* ═══ parser CSV ═══ */
+function parseCSV(txt){
+  const rows=[]; let row=[], f="", q=false;
+  txt = txt.replace(/\r\n/g,"\n").replace(/\r/g,"\n");
+  for(let i=0;i<txt.length;i++){
+    const c = txt[i];
+    if(q){
+      if(c === '"'){ if(txt[i+1] === '"'){ f+='"'; i++; } else q=false; }
+      else f += c;
+    } else if(c === '"') q = true;
+    else if(c === ","){ row.push(f); f=""; }
+    else if(c === "\n"){ row.push(f); rows.push(row); row=[]; f=""; }
+    else f += c;
+  }
+  row.push(f); rows.push(row);
+  return rows;
+}
+
+/* ═══ normalización ═══ */
+function normalizar(rows, HOY){
+  if(!rows.length) throw new Error("CSV vacío.");
+  const H = rows[0].map(h => h.trim().toLowerCase());
+  const find = re => H.findIndex(h => re.test(h));
+
+  const cCap   = find(/monto/) >= 0 ? find(/monto/) : 1;
+  const cFecha = find(/entrega/) >= 0 ? find(/entrega/) : 2;
+  let s0 = H.findIndex(h => /^d[ií]a\s*1$/.test(h)); if(s0 < 0) s0 = 3;
+  let s1 = H.findIndex(h => /^total$/.test(h));      if(s1 < 0) s1 = H.length;
+  const cRenueva = find(/renueva/);
+  const cEfec    = find(/efectivo/);
+  const nSlots = s1 - s0;
+  if(nSlots < 1) throw new Error("No encuentro las columnas de días.");
+
+  const prestamos = [];
+  for(let i=1; i<rows.length; i++){
+    const r = rows[i];
+    if(!r || !(r[0]||"").trim()) continue;
+    const pagosRow = rows[i+1] || [];
+    if((pagosRow[0]||"").trim()){
+      throw new Error('Falta la fila de pagos debajo de "' + r[0].trim() + '".');
+    }
+
+    const nombre  = r[0].trim();
+    const capital = num(r[cCap]);
+    if(!capital) continue;
+
+    // fecha de entrega: ISO o DD/MM/AAAA
+    let fe = null; const raw = (r[cFecha]||"").trim();
+    let m = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(m) fe = new Date(+m[1], +m[2]-1, +m[3]);
+    else { m = raw.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+           if(m) fe = new Date(+m[3], +m[2]-1, +m[1]); }
+    if(!fe) continue;
+
+    // slots: fechas DD/MM, año derivado por continuidad
+    const slots = []; let año = fe.getFullYear(), mesPrev = fe.getMonth()+1;
+    for(let k=0; k<nSlots; k++){
+      const cf = (r[s0+k]||"").trim();
+      if(!cf) continue;
+      const mm = cf.match(/^(\d{1,2})[\/\-](\d{1,2})/);
+      if(!mm) continue;
+      const dia = +mm[1], mes = +mm[2];
+      if(mes < mesPrev) año++;
+      mesPrev = mes;
+      const cp = (pagosRow[s0+k]||"").trim();
+      slots.push({ n:k+1, fecha:new Date(año, mes-1, dia), monto:num(cp), vacio:cp === "" });
+    }
+    if(!slots.length) continue;
+
+    const plazo    = slots.length;
+    const aCobrar  = capital * (1 + TASA);
+    const cuota    = aCobrar / plazo;
+    const recaudado= slots.reduce((a,s) => a + s.monto, 0);
+    const saldo    = Math.max(0, aCobrar - recaudado);
+    const fTope    = slots[plazo-1].fecha;
+    const kHoy     = dkey(HOY);
+
+    slots.forEach(s => {
+      const k = dkey(s.fecha);
+      if(s.monto >= cuota - 0.005) s.est = "pay";
+      else if(s.monto > 0)         s.est = "part";
+      else if(k <  kHoy)           s.est = "fail";
+      else if(k === kHoy)          s.est = "todo";
+      else                         s.est = "fut";
+    });
+
+    const diasRest = slots.filter(s => dkey(s.fecha) >= kHoy).length;
+    const vencido  = diasRest === 0 && saldo > 0.005;
+    const ritmo    = diasRest > 0 ? saldo / diasRest : saldo;
+    const holgura  = diasRest - (saldo / cuota);
+    const esfuerzo = cuota > 0 ? ritmo / cuota : 0;
+    const cerrado  = saldo <= 0.005;
+
+    const slotsPasados = slots.filter(s => dkey(s.fecha) < kHoy).length;
+    const cumplimiento = slotsPasados > 0
+      ? Math.min(1, (recaudado / cuota) / slotsPasados) : 1;
+    const ultPago = slots.filter(s => s.monto > 0).pop();
+    const diasSinPagar = ultPago
+      ? Math.round((HOY - ultPago.fecha) / 86400000) : Math.round((HOY - fe)/86400000);
+
+    // cierre proyectado al ritmo nominal (arrastra el atraso saltando domingos)
+    let cierre = fTope;
+    if(!cerrado && holgura < -0.5){
+      const extra = Math.ceil(-holgura);
+      cierre = cronograma(fTope, extra).pop() || fTope;
+    }
+
+    prestamos.push({
+      id:nombre, nombre, persona:nombre.replace(/\s+\d+$/,"").trim(),
+      capital, aCobrar, cuota, plazo, fechaEntrega:fe, slots, fTope,
+      recaudado, saldo, avance:recaudado/aCobrar, diasRest, ritmo, holgura,
+      esfuerzo, cumplimiento, diasSinPagar, cerrado, vencido, cierre,
+      renuevaA:(cRenueva >= 0 ? (r[cRenueva]||"").trim() : ""),
+      efectivoDecl:(cEfec >= 0 && (r[cEfec]||"").trim() !== "") ? num(r[cEfec]) : null,
+      renovado:false
+    });
+    i++; // consumir fila de pagos
+  }
+
+  // renovaciones: enlazar y neutralizar el préstamo viejo
+  const byId = new Map(prestamos.map(p => [p.id.toLowerCase(), p]));
+  prestamos.forEach(p => {
+    p.efectivo = p.capital;
+    if(p.renuevaA){
+      const viejo = byId.get(p.renuevaA.toLowerCase());
+      if(viejo){
+        viejo.renovado = true; viejo.renovadoPor = p.id;
+        p.saldoAbsorbido = viejo.saldo;
+        p.efectivo = p.efectivoDecl !== null ? p.efectivoDecl
+                                             : Math.max(0, p.capital - viejo.saldo);
+      }
+    } else if(p.efectivoDecl !== null) p.efectivo = p.efectivoDecl;
+  });
+
+  prestamos.forEach(p => {
+    p.estado = p.renovado ? "RENOVADO"
+      : p.cerrado         ? "LIQUIDADO"
+      : p.vencido         ? "VENCIDO"
+      : p.holgura <= -3   ? "CRÍTICO"
+      : p.holgura <= -1   ? "ATRASADO"
+      : p.holgura >=  1   ? "ADELANTADO"
+      : "AL DÍA";
+    p.orden = {"VENCIDO":0,"CRÍTICO":1,"ATRASADO":2,"AL DÍA":3,"ADELANTADO":4,
+               "LIQUIDADO":5,"RENOVADO":6}[p.estado];
+    p.activo = !p.renovado && !p.cerrado;
+    p.riesgo = p.activo && (p.holgura <= -1 || p.vencido);
+  });
+
+  return prestamos;
+}
+
+/* ═══ agregados ═══ */
+function cartera(ps, HOY){
+  const act  = ps.filter(p => p.activo);
+  const hist = ps;                       // TODOS: el efectivo movido es histórico e irreversible
+  const kHoy = dkey(HOY);
+  const T = {
+    nActivos: act.length,
+    capitalNominal: hist.reduce((a,p) => a+p.capital, 0),
+    efectivoOut:    hist.reduce((a,p) => a+p.efectivo, 0),
+    recaudado:      hist.reduce((a,p) => a+p.recaudado, 0),
+    porCobrar:      act.reduce((a,p) => a+p.saldo, 0),
+    enRiesgo:       act.filter(p => p.riesgo).reduce((a,p) => a+p.saldo, 0)
+  };
+  T.esperado         = T.recaudado + T.porCobrar;      // total que pasará por caja
+  T.caja             = T.recaudado - T.efectivoOut;    // posición real hoy
+  T.utilidadEsperada = T.esperado  - T.efectivoOut;
+  T.utilidadPend     = T.porCobrar + T.caja;
+  T.riesgoPct        = T.porCobrar > 0 ? T.enRiesgo / T.porCobrar : 0;
+
+  // hoy
+  T.hoyNominal = 0; T.hoySugerido = 0; T.cobradoHoy = 0; T.pendienteHoy = 0;
+  T.ruta = [];
+  act.forEach(p => {
+    const s = p.slots.find(s => dkey(s.fecha) === kHoy);
+    if(!s) return;
+    const pedir = Math.max(p.cuota, p.ritmo);
+    T.hoyNominal += p.cuota; T.hoySugerido += pedir;
+    T.cobradoHoy += s.monto;
+    if(s.monto < p.cuota - 0.005) T.pendienteHoy += (pedir - s.monto);
+    T.ruta.push({p, slot:s, pedir, pagado:s.monto >= p.cuota - 0.005});
+  });
+  T.ruta.sort((a,b) => (a.pagado - b.pagado) || (a.p.holgura - b.p.holgura));
+
+  // proyección 14 días de cobro
+  T.flujo = [];
+  const dias = [];
+  let d = new Date(HOY);
+  while(dias.length < 14){ if(!esDomingo(d)) dias.push(new Date(d)); d = addDays(d,1); }
+  dias.forEach(f => {
+    const k = dkey(f);
+    let m = 0;
+    act.forEach(p => { if(p.slots.some(s => dkey(s.fecha) === k)) m += p.cuota; });
+    T.flujo.push({fecha:f, monto:m, hoy:k === kHoy});
+  });
+  T.proj7 = T.flujo.slice(0,7).reduce((a,x) => a+x.monto, 0);
+  T.libera7 = act.filter(p => {
+    const dd = (p.fTope - HOY)/86400000; return dd >= 0 && dd <= 7;
+  }).reduce((a,p) => a+p.capital, 0);
+
+  // personas
+  const map = new Map();
+  hist.forEach(p => {
+    const g = map.get(p.persona) || {persona:p.persona, prestamos:[], expuesto:0, saldo:0,
+                                     recaudado:0, activos:0};
+    g.prestamos.push(p); g.expuesto += p.efectivo; g.recaudado += p.recaudado;
+    if(p.activo){ g.saldo += p.saldo; g.activos++; }
+    map.set(p.persona, g);
+  });
+  T.personas = [...map.values()].map(g => {
+    g.pct = T.porCobrar > 0 ? g.saldo/T.porCobrar : 0;   // % del riesgo vivo, no del histórico
+    g.peorHolgura = Math.min(...g.prestamos.filter(p=>p.activo).map(p => p.holgura), 99);
+    g.cumplimiento = g.prestamos.reduce((a,p) => a+p.cumplimiento, 0)/g.prestamos.length;
+    return g;
+  }).sort((a,b) => b.saldo - a.saldo);
+
+  return T;
+}
+
+/* ═══ render ═══ */
+let PS = [], T = null, HOY = null;
+let filtro = "todos", busca = "", sortKey = "orden", sortDir = 1;
+const $ = id => document.getElementById(id);
+
+function render(){
+  HOY = hoyFecha();
+  T = cartera(PS, HOY);
+  $("pFecha").textContent = dm(HOY) + (cfg.hoy ? " ⚑" : "");
+  $("app").classList.remove("hide");
+
+  // barra del día
+  $("kHoy").textContent = S0(T.hoySugerido);
+  $("kHoySub").textContent = T.hoySugerido > T.hoyNominal + 0.005
+    ? "cuotas " + S0(T.hoyNominal) + " + " + S0(T.hoySugerido - T.hoyNominal) + " de recupero"
+    : (T.ruta.length + " cobros");
+  $("kCobrado").textContent  = S0(T.cobradoHoy);
+  $("kPend").textContent     = S0(T.pendienteHoy);
+  $("kSem").textContent      = S0(T.proj7);
+  $("kLibera").textContent   = S0(T.libera7);
+
+  renderRuta(); renderAlertas(); renderKpis(); renderLedger();
+  renderTabla(); renderPersonas(); renderFlujo(); renderSim();
+
+  $("foot").textContent = "Actualizado " + new Date(cfg.ts||Date.now())
+    .toLocaleString("es-PE",{hour:"2-digit",minute:"2-digit",day:"2-digit",month:"2-digit"})
+    + " · Sheets cachea ~5 min, puede haber retraso.";
+}
+
+function tag(p){
+  const c = {"VENCIDO":"t-bad","CRÍTICO":"t-bad","ATRASADO":"t-warn","AL DÍA":"t-ok",
+             "ADELANTADO":"t-acc","LIQUIDADO":"t-dim","RENOVADO":"t-dim"}[p.estado];
+  return '<span class="tagx '+c+'">'+p.estado+'</span>';
+}
+
+function renderRuta(){
+  $("nRuta").textContent = T.ruta.filter(r=>!r.pagado).length + " pendientes de " + T.ruta.length;
+  if(!T.ruta.length){ $("ruta").innerHTML = '<p class="empty">Hoy no hay cobros programados.</p>'; return; }
+  $("ruta").innerHTML = T.ruta.map((r,i) => {
+    const p = r.p;
+    const cls = r.pagado ? "done" : (p.holgura <= -1 ? "late" : "pend");
+    const extra = r.pedir > p.cuota + 0.005
+      ? '<s>cuota '+S(p.cuota)+' · +'+S(r.pedir-p.cuota)+'</s>' : '<s>cuota normal</s>';
+    return '<div class="rrow '+cls+'">'
+      + '<button class="chk" data-chk="'+i+'" aria-pressed="'+(r.pagado?"true":"false")+'">✓</button>'
+      + '<div class="grow"><div class="nm">'+esc(p.nombre)+'</div>'
+      + '<div class="meta">saldo '+S(p.saldo)+' · '+p.diasRest+' días · '+tag(p)+'</div></div>'
+      + '<div class="ask"><b>'+S(r.pagado ? r.slot.monto : r.pedir)+'</b>'+extra+'</div></div>';
+  }).join("");
+  $("ruta").querySelectorAll("[data-chk]").forEach(b => {
+    b.onclick = () => { const on = b.getAttribute("aria-pressed") === "true";
+      b.setAttribute("aria-pressed", on ? "false":"true");
+      b.closest(".rrow").classList.toggle("done", !on); };
+  });
+}
+
+function renderAlertas(){
+  const A = [];
+  PS.filter(p => p.activo).forEach(p => {
+    if(p.vencido) A.push([1, p.nombre+" pasó su fecha tope con "+S(p.saldo)+" pendiente.",
+      "Vencía el "+dm(p.fTope)+". No hay más días de cobro programados."]);
+    else if(p.holgura <= -1) A.push([p.holgura <= -3 ? 1 : 0,
+      p.nombre+" necesita "+S(p.ritmo)+"/día para cerrar a tiempo.",
+      "Cuota nominal "+S(p.cuota)+" — esfuerzo "+p.esfuerzo.toFixed(2)+"×. "
+      +"Le faltan "+(p.saldo/p.cuota).toFixed(1)+" cuotas en "+p.diasRest+" días."]);
+    if(p.diasSinPagar >= 3) A.push([p.diasSinPagar >= 6 ? 1 : 0,
+      p.nombre+" lleva "+p.diasSinPagar+" días sin pagar.", "Último abono registrado en la hoja."]);
+    const dd = (p.fTope - HOY)/86400000;
+    if(dd >= 0 && dd <= 3) A.push([0, p.nombre+" cierra en "+Math.round(dd)+" días.",
+      "Se liberan "+S(p.capital)+" de capital. Candidato a renovación."]);
+  });
+  T.personas.forEach(g => { if(g.pct > 0.30) A.push([g.pct > 0.45 ? 1 : 0,
+    g.persona+" concentra el "+(g.pct*100).toFixed(0)+"% de tu riesgo vivo.",
+    S(g.saldo)+" por cobrar en "+g.activos+" préstamo(s) activo(s), sobre "+S(g.expuesto)
+    +" de efectivo entregado. Si falla, no pierdes uno, pierdes la cartera."]); });
+
+  $("secAlert").classList.toggle("hide", !A.length);
+  A.sort((a,b) => b[0]-a[0]);
+  $("alertas").innerHTML = A.map(a =>
+    '<div class="alert'+(a[0]?" hi":"")+'"><div class="ic">'+(a[0]?"!!":"! ")+'</div>'
+    +'<div><p>'+esc(a[1])+'</p><small>'+esc(a[2])+'</small></div></div>').join("");
+}
+
+function renderKpis(){
+  const k = [
+    ["Efectivo entregado", S0(T.efectivoOut), T.nActivos+" activos", ""],
+    ["Recaudado", S0(T.recaudado), (T.esperado?T.recaudado/T.esperado*100:0).toFixed(0)+"% de lo esperado", ""],
+    ["Posición de caja", (T.caja<0?"−":"")+S0(Math.abs(T.caja)),
+      T.caja<0 ? "neto en la calle" : "neto recuperado", T.caja<0?"neg":"pos"],
+    ["Por cobrar", S0(T.porCobrar), "de "+T.nActivos+" préstamos", "acc"],
+    ["Utilidad pendiente", S0(T.utilidadPend), "si todo se cobra", "pos"],
+    ["Utilidad esperada", S0(T.utilidadEsperada), "sobre efectivo entregado", ""],
+    ["Cartera en riesgo", S0(T.enRiesgo), (T.riesgoPct*100).toFixed(1)+"% del por cobrar",
+      T.riesgoPct>0.15?"neg":""],
+    ["Capital nominal", S0(T.capitalNominal),
+      T.capitalNominal!==T.efectivoOut ? "incl. renovaciones" : "= efectivo", ""]
+  ];
+  $("kpis").innerHTML = k.map(x =>
+    '<div class="kpi '+x[3]+'"><span>'+x[0]+'</span><b>'+x[1]+'</b><i>'+x[2]+'</i></div>').join("");
+  $("nCartera").textContent = T.nActivos + " préstamos activos";
+}
+
+function renderLedger(){
+  const act = PS.filter(p => !p.renovado);
+  if(!act.length){ $("ledger").innerHTML=""; return; }
+  const kHoy = dkey(HOY);
+  let min = null, max = null;
+  act.forEach(p => p.slots.forEach(s => {
+    if(!min || s.fecha < min) min = s.fecha;
+    if(!max || s.fecha > max) max = s.fecha; }));
+  const dias = []; let d = new Date(min);
+  while(dkey(d) <= dkey(max)){ if(!esDomingo(d)) dias.push(new Date(d)); d = addDays(d,1); }
+
+  const g = $("ledger");
+  g.style.gridTemplateColumns = "var(--rail) repeat("+dias.length+", var(--cell))";
+  let h = '<div class="lrail hdr"><span class="rn" style="font-size:9px;letter-spacing:.1em;'
+        + 'text-transform:uppercase;color:var(--dim2)">Cliente</span></div>';
+  let mesPrev = -1;
+  dias.forEach(f => {
+    const nm = f.getMonth() !== mesPrev; mesPrev = f.getMonth();
+    h += '<div class="lhdr'+(dkey(f)===kHoy?" today":"")+(nm?" mfirst":"")+'">'
+       + '<span>'+String(f.getDate()).padStart(2,"0")+'</span>'
+       + '<span style="opacity:.5">'+(nm ? String(f.getMonth()+1).padStart(2,"0") : "")+'</span></div>';
+  });
+  act.forEach(p => {
+    const byK = new Map(p.slots.map(s => [dkey(s.fecha), s]));
+    h += '<div class="lrail"><span class="rn">'+esc(p.nombre)+'</span>'
+       + '<span class="rs">'+(p.cerrado ? "✓" : S0(p.saldo).replace("S/ ","")) +'</span></div>';
+    dias.forEach(f => {
+      const s = byK.get(dkey(f));
+      let c = "c-out";
+      if(s) c = {pay:"c-pay", part:"c-part", fail:"c-fail", todo:"c-todo", fut:"c-fut"}[s.est];
+      else if(dkey(f) === kHoy) c = "c-out c-today";
+      h += '<div class="lcell '+c+'" title="'+esc(p.nombre)+' '+dm(f)
+         + (s ? ' · '+S(s.monto) : '')+'"></div>';
+    });
+  });
+  g.innerHTML = h;
+}
+
+function visibles(){
+  let a = PS.slice();
+  if(filtro === "activos") a = a.filter(p => p.activo);
+  if(filtro === "riesgo")  a = a.filter(p => p.riesgo);
+  if(busca) a = a.filter(p => p.nombre.toLowerCase().includes(busca));
+  return a.sort((x,y) => {
+    const A = x[sortKey], B = y[sortKey];
+    const c = typeof A === "string" ? A.localeCompare(B) : (A-B);
+    return c*sortDir || x.orden - y.orden;
+  });
+}
+
+function renderTabla(){
+  const a = visibles();
+  $("nTabla").textContent = a.length + " de " + PS.length;
+  $("cards").innerHTML = a.map(p => {
+    const cls = p.riesgo ? "s-bad" : (p.cerrado||p.renovado ? "s-ok" : "");
+    return '<div class="card '+cls+'"><div class="top"><span class="nm">'+esc(p.nombre)+'</span>'
+      + tag(p) + '</div>'
+      + '<div class="bar"><i style="width:'+(p.avance*100).toFixed(1)+'%"></i></div>'
+      + '<div class="g4">'
+      + '<div><span>Saldo</span><b>'+S0(p.saldo)+'</b></div>'
+      + '<div><span>Cuota</span><b>'+S0(p.cuota)+'</b></div>'
+      + '<div><span>Ritmo req.</span><b'+(p.ritmo>p.cuota+0.005?' style="color:var(--bad)"':'')+'>'
+      + (p.activo?S0(p.ritmo):"—")+'</b></div>'
+      + '<div><span>Cierre</span><b>'+dm(p.cierre)+'</b></div>'
+      + '</div></div>';
+  }).join("") || '<p class="empty">Sin resultados.</p>';
+
+  $("tabla").querySelector("tbody").innerHTML = a.map(p =>
+    '<tr><td>'+esc(p.nombre)+'</td><td class="num">'+S0(p.capital)+'</td>'
+    + '<td class="num">'+S(p.cuota)+'</td>'
+    + '<td class="num">'+(p.avance*100).toFixed(0)+'%</td>'
+    + '<td class="num">'+S0(p.saldo)+'</td>'
+    + '<td class="num">'+(p.activo?p.diasRest:"—")+'</td>'
+    + '<td class="num"'+(p.activo&&p.ritmo>p.cuota+0.005?' style="color:var(--bad)"':'')+'>'
+    + (p.activo?S(p.ritmo):"—")+'</td>'
+    + '<td class="num">'+(p.activo?(p.holgura>0?"+":"")+p.holgura.toFixed(1):"—")+'</td>'
+    + '<td class="num">'+dm(p.cierre)+'</td><td>'+tag(p)+'</td></tr>').join("");
+}
+
+function renderPersonas(){
+  $("personas").innerHTML = T.personas.map(g => {
+    const hi = g.pct > 0.30;
+    return '<div class="card'+(hi?" s-bad":"")+'"><div class="top">'
+      + '<span class="nm">'+esc(g.persona)+'</span>'
+      + '<span class="tagx '+(hi?"t-bad":"t-dim")+'">'+(g.pct*100).toFixed(0)+'% del riesgo</span></div>'
+      + '<div class="bar"><i style="width:'+(g.pct*100).toFixed(1)+'%"></i></div>'
+      + '<div class="g4">'
+      + '<div><span>Efectivo dado</span><b>'+S0(g.expuesto)+'</b></div>'
+      + '<div><span>Saldo vivo</span><b>'+S0(g.saldo)+'</b></div>'
+      + '<div><span>Préstamos</span><b>'+g.activos+'/'+g.prestamos.length+'</b></div>'
+      + '<div><span>Cumplim.</span><b>'+(g.cumplimiento*100).toFixed(0)+'%</b></div>'
+      + '</div></div>';
+  }).join("");
+}
+
+function renderFlujo(){
+  const mx = Math.max(...T.flujo.map(f => f.monto), 1);
+  $("nFlujo").textContent = "total " + S0(T.flujo.reduce((a,f)=>a+f.monto,0));
+  $("flujo").innerHTML = T.flujo.map(f =>
+    '<div class="fbar'+(f.hoy?" now":"")+'"><em>'+(f.monto?Math.round(f.monto):"")+'</em>'
+    + '<i style="height:'+(f.monto/mx*62)+'px"></i><s>'+dm(f.fecha).slice(0,2)+'</s></div>').join("");
+}
+
+/* ═══ simuladores ═══ */
+function renderSim(){
+  if(!$("sFecha").value) $("sFecha").value = HOY.toISOString().slice(0,10);
+  const act = PS.filter(p => p.activo);
+  $("rSel").innerHTML = act.map(p =>
+    '<option value="'+esc(p.id)+'">'+esc(p.nombre)+' — saldo '+S0(p.saldo)+'</option>').join("")
+    || '<option value="">sin préstamos activos</option>';
+  simNuevo(); simRenov();
+}
+
+function simNuevo(){
+  const cap = num($("sCap").value), pl = +$("sPlazo").value;
+  const v = $("sFecha").value;
+  if(!cap || !v){ $("sOut").textContent = "Completa los datos."; return; }
+  const [y,m,d] = v.split("-").map(Number);
+  const cron = cronograma(new Date(y,m-1,d), pl);
+  const total = cap*(1+TASA), cuota = total/pl;
+  $("sOut").innerHTML =
+    'Total a cobrar <b>'+S(total)+'</b> · interés <b>'+S(total-cap)+'</b><hr>'
+    + 'Cuota diaria <b>'+S(cuota)+'</b><br>'
+    + 'Primer cobro <b>'+dm(cron[0])+'</b> · último <b>'+dm(cron[pl-1])+'</b><br>'
+    + 'Duración calendario <b>'+Math.round((cron[pl-1]-new Date(y,m-1,d))/86400000)+' días</b> '
+    + '(saltando domingos)';
+}
+
+function simRenov(){
+  const id = $("rSel").value;
+  const p = PS.find(x => x.id === id);
+  if(!p){ $("rOut").textContent = "No hay préstamos activos para renovar."; return; }
+  const cap = num($("rCap").value), pl = +$("rPlazo").value;
+  if(!cap){ $("rOut").textContent = "Ingresa el capital nuevo."; return; }
+  const efectivo = cap - p.saldo;
+  const total = cap*(1+TASA), cuota = total/pl;
+  const interesViejo = p.saldo - p.saldo/(1+TASA);
+  const cron = cronograma(HOY, pl);
+  let h = 'Cancela <b>'+esc(p.nombre)+'</b> · saldo <b>'+S(p.saldo)+'</b><hr>'
+    + 'Capital nuevo <b>'+S(cap)+'</b><br>'
+    + 'Efectivo a entregar <b'+(efectivo<0?' style="color:var(--bad)"':'')+'>'+S(efectivo)+'</b><br>'
+    + 'Nueva deuda <b>'+S(total)+'</b> · cuota <b>'+S(cuota)+'</b><br>'
+    + 'Cierra el <b>'+dm(cron[pl-1])+'</b><hr>';
+  if(efectivo < 0)
+    h += '<span class="w">El saldo pendiente supera el capital nuevo. Esto no es una renovación, '
+       + 'es una reducción de deuda: el cliente tendría que abonarte '+S(-efectivo)+'.</span>';
+  else
+    h += '<span class="w">Del saldo absorbido, '+S(interesViejo)+' es interés que aún no cobrabas '
+       + 'y al reinvertirlo le aplicas 20% otra vez: '+S(interesViejo*TASA)+' de interés sobre interés. '
+       + 'Tu rendimiento real sube por encima del 20% nominal — pero tu "capital colocado" queda '
+       + 'inflado en '+S(p.saldo)+' si no registras la renovación en la hoja.</span>';
+  $("rOut").innerHTML = h;
+}
+
+/* ═══ carga de datos ═══ */
+function aplicar(csv, origen){
+  const rows = parseCSV(csv);
+  const ps = normalizar(rows, hoyFecha());
+  if(!ps.length) throw new Error("No se detectó ningún préstamo válido.");
+  PS = ps; cfg.csv = csv; cfg.ts = Date.now(); saveCfg();
+  $("status").className = "status";
+  $("status").textContent = ps.length + " préstamos leídos desde " + origen + ".";
+  setTimeout(() => $("status").classList.add("hide"), 2500);
+  render();
+}
+
+async function cargar(){
+  $("status").classList.remove("hide","err");
+  $("status").textContent = "Consultando Google Sheets…";
+  try{
+    const r = await fetch(cfg.url, {cache:"no-store", redirect:"follow"});
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    const txt = await r.text();
+    if(/<html/i.test(txt.slice(0,400)))
+      throw new Error("Google devolvió HTML, no CSV. Revisa que la hoja esté publicada como CSV.");
+    aplicar(txt, "Sheets");
+  }catch(e){
+    const off = !!cfg.csv;
+    $("status").className = "status err";
+    $("status").innerHTML = "<b>No se pudo descargar el CSV</b>"
+      + esc(e.message) + "<br><br>"
+      + "Causa más probable: el navegador bloqueó la petición por CORS al abrir el archivo "
+      + "con doble clic (origen <code>file://</code>). Soluciones, en orden:<br>"
+      + "1. Súbelo a GitHub Pages o cualquier hosting y ábrelo por https.<br>"
+      + "2. Pega el CSV a mano en ⚙ Configuración.<br>"
+      + (off ? "<br>Mostrando la última copia guardada." : "");
+    if(off){ try{ aplicar(cfg.csv, "caché local"); $("status").classList.remove("hide"); }catch(_){} }
+  }
+}
+
+/* ═══ eventos ═══ */
+$("bRefresh").onclick = cargar;
+$("bCfg").onclick = () => {
+  const on = $("bCfg").getAttribute("aria-pressed") === "true";
+  $("bCfg").setAttribute("aria-pressed", on ? "false" : "true");
+  $("cfgPanel").classList.toggle("hide", on);
+};
+$("iUrl").value  = cfg.url;
+$("iHoy").value  = cfg.hoy;
+$("iAuto").value = String(cfg.auto);
+$("iUrl").onchange  = () => { cfg.url = $("iUrl").value.trim() || DEFAULT_URL; saveCfg(); cargar(); };
+$("iHoy").onchange  = () => { cfg.hoy = $("iHoy").value; saveCfg(); if(PS.length) render(); };
+$("iAuto").onchange = () => { cfg.auto = +$("iAuto").value; saveCfg(); auto(); };
+$("bClear").onclick = () => { localStorage.removeItem(LS); location.reload(); };
+$("bPaste").onclick = () => {
+  const t = $("iPaste").value.trim();
+  if(!t) return;
+  try{ aplicar(t, "texto pegado"); }
+  catch(e){ $("status").className="status err"; $("status").classList.remove("hide");
+            $("status").textContent = "Error al leer el CSV: " + e.message; }
+};
+$("iBuscar").oninput = e => { busca = e.target.value.toLowerCase().trim(); renderTabla(); };
+document.querySelectorAll("[data-f]").forEach(b => b.onclick = () => {
+  document.querySelectorAll("[data-f]").forEach(x => x.setAttribute("aria-pressed","false"));
+  b.setAttribute("aria-pressed","true"); filtro = b.dataset.f; renderTabla();
+});
+document.querySelectorAll("th[data-s]").forEach(th => th.onclick = () => {
+  const k = th.dataset.s;
+  sortDir = (k === sortKey) ? -sortDir : 1; sortKey = k; renderTabla();
+});
+["sCap","sPlazo","sFecha"].forEach(id => $(id).oninput = simNuevo);
+["rSel","rCap","rPlazo"].forEach(id => $(id).oninput = simRenov);
+
+let tAuto = null;
+function auto(){ if(tAuto) clearInterval(tAuto); if(cfg.auto) tAuto = setInterval(cargar, cfg.auto); }
+
+cargar(); auto();
+</script>
+</body>
+</html>
