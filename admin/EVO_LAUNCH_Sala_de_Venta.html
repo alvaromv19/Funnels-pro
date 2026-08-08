@@ -1,0 +1,906 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EVO LAUNCH — Sala de Venta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#0B0E1A;          /* fondo profundo, azul-tinta no negro */
+  --ink-2:#121628;
+  --panel:#171C33;        /* superficie de ficha */
+  --panel-2:#1E2440;
+  --rule:#2A3157;
+  --text:#E8EAF4;
+  --muted:#8990B5;
+  --dim:#5C638C;
+  --violet:#A855F7;       /* EVO / estructura */
+  --violet-dim:#6D3FA8;
+  --aqua:#2DD4BF;         /* el dinero del cliente */
+  --aqua-dim:#12867C;
+  --warn:#F5A524;
+  --bad:#F2545B;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{
+  background:var(--ink);
+  color:var(--text);
+  font-family:Inter,system-ui,sans-serif;
+  font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{font-family:"Space Grotesk",Inter,sans-serif;letter-spacing:-.02em;margin:0}
+.num{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:264px 1fr;height:100vh}
+@media(max-width:860px){.shell{grid-template-columns:1fr;height:auto}.rail{position:static!important;height:auto!important}}
+
+.rail{
+  background:var(--ink-2);border-right:1px solid var(--rule);
+  display:flex;flex-direction:column;height:100vh;position:sticky;top:0;
+}
+.brand{padding:22px 22px 16px;border-bottom:1px solid var(--rule)}
+.brand .mark{font-family:"Space Grotesk";font-weight:700;font-size:17px;letter-spacing:.14em}
+.brand .mark span{color:var(--violet)}
+.brand .sub{font-size:11px;color:var(--dim);letter-spacing:.16em;text-transform:uppercase;margin-top:4px}
+
+.modeswitch{padding:16px 18px;border-bottom:1px solid var(--rule)}
+.modeswitch .lbl{font-size:10px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-bottom:9px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--panel);padding:4px;border-radius:9px}
+.seg button{
+  all:unset;text-align:center;padding:9px 4px;border-radius:6px;cursor:pointer;
+  font-size:12px;font-weight:600;color:var(--muted);transition:.15s
+}
+.seg button:hover{color:var(--text)}
+.seg button[aria-pressed=true]{background:var(--violet);color:#fff}
+.seg button:focus-visible{outline:2px solid var(--aqua);outline-offset:2px}
+
+.steps{flex:1;overflow-y:auto;padding:14px 12px}
+.step{
+  all:unset;display:flex;gap:11px;align-items:baseline;width:100%;box-sizing:border-box;
+  padding:10px 11px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:13.5px;transition:.12s
+}
+.step:hover{background:var(--panel);color:var(--text)}
+.step[aria-current=true]{background:var(--panel-2);color:var(--text);box-shadow:inset 2px 0 0 var(--aqua)}
+.step:focus-visible{outline:2px solid var(--aqua);outline-offset:-2px}
+.step .k{font-family:"IBM Plex Mono";font-size:11px;color:var(--dim);min-width:16px}
+.step[aria-current=true] .k{color:var(--aqua)}
+
+.railfoot{padding:14px 16px;border-top:1px solid var(--rule);display:flex;flex-direction:column;gap:8px}
+.ghost{
+  all:unset;display:block;text-align:center;padding:10px;border-radius:8px;cursor:pointer;
+  font-size:12px;font-weight:600;border:1px solid var(--rule);color:var(--muted);transition:.15s
+}
+.ghost:hover{border-color:var(--violet);color:var(--text)}
+.ghost:focus-visible{outline:2px solid var(--aqua);outline-offset:2px}
+.ghost.hot{border-color:var(--violet-dim);color:var(--violet)}
+
+/* ---------- stage ---------- */
+.stage{overflow-y:auto;height:100vh}
+@media(max-width:860px){.stage{height:auto}}
+.slide{max-width:1000px;margin:0 auto;padding:56px 44px 96px;display:none}
+.slide.on{display:block;animation:rise .32s cubic-bezier(.2,.7,.3,1)}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.slide.on{animation:none}}
+@media(max-width:640px){.slide{padding:32px 20px 72px}}
+
+.eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--aqua);margin-bottom:14px}
+.eyebrow.v{color:var(--violet)}
+h1.title{font-size:clamp(30px,4.6vw,50px);font-weight:700;line-height:1.06;margin-bottom:18px}
+h2.title{font-size:clamp(24px,3.4vw,36px);font-weight:700;line-height:1.12;margin-bottom:16px}
+.lede{font-size:18px;color:var(--muted);max-width:64ch;margin-bottom:34px}
+.lede strong{color:var(--text);font-weight:600}
+p{max-width:66ch}
+
+.rule{height:1px;background:var(--rule);margin:34px 0}
+
+/* cards / grid */
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(215px,1fr))}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:20px}
+.card h3{font-size:16px;margin-bottom:8px}
+.card p{font-size:14px;color:var(--muted);margin:0}
+.card .tag{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--violet);margin-bottom:10px}
+
+/* tabla comparativa */
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:11px 12px;text-align:left;border-bottom:1px solid var(--rule)}
+th{font-size:11px;letter-spacing:.11em;text-transform:uppercase;color:var(--dim);font-weight:500}
+td.c,th.c{text-align:center}
+.evocol{background:rgba(168,85,247,.09)}
+th.evocol{color:var(--violet)}
+.yes{color:var(--aqua);font-weight:600}
+.no{color:var(--dim)}
+
+/* ---------- ledger (signature) ---------- */
+.ledger{
+  background:linear-gradient(180deg,var(--panel-2),var(--panel));
+  border:1px solid var(--rule);border-radius:14px;overflow:hidden
+}
+.ledger-in{padding:22px 24px;border-bottom:1px solid var(--rule);background:rgba(0,0,0,.18)}
+.fields{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.field label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:7px}
+.field input,.field select{
+  width:100%;background:var(--ink);border:1px solid var(--rule);border-radius:8px;
+  padding:11px 12px;color:var(--text);font-family:"IBM Plex Mono";font-size:16px;font-weight:500
+}
+.field input:focus,.field select:focus{outline:none;border-color:var(--aqua);box-shadow:0 0 0 3px rgba(45,212,191,.14)}
+.field select{font-family:Inter;font-size:14px}
+
+.rows{padding:6px 24px 18px}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:11px 0;border-bottom:1px solid rgba(42,49,87,.55)}
+.row:last-child{border-bottom:none}
+.row .lab{font-size:14px;color:var(--muted)}
+.row .lab small{display:block;font-size:11.5px;color:var(--dim)}
+.row .val{font-family:"IBM Plex Mono";font-size:19px;font-weight:500}
+.row.minus .val{color:var(--bad)}
+.row.sum{border-top:1px solid var(--rule);margin-top:6px;padding-top:15px}
+.row.sum .lab{color:var(--text);font-weight:600;font-size:15px}
+.row.sum .val{font-size:24px;color:var(--aqua);font-weight:600}
+
+.hero-figure{
+  padding:28px 24px;background:linear-gradient(120deg,rgba(45,212,191,.13),rgba(168,85,247,.10));
+  border-top:1px solid var(--rule);display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px 28px
+}
+.hero-figure .big{font-family:"IBM Plex Mono";font-size:clamp(38px,6vw,62px);font-weight:600;line-height:.95;color:var(--aqua)}
+.hero-figure .cap{font-size:13px;color:var(--muted);max-width:34ch;padding-bottom:6px}
+
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.chip{background:var(--panel);border:1px solid var(--rule);border-radius:9px;padding:10px 14px;font-size:13px;color:var(--muted)}
+.chip b{font-family:"IBM Plex Mono";color:var(--text);font-weight:600}
+
+.note{font-size:12.5px;color:var(--dim);margin-top:14px;max-width:70ch}
+
+/* proof slots */
+.slot{
+  border:1px dashed var(--violet-dim);border-radius:12px;padding:26px;text-align:center;
+  color:var(--dim);font-size:13px;background:rgba(168,85,247,.04)
+}
+.slot b{display:block;color:var(--violet);font-size:13px;margin-bottom:5px;letter-spacing:.06em;text-transform:uppercase}
+
+/* pricing */
+.tiers{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.tier{background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:24px;position:relative}
+.tier.lead{border-color:var(--violet);box-shadow:0 0 0 1px var(--violet-dim),0 14px 40px -22px var(--violet)}
+.tier .flag{position:absolute;top:-10px;left:22px;background:var(--violet);color:#fff;font-size:10px;letter-spacing:.14em;text-transform:uppercase;padding:4px 10px;border-radius:5px}
+.tier h3{font-size:20px;margin-bottom:4px}
+.tier .who{font-size:13px;color:var(--muted);margin-bottom:18px}
+.price{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.price .n{font-family:"IBM Plex Mono";font-size:32px;font-weight:600}
+.price .u{font-size:13px;color:var(--muted)}
+.price2{font-size:13px;color:var(--muted);margin-bottom:18px}
+.price2 b{color:var(--text);font-family:"IBM Plex Mono"}
+ul.feat{list-style:none;padding:0;margin:0;display:grid;gap:9px}
+ul.feat li{font-size:13.5px;color:var(--muted);padding-left:19px;position:relative}
+ul.feat li::before{content:"";position:absolute;left:0;top:8px;width:7px;height:7px;border-radius:2px;background:var(--aqua)}
+ul.feat li.off{color:var(--dim)}
+ul.feat li.off::before{background:var(--rule)}
+
+.quote{border-left:2px solid var(--aqua);padding:4px 0 4px 20px;font-size:17px;color:var(--text);max-width:60ch}
+
+.timeline{display:grid;gap:0}
+.tl{display:grid;grid-template-columns:88px 1fr;gap:20px;padding:18px 0;border-bottom:1px solid var(--rule)}
+.tl .when{font-family:"IBM Plex Mono";font-size:13px;color:var(--aqua)}
+.tl h4{margin:0 0 5px;font-size:15px;font-family:"Space Grotesk"}
+.tl p{margin:0;font-size:13.5px;color:var(--muted)}
+
+.footnav{display:flex;justify-content:space-between;gap:12px;margin-top:44px}
+.btn{
+  all:unset;padding:12px 22px;border-radius:9px;cursor:pointer;font-size:14px;font-weight:600;
+  background:var(--violet);color:#fff;transition:.15s
+}
+.btn:hover{filter:brightness(1.12)}
+.btn.sec{background:transparent;border:1px solid var(--rule);color:var(--muted)}
+.btn.sec:hover{border-color:var(--muted);color:var(--text)}
+.btn:focus-visible{outline:2px solid var(--aqua);outline-offset:2px}
+.btn[disabled]{opacity:.28;pointer-events:none}
+
+/* downsell drawer */
+.veil{position:fixed;inset:0;background:rgba(5,7,15,.8);display:none;z-index:40;backdrop-filter:blur(3px)}
+.veil.on{display:block}
+.drawer{
+  position:fixed;top:0;right:0;height:100vh;width:min(560px,100%);background:var(--ink-2);
+  border-left:1px solid var(--rule);z-index:50;transform:translateX(100%);transition:transform .28s cubic-bezier(.2,.7,.3,1);
+  overflow-y:auto;padding:30px 30px 60px
+}
+.drawer.on{transform:none}
+@media(prefers-reduced-motion:reduce){.drawer{transition:none}}
+.alarm{background:rgba(242,84,91,.1);border:1px solid rgba(242,84,91,.4);border-radius:10px;padding:14px 16px;font-size:13px;color:#FFC9CC;margin-bottom:22px}
+.mod{display:flex;justify-content:space-between;gap:14px;padding:14px 0;border-bottom:1px solid var(--rule);font-size:14px}
+.mod b{display:block;font-size:14.5px;color:var(--text);margin-bottom:3px}
+.mod span{color:var(--muted);font-size:13px}
+.mod .p{font-family:"IBM Plex Mono";white-space:nowrap;color:var(--aqua)}
+.xclose{all:unset;position:absolute;top:18px;right:24px;cursor:pointer;color:var(--dim);font-size:22px}
+.xclose:hover{color:var(--text)}
+</style>
+
+<div class="shell">
+  <aside class="rail">
+    <div class="brand">
+      <div class="mark">EVO<span>·</span>LAUNCH</div>
+      <div class="sub">Sala de venta</div>
+    </div>
+
+    <div class="modeswitch">
+      <div class="lbl">Modo</div>
+      <div class="seg" role="group" aria-label="Modo de llamada">
+        <button id="m1" aria-pressed="true">Llamada 1</button>
+        <button id="m2" aria-pressed="false">Llamada 2</button>
+      </div>
+    </div>
+
+    <nav class="steps" id="steps" aria-label="Pasos"></nav>
+
+    <div class="railfoot">
+      <button class="ghost hot" id="presenterBtn">Abrir panel del closer ↗</button>
+      <button class="ghost" id="downsellBtn">Ajustar alcance</button>
+    </div>
+  </aside>
+
+  <main class="stage" id="stage">
+
+    <!-- ══════════════ MODO 1 — DIAGNÓSTICO ══════════════ -->
+
+    <section class="slide" data-mode="1" id="s1-0">
+      <div class="eyebrow">Auditoría de adquisición</div>
+      <h1 class="title">Hoy vamos a hacer una sola cosa:<br>poner tu negocio en números.</h1>
+      <p class="lede">Al final de esta llamada vas a saber exactamente <strong>cuánto te puede costar traer un cliente nuevo</strong> y <strong>cuánto aguanta pagar tu ticket</strong>. Con esos dos números, la decisión de si esto tiene sentido para vos la vas a poder tomar solo.</p>
+      <div class="grid g3">
+        <div class="card"><div class="tag">Primero</div><h3>Tu situación</h3><p>De dónde salen hoy tus clientes y qué pasa cuando dejás de empujar.</p></div>
+        <div class="card"><div class="tag">Después</div><h3>La cuenta</h3><p>Los números de tu negocio en pantalla. Los ponés vos, no los pongo yo.</p></div>
+        <div class="card"><div class="tag">Al final</div><h3>Si seguimos</h3><p>Si la cuenta cierra, agendamos una segunda llamada. Si no cierra, te lo digo hoy.</p></div>
+      </div>
+      <div class="rule"></div>
+      <p class="note">Marco de la llamada — se dice en voz alta: <em>"En esta primera llamada vemos si tiene sentido trabajar juntos. En la segunda tomás la decisión, sí o no. Para eso necesito que estén las personas que deciden."</em></p>
+    </section>
+
+    <section class="slide" data-mode="1" id="s1-1">
+      <div class="eyebrow">El patrón</div>
+      <h2 class="title">Todas las agencias fallan en el mismo punto.</h2>
+      <p class="lede">Y no es en traer gente. Es en lo que pasa después.</p>
+      <div class="grid g2">
+        <div class="card">
+          <div class="tag">Lo que compraste</div>
+          <h3>Leads</h3>
+          <p>Pagaste por leads. Te entregaron leads. Hasta ahí cumplieron.</p>
+        </div>
+        <div class="card">
+          <div class="tag">Lo que necesitabas</div>
+          <h3>Ventas</h3>
+          <p>Pero vos no necesitabas leads. Necesitabas facturación. Y esa parte quedó de tu lado.</p>
+        </div>
+      </div>
+      <div class="rule"></div>
+      <p class="quote">Cobraron igual vendieras o no. Nosotros cobramos sobre la venta. Si el lead no se convierte, nosotros tampoco ganamos.</p>
+      <p class="note">Esta frase se dice una sola vez y se deja respirar. No se explica.</p>
+    </section>
+
+    <section class="slide" data-mode="1" id="s1-2">
+      <div class="eyebrow">La cadena</div>
+      <h2 class="title">Dónde se corta cada opción del mercado.</h2>
+      <p class="lede">Traer gente es el primer eslabón de seis. El resultado vive en el último.</p>
+      <table>
+        <thead><tr>
+          <th>Eslabón</th><th class="c">Mentoría</th><th class="c">Freelancer</th><th class="c">Agencia de pauta</th><th class="c evocol">Nosotros</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>Embudo y creativos</td><td class="c no">Te enseña</td><td class="c no">A veces</td><td class="c yes">Sí</td><td class="c evocol yes">Sí</td></tr>
+          <tr><td>Compra de tráfico frío</td><td class="c no">No</td><td class="c yes">Sí</td><td class="c yes">Sí</td><td class="c evocol yes">Sí</td></tr>
+          <tr><td>Contacto al lead en menos de 60 seg</td><td class="c no">No</td><td class="c no">No</td><td class="c no">No</td><td class="c evocol yes">Sí</td></tr>
+          <tr><td>Cierre de la venta</td><td class="c no">No</td><td class="c no">No</td><td class="c no">No</td><td class="c evocol yes">Sí</td></tr>
+          <tr><td>Dirección del equipo de ventas</td><td class="c no">Parcial</td><td class="c no">No</td><td class="c no">No</td><td class="c evocol yes">Sí</td></tr>
+          <tr><td>Responde por ventas, no por leads</td><td class="c no">No</td><td class="c no">No</td><td class="c no">No</td><td class="c evocol yes">Sí</td></tr>
+        </tbody>
+      </table>
+      <p class="note">No se lee la tabla en voz alta. Se apunta a las dos últimas filas y se pregunta: <em>"¿Con cuál de estos trabajaste antes?"</em></p>
+    </section>
+
+    <section class="slide" data-mode="1" id="s1-3">
+      <div class="eyebrow">La aritmética</div>
+      <h2 class="title">Tus números, en vivo.</h2>
+      <p class="lede">Poné los datos reales. Si algo no lo sabés, lo dejamos en cero y lo vemos igual.</p>
+
+      <div class="ledger">
+        <div class="ledger-in">
+          <div class="fields">
+            <div class="field"><label for="a-ticket">Precio de tu oferta</label><input id="a-ticket" type="number" value="2000" min="0" step="50"></div>
+            <div class="field"><label for="a-ventas">Ventas el mes pasado</label><input id="a-ventas" type="number" value="4" min="0"></div>
+            <div class="field"><label for="a-pauta-hoy">Invertido en pauta</label><input id="a-pauta-hoy" type="number" value="0" min="0" step="100"></div>
+            <div class="field"><label for="a-vertical">Tu mercado</label>
+              <select id="a-vertical">
+                <option value="45">Negocios, marketing y ventas</option>
+                <option value="52">Finanzas e inversión</option>
+                <option value="40">Desarrollo personal</option>
+                <option value="37">Salud, fitness y nutrición</option>
+                <option value="60">Inmobiliaria</option>
+                <option value="72">B2B y consultoría</option>
+              </select>
+            </div>
+            <div class="field"><label for="a-pauta">Presupuesto de pauta / mes</label><input id="a-pauta" type="number" value="2000" min="0" step="250"></div>
+          </div>
+        </div>
+
+        <div class="rows">
+          <div class="row"><div class="lab">Facturás hoy<small>Con lo que ya tenés funcionando</small></div><div class="val num" id="o-fact-hoy">—</div></div>
+          <div class="row"><div class="lab">Te cuesta cada cliente nuevo<small>Lo que gastás hoy para traer uno</small></div><div class="val num" id="o-cpv-hoy">—</div></div>
+          <div class="row"><div class="lab">Tu ticket aguanta pagar hasta<small>Y seguís con un retorno de 4×</small></div><div class="val num" id="o-techo">—</div></div>
+          <div class="rule" style="margin:18px 0 6px"></div>
+          <div class="row"><div class="lab">Llamadas agendadas al mes<small>Con ese presupuesto, en tu mercado</small></div><div class="val num" id="o-agendas">—</div></div>
+          <div class="row"><div class="lab">Llamadas a las que asisten</div><div class="val num" id="o-efectivas">—</div></div>
+          <div class="row"><div class="lab">Clientes nuevos al mes</div><div class="val num" id="o-ventas">—</div></div>
+          <div class="row sum"><div class="lab">Facturación que suma este presupuesto</div><div class="val num" id="o-fact-inc">—</div></div>
+        </div>
+
+        <div class="hero-figure">
+          <div class="big num" id="o-hero">—</div>
+          <div class="cap" id="o-hero-cap">Lo que este presupuesto puede sumar a tu facturación cada mes, sobre lo que ya hacés.</div>
+        </div>
+      </div>
+
+      <div class="chips">
+        <div class="chip">Costo por llamada agendada <b id="c-cpa">—</b></div>
+        <div class="chip">Asisten <b>55%</b></div>
+        <div class="chip">Cierran <b>20%</b></div>
+        <div class="chip">Costo por venta <b id="c-cpv">—</b></div>
+        <div class="chip">Retorno sobre pauta <b id="c-roas">—</b></div>
+      </div>
+
+      <p class="note">Los porcentajes de asistencia y cierre son referencias conservadoras de tráfico frío en tu mercado. Si tu proceso de venta es mejor que el promedio, este número sube.</p>
+    </section>
+
+    <section class="slide" data-mode="1" id="s1-4">
+      <div class="eyebrow">Cómo trabajamos</div>
+      <h2 class="title">No te entregamos un servicio. Te ocupamos una función.</h2>
+      <p class="lede">Entramos como el equipo de adquisición que hoy no tenés, y respondemos por el número del final de la cadena.</p>
+      <div class="grid g2">
+        <div class="card"><div class="tag">Traemos</div><h3>Tráfico frío que califica</h3><p>Anuncios, ángulos y embudo construidos alrededor de tu oferta, no plantillas. Se prueban tres formas distintas de contar lo mismo y se escala la que funciona.</p></div>
+        <div class="card"><div class="tag">Respondemos rápido</div><h3>Contacto en menos de 60 segundos</h3><p>El lead deja sus datos y suena su teléfono antes de que cierre la pestaña. Es la diferencia entre una llamada que se agenda y una que se evapora.</p></div>
+        <div class="card"><div class="tag">Cerramos</div><h3>Las llamadas de venta</h3><p>Si querés, las toma nuestro equipo. Si tenés equipo propio, lo dirigimos y lo entrenamos con las objeciones reales de tu mercado, semana a semana.</p></div>
+        <div class="card"><div class="tag">Mostramos</div><h3>Todo, en vivo</h3><p>Un tablero con tu inversión, tus llamadas, tus ventas y tu ganancia neta. Lo abrís cuando querés. No dependés de que alguien te mande un reporte.</p></div>
+      </div>
+      <div class="rule"></div>
+      <p class="note">Regla de discurso: no se lidera con inteligencia artificial. Se menciona solo cuando explica un beneficio concreto (velocidad de contacto, análisis de cada llamada).</p>
+    </section>
+
+    <section class="slide" data-mode="1" id="s1-5">
+      <div class="eyebrow">Prueba</div>
+      <h2 class="title">Lo que mostramos es lo que existe.</h2>
+      <p class="lede">Capturas reales, cuentas reales, resultados verificables. Nada armado para la llamada.</p>
+      <div class="grid g2">
+        <div class="slot"><b>Slot 1 — Ads Manager</b>Pegá acá la captura real de una cuenta gestionada. Sin editar cifras. Si todavía no hay, esta sección se salta.</div>
+        <div class="slot"><b>Slot 2 — Tablero de atribución</b>Vista real del dashboard con los datos financieros ocultos. Se abre en vivo, no se muestra en imagen.</div>
+        <div class="slot"><b>Slot 3 — Auditoría de píxel</b>Se hace en vivo sobre la cuenta del prospecto durante esta misma llamada. No requiere material previo.</div>
+        <div class="slot"><b>Slot 4 — Biblioteca de creativos</b>3 o 4 anuncios activos de su vertical, tomados de la biblioteca pública, con la lectura de por qué funcionan.</div>
+      </div>
+      <div class="rule"></div>
+      <p class="note">Regla interna, sin excepción: cero paneles de demostración presentados como clientes, cero cifras inventadas, cero fechas omitidas para que un número viejo parezca reciente. Un caso real modesto cierra mejor que uno grande fabricado, porque aguanta ser interrogado.</p>
+    </section>
+
+    <section class="slide" data-mode="1" id="s1-6">
+      <div class="eyebrow">Siguiente paso</div>
+      <h2 class="title">La segunda llamada es la de la decisión.</h2>
+      <p class="lede">Antes de esa llamada te mando un documento con el diagnóstico de tu caso, el plan, el número que te garantizamos por escrito y la inversión. Lo revisamos juntos y decidís ahí: sí o no.</p>
+      <div class="timeline">
+        <div class="tl"><div class="when">Hoy</div><div><h4>Cierro con tu información</h4><p>Con los números que acabás de darme armo el plan concreto para tu oferta y tu mercado.</p></div></div>
+        <div class="tl"><div class="when">48 h</div><div><h4>Segunda llamada</h4><p>30 a 45 minutos. Vemos la propuesta, respondés tus dudas y tomás la decisión. Necesito que estén las personas que deciden.</p></div></div>
+        <div class="tl"><div class="when">1 hora antes</div><div><h4>Te llega la propuesta</h4><p>Una hora antes, no dos días. Para que la veamos juntos y no la leas solo.</p></div></div>
+      </div>
+      <div class="rule"></div>
+      <p class="quote">¿Quién más participa de esta decisión además de vos?</p>
+      <p class="note">Se pregunta ahora, no en la segunda llamada. Es la objeción que se rompe antes de existir.</p>
+    </section>
+
+    <!-- ══════════════ MODO 2 — DECISIÓN ══════════════ -->
+
+    <section class="slide" data-mode="2" id="s2-0">
+      <div class="eyebrow v">Propuesta</div>
+      <h1 class="title">Esto es lo que vimos, y esto es lo que proponemos.</h1>
+      <p class="lede">Repasamos el diagnóstico de la llamada anterior en treinta segundos, vemos el escenario con los números puestos, y después decidís.</p>
+      <div class="grid g3">
+        <div class="card"><div class="tag">Confirmado</div><h3 id="r-ticket">—</h3><p>Precio de tu oferta</p></div>
+        <div class="card"><div class="tag">Confirmado</div><h3 id="r-pauta">—</h3><p>Presupuesto de pauta mensual</p></div>
+        <div class="card"><div class="tag">Confirmado</div><h3 id="r-hoy">—</h3><p>Facturación del último mes</p></div>
+      </div>
+      <div class="rule"></div>
+      <p class="note">Si alguno de estos tres números cambió desde la primera llamada, se corrige acá antes de seguir. Todo lo que viene se calcula sobre ellos.</p>
+    </section>
+
+    <section class="slide" data-mode="2" id="s2-1">
+      <div class="eyebrow v">El escenario</div>
+      <h2 class="title">Cómo se ve tu mes 3.</h2>
+      <p class="lede">Después de la fase de aprendizaje, con todo corriendo. Números conservadores: <strong>no incluye</strong> recurrencias, cuotas, upsells ni el valor a futuro de cada cliente.</p>
+
+      <div class="ledger">
+        <div class="ledger-in">
+          <div class="fields">
+            <div class="field"><label for="b-ticket">Precio de tu oferta</label><input id="b-ticket" type="number" value="2000" min="0" step="50"></div>
+            <div class="field"><label for="b-pauta">Presupuesto de pauta / mes</label><input id="b-pauta" type="number" value="2000" min="0" step="250"></div>
+            <div class="field"><label for="b-vertical">Tu mercado</label>
+              <select id="b-vertical">
+                <option value="45">Negocios, marketing y ventas</option>
+                <option value="52">Finanzas e inversión</option>
+                <option value="40">Desarrollo personal</option>
+                <option value="37">Salud, fitness y nutrición</option>
+                <option value="60">Inmobiliaria</option>
+                <option value="72">B2B y consultoría</option>
+              </select>
+            </div>
+            <div class="field"><label for="b-config">Configuración</label>
+              <select id="b-config">
+                <option value="t2c">Sistema completo + nuestro equipo de cierre</option>
+                <option value="t2">Sistema completo, cerrás con tu equipo</option>
+                <option value="t1">Motor de agendamiento</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="rows">
+          <div class="row"><div class="lab">Llamadas agendadas</div><div class="val num" id="p-agendas">—</div></div>
+          <div class="row"><div class="lab">Llamadas efectivas</div><div class="val num" id="p-efectivas">—</div></div>
+          <div class="row"><div class="lab">Ventas cerradas</div><div class="val num" id="p-ventas">—</div></div>
+          <div class="row"><div class="lab" style="color:var(--text);font-weight:600">Facturación generada</div><div class="val num" id="p-fact" style="color:var(--text)">—</div></div>
+          <div class="row minus"><div class="lab">Menos: pauta</div><div class="val num" id="p-mpauta">—</div></div>
+          <div class="row minus"><div class="lab">Menos: fee mensual</div><div class="val num" id="p-mfee">—</div></div>
+          <div class="row minus"><div class="lab">Menos: porcentaje sobre ventas</div><div class="val num" id="p-mpct">—</div></div>
+          <div class="row sum"><div class="lab">Te queda neto</div><div class="val num" id="p-neto">—</div></div>
+        </div>
+
+        <div class="hero-figure">
+          <div class="big num" id="p-roi">—</div>
+          <div class="cap">Retorno sobre todo lo que ponés: pauta más lo que nos pagás a nosotros.</div>
+        </div>
+      </div>
+
+      <div class="chips">
+        <div class="chip">La instalación se paga con <b id="p-payback">—</b></div>
+        <div class="chip">Costo por venta <b id="p-cpv">—</b></div>
+      </div>
+      <p class="note">Si el prospecto discute el porcentaje: <em>"Podés pagar solo fijo, existe esa opción. Pero si me pagás solo fijo, mi trabajo termina cuando te entrego la llamada agendada. Con el porcentaje, mi trabajo termina cuando vos cobrás."</em></p>
+    </section>
+
+    <section class="slide" data-mode="2" id="s2-2">
+      <div class="eyebrow v">La inversión</div>
+      <h2 class="title">Dos formas de trabajar juntos.</h2>
+      <p class="lede">La diferencia entre las dos no es cuánto entregamos. Es <strong>dónde termina nuestra responsabilidad</strong>.</p>
+
+      <div class="tiers">
+        <div class="tier lead">
+          <div class="flag">Recomendado para tu caso</div>
+          <h3>Sistema de adquisición completo</h3>
+          <div class="who">Para el experto agotado de vender que quiere delegar la máquina entera.</div>
+          <div class="price"><span class="n">$3,000</span><span class="u">instalación, pago único</span></div>
+          <div class="price2">Después: <b>$2,000</b>/mes + <b>20%</b> sobre las ventas que generamos, desde el mes 2.</div>
+          <ul class="feat">
+            <li>Embudo completo: página, video de venta y formulario</li>
+            <li>Compra de tráfico frío y producción continua de creativos</li>
+            <li>Contacto al lead en menos de 60 segundos</li>
+            <li>Nuestro equipo de closers toma tus llamadas</li>
+            <li>Reemplazo de closer sin costo si no rinde en 30 días</li>
+            <li>Dirección comercial: dos sesiones semanales de entrenamiento</li>
+            <li>Análisis de cada llamada: por qué se cerró y por qué no</li>
+            <li>Tablero en vivo y reporte semanal con decisiones</li>
+            <li>Garantía de llamadas agendadas por escrito</li>
+          </ul>
+        </div>
+
+        <div class="tier">
+          <h3>Motor de agendamiento</h3>
+          <div class="who">Para el experto que ya cierra bien y solo le falta volumen.</div>
+          <div class="price"><span class="n">$2,500</span><span class="u">instalación, pago único</span></div>
+          <div class="price2">Después: <b>$1,200</b>/mes. Sin porcentaje.</div>
+          <ul class="feat">
+            <li>Embudo completo: página, video de venta y formulario</li>
+            <li>Compra de tráfico frío y producción continua de creativos</li>
+            <li>Auditoría e instalación de píxel y eventos</li>
+            <li>Tablero en vivo y reporte semanal con decisiones</li>
+            <li>Garantía de llamadas agendadas por escrito</li>
+            <li class="off">Contacto al lead en menos de 60 segundos</li>
+            <li class="off">Equipo de cierre y dirección comercial</li>
+          </ul>
+          <p class="note" style="margin-top:16px">Termina en la llamada agendada. El cierre lo hacés vos o tu equipo — por eso no hay porcentaje: no cobramos sobre un resultado que no controlamos.</p>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+      <div class="grid g2">
+        <div class="card"><div class="tag">Condición</div><h3>Tres meses mínimo</h3><p>El primer mes es instalación y aprendizaje del algoritmo. Cortar antes es cortar justo antes de que empiece a funcionar.</p></div>
+        <div class="card"><div class="tag">Condición</div><h3>La cuenta publicitaria es tuya</h3><p>Vive siempre en tu Business Manager. Nosotros entramos como socios con permisos. El historial y la data quedan a tu nombre, pase lo que pase.</p></div>
+      </div>
+      <p class="note">Orden de presentación, sin excepción: Sistema completo con equipo de cierre primero. Se baja de ahí solo si el prospecto no puede. Nunca se sube desde abajo.</p>
+    </section>
+
+    <section class="slide" data-mode="2" id="s2-3">
+      <div class="eyebrow v">Garantía</div>
+      <h2 class="title">Te garantizamos lo que controlamos.</h2>
+      <p class="lede">Garantizar ventas cuando las llamadas las cerrás vos sería una promesa vacía. Garantizamos <strong>llamadas agendadas calificadas</strong>, que es exactamente lo que depende de nuestro trabajo.</p>
+
+      <div class="ledger">
+        <div class="ledger-in">
+          <div class="fields">
+            <div class="field"><label for="g-vertical">Tu mercado</label>
+              <select id="g-vertical">
+                <option value="45">Negocios, marketing y ventas</option>
+                <option value="52">Finanzas e inversión</option>
+                <option value="40">Desarrollo personal</option>
+                <option value="37">Salud, fitness y nutrición</option>
+                <option value="60">Inmobiliaria</option>
+                <option value="72">B2B y consultoría</option>
+              </select>
+            </div>
+            <div class="field"><label for="g-pauta">Presupuesto de pauta / mes</label><input id="g-pauta" type="number" value="2000" min="0" step="250"></div>
+            <div class="field"><label for="g-dias">Plazo</label>
+              <select id="g-dias"><option value="60">60 días</option><option value="30">30 días</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="hero-figure" style="flex-direction:column;align-items:flex-start;gap:14px">
+          <div><span class="big num" id="g-n">—</span> <span style="font-size:20px;color:var(--muted)">llamadas agendadas calificadas</span></div>
+          <div class="cap" style="max-width:56ch;padding:0">Si no llegamos a ese número en el plazo, seguimos trabajando <strong style="color:var(--text)">sin cobrarte fee mensual</strong> hasta llegar.</div>
+        </div>
+      </div>
+
+      <div class="rule"></div>
+      <h3 style="font-size:16px;margin-bottom:12px">Qué invalida la garantía</h3>
+      <p style="font-size:14px;color:var(--muted)">Va escrito en el contrato, sin letra chica: que no mantengas el presupuesto de pauta comprometido; que rechaces o modifiques creativos, embudo u oferta contra nuestra recomendación; que cambies tu precio o tu promesa durante el período; que la cuenta publicitaria sea restringida por causas ajenas a nosotros; o demoras tuyas en entregar accesos o aprobaciones. El plazo se cuenta desde que están todos los accesos, no desde la firma.</p>
+      <p class="note">Nota interna: "llamada calificada" debe estar definida por escrito en el contrato antes de usar esta pantalla con un prospecto real. Ver panel del closer.</p>
+    </section>
+
+    <section class="slide" data-mode="2" id="s2-4">
+      <div class="eyebrow v">Qué pasa si decís que sí</div>
+      <h2 class="title">Catorce días de instalación. Después corre solo.</h2>
+      <div class="timeline">
+        <div class="tl"><div class="when">Día 0</div><div><h4>Cobro de la instalación y llamada de arranque</h4><p>Una sola reunión de una hora para bajar tu oferta, tu cliente ideal y tus objeciones reales. Es la única vez que te vamos a pedir tiempo largo.</p></div></div>
+        <div class="tl"><div class="when">Días 1–3</div><div><h4>Accesos y auditoría</h4><p>Entramos a tu Business Manager como socios. Auditamos píxel y eventos. El reloj de la garantía arranca acá.</p></div></div>
+        <div class="tl"><div class="when">Días 4–10</div><div><h4>Construcción</h4><p>Embudo, página, formulario de calificación y el primer lote de creativos sobre tres ángulos distintos.</p></div></div>
+        <div class="tl"><div class="when">Días 11–14</div><div><h4>Arranque de pauta</h4><p>Campañas al aire. Empiezan a entrar llamadas agendadas y se abre tu tablero.</p></div></div>
+        <div class="tl"><div class="when">Mes 2</div><div><h4>Optimización y escalado</h4><p>Ya con data propia. Acá arranca el porcentaje sobre ventas: el mes 1 es instalación y no cobramos sobre lo que ya venías vendiendo.</p></div></div>
+      </div>
+      <div class="rule"></div>
+      <p class="lede" style="margin:0">Tu trabajo en todo esto: entregar accesos al principio, y grabar video cuando te lo pidamos. Nada más.</p>
+    </section>
+
+    <section class="slide" data-mode="2" id="s2-5">
+      <div class="eyebrow v">Decisión</div>
+      <h2 class="title">Trabajamos con diez cuentas a la vez. No es una táctica.</h2>
+      <p class="lede">Cada cliente activo tiene campañas gestionadas todos los días, llamadas analizadas una por una y un equipo de cierre dirigido. Es la cantidad que podemos sostener sin que la calidad caiga. Cuando se llena, se cierra la entrada y el precio del siguiente lote sube.</p>
+      <div class="rule"></div>
+      <p class="quote">¿Hay algo que te falte para tomar la decisión hoy?</p>
+      <p class="note">Se pregunta y se calla. La respuesta trae la objeción real. Si dice "lo pienso", se repregunta: <em>"¿qué sería lo que más te frena: el monto, el plazo, o si esto funciona para tu nicho en particular?"</em></p>
+    </section>
+
+  </main>
+</div>
+
+<!-- ══════════════ AJUSTE DE ALCANCE (oculto) ══════════════ -->
+<div class="veil" id="veil"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <button class="xclose" id="drawerX" aria-label="Cerrar">×</button>
+  <div class="eyebrow v">Solo dentro de la llamada</div>
+  <h2 class="title" style="font-size:26px">Ajuste de alcance</h2>
+  <div class="alarm">
+    Esto <strong>no</strong> es un descuento. El precio de lista no se toca nunca. Lo que se baja es el alcance.<br><br>
+    Se abre únicamente si el prospecto califica pero no puede con la inversión del Sistema completo, o si viene quemado de una agencia y necesita ver algo funcionando antes de comprometerse. Nunca se muestra antes de haber presentado el sistema completo.
+  </div>
+
+  <h3 style="font-size:15px;margin-bottom:6px">Módulos sueltos</h3>
+  <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Permanencia mínima 2 meses. Ticket mínimo del cliente: $900.</p>
+
+  <div class="mod"><div><b>Tráfico</b><span>Pauta en Meta, creativos y copy. Sin embudo ni cierre.</span></div><div class="p">$800 + $1,200/mes</div></div>
+  <div class="mod"><div><b>Contacto y seguimiento del lead</b><span>Contacto en menos de 60 seg, calificación y análisis de llamadas.</span></div><div class="p">$500 + $900/mes</div></div>
+  <div class="mod"><div><b>Embudo</b><span>Página, video de venta y formulario. Entrega única, sin operación.</span></div><div class="p">$1,200</div></div>
+  <div class="mod"><div><b>Equipo de cierre dirigido</b><span>Closers certificados y dirección comercial. Requiere que ya tenga tráfico corriendo.</span></div><div class="p">$500 + $500/mes + 12%</div></div>
+
+  <div class="rule"></div>
+  <h3 style="font-size:15px;margin-bottom:10px">Frase para el ajuste</h3>
+  <p style="font-size:14px;color:var(--muted)">"El precio es el precio, y te explico por qué: si te lo bajo a vos, le estoy cobrando de más al que entró la semana pasada. Lo que sí puedo hacer es ajustar el alcance a tu presupuesto de hoy y subirte cuando el sistema esté generando. ¿Querés que veamos esa opción?"</p>
+  <p class="note">Esto convierte una negociación de precio en una conversación de alcance. Esa conversación la ganamos.</p>
+</aside>
+
+<script>
+"use strict";
+
+/* ───────── estado compartido entre modos ───────── */
+const S = { ticket:2000, ventas:4, pautaHoy:0, pauta:2000, cpa:45 };
+
+const money = n => (isFinite(n) ? "$" + Math.round(n).toLocaleString("en-US") : "—");
+const num   = id => document.getElementById(id);
+const val   = id => { const v = parseFloat(num(id).value); return isFinite(v) ? v : 0; };
+const set   = (id, txt) => { const el = num(id); if (el) el.textContent = txt; };
+
+/* cadena de conversión — referencias del manual */
+const SHOW = 0.55, CLOSE = 0.20;
+const FEES = {
+  t2c:{ setup:3000, fee:2000, pct:0.20, label:"Sistema completo + equipo de cierre" },
+  t2 :{ setup:3000, fee:1500, pct:0.15, label:"Sistema completo" },
+  t1 :{ setup:2500, fee:1200, pct:0.00, label:"Motor de agendamiento" }
+};
+
+/* ───────── llamada 1 · la aritmética ───────── */
+function calcA(){
+  S.ticket    = val("a-ticket");
+  S.ventas    = val("a-ventas");
+  S.pautaHoy  = val("a-pauta-hoy");
+  S.pauta     = val("a-pauta");
+  S.cpa       = parseFloat(num("a-vertical").value);
+
+  const factHoy = S.ticket * S.ventas;
+  const cpvHoy  = S.ventas > 0 && S.pautaHoy > 0 ? S.pautaHoy / S.ventas : null;
+  const techo   = S.ticket / 4;
+
+  const agendas   = S.cpa > 0 ? S.pauta / S.cpa : 0;
+  const efectivas = agendas * SHOW;
+  const ventasNew = efectivas * CLOSE;
+  const factInc   = ventasNew * S.ticket;
+  const cpv       = ventasNew > 0 ? S.pauta / ventasNew : 0;
+  const roas      = S.pauta > 0 ? factInc / S.pauta : 0;
+
+  set("o-fact-hoy", money(factHoy));
+  set("o-cpv-hoy",  cpvHoy ? money(cpvHoy) : "No pagás pauta hoy");
+  set("o-techo",    money(techo));
+  set("o-agendas",  Math.floor(agendas).toString());
+  set("o-efectivas",Math.floor(efectivas).toString());
+  set("o-ventas",   ventasNew.toFixed(1));
+  set("o-fact-inc", money(factInc));
+  set("o-hero",     money(factInc));
+
+  set("c-cpa",  money(S.cpa));
+  set("c-cpv",  money(cpv));
+  set("c-roas", roas ? roas.toFixed(1) + "×" : "—");
+
+  // el remate cambia según pague pauta o no
+  set("o-hero-cap", S.pautaHoy > 0
+    ? "Lo que este presupuesto puede sumar a tu facturación cada mes, sobre lo que ya hacés."
+    : "Lo que este presupuesto puede sumar cada mes. Hoy ese número es cero, porque no comprás tráfico.");
+
+  syncToCall2();
+  renderPresenter();
+}
+
+/* ───────── llamada 2 · escenario y garantía ───────── */
+function calcB(){
+  const ticket = val("b-ticket");
+  const pauta  = val("b-pauta");
+  const cpa    = parseFloat(num("b-vertical").value);
+  const cfg    = FEES[num("b-config").value];
+
+  const agendas   = cpa > 0 ? pauta / cpa : 0;
+  const efectivas = agendas * SHOW;
+  const ventas    = efectivas * CLOSE;
+  const fact      = ventas * ticket;
+  const pct       = fact * cfg.pct;
+  const neto      = fact - pauta - cfg.fee - pct;
+  const invTotal  = pauta + cfg.fee + pct;
+  const roi       = invTotal > 0 ? fact / invTotal : 0;
+  const cpv       = ventas > 0 ? pauta / ventas : 0;
+  const payback   = ticket > 0 ? Math.ceil(cfg.setup / ticket) : 0;
+
+  set("p-agendas",  Math.floor(agendas).toString());
+  set("p-efectivas",Math.floor(efectivas).toString());
+  set("p-ventas",   ventas.toFixed(1));
+  set("p-fact",     money(fact));
+  set("p-mpauta",   "(" + money(pauta) + ")");
+  set("p-mfee",     "(" + money(cfg.fee) + ")");
+  set("p-mpct",     cfg.pct ? "(" + money(pct) + ")" : "—");
+  set("p-neto",     money(neto));
+  set("p-roi",      roi ? roi.toFixed(2) + "×" : "—");
+  set("p-cpv",      money(cpv));
+  set("p-payback",  payback + (payback === 1 ? " venta tuya" : " ventas tuyas"));
+
+  set("r-ticket", money(ticket));
+  set("r-pauta",  money(pauta) + "/mes");
+  set("r-hoy",    money(S.ticket * S.ventas));
+
+  renderPresenter();
+}
+
+function calcG(){
+  const cpa   = parseFloat(num("g-vertical").value);
+  const pauta = val("g-pauta");
+  const dias  = parseFloat(num("g-dias").value);
+  const cpaG  = cpa * 1.4;                      // colchón de seguridad
+  const total = pauta * (dias / 30);
+  const n     = cpaG > 0 ? Math.floor((total / cpaG) * 0.65) : 0;
+  set("g-n", n.toString());
+  renderPresenter();
+}
+
+/* propaga los números de la llamada 1 a la llamada 2 */
+function syncToCall2(){
+  num("b-ticket").value  = S.ticket;
+  num("b-pauta").value   = S.pauta;
+  num("g-pauta").value   = S.pauta;
+  num("b-vertical").value = num("a-vertical").value;
+  num("g-vertical").value = num("a-vertical").value;
+  calcB(); calcG();
+}
+
+/* ───────── navegación ───────── */
+const NAV = {
+  1:[["Encuadre","s1-0"],["El patrón","s1-1"],["La cadena","s1-2"],["La aritmética","s1-3"],["Cómo trabajamos","s1-4"],["Prueba","s1-5"],["Siguiente paso","s1-6"]],
+  2:[["Repaso","s2-0"],["El escenario","s2-1"],["La inversión","s2-2"],["Garantía","s2-3"],["Instalación","s2-4"],["Decisión","s2-5"]]
+};
+let mode = 1, idx = 0;
+
+function renderSteps(){
+  const nav = num("steps");
+  nav.innerHTML = "";
+  NAV[mode].forEach(([label, id], i) => {
+    const b = document.createElement("button");
+    b.className = "step";
+    b.setAttribute("aria-current", i === idx ? "true" : "false");
+    b.innerHTML = '<span class="k">' + String(i + 1).padStart(2, "0") + '</span><span>' + label + '</span>';
+    b.onclick = () => go(i);
+    nav.appendChild(b);
+  });
+}
+
+function go(i){
+  idx = Math.max(0, Math.min(i, NAV[mode].length - 1));
+  document.querySelectorAll(".slide").forEach(s => s.classList.remove("on"));
+  num(NAV[mode][idx][1]).classList.add("on");
+  num("stage").scrollTop = 0;
+  renderSteps();
+  renderPresenter();
+}
+
+function setMode(m){
+  mode = m; idx = 0;
+  num("m1").setAttribute("aria-pressed", m === 1);
+  num("m2").setAttribute("aria-pressed", m === 2);
+  if (m === 2) syncToCall2();
+  go(0);
+}
+
+num("m1").onclick = () => setMode(1);
+num("m2").onclick = () => setMode(2);
+
+document.addEventListener("keydown", e => {
+  if (/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+  if (e.key === "ArrowRight") go(idx + 1);
+  if (e.key === "ArrowLeft")  go(idx - 1);
+});
+
+/* ───────── ajuste de alcance ───────── */
+function drawer(open){
+  num("drawer").classList.toggle("on", open);
+  num("veil").classList.toggle("on", open);
+  num("drawer").setAttribute("aria-hidden", String(!open));
+}
+num("downsellBtn").onclick = () => drawer(true);
+num("drawerX").onclick     = () => drawer(false);
+num("veil").onclick        = () => drawer(false);
+
+/* ───────── panel del closer (ventana aparte) ───────── */
+let pw = null;
+
+const OBJ = [
+  ["\"Es caro\"", "No hizo la cuenta. Casi nunca es falta de dinero: es falta de referencia.", "Se responde con la pantalla del escenario: \"Con tu ticket, la instalación se paga con {payback}. ¿Cuántos cerraste el mes pasado? Entonces esto se paga con una fracción de un mes tuyo normal, y de ahí en adelante todo es incremental.\""],
+  ["\"Ya trabajé con una agencia y no funcionó\"", "La objeción más común y la mejor noticia de la llamada: tiene presupuesto y ya intentó.", "\"Te voy a decir exactamente dónde te fallaron: te entregaron leads y ahí terminó su responsabilidad. Cobraron igual vendieras o no. Nosotros cobramos sobre la venta.\" Se sigue abriendo el tablero en vivo como respuesta a la opacidad."],
+  ["\"¿Por qué el porcentaje? Prefiero pagar solo fijo\"", "Miedo a pagar de más si funciona muy bien.", "\"Podés pagar solo fijo, existe esa opción. Pero si me pagás solo fijo, mi trabajo termina cuando te entrego la llamada agendada. Con el porcentaje, mi trabajo termina cuando vos cobrás. El porcentaje no es un costo: es la garantía de que estoy mirando tu número, no el mío.\""],
+  ["\"Lo tengo que consultar con mi socio\"", "Objeción de decisor. Si aparece en la llamada 2, se falló en la llamada 1.", "Se rompe antes: en el minuto uno de la llamada 1 se pregunta quién participa de la decisión. Si igual aparece: \"Perfecto, es lo lógico. Agendemos ahora mismo veinte minutos con los dos, así responde las dudas directamente y no queda en un teléfono roto.\""],
+  ["\"Necesito pensarlo\"", "Casi siempre hay una objeción real sin decir.", "\"Claro. Solo para no dejarte con la duda: si tuvieras que decirme hoy qué es lo que más te frena, ¿qué sería? ¿El monto, el plazo, o si esto funciona para tu nicho en particular?\""],
+  ["\"¿Puedo probar un mes?\"", "Quiere reducir riesgo. Es legítimo, pero destruye el resultado.", "\"No, y te explico por qué te conviene que diga que no: el primer mes es fase de aprendizaje del algoritmo y de recolección de data. Si cortamos ahí, cortás justo antes de que empiece a funcionar y te quedás con la peor foto posible. Por eso el mínimo son tres meses, y por eso existe la garantía.\""],
+  ["\"¿Y si no funciona?\"", "Pregunta honesta. Merece respuesta honesta, no una promesa.", "Se responde con el número de la garantía ya calculado: \"En 60 días te generamos {N} llamadas agendadas calificadas. Si no llegamos, seguimos trabajando sin cobrarte fee mensual hasta llegar. Lo que no te puedo garantizar es tu tasa de cierre, salvo que también cerremos nosotros — y entonces sí te lo garantizo sobre ventas.\""]
+];
+
+const REGLAS = [
+  "El precio es fijo. No hay descuento por simpatía, urgencia ni pena. Si no puede con el precio, se baja el alcance, nunca el precio.",
+  "No se inventa urgencia de precio. No existe \"hoy $3,000, mañana $3,500\". La única urgencia legítima es el cupo: diez cuentas simultáneas y el lote de fundador.",
+  "Solo se muestra prueba real. Cero paneles de demostración presentados como clientes, cero cifras inventadas, cero fechas omitidas para que un número viejo parezca reciente.",
+  "No se lidera con IA. Se menciona solo cuando explica un beneficio concreto: contacto en 60 segundos, análisis de cada llamada.",
+  "No se promete nada que no esté en el manual. Toda promesa fuera de ahí requiere aprobación escrita de dirección antes de la llamada, nunca durante.",
+  "No se usa la palabra \"identidad de marca\". No está en el alcance de ningún tier.",
+  "El setup se cobra al 100% antes del día 1 de instalación.",
+  "El porcentaje arranca en el mes 2. El mes 1 es instalación.",
+  "No se firma sin presupuesto de pauta comprometido y verificado.",
+  "Acceso de solo lectura al procesador de pagos como condición de cualquier porcentaje. Sin acceso, no hay porcentaje: pasa a fee fijo."
+];
+
+const DESCAL = [
+  "Ticket menor a $900",
+  "Cero ventas propias — oferta sin validar",
+  "Presupuesto de pauta bajo el piso, o \"lo saco de lo que vaya vendiendo\"",
+  "No es el decisor y no puede traerlo",
+  "Negocio local físico o e-commerce de producto físico puro",
+  "No puede atender más volumen",
+  "Quiere probar un mes",
+  "Viene de un conflicto con otra agencia y no reconoce ninguna responsabilidad propia"
+];
+
+const PENDIENTES = [
+  "Definir por escrito qué es una \"llamada calificada\". Sin esa definición la garantía es interpretable y genera el conflicto del mes 2.",
+  "Cerrar el margen del módulo de cierre: si el closer cobra 10% y el módulo suma 5%, la línea es negativa a ticket alto.",
+  "Definir la compensación de la dirección comercial antes del primer cobro.",
+  "Cargar prueba real en los cuatro slots. Hasta entonces, esa pantalla se salta."
+];
+
+function presenterHTML(){
+  const step  = NAV[mode][idx];
+  const cfg   = FEES[num("b-config") ? num("b-config").value : "t2c"];
+  const payb  = val("b-ticket") > 0 ? Math.ceil(cfg.setup / val("b-ticket")) : 0;
+
+  // lo que facturamos nosotros — jamás en la pantalla compartida
+  const cpa   = parseFloat(num("b-vertical").value);
+  const pauta = val("b-pauta"), ticket = val("b-ticket");
+  const ventas = cpa > 0 ? (pauta / cpa) * SHOW * CLOSE : 0;
+  const fact   = ventas * ticket;
+  const bruto  = cfg.fee + fact * cfg.pct;
+  const closer = num("b-config").value === "t2c" ? fact * 0.10 : 0;
+  const netoNos = bruto - closer;
+
+  const objHTML = OBJ.map(o =>
+    '<div class="o"><b>' + o[0] + '</b><i>' + o[1] + '</i><p>' +
+    o[2].replace("{payback}", payb + (payb === 1 ? " venta" : " ventas")).replace("{N}", num("g-n").textContent) +
+    '</p></div>').join("");
+
+  return '<!doctype html><meta charset="utf-8"><title>Panel del closer</title>' +
+  '<style>' +
+  'body{margin:0;background:#0B0E1A;color:#E8EAF4;font:14px/1.55 Inter,system-ui,sans-serif;padding:22px}' +
+  'h1{font-size:15px;letter-spacing:.16em;text-transform:uppercase;color:#A855F7;margin:0 0 4px}' +
+  '.now{background:#171C33;border:1px solid #2A3157;border-radius:10px;padding:14px 16px;margin:14px 0 20px}' +
+  '.now b{color:#2DD4BF;font-size:13px;letter-spacing:.1em;text-transform:uppercase}' +
+  '.now div{font-size:17px;margin-top:4px;font-weight:600}' +
+  'h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#5C638C;margin:24px 0 10px;border-top:1px solid #2A3157;padding-top:16px}' +
+  '.o{border-left:2px solid #6D3FA8;padding:2px 0 2px 14px;margin-bottom:16px}' +
+  '.o b{display:block;font-size:14px}.o i{display:block;color:#8990B5;font-size:12.5px;margin:2px 0 6px}' +
+  '.o p{margin:0;font-size:13px;color:#C7CCE6}' +
+  'ul{margin:0;padding-left:18px}li{margin-bottom:7px;font-size:13px;color:#8990B5}' +
+  '.rev{background:rgba(242,84,91,.09);border:1px solid rgba(242,84,91,.35);border-radius:10px;padding:14px 16px;font-size:13px}' +
+  '.rev table{width:100%;border-collapse:collapse;margin-top:8px;font-family:"IBM Plex Mono",monospace}' +
+  '.rev td{padding:4px 0;font-size:13px}.rev td:last-child{text-align:right}' +
+  '.warn{color:#F5A524}' +
+  '</style>' +
+  '<h1>Panel del closer</h1>' +
+  '<div style="font-size:12px;color:#5C638C">No compartas esta ventana. Va en el segundo monitor.</div>' +
+  '<div class="now"><b>En pantalla ahora</b><div>Llamada ' + mode + ' · ' + step[0] + '</div></div>' +
+
+  '<div class="rev"><b>Solo para vos — lo que facturamos nosotros</b>' +
+  '<table>' +
+  '<tr><td>Fee mensual</td><td>' + money(cfg.fee) + '</td></tr>' +
+  '<tr><td>Porcentaje sobre ventas</td><td>' + money(fact * cfg.pct) + '</td></tr>' +
+  (closer ? '<tr><td class="warn">Menos comisión del closer (10%)</td><td class="warn">(' + money(closer) + ')</td></tr>' : '') +
+  '<tr><td><b>Neto mensual</b></td><td><b>' + money(netoNos) + '</b></td></tr>' +
+  '</table></div>' +
+
+  '<h2>Objeciones</h2>' + objHTML +
+  '<h2>Reglas duras</h2><ul>' + REGLAS.map(r => "<li>" + r + "</li>").join("") + '</ul>' +
+  '<h2>Descalificadores — se descalifica sin culpa</h2><ul>' + DESCAL.map(d => "<li>" + d + "</li>").join("") + '</ul>' +
+  '<h2>Pendientes de dirección · no vender sobre esto todavía</h2><ul>' + PENDIENTES.map(p => "<li>" + p + "</li>").join("") + '</ul>';
+}
+
+function renderPresenter(){
+  if (!pw || pw.closed) return;
+  pw.document.open();
+  pw.document.write(presenterHTML());
+  pw.document.close();
+}
+
+num("presenterBtn").onclick = () => {
+  if (pw && !pw.closed) { pw.focus(); renderPresenter(); return; }
+  pw = window.open("", "evoPresenter", "width=520,height=900");
+  if (!pw) { alert("El navegador bloqueó la ventana. Habilitá las ventanas emergentes para este archivo."); return; }
+  renderPresenter();
+};
+
+/* ───────── arranque ───────── */
+["a-ticket","a-ventas","a-pauta-hoy","a-pauta","a-vertical"].forEach(id => {
+  num(id).addEventListener("input", calcA);
+  num(id).addEventListener("change", calcA);
+});
+["b-ticket","b-pauta","b-vertical","b-config"].forEach(id => {
+  num(id).addEventListener("input", calcB);
+  num(id).addEventListener("change", calcB);
+});
+["g-vertical","g-pauta","g-dias"].forEach(id => {
+  num(id).addEventListener("input", calcG);
+  num(id).addEventListener("change", calcG);
+});
+
+calcA();
+setMode(1);
+</script>
