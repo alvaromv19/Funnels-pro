@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>EVO LAUNCH — Solicitud de diagnóstico</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   EVO LAUNCH — Formulario de calificación
+   Un solo archivo. Sin frameworks. Sin storage.
+   ============================================================ */
+
+:root{
+  --bg:#05060A;
+  --surface:#0C0E16;
+  --surface-2:#141826;
+  --surface-3:#191E2E;      /* hover de superficies, +1 paso sobre surface-2 */
+  --border:#232838;
+  --border-lift:#2E3448;    /* borde 1px más claro: sustituye a la sombra difusa */
+  --text:#FFFFFF;
+  --text-body:#C9CEDE;
+  --text-muted:#7A8199;
+  --cyan:#00FFFF;           /* USO RESTRINGIDO */
+  --cyan-soft:#4FE8E0;
+  --violet:#7B00FF;
+  --violet-soft:#9D4DFF;
+  --amber:#E8B04B;
+  --ease:cubic-bezier(.2,.7,.3,1);
+  --t:200ms;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+html{-webkit-text-size-adjust:100%}
+
+body{
+  background:var(--bg);
+  color:var(--text-body);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;
+  font-weight:400;
+  font-size:16px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+  min-height:100dvh;
+  overflow-x:hidden;
+}
+
+/* ---------- Fondo: resplandor + ruido ---------- */
+.bg-glow{
+  position:fixed; top:-360px; left:50%;
+  width:min(1200px,160vw); height:760px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(closest-side, rgba(123,0,255,.10), rgba(123,0,255,.045) 55%, rgba(123,0,255,0) 100%);
+  filter:blur(80px);
+  pointer-events:none; z-index:0;
+}
+.bg-noise{
+  position:fixed; inset:0;
+  opacity:.025;
+  pointer-events:none; z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px 180px;
+}
+
+/* ---------- Estructura ---------- */
+.shell{
+  position:relative; z-index:2;
+  display:flex; flex-direction:column;
+  min-height:100vh; min-height:100dvh;
+}
+
+.topbar{
+  position:sticky; top:0; z-index:3;
+  flex:0 0 auto;
+  background:rgba(5,6,10,.92);
+  backdrop-filter:blur(8px);
+}
+
+.head{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:16px;
+  max-width:1080px; margin:0 auto; width:100%;
+  padding:20px 32px 16px;
+}
+
+.wordmark{
+  font-family:"Chakra Petch",sans-serif;
+  font-weight:700; font-size:15px; letter-spacing:.14em;
+  color:var(--text); text-transform:uppercase; white-space:nowrap;
+}
+.wordmark .lx{ color:var(--cyan-soft); }
+
+.stepcount{
+  font-size:12.5px; color:var(--text-muted);
+  font-variant-numeric:tabular-nums; letter-spacing:.04em;
+  white-space:nowrap;
+  transition:opacity var(--t) var(--ease);
+}
+.stepcount[hidden]{display:none}
+
+.progress{
+  height:2px; width:100%;
+  background:var(--border);
+  overflow:hidden;
+}
+.progress__fill{
+  height:100%; width:0%;
+  background:var(--cyan);
+  transition:width 240ms var(--ease);
+}
+
+/* ---------- Escenario de preguntas ---------- */
+.main{
+  flex:1 1 auto;
+  display:flex; align-items:center; justify-content:center;
+  padding:40px 32px;
+  width:100%;
+}
+
+.stage{ width:100%; max-width:620px; }
+
+.screen{ animation:enter 220ms var(--ease) both; }
+.screen.leaving{ animation:leave 170ms var(--ease) both; }
+
+@keyframes enter{ from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none} }
+@keyframes leave{ from{opacity:1; transform:none} to{opacity:0; transform:translateY(-8px)} }
+
+.eyebrow{
+  font-family:"Chakra Petch",sans-serif; font-weight:600;
+  font-size:11.5px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--violet-soft);
+  margin-bottom:14px;
+}
+
+h1,h2{
+  font-family:"Chakra Petch",sans-serif;
+  font-weight:700; letter-spacing:.02em;
+  color:var(--text);
+  line-height:1.2;
+}
+h1{ font-size:clamp(26px,4.2vw,34px); }
+h2{ font-size:clamp(26px,4.2vw,32px); }
+
+.help{
+  font-family:Inter,sans-serif;
+  font-size:15px; color:var(--text-muted);
+  margin-top:12px; max-width:56ch;
+}
+.lede{
+  font-size:16.5px; color:var(--text-body);
+  margin-top:18px; max-width:58ch;
+}
+.lede + .lede{ margin-top:14px; }
+.lede--edge{
+  color:var(--text-body);
+  border-left:1px solid var(--border-lift);
+  padding-left:16px;
+}
+
+/* ---------- Opciones ---------- */
+.options{ margin-top:28px; display:flex; flex-direction:column; gap:10px; }
+
+.opt{
+  display:flex; align-items:center; gap:14px;
+  width:100%; min-height:56px;
+  padding:13px 16px;
+  text-align:left;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  color:var(--text-body);
+  font-family:Inter,sans-serif; font-size:15.5px; font-weight:500; line-height:1.35;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+  cursor:pointer;
+  transition:background var(--t) var(--ease), border-color var(--t) var(--ease),
+             box-shadow var(--t) var(--ease), color var(--t) var(--ease);
+}
+.opt:hover{ background:var(--surface-3); border-color:var(--violet-soft); }
+
+.opt__num{
+  flex:0 0 auto;
+  width:26px; height:26px;
+  display:grid; place-items:center;
+  border:1px solid var(--border-lift);
+  border-radius:7px;
+  background:rgba(255,255,255,.02);
+  font-size:12px; font-weight:600; color:var(--text-muted);
+  font-variant-numeric:tabular-nums;
+  transition:background var(--t) var(--ease), color var(--t) var(--ease), border-color var(--t) var(--ease);
+}
+
+.opt[aria-checked="true"]{
+  border-color:var(--cyan);
+  color:var(--text);
+  background:var(--surface-3);
+  box-shadow:0 0 0 3px rgba(0,255,255,.10), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.opt[aria-checked="true"] .opt__num{
+  background:var(--cyan); border-color:var(--cyan); color:#05060A;
+}
+
+/* ---------- Campos de texto ---------- */
+.field{ margin-top:28px; }
+
+.field__label{
+  display:block;
+  font-size:11.5px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--text-muted); font-weight:500;
+  margin-bottom:9px;
+}
+
+.inputwrap{
+  display:flex; align-items:center;
+  background:var(--surface-2);
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+  transition:border-color var(--t) var(--ease), box-shadow var(--t) var(--ease), background var(--t) var(--ease);
+}
+.inputwrap:hover{ border-color:var(--border-lift); }
+.inputwrap:focus-within{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(0,255,255,.10), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.inputwrap__prefix{
+  padding-left:16px; padding-right:2px;
+  color:var(--text-muted); font-size:16px; font-weight:500;
+  user-select:none;
+}
+.inputwrap input{
+  flex:1 1 auto; width:100%;
+  background:transparent; border:0; outline:0;
+  color:var(--text);
+  font-family:Inter,sans-serif; font-size:16px; font-weight:500;
+  padding:15px 16px; min-height:52px;
+}
+.inputwrap__prefix + input{ padding-left:2px; }
+.inputwrap input::placeholder{ color:#59607A; font-weight:400; }
+.inputwrap input[type="tel"]{ font-variant-numeric:tabular-nums; }
+
+.hint-note{
+  margin-top:12px; font-size:14.5px; color:var(--text-muted); max-width:56ch;
+}
+
+.error{
+  margin-top:10px;
+  font-size:14px; color:var(--amber);
+  display:flex; align-items:flex-start; gap:8px;
+}
+.error::before{
+  content:""; flex:0 0 auto;
+  width:5px; height:5px; margin-top:8px;
+  border-radius:50%; background:var(--amber);
+}
+.error[hidden]{ display:none; }
+
+/* ---------- Navegación ---------- */
+.nav{
+  flex:0 0 auto;
+  position:sticky; bottom:0; z-index:3;
+  border-top:1px solid rgba(35,40,56,.7);
+  background:rgba(5,6,10,.92);
+  backdrop-filter:blur(8px);
+}
+.nav__inner{
+  max-width:620px; margin:0 auto; width:100%;
+  padding:16px 32px calc(18px + env(safe-area-inset-bottom));
+  display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+}
+
+.btn-back{
+  background:none; border:0;
+  color:var(--text-muted);
+  font-family:Inter,sans-serif; font-size:14px; font-weight:500;
+  padding:12px 4px; cursor:pointer;
+  transition:color var(--t) var(--ease);
+}
+.btn-back:hover{ color:var(--text-body); }
+.btn-back[hidden]{ display:none; }
+
+.nav__right{ display:flex; flex-direction:column; align-items:flex-end; gap:7px; margin-left:auto; }
+
+.btn-primary{
+  background:var(--cyan);
+  color:#05060A;
+  border:0; border-radius:11px;
+  font-family:"Chakra Petch",sans-serif; font-weight:700; font-size:15px; letter-spacing:.03em;
+  padding:14px 28px; min-height:48px;
+  cursor:pointer;
+  transition:opacity var(--t) var(--ease), background var(--t) var(--ease), transform var(--t) var(--ease);
+}
+.btn-primary:hover:not(:disabled){ background:#5BFFFF; }
+.btn-primary:active:not(:disabled){ transform:translateY(1px); }
+.btn-primary:disabled{ opacity:.38; cursor:not-allowed; }
+
+.enterhint{
+  font-size:11.5px; color:#5C6379; letter-spacing:.02em;
+}
+.enterhint[hidden]{ display:none; }
+
+/* ---------- Foco visible ---------- */
+:focus{ outline:none; }
+:focus-visible{
+  outline:2px solid var(--cyan);
+  outline-offset:2px;
+  border-radius:4px;
+}
+.opt:focus-visible, .btn-primary:focus-visible, .inputwrap:focus-within{ border-radius:12px; }
+.opt:focus-visible{ outline-offset:2px; }
+/* La región de resultado recibe foco por script solo para lectores de pantalla:
+   no debe dibujar contorno. */
+.screen[tabindex="-1"]:focus-visible{ outline:none; }
+
+/* ---------- Resultado ---------- */
+.result{ max-width:620px; }
+.result__mark{ margin-bottom:26px; }
+.result__mark svg{ display:block; }
+.result__detail{
+  margin-top:24px; padding-top:20px;
+  border-top:1px solid var(--border);
+  font-size:15px; color:var(--text-muted); max-width:58ch;
+}
+.diag{
+  margin-top:26px;
+  background:var(--surface);
+  border:1px solid var(--border-lift);
+  border-radius:14px;
+  padding:20px 22px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+.diag__label{
+  font-family:"Chakra Petch",sans-serif; font-weight:600;
+  font-size:11px; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--violet-soft); margin-bottom:11px;
+}
+.diag__text{ font-size:15.5px; color:var(--text-body); }
+.result__close{
+  margin-top:24px; font-size:15px; color:var(--text-muted);
+}
+
+/* ---------- Panel interno ---------- */
+.admin{
+  margin:44px auto 0;
+  max-width:620px;
+  border:1px solid var(--violet);
+  border-radius:14px;
+  background:var(--surface);
+  padding:20px 22px;
+}
+.admin__label{
+  font-family:"Chakra Petch",sans-serif; font-weight:700;
+  font-size:10.5px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--violet-soft);
+  display:inline-block;
+  border:1px solid var(--violet);
+  border-radius:6px; padding:3px 8px;
+  margin-bottom:16px;
+}
+.admin__row{ display:flex; gap:12px; align-items:baseline; margin-bottom:9px; font-size:14px; }
+.admin__k{ flex:0 0 132px; color:var(--text-muted); font-size:12.5px; letter-spacing:.03em; }
+.admin__v{ color:var(--text-body); }
+.tag{
+  font-family:"Chakra Petch",sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em;
+  border-radius:5px; padding:3px 9px; display:inline-block;
+}
+.tag--verde{ background:rgba(79,232,224,.12); color:var(--cyan-soft); border:1px solid rgba(79,232,224,.4); }
+.tag--amarillo{ background:rgba(232,176,75,.12); color:var(--amber); border:1px solid rgba(232,176,75,.4); }
+.tag--rojo{ background:rgba(157,77,255,.12); color:var(--violet-soft); border:1px solid rgba(157,77,255,.45); }
+
+.admin table{ width:100%; border-collapse:collapse; margin-top:16px; font-size:13.5px; }
+.admin th, .admin td{
+  text-align:left; padding:8px 10px;
+  border-bottom:1px solid var(--border);
+  vertical-align:top;
+}
+.admin th{ color:var(--text-muted); font-weight:500; font-size:12px; width:40%; }
+.admin td{ color:var(--text-body); }
+.admin tr:last-child th, .admin tr:last-child td{ border-bottom:0; }
+
+.btn-ghost{
+  margin-top:16px;
+  background:var(--surface-2);
+  border:1px solid var(--border-lift);
+  color:var(--text-body);
+  border-radius:10px;
+  font-family:Inter,sans-serif; font-size:14px; font-weight:500;
+  padding:11px 18px; min-height:44px; cursor:pointer;
+  transition:border-color var(--t) var(--ease), background var(--t) var(--ease), color var(--t) var(--ease);
+}
+.btn-ghost:hover{ border-color:var(--violet-soft); background:var(--surface-3); color:var(--text); }
+
+.sr-only{
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+
+/* ---------- Móvil ---------- */
+@media (max-width:640px){
+  .head{ padding:16px 20px 12px; }
+  .main{ padding:28px 20px 32px; align-items:flex-start; }
+  .nav__inner{ padding:14px 20px calc(16px + env(safe-area-inset-bottom)); }
+  h1,h2{ font-size:24px; }
+  .lede{ font-size:15.5px; }
+  .opt{ min-height:52px; padding:12px 14px; font-size:15px; }
+  .admin{ margin-left:0; margin-right:0; }
+  .admin__row{ flex-direction:column; gap:2px; }
+  .admin__k{ flex:none; }
+  .btn-primary{ padding:14px 22px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:.001ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="bg-glow" aria-hidden="true"></div>
+<div class="bg-noise" aria-hidden="true"></div>
+
+<div class="shell">
+
+  <div class="topbar">
+    <div class="head">
+      <div class="wordmark">EVO&nbsp;<span class="lx">LAUNCH</span></div>
+      <div class="stepcount" id="stepcount" hidden></div>
+    </div>
+    <div class="progress" role="progressbar" aria-label="Progreso del formulario" aria-valuemin="0" aria-valuemax="9" aria-valuenow="0">
+      <div class="progress__fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <main class="main">
+    <div class="stage" id="stage" aria-live="polite"></div>
+  </main>
+
+  <nav class="nav" id="nav" aria-label="Navegación del formulario">
+    <div class="nav__inner">
+      <button type="button" class="btn-back" id="btnBack" hidden>Atrás</button>
+      <div class="nav__right">
+        <button type="button" class="btn-primary" id="btnNext">Comenzar</button>
+        <span class="enterhint" id="enterHint">Presiona Enter ⏎</span>
+      </div>
+    </div>
+  </nav>
+
+</div>
+
+<script>
+/* ============================================================
+   WEBHOOK_URL
+   Déjala vacía y el envío a red se omite (sin lanzar error): el
+   objeto de respuestas solo se imprime en consola.
+   Al completarla con una URL, al enviar el formulario se hace
+   POST a esa URL con el objeto de respuestas en JSON
+   (Content-Type: application/json).
+   ============================================================ */
+const WEBHOOK_URL = '';
+
+(function () {
+  'use strict';
+
+  const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const IS_ADMIN = new URLSearchParams(window.location.search).get('admin') === '1';
+
+  /* ---------------- Definición de pantallas ---------------- */
+
+  const SCREENS = [
+    {
+      type: 'intro',
+      title: 'Antes de agendar, necesitamos entender tu negocio.',
+      paragraphs: [
+        'Cinco preguntas sobre tu operación actual y tus datos de contacto. Toma menos de dos minutos.',
+        'No aceptamos a todos: si tu caso no encaja, te lo decimos de inmediato y te indicamos qué necesitas resolver primero.'
+      ],
+      cta: 'Comenzar'
+    },
+    {
+      type: 'choice', key: 'precio', label: 'Precio de la oferta',
+      title: '¿Cuál es el precio de tu oferta principal?',
+      help: 'El producto o servicio que representa la mayor parte de tus ingresos hoy.',
+      options: ['Menos de $900 USD', '$900 – $1,499 USD', '$1,500 – $2,999 USD', '$3,000 USD o más']
+    },
+    {
+      type: 'choice', key: 'ventas', label: 'Ventas cerradas el último mes',
+      title: '¿Cuántas ventas de esa oferta cerraste el último mes?',
+      help: 'Ventas cerradas y cobradas, no propuestas enviadas.',
+      options: ['Ninguna todavía', 'Entre 1 y 2', 'Entre 3 y 6', 'Entre 7 y 15', 'Más de 15']
+    },
+    {
+      type: 'choice', key: 'presupuesto', label: 'Presupuesto mensual de publicidad',
+      title: '¿Cuánto puedes destinar cada mes a publicidad durante los próximos tres meses?',
+      help: 'Solo el presupuesto de publicidad. No incluyas el costo de nuestro servicio.',
+      options: ['Menos de $1,000 USD', '$1,000 – $1,499 USD', '$1,500 – $2,999 USD', '$3,000 – $5,000 USD', 'Más de $5,000 USD']
+    },
+    {
+      type: 'choice', key: 'capacidad', label: 'Capacidad de entrega',
+      title: 'Si mañana entraran 10 clientes nuevos, ¿podrías atenderlos con la calidad de hoy?',
+      help: 'Preguntamos porque llenar tu agenda por encima de tu capacidad de entrega perjudica tu reputación, no la nuestra.',
+      options: ['Sí, sin problema', 'Necesitaría unos 30 días para prepararme', 'No']
+    },
+    {
+      type: 'choice', key: 'decisor', label: 'Decisión de inversión',
+      title: '¿Quién toma la decisión de inversión en tu negocio?',
+      options: ['Solo yo', 'La comparto con un socio o mi pareja', 'Decide otra persona']
+    },
+    {
+      type: 'text', key: 'nombre', label: 'Nombre y apellido',
+      title: 'Ya casi terminamos. ¿Cómo te llamas?',
+      fieldLabel: 'Nombre y apellido',
+      inputType: 'text', autocomplete: 'name', placeholder: 'Escribe tu nombre completo',
+      validate: v => v.trim().length >= 3,
+      errorMsg: 'Escribe tu nombre y apellido para continuar.'
+    },
+    {
+      type: 'text', key: 'whatsapp', label: 'WhatsApp',
+      title: '¿A qué número de WhatsApp te escribimos?',
+      help: 'Incluye el código de país. Te escribimos por aquí, no te llamamos sin avisar.',
+      fieldLabel: 'Teléfono', inputMode: 'tel',
+      inputType: 'tel', autocomplete: 'tel', placeholder: '+52 55 1234 5678',
+      sanitize: v => {
+        let out = v.replace(/[^\d\s()+\-]/g, '');
+        const plus = out.trim().charAt(0) === '+';
+        out = out.replace(/\+/g, '');
+        return (plus ? '+' : '') + out;
+      },
+      validate: v => /^\+?[\d\s()\-]+$/.test(v.trim()) && (v.match(/\d/g) || []).length >= 8,
+      errorMsg: 'Ingresa un número válido con código de país (mínimo 8 dígitos).'
+    },
+    {
+      type: 'text', key: 'instagram', label: 'Instagram',
+      title: '¿Cuál es el Instagram de tu marca?',
+      help: 'Revisamos tu cuenta y tus anuncios activos antes de la llamada. Llegamos con el diagnóstico hecho.',
+      fieldLabel: 'Usuario de Instagram', prefix: '@',
+      inputType: 'text', autocomplete: 'off', placeholder: 'tumarca',
+      sanitize: v => v
+        .replace(/^\s+/, '')
+        .replace(/^https?:\/\//i, '')
+        .replace(/^www\./i, '')
+        .replace(/^instagram\.com/i, '')
+        .replace(/[?#].*$/, '')
+        .replace(/[\/@\s]/g, ''),
+      validate: v => /^[A-Za-z0-9._]{1,30}$/.test(v.trim()),
+      errorMsg: 'Escribe el usuario de Instagram de tu marca, sin el símbolo @.'
+    },
+    {
+      type: 'text', key: 'email', label: 'Correo electrónico',
+      title: '¿A qué correo enviamos la confirmación?',
+      fieldLabel: 'Correo electrónico',
+      inputType: 'email', inputMode: 'email', autocomplete: 'email', placeholder: 'nombre@empresa.com',
+      validate: v => /^[^\s@]+@[^\s@]+\.[A-Za-z]{2,}$/.test(v.trim()),
+      errorMsg: 'Revisa el formato del correo. Ejemplo: nombre@empresa.com.',
+      cta: 'Enviar solicitud'
+    }
+  ];
+
+  const TOTAL_STEPS = SCREENS.length - 1; // 9 preguntas; la pantalla 0 es apertura
+
+  /* ---------------- Diagnósticos ---------------- */
+
+  const DIAG_ROJO = {
+    ticket: 'Con un ticket por debajo de $900 USD, el costo de adquirir un cliente por publicidad pagada se lleva el margen completo. La matemática no cierra a ningún precio que podamos ofrecerte. Si subes tu oferta o construyes una versión de mayor valor, la conversación cambia por completo.',
+    sinVentas: 'Trabajamos escalando ofertas que ya demostraron que alguien las compra. Con cero ventas todavía, el trabajo que necesitas es de validación de oferta, y ese es otro tipo de proyecto.',
+    presupuesto: 'Con menos de $1,000 USD mensuales de publicidad no hay volumen suficiente para que el sistema aprenda. El primer mes se consume sin datos útiles y terminarías pagando por un aprendizaje que no alcanza a completarse.',
+    capacidad: 'Llenarte la agenda por encima de tu capacidad de entrega no te ayuda: te genera reembolsos y daña tu reputación. Resuelve primero la capacidad de entrega y retomamos.'
+  };
+
+  const RUTAS = {
+    VERDE:    'Ruta sugerida: Tier 2 con Módulo de Cierre. Prioridad alta.',
+    AMARILLO: 'Ruta sugerida: Tier 3. Confirmar presencia del decisor en la segunda llamada.',
+    ROJO:     'No agendar. Seguimiento a 60 días.'
+  };
+
+  /* ---------------- Estado (solo memoria) ---------------- */
+
+  const answers = {
+    precio: null, ventas: null, presupuesto: null, capacidad: null, decisor: null,
+    nombre: '', whatsapp: '', instagram: '', email: ''
+  };
+
+  let current = 0;
+  let showingResult = false;
+  let sending = false;
+  let advanceTimer = null;
+  let lastResult = null;
+
+  /* ---------------- Referencias del DOM ---------------- */
+
+  const stage = document.getElementById('stage');
+  const nav = document.getElementById('nav');
+  const btnNext = document.getElementById('btnNext');
+  const btnBack = document.getElementById('btnBack');
+  const enterHint = document.getElementById('enterHint');
+  const stepcount = document.getElementById('stepcount');
+  const progressFill = document.getElementById('progressFill');
+  const progressBar = progressFill.parentElement;
+
+  /* ---------------- Utilidades ---------------- */
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
+  function evaluar() {
+    const p1 = answers.precio, p2 = answers.ventas, p3 = answers.presupuesto,
+          p4 = answers.capacidad, p5 = answers.decisor;
+
+    // ROJO — se evalúa en orden y se detiene en la primera coincidencia.
+    if (p1 === 0) return { semaforo: 'ROJO', clave: 'ticket',      motivo: 'P1 — Ticket menor a $900 USD',                       diagnostico: DIAG_ROJO.ticket };
+    if (p2 === 0) return { semaforo: 'ROJO', clave: 'sinVentas',   motivo: 'P2 — Ninguna venta cerrada el último mes',           diagnostico: DIAG_ROJO.sinVentas };
+    if (p3 === 0) return { semaforo: 'ROJO', clave: 'presupuesto', motivo: 'P3 — Presupuesto de publicidad menor a $1,000 USD',  diagnostico: DIAG_ROJO.presupuesto };
+    if (p4 === 2) return { semaforo: 'ROJO', clave: 'capacidad',   motivo: 'P4 — Sin capacidad de entrega para más volumen',     diagnostico: DIAG_ROJO.capacidad };
+
+    // AMARILLO
+    if (p1 === 1) return { semaforo: 'AMARILLO', motivo: 'P1 — Ticket entre $900 y $1,499 USD (margen ajustado)' };
+    if (p3 === 1) return { semaforo: 'AMARILLO', motivo: 'P3 — Presupuesto entre $1,000 y $1,499 USD (piso justo)' };
+    if (p4 === 1) return { semaforo: 'AMARILLO', motivo: 'P4 — Necesita unos 30 días para preparar la entrega' };
+    if (p5 === 1) return { semaforo: 'AMARILLO', motivo: 'P5 — Decisión compartida con un socio o pareja' };
+    if (p5 === 2) return { semaforo: 'AMARILLO', motivo: 'P5 — La decisión de inversión la toma otra persona' };
+
+    return { semaforo: 'VERDE', motivo: 'Sin condiciones de bloqueo ni reservas.' };
+  }
+
+  function textoRespuesta(key) {
+    const sc = SCREENS.find(s => s.key === key);
+    if (!sc) return '';
+    if (sc.type === 'choice') {
+      const i = answers[key];
+      return i === null ? '—' : sc.options[i];
+    }
+    if (key === 'instagram') return answers.instagram ? '@' + answers.instagram : '—';
+    return answers[key] || '—';
+  }
+
+  /* ---------------- Barra superior ---------------- */
+
+  function updateChrome() {
+    if (showingResult) {
+      stepcount.hidden = true;
+      progressFill.style.width = '100%';
+      progressBar.setAttribute('aria-valuenow', String(TOTAL_STEPS));
+      nav.hidden = true;
+      return;
+    }
+    nav.hidden = false;
+
+    if (current === 0) {
+      stepcount.hidden = true;
+      progressFill.style.width = '0%';
+      progressBar.setAttribute('aria-valuenow', '0');
+    } else {
+      stepcount.hidden = false;
+      stepcount.textContent = 'Paso ' + current + ' de ' + TOTAL_STEPS;
+      progressFill.style.width = (current / TOTAL_STEPS * 100).toFixed(2) + '%';
+      progressBar.setAttribute('aria-valuenow', String(current));
+    }
+
+    const sc = SCREENS[current];
+    btnBack.hidden = current === 0;
+    btnNext.textContent = sc.cta || 'Continuar';
+    enterHint.hidden = false;
+    refreshNextState();
+  }
+
+  function isCurrentValid() {
+    const sc = SCREENS[current];
+    if (sc.type === 'intro') return true;
+    if (sc.type === 'choice') return answers[sc.key] !== null;
+    const input = stage.querySelector('input');
+    const val = input ? input.value : answers[sc.key];
+    return sc.validate(val || '');
+  }
+
+  function refreshNextState() {
+    if (sending) return;
+    btnNext.disabled = !isCurrentValid();
+  }
+
+  /* ---------------- Render ---------------- */
+
+  function buildScreen(i) {
+    const sc = SCREENS[i];
+    const el = document.createElement('section');
+    el.className = 'screen';
+
+    if (sc.type === 'intro') {
+      el.setAttribute('aria-label', 'Apertura');
+      el.innerHTML =
+        '<p class="eyebrow">Solicitud de diagnóstico</p>' +
+        '<h1>' + esc(sc.title) + '</h1>' +
+        sc.paragraphs.map((p, idx) =>
+          '<p class="lede' + (idx === 1 ? ' lede--edge' : '') + '">' + esc(p) + '</p>').join('');
+      return el;
+    }
+
+    if (sc.type === 'choice') {
+      el.setAttribute('aria-label', 'Pregunta ' + i + ' de ' + TOTAL_STEPS + ': ' + sc.label);
+      const group = sc.options.map((opt, idx) =>
+        '<button type="button" class="opt" role="radio" data-index="' + idx + '" ' +
+        'aria-checked="' + (answers[sc.key] === idx ? 'true' : 'false') + '" ' +
+        'tabindex="' + (answers[sc.key] === idx || (answers[sc.key] === null && idx === 0) ? '0' : '-1') + '">' +
+          '<span class="opt__num" aria-hidden="true">' + (idx + 1) + '</span>' +
+          '<span class="opt__text">' + esc(opt) + '</span>' +
+        '</button>').join('');
+
+      el.innerHTML =
+        '<h2 id="qt-' + i + '">' + esc(sc.title) + '</h2>' +
+        (sc.help ? '<p class="help">' + esc(sc.help) + '</p>' : '') +
+        '<div class="options" role="radiogroup" aria-labelledby="qt-' + i + '">' + group + '</div>';
+
+      el.querySelectorAll('.opt').forEach(btn => {
+        btn.addEventListener('click', () => selectOption(parseInt(btn.dataset.index, 10)));
+        btn.addEventListener('keydown', onOptionKeydown);
+      });
+      return el;
+    }
+
+    // type === 'text'
+    el.setAttribute('aria-label', 'Pregunta ' + i + ' de ' + TOTAL_STEPS + ': ' + sc.label);
+    el.innerHTML =
+      '<h2>' + esc(sc.title) + '</h2>' +
+      (sc.help ? '<p class="help">' + esc(sc.help) + '</p>' : '') +
+      '<div class="field">' +
+        '<label class="field__label" for="f-' + sc.key + '">' + esc(sc.fieldLabel) + '</label>' +
+        '<div class="inputwrap">' +
+          (sc.prefix ? '<span class="inputwrap__prefix" aria-hidden="true">' + esc(sc.prefix) + '</span>' : '') +
+          '<input id="f-' + sc.key + '" type="' + sc.inputType + '" ' +
+            'autocomplete="' + (sc.autocomplete || 'off') + '" ' +
+            (sc.inputMode ? 'inputmode="' + sc.inputMode + '" ' : '') +
+            'placeholder="' + esc(sc.placeholder || '') + '" ' +
+            'aria-describedby="err-' + sc.key + '" ' +
+            'spellcheck="false" value="' + esc(answers[sc.key] || '') + '">' +
+        '</div>' +
+        '<p class="error" id="err-' + sc.key + '" role="status" hidden></p>' +
+      '</div>';
+
+    const input = el.querySelector('input');
+    const err = el.querySelector('.error');
+
+    input.addEventListener('input', () => {
+      if (sc.sanitize) {
+        const start = input.selectionStart;
+        const before = input.value;
+        const after = sc.sanitize(before);
+        if (after !== before) {
+          input.value = after;
+          const delta = before.length - after.length;
+          try { input.setSelectionRange(Math.max(0, start - delta), Math.max(0, start - delta)); } catch (e) {}
+        }
+      }
+      answers[sc.key] = input.value.trim();
+      err.hidden = true;
+      refreshNextState();
+    });
+
+    return el;
+  }
+
+  function mount(i) {
+    stage.innerHTML = '';
+    stage.appendChild(buildScreen(i));
+    updateChrome();
+    focusFirst();
+  }
+
+  function focusFirst() {
+    const sc = SCREENS[current];
+    let target = null;
+    if (sc.type === 'choice') {
+      target = stage.querySelector('.opt[aria-checked="true"]') || stage.querySelector('.opt');
+    } else if (sc.type === 'text') {
+      target = stage.querySelector('input');
+    } else {
+      target = btnNext;
+    }
+    if (target) {
+      try { target.focus({ preventScroll: true }); } catch (e) { target.focus(); }
+    }
+  }
+
+  function transitionTo(i) {
+    if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+    const old = stage.firstElementChild;
+    current = i;
+    if (!old || REDUCED) { mount(i); return; }
+    old.classList.add('leaving');
+    setTimeout(() => mount(i), 170);
+  }
+
+  /* ---------------- Interacción ---------------- */
+
+  function selectOption(idx) {
+    const sc = SCREENS[current];
+    if (sc.type !== 'choice') return;
+    answers[sc.key] = idx;
+
+    stage.querySelectorAll('.opt').forEach(b => {
+      const on = parseInt(b.dataset.index, 10) === idx;
+      b.setAttribute('aria-checked', on ? 'true' : 'false');
+      b.tabIndex = on ? 0 : -1;
+    });
+    refreshNextState();
+
+    // El retardo deja ver el estado seleccionado antes de la transición.
+    if (advanceTimer) clearTimeout(advanceTimer);
+    advanceTimer = setTimeout(() => { advanceTimer = null; next(); }, 350);
+  }
+
+  function onOptionKeydown(e) {
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    e.preventDefault();
+    const opts = Array.prototype.slice.call(stage.querySelectorAll('.opt'));
+    const pos = opts.indexOf(e.currentTarget);
+    const dir = (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : -1;
+    const nextEl = opts[(pos + dir + opts.length) % opts.length];
+    nextEl.tabIndex = 0;
+    e.currentTarget.tabIndex = -1;
+    nextEl.focus();
+  }
+
+  function next() {
+    if (showingResult || sending) return;
+    const sc = SCREENS[current];
+
+    if (sc.type === 'text') {
+      const input = stage.querySelector('input');
+      const val = (input ? input.value : '').trim();
+      if (!sc.validate(val)) {
+        const err = stage.querySelector('.error');
+        if (err) { err.textContent = sc.errorMsg; err.hidden = false; }
+        if (input) input.focus();
+        return;
+      }
+      answers[sc.key] = val;
+    }
+
+    if (sc.type === 'choice' && answers[sc.key] === null) return;
+
+    if (current === SCREENS.length - 1) { submit(); return; }
+    transitionTo(current + 1);
+  }
+
+  function back() {
+    if (showingResult || sending || current === 0) return;
+    transitionTo(current - 1);
+  }
+
+  btnNext.addEventListener('click', next);
+  btnBack.addEventListener('click', back);
+
+  document.addEventListener('keydown', e => {
+    if (showingResult || sending) return;
+
+    if (e.key === 'Enter') {
+      e.preventDefault(); // evita que el botón enfocado dispare además su click nativo
+      if (e.shiftKey) { back(); return; }
+      // Enter sobre una opción la selecciona; el avance automático hace el resto.
+      if (e.target.classList && e.target.classList.contains('opt')) {
+        selectOption(parseInt(e.target.dataset.index, 10));
+        return;
+      }
+      next();
+      return;
+    }
+
+    if (/^[1-9]$/.test(e.key) && !e.metaKey && !e.ctrlKey && !e.altKey) {
+      const sc = SCREENS[current];
+      if (sc.type !== 'choice') return;
+      const tag = (e.target.tagName || '').toLowerCase();
+      if (tag === 'input' || tag === 'textarea') return;
+      const idx = parseInt(e.key, 10) - 1;
+      if (idx < sc.options.length) {
+        e.preventDefault();
+        selectOption(idx);
+      }
+    }
+  });
+
+  /* ---------------- Envío ---------------- */
+
+  function buildPayload(res) {
+    return {
+      precio: textoRespuesta('precio'),
+      ventas: textoRespuesta('ventas'),
+      presupuesto: textoRespuesta('presupuesto'),
+      capacidad: textoRespuesta('capacidad'),
+      decisor: textoRespuesta('decisor'),
+      nombre: answers.nombre,
+      whatsapp: answers.whatsapp,
+      instagram: '@' + answers.instagram,
+      email: answers.email,
+      semaforo: res.semaforo,
+      motivo: res.motivo,
+      ruta_sugerida: RUTAS[res.semaforo],
+      timestamp: new Date().toISOString()
+    };
+  }
+
+  function submit() {
+    if (sending) return;
+    sending = true;
+    const labelPrev = btnNext.textContent;
+    btnNext.textContent = 'Enviando…';
+    btnNext.disabled = true;
+    btnBack.disabled = true;
+
+    const res = evaluar();
+    const payload = buildPayload(res);
+    lastResult = { res: res, payload: payload };
+
+    setTimeout(() => {
+      console.log('[EVO LAUNCH] Solicitud de diagnóstico', payload);
+
+      if (WEBHOOK_URL) {
+        try {
+          fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          }).catch(err => console.warn('[EVO LAUNCH] Falló el POST al webhook:', err));
+        } catch (err) {
+          console.warn('[EVO LAUNCH] Falló el POST al webhook:', err);
+        }
+      }
+
+      sending = false;
+      btnNext.textContent = labelPrev;
+      btnBack.disabled = false;
+      showResult(res, payload);
+    }, 600);
+  }
+
+  /* ---------------- Pantallas de resultado ---------------- */
+
+  const MARK_OK =
+    '<svg width="46" height="46" viewBox="0 0 46 46" fill="none" aria-hidden="true">' +
+      '<circle cx="23" cy="23" r="22" stroke="#4FE8E0" stroke-opacity=".45" stroke-width="1"/>' +
+      '<path d="M15 23.5l5.5 5.5L31.5 18" stroke="#4FE8E0" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '</svg>';
+
+  const MARK_STOP =
+    '<svg width="46" height="46" viewBox="0 0 46 46" fill="none" aria-hidden="true">' +
+      '<circle cx="23" cy="23" r="22" stroke="#9D4DFF" stroke-opacity=".45" stroke-width="1"/>' +
+      '<path d="M15 23h16" stroke="#9D4DFF" stroke-width="1.6" stroke-linecap="round"/>' +
+    '</svg>';
+
+  function showResult(res, payload) {
+    showingResult = true;
+    if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+
+    const el = document.createElement('section');
+    el.className = 'screen result';
+    el.setAttribute('aria-label', 'Resultado de la solicitud');
+
+    if (res.semaforo === 'ROJO') {
+      el.innerHTML =
+        '<div class="result__mark">' + MARK_STOP + '</div>' +
+        '<h2>Hoy no somos la opción correcta para ti.</h2>' +
+        '<p class="lede">Preferimos decírtelo ahora y no cobrarte por algo que no va a funcionar con tu configuración actual.</p>' +
+        '<div class="diag">' +
+          '<p class="diag__label">Qué vemos en tu caso</p>' +
+          '<p class="diag__text">' + esc(res.diagnostico) + '</p>' +
+        '</div>' +
+        '<p class="result__close">Si tu situación cambia, escríbenos y lo retomamos sin volver a empezar.</p>';
+    } else {
+      // VERDE y AMARILLO se ven idénticos para el prospecto.
+      el.innerHTML =
+        '<div class="result__mark">' + MARK_OK + '</div>' +
+        '<h2>Tu caso encaja con lo que hacemos.</h2>' +
+        '<p class="lede">Recibimos tu solicitud. En las próximas horas te escribimos por WhatsApp al número que dejaste, con una revisión inicial de tu cuenta y los horarios disponibles para la llamada de diagnóstico.</p>' +
+        '<p class="result__detail">Esa llamada dura entre 45 y 60 minutos. Salimos de ahí con los números de tu adquisición sobre la mesa, decidas trabajar con nosotros o no.</p>';
+    }
+
+    const old = stage.firstElementChild;
+    const paint = () => {
+      stage.innerHTML = '';
+      stage.appendChild(el);
+      if (IS_ADMIN) stage.appendChild(buildAdmin(res, payload));
+      updateChrome();
+      el.setAttribute('tabindex', '-1');
+      try { el.focus({ preventScroll: true }); } catch (e) {}
+      window.scrollTo(0, 0);
+    };
+
+    if (old && !REDUCED) { old.classList.add('leaving'); setTimeout(paint, 170); }
+    else paint();
+  }
+
+  /* ---------------- Panel interno (?admin=1) ---------------- */
+
+  function buildAdmin(res, payload) {
+    const box = document.createElement('aside');
+    box.className = 'admin';
+
+    const filas = [
+      ['Precio de la oferta', payload.precio],
+      ['Ventas último mes', payload.ventas],
+      ['Presupuesto publicidad', payload.presupuesto],
+      ['Capacidad de entrega', payload.capacidad],
+      ['Decisor', payload.decisor],
+      ['Nombre', payload.nombre],
+      ['WhatsApp', payload.whatsapp],
+      ['Instagram', payload.instagram],
+      ['Correo', payload.email],
+      ['Marca de tiempo', payload.timestamp]
+    ];
+
+    box.innerHTML =
+      '<span class="admin__label">Uso interno</span>' +
+      '<div class="admin__row"><span class="admin__k">Semáforo asignado</span>' +
+        '<span class="admin__v"><span class="tag tag--' + res.semaforo.toLowerCase() + '">' + res.semaforo + '</span></span></div>' +
+      '<div class="admin__row"><span class="admin__k">Motivo</span><span class="admin__v">' + esc(res.motivo) + '</span></div>' +
+      '<div class="admin__row"><span class="admin__k">Enrutamiento</span><span class="admin__v">' + esc(RUTAS[res.semaforo]) + '</span></div>' +
+      '<table><tbody>' +
+        filas.map(f => '<tr><th scope="row">' + esc(f[0]) + '</th><td>' + esc(f[1]) + '</td></tr>').join('') +
+      '</tbody></table>' +
+      '<button type="button" class="btn-ghost" id="btnCopy">Copiar resumen</button>';
+
+    const btn = box.querySelector('#btnCopy');
+    btn.addEventListener('click', () => {
+      const texto = resumenTexto(res, payload);
+      copiar(texto, ok => {
+        btn.textContent = ok ? 'Resumen copiado' : 'No se pudo copiar';
+        setTimeout(() => { btn.textContent = 'Copiar resumen'; }, 1800);
+      });
+    });
+
+    return box;
+  }
+
+  function resumenTexto(res, p) {
+    return [
+      'EVO LAUNCH — Solicitud de diagnóstico',
+      'Semáforo: ' + res.semaforo,
+      'Motivo: ' + res.motivo,
+      RUTAS[res.semaforo],
+      '',
+      'Nombre: ' + p.nombre,
+      'WhatsApp: ' + p.whatsapp,
+      'Instagram: ' + p.instagram,
+      'Correo: ' + p.email,
+      '',
+      '1. Precio de la oferta: ' + p.precio,
+      '2. Ventas último mes: ' + p.ventas,
+      '3. Presupuesto publicidad: ' + p.presupuesto,
+      '4. Capacidad de entrega: ' + p.capacidad,
+      '5. Decisor: ' + p.decisor,
+      '',
+      'Recibido: ' + p.timestamp
+    ].join('\n');
+  }
+
+  function copiar(texto, cb) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(texto).then(() => cb(true)).catch(() => cb(fallbackCopy(texto)));
+      return;
+    }
+    cb(fallbackCopy(texto));
+  }
+
+  function fallbackCopy(texto) {
+    const ta = document.createElement('textarea');
+    ta.value = texto;
+    ta.setAttribute('readonly', '');
+    ta.style.position = 'fixed';
+    ta.style.top = '-1000px';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+    document.body.removeChild(ta);
+    return ok;
+  }
+
+  /* ---------------- Arranque ---------------- */
+
+  mount(0);
+})();
+</script>
+</body>
+</html>
