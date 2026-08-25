@@ -1113,11 +1113,14 @@ function descargarPDF(){
   }
 
   aviso.textContent = 'Generando el PDF...';
+  /* Sube al inicio: si la pagina esta desplazada, el lienzo del PDF sale corrido. */
+  window.scrollTo(0, 0);
+
   html2pdf().set({
     margin: 0,
     filename: archivo,
     image: { type:'jpeg', quality:0.98 },
-    html2canvas: { scale:2, backgroundColor:'#FFFFFF', letterRendering:true, useCORS:false },
+    html2canvas: { scale:2, backgroundColor:'#FFFFFF', letterRendering:true, useCORS:false, scrollX:0, scrollY:0 },
     jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
     pagebreak: { mode:['css','legacy'], avoid:['.p-bloque','tr','li','.p-pie'] }
   }).from($('pdf-template')).save().then(function(){
