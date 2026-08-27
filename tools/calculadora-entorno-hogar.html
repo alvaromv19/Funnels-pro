@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora Entorno Hogar</title>
+<style>
+:root{
+  --bg:#f2f2ef;
+  --panel:#ffffff;
+  --ink:#14171c;
+  --ink-2:#575e6b;
+  --ink-3:#8b919c;
+  --line:#e2e2dc;
+  --line-2:#c9cac3;
+  --ok:#0f6b39;
+  --warn:#8a5600;
+  --bad:#a3211a;
+  --focus:#1a53c0;
+  --mono:ui-monospace,"SFMono-Regular","Cascadia Mono","Segoe UI Mono",Menlo,Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font:13px/1.45 ui-sans-serif,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1200px;margin:0 auto;padding:16px 18px 60px}
+
+/* ---------- header ---------- */
+header{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  padding-bottom:10px;margin-bottom:14px;border-bottom:1px solid var(--line-2)}
+h1{margin:0;font-size:16px;font-weight:650;letter-spacing:-.01em}
+header .sub{margin:2px 0 0;color:var(--ink-3);font-size:12px}
+button#reset{
+  font:inherit;font-size:12px;color:var(--ink-2);background:var(--panel);
+  border:1px solid var(--line-2);border-radius:4px;padding:5px 10px;cursor:pointer}
+button#reset:hover{border-color:var(--ink-3);color:var(--ink)}
+
+/* ---------- layout ---------- */
+.page{display:grid;grid-template-columns:minmax(296px,352px) repeat(3,1fr);gap:14px;align-items:start}
+.page > *,.col > *{min-width:0}
+.col{display:flex;flex-direction:column;gap:14px}
+.p-in{grid-column:1;grid-row:1/3}
+.p-umb{grid-column:2/5;grid-row:1}
+.p-diag{grid-column:2;grid-row:2}
+.p-est{grid-column:3;grid-row:2}
+.p-meta{grid-column:4;grid-row:2}
+@media(max-width:1220px){
+  .page{grid-template-columns:minmax(280px,330px) repeat(2,1fr)}
+  .p-umb{grid-column:2/4}
+  .p-diag{grid-column:2;grid-row:2}
+  .p-est{grid-column:3;grid-row:2}
+  .p-meta{grid-column:2/4;grid-row:3}
+}
+@media(max-width:1000px){
+  .page{grid-template-columns:1fr}
+  .p-in,.p-umb,.p-diag,.p-est,.p-meta{grid-column:1;grid-row:auto}
+}
+
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:12px 14px 14px;overflow:hidden}
+.panel > h2{
+  margin:0 0 9px;font-size:10.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--ink-3);padding-bottom:7px;border-bottom:1px solid var(--line)}
+.panel.hero{border-color:var(--line-2)}
+.note{margin:10px 0 0;color:var(--ink-3);font-size:11.5px;line-height:1.4}
+.note b,.note strong{color:var(--ink-2);font-weight:600}
+
+/* ---------- inputs ---------- */
+.field{display:grid;grid-template-columns:1fr 136px;align-items:center;gap:10px;padding:4px 0}
+.field + .field{border-top:1px dotted var(--line)}
+.field label{color:var(--ink-2)}
+.control{display:flex;align-items:center;gap:2px;height:27px;padding:0 6px;background:#fff;
+  border:1px solid var(--line-2);border-radius:4px;transition:border-color .12s,box-shadow .12s}
+.control:focus-within{border-color:var(--focus);box-shadow:0 0 0 2px rgba(26,83,192,.16)}
+.control input{
+  width:100%;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);
+  font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;text-align:right;padding:0}
+.aff{color:var(--ink-3);font-family:var(--mono);font-size:12px;flex:none}
+.recon{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+.recon h3{margin:0 0 6px;font-size:11px;font-weight:650;color:var(--ink-2);letter-spacing:.01em}
+.recon .side{min-width:0}
+.recon .field{grid-template-columns:1fr;gap:3px;padding:5px 0}
+.recon .field label{font-size:11.5px;color:var(--ink-3)}
+@media(max-width:420px){.recon{grid-template-columns:1fr;gap:12px}}
+
+/* ---------- tables ---------- */
+table{width:100%;border-collapse:collapse}
+th,td{font-variant-numeric:tabular-nums}
+thead th{
+  text-align:right;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--ink-3);padding:0 4px 6px;border-bottom:1px solid var(--line)}
+thead th:first-child{text-align:left}
+tbody th{text-align:left;font-weight:500;color:var(--ink-2);padding:8px 4px;white-space:nowrap}
+tbody td{text-align:right;padding:8px 4px;font-family:var(--mono)}
+.hint{display:block;font-size:10.5px;color:var(--ink-3);font-weight:400;letter-spacing:0}
+
+.thr tbody td{font-size:21px;color:var(--ink-2);letter-spacing:-.01em}
+.thr tr.obj{background:#fafaf7}
+.thr tr.obj td{font-size:26px;font-weight:600;color:var(--ink)}
+.thr tr.obj th{color:var(--ink);font-weight:600}
+.thr tbody tr + tr th,.thr tbody tr + tr td{border-top:1px solid var(--line)}
+
+.sub-block{margin-top:16px;padding-top:12px;border-top:1px solid var(--line-2)}
+.sub-block h3{margin:0 0 8px;font-size:11px;font-weight:650;color:var(--ink-2)}
+.adj tbody td{font-size:14px;color:var(--ink-2)}
+.adj tbody th{font-size:12px}
+.adj tbody tr + tr th,.adj tbody tr + tr td{border-top:1px dotted var(--line)}
+
+/* ---------- estado / semaforo ---------- */
+.kpi tbody th{padding:7px 4px;white-space:nowrap;font-weight:500}
+.kpi tbody td.v{font-size:16px;font-weight:600;white-space:nowrap;transition:color .15s ease;vertical-align:top}
+.kpi .ref{display:block;margin-left:13px;font-family:var(--mono);font-size:10.5px;
+  color:var(--ink-3);font-weight:400;line-height:1.3;white-space:normal}
+.kpi tbody tr + tr th,.kpi tbody tr + tr td{border-top:1px dotted var(--line)}
+.ok{color:var(--ok)}
+.warn{color:var(--warn)}
+.bad{color:var(--bad)}
+.led{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:7px;vertical-align:middle;
+  background:var(--line-2);transition:background-color .15s ease}
+.led.ok{background:var(--ok)}
+.led.warn{background:var(--warn)}
+.led.bad{background:var(--bad)}
+.gap-line{margin:11px 0 0;padding-top:9px;border-top:1px solid var(--line);font-size:12px;font-weight:600}
+
+/* ---------- metas ---------- */
+.rows{display:flex;flex-direction:column}
+.row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:8px 0}
+.row + .row{border-top:1px dotted var(--line)}
+.row .lbl{color:var(--ink-2)}
+.row .val{font-family:var(--mono);font-size:16px;font-weight:600;white-space:nowrap;text-align:right}
+.row .val .up{color:var(--ink-3);font-weight:400}
+.row.lift{border-top:1px solid var(--line-2);margin-top:4px;padding-top:11px;align-items:baseline}
+.row.lift .lbl{color:var(--ink);font-weight:600;max-width:52%}
+.row.lift .val{font-size:28px;letter-spacing:-.02em}
+.tag{display:block;margin-top:4px;font-family:inherit;font-size:10.5px;font-weight:500;
+  color:var(--warn);white-space:normal;text-align:right}
+.tag[hidden],.alert[hidden],[hidden]{display:none!important}
+
+/* ---------- diagnostico ---------- */
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:2px}
+.fact{border:1px solid var(--line);border-radius:5px;padding:8px 10px}
+.fact .k{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.fact .n{font-family:var(--mono);font-size:19px;font-weight:600;margin-top:2px}
+.fact .d{font-family:var(--mono);font-size:11px;color:var(--ink-3)}
+.ghost{display:flex;align-items:baseline;justify-content:space-between;gap:10px;
+  margin-top:10px;padding-top:9px;border-top:1px dotted var(--line)}
+.ghost .lbl{color:var(--ink-2)}
+.ghost .val{font-family:var(--mono);font-size:16px;font-weight:600}
+.read{margin:10px 0 0;padding:9px 10px;background:#fafaf7;border:1px solid var(--line);
+  border-radius:5px;font-size:11.5px;line-height:1.45;color:var(--ink-2)}
+
+/* ---------- alertas ---------- */
+.alert{margin:10px 0 0;padding:8px 10px;border:1px solid #e6cfa8;background:#fdf7ec;
+  border-radius:5px;font-size:11.5px;line-height:1.45;color:#6d4a05}
+.alert.block{border-color:#e3b6b1;background:#fdf1f0;color:#7d211a}
+.alert[hidden]{display:none}
+
+:focus-visible{outline:2px solid var(--focus);outline-offset:1px;border-radius:2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(max-width:560px){
+  tbody th,.kpi tbody th{white-space:normal}
+  .kpi .ref{white-space:normal}
+  .row{flex-wrap:wrap}
+  .row .val,.row.lift .lbl{max-width:100%}
+}
+@media(max-width:420px){
+  .wrap{padding:12px 10px 44px}
+  .panel{padding:11px 11px 13px}
+  .field{grid-template-columns:1fr 112px}
+  .thr tr.obj td{font-size:22px}
+  .thr tbody td{font-size:18px}
+  .row.lift .val{font-size:24px}
+  .facts{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div>
+    <h1>Calculadora Entorno Hogar</h1>
+    <p class="sub">Umbrales de compra de medios · COP · ventana de 7 días</p>
+  </div>
+  <button id="reset" type="button">Restablecer valores</button>
+</header>
+
+<div class="page">
+
+  <!-- ============ COLUMNA IZQUIERDA: ENTRADAS ============ -->
+  <div class="col p-in">
+
+    <section class="panel">
+      <h2>Parámetros del negocio</h2>
+
+      <div class="field">
+        <label for="aov">Precio promedio de venta (AOV)</label>
+        <div class="control"><span class="aff">$</span><input id="aov" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"></div>
+      </div>
+      <div class="field">
+        <label for="margen">Margen disponible antes de publicidad</label>
+        <div class="control"><input id="margen" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0–100"><span class="aff">%</span></div>
+      </div>
+      <div class="field">
+        <label for="rentMin">Rentabilidad mínima esperada después de publicidad</label>
+        <div class="control"><input id="rentMin" type="text" inputmode="decimal" autocomplete="off" spellcheck="false" placeholder="0–100"><span class="aff">%</span></div>
+      </div>
+      <div class="field">
+        <label for="inversion">Inversión últimos 7 días</label>
+        <div class="control"><span class="aff">$</span><input id="inversion" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"></div>
+      </div>
+      <div class="field">
+        <label for="presupuesto">Presupuesto próximos 7 días</label>
+        <div class="control"><span class="aff">$</span><input id="presupuesto" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"></div>
+      </div>
+
+      <p class="note">El margen antes de publicidad ya incluye costo de producto, pasarela, logística, devoluciones y demás costos variables. Los porcentajes se escriben en escala 0–100 (<b>27</b>, no 0,27).</p>
+    </section>
+
+    <section class="panel">
+      <h2>Reconciliación de datos</h2>
+      <div class="recon">
+        <div class="side">
+          <h3>Reportado por plataformas</h3>
+          <div class="field">
+            <label for="compRep">Compras reportadas</label>
+            <div class="control"><input id="compRep" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"></div>
+          </div>
+          <div class="field">
+            <label for="ingRep">Ingresos reportados</label>
+            <div class="control"><span class="aff">$</span><input id="ingRep" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"></div>
+          </div>
+        </div>
+        <div class="side">
+          <h3>Real</h3>
+          <div class="field">
+            <label for="compReal">Compras reales</label>
+            <div class="control"><input id="compReal" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"></div>
+          </div>
+          <div class="field">
+            <label for="ingReal">Ingresos reales</label>
+            <div class="control"><span class="aff">$</span><input id="ingReal" type="text" inputmode="decimal" autocomplete="off" spellcheck="false"></div>
+          </div>
+        </div>
+      </div>
+      <p class="note">Fuente de verdad = la plataforma de e-commerce. Las cifras de Ads Manager siempre sobre-reportan; este bloque calcula por cuánto.</p>
+      <p class="alert" id="alertNoReal" role="status" hidden>Sin datos reales cargados. Los umbrales ajustados son iguales a los objetivo.</p>
+    </section>
+
+  </div>
+
+  <!-- ============ COLUMNA DERECHA: UMBRALES ============ -->
+  <section class="panel hero p-umb">
+    <h2>Umbrales</h2>
+
+    <table class="thr">
+      <thead>
+        <tr><th scope="col">&nbsp;</th><th scope="col">CPA máximo</th><th scope="col">ROAS mínimo</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Equilibrio<span class="hint">utilidad 0</span></th>
+          <td id="cpaEq">—</td><td id="roasEq">—</td>
+        </tr>
+        <tr class="obj">
+          <th scope="row">Objetivo<span class="hint">utilidad <span id="lblRentMin">7,0</span>%</span></th>
+          <td id="cpaObj">—</td><td id="roasObj">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="alert block" id="alertBlock" role="status" hidden></p>
+
+    <div class="sub-block">
+      <h3>Umbrales ajustados por descuadre — úsalos al leer dentro de Ads Manager</h3>
+      <table class="adj">
+        <thead>
+          <tr><th scope="col">&nbsp;</th><th scope="col">CPA máximo</th><th scope="col">ROAS mínimo</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">Equilibrio ajustado</th><td id="cpaEqAdj">—</td><td id="roasEqAdj">—</td></tr>
+          <tr><th scope="row">Objetivo ajustado</th><td id="cpaObjAdj">—</td><td id="roasObjAdj">—</td></tr>
+        </tbody>
+      </table>
+      <p class="note" id="adjNote"></p>
+    </div>
+  </section>
+
+
+
+  <!-- ============ DIAGNÓSTICO DEL DESCUADRE ============ -->
+  <section class="panel p-diag">
+    <h2>Diagnóstico del descuadre</h2>
+    <div class="facts">
+      <div class="fact">
+        <div class="k">Factor compras</div>
+        <div class="n" id="facComp">—</div>
+        <div class="d" id="facCompPct">—</div>
+      </div>
+      <div class="fact">
+        <div class="k">Factor ingresos</div>
+        <div class="n" id="facIng">—</div>
+        <div class="d" id="facIngPct">—</div>
+      </div>
+    </div>
+    <div class="ghost">
+      <span class="lbl">Pedidos fantasma</span>
+      <span class="val" id="fantasma">—</span>
+    </div>
+    <p class="read" id="lectura">—</p>
+  </section>
+
+  <!-- ============ DÓNDE ESTAMOS PARADOS ============ -->
+  <section class="panel p-est">
+    <h2>Dónde estamos parados</h2>
+    <table class="kpi">
+      <tbody>
+        <tr>
+          <th scope="row"><span class="led" id="ledCpa"></span>CPA real<span class="ref" id="refCpa">—</span></th>
+          <td class="v" id="cpaReal">—</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="led" id="ledRoas"></span>ROAS real<span class="ref" id="refRoas">—</span></th>
+          <td class="v" id="roasReal">—</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="led"></span>Contribución bruta</th>
+          <td class="v" id="contrib">—</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="led" id="ledUtil"></span>Utilidad neta<span class="ref" id="refUtil">—</span></th>
+          <td class="v" id="utilNeta">—</td>
+        </tr>
+        <tr>
+          <th scope="row"><span class="led" id="ledMg"></span>Margen neto<span class="ref" id="refMg">—</span></th>
+          <td class="v" id="margenNeto">—</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="gap-line" id="brecha">—</p>
+  </section>
+
+  <!-- ============ A DÓNDE TENEMOS QUE LLEGAR ============ -->
+  <section class="panel p-meta">
+    <h2>A dónde tenemos que llegar</h2>
+    <div class="rows">
+      <div class="row">
+        <span class="lbl">Pedidos para no perder dinero</span>
+        <span class="val" id="pedEq">—</span>
+      </div>
+      <div class="row">
+        <span class="lbl">Pedidos para cumplir el objetivo</span>
+        <span class="val" id="pedObj">—</span>
+      </div>
+      <div class="row">
+        <span class="lbl">Ingreso real necesario</span>
+        <span class="val" id="ingObj">—</span>
+      </div>
+      <div class="row lift">
+        <span class="lbl">Mejora de eficiencia requerida vs. periodo anterior</span>
+        <span class="val"><span id="lift">—</span><span class="tag" id="liftTag" hidden>comparación no directa: el presupuesto cambió</span></span>
+      </div>
+    </div>
+    <p class="note">Sobre el presupuesto de los próximos 7 días.</p>
+  </section>
+
+</div>
+</div>
+
+<script>
+"use strict";
+/* ===================== CORE:START — lógica pura, sin DOM ===================== */
+
+var DEFAULTS = {
+  aov: 400000, margen: 27, rentMin: 7, inversion: 3150000, presupuesto: 3150000,
+  compRep: 38, ingRep: 15200000, compReal: 35, ingReal: 14000000
+};
+var PCT_FIELDS = ["margen", "rentMin"];
+var DASH = "—";
+var MINUS = "−";
+
+var nf0  = new Intl.NumberFormat("es-CO", {maximumFractionDigits: 0});
+var nf1  = new Intl.NumberFormat("es-CO", {minimumFractionDigits: 1, maximumFractionDigits: 1});
+var nf2  = new Intl.NumberFormat("es-CO", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+var nf3  = new Intl.NumberFormat("es-CO", {minimumFractionDigits: 3, maximumFractionDigits: 3});
+var nfIn = new Intl.NumberFormat("es-CO", {maximumFractionDigits: 2});
+
+function isNum(v){ return typeof v === "number" && isFinite(v); }
+function pos(v){ return (isNum(v) && v > 0) ? v : null; }
+function mul(a, b){ return (isNum(a) && isNum(b)) ? a * b : null; }
+function sub(a, b){ return (isNum(a) && isNum(b)) ? a - b : null; }
+function div(a, b){ return (isNum(a) && isNum(b) && b !== 0) ? a / b : null; }
+
+/* Acepta "3.150.000", "3150000", "3 150 000", "27,5", "$400.000". Nunca negativos. */
+function parseNum(raw, decimalOnly){
+  if (raw === null || raw === undefined) return null;
+  var s = String(raw).replace(/[\s $%]/g, "").replace(/[-−]/g, "");
+  if (!s) return null;
+  var hasDot = s.indexOf(".") !== -1, hasCom = s.indexOf(",") !== -1, p;
+  if (decimalOnly) {                       // porcentajes: coma y punto son decimales
+    p = s.replace(/,/g, ".").split(".");
+    s = p.length > 2 ? (p.shift() + "." + p.join("")) : p.join(".");
+  } else if (hasDot && hasCom) {
+    if (s.lastIndexOf(".") > s.lastIndexOf(",")) s = s.replace(/,/g, "");
+    else s = s.replace(/\./g, "").replace(",", ".");
+  } else if (hasCom) {
+    p = s.split(",");
+    s = (p.length === 2 && p[1].length !== 3) ? p.join(".") : s.replace(/,/g, "");
+  } else if (hasDot) {
+    p = s.split(".");
+    s = (p.length === 2 && p[1].length !== 3) ? p.join(".") : s.replace(/\./g, "");
+  }
+  s = s.replace(/[^0-9.]/g, "");
+  var v = parseFloat(s);
+  return isFinite(v) ? v : null;
+}
+
+function parseField(key, raw){
+  return clampField(key, parseNum(raw, PCT_FIELDS.indexOf(key) !== -1));
+}
+
+function clampField(key, v){
+  if (v === null) return null;
+  if (v < 0) v = 0;
+  if (PCT_FIELDS.indexOf(key) !== -1 && v > 100) v = 100;
+  return v;
+}
+
+/* --------- formateo (siempre vía Intl) --------- */
+function fMoney(v){
+  if (!isNum(v)) return DASH;
+  return (v < 0 ? MINUS : "") + "$" + nf0.format(Math.abs(v));
+}
+function fRoas(v){ return isNum(v) ? nf2.format(v) : DASH; }
+function fPct(v, signed){
+  if (!isNum(v)) return DASH;
+  var sign = v < 0 ? MINUS : (signed ? "+" : "");
+  return sign + nf1.format(Math.abs(v)) + "%";
+}
+function fFactor(v){ return isNum(v) ? nf3.format(v) : DASH; }
+function fInt(v){ return isNum(v) ? nf0.format(v) : DASH; }
+function fPedidos(v){
+  if (!isNum(v)) return DASH;
+  return nf1.format(v) + " → " + nf0.format(Math.ceil(v - 1e-9) || 0);
+}
+function fInput(v){ return isNum(v) ? nfIn.format(v) : ""; }
+
+/* --------- semáforo --------- */
+/* verde: cumple o supera el objetivo · ámbar: entre equilibrio y objetivo · rojo: bajo equilibrio */
+function stLower(v, obj, eq){            // CPA: menor es mejor
+  if (!isNum(v)) return null;
+  if (isNum(obj) && v <= obj) return "ok";
+  if (isNum(eq)  && v <= eq)  return "warn";
+  return isNum(eq) ? "bad" : null;
+}
+function stHigher(v, obj, eq){           // ROAS, utilidad, margen: mayor es mejor
+  if (!isNum(v)) return null;
+  if (isNum(obj) && v >= obj) return "ok";
+  if (isNum(eq)  && v >= eq)  return "warn";
+  return isNum(eq) ? "bad" : null;
+}
+
+/* --------- cálculo --------- */
+function compute(i){
+  var r = {};
+  var margen  = isNum(i.margen)  ? i.margen  / 100 : null;
+  var rentMin = isNum(i.rentMin) ? i.rentMin / 100 : null;
+  var m  = pos(margen);                        // margen es divisor: 0 o vacío => inválido
+  var rm = rentMin;
+
+  r.blocked = (m !== null && isNum(rm) && rm >= m);
+
+  // Umbrales base
+  r.contribPorVenta = mul(i.aov, m);
+  r.utilMinPorVenta = mul(i.aov, rm);
+  r.cpaEq   = r.contribPorVenta;
+  r.cpaObj  = r.blocked ? null : sub(r.contribPorVenta, r.utilMinPorVenta);
+  r.roasEq  = div(1, m);
+  r.roasObj = r.blocked ? null : div(1, sub(m, rm));
+
+  // Factores de descuadre
+  r.hasCompReal = pos(i.compReal) !== null;
+  r.hasIngReal  = pos(i.ingReal)  !== null;
+  r.noRealData  = !r.hasCompReal && !r.hasIngReal;
+  r.facComp = r.hasCompReal ? div(i.compRep, i.compReal) : 1;
+  r.facIng  = r.hasIngReal  ? div(i.ingRep,  i.ingReal)  : 1;
+  r.factorsFromData = r.hasCompReal && r.hasIngReal && isNum(r.facComp) && isNum(r.facIng);
+
+  // Umbrales ajustados
+  var fc = pos(r.facComp), fi = pos(r.facIng);
+  r.cpaEqAdj   = div(r.cpaEq,  fc);
+  r.cpaObjAdj  = div(r.cpaObj, fc);
+  r.roasEqAdj  = mul(r.roasEq,  fi);
+  r.roasObjAdj = mul(r.roasObj, fi);
+  r.desvCompPct = isNum(r.facComp) ? (r.facComp - 1) * 100 : null;
+  r.desvIngPct  = isNum(r.facIng)  ? (r.facIng  - 1) * 100 : null;
+  r.fantasma = (isNum(i.compRep) && isNum(i.compReal)) ? Math.abs(i.compRep - i.compReal) : null;
+
+  // Estado actual (siempre sobre data real)
+  r.cpaReal   = div(i.inversion, pos(i.compReal));
+  r.roasReal  = div(i.ingReal, pos(i.inversion));
+  r.contrib   = mul(i.ingReal, m);
+  r.utilNeta  = sub(r.contrib, i.inversion);
+  r.margenNetoPct = mul(div(r.utilNeta, pos(i.ingReal)), 100);
+  r.utilObjetivo  = mul(i.ingReal, rm);
+  r.brecha    = sub(r.utilNeta, r.utilObjetivo);
+
+  // Metas próximo periodo
+  r.pedEq  = div(i.presupuesto, pos(r.cpaEq));
+  r.pedObj = div(i.presupuesto, pos(r.cpaObj));
+  r.ingObj = mul(r.pedObj, i.aov);
+  r.liftPct = (isNum(r.pedObj) && pos(i.compReal) !== null) ? (r.pedObj / i.compReal - 1) * 100 : null;
+  r.budgetChanged = isNum(i.presupuesto) && isNum(i.inversion) && Math.abs(i.presupuesto - i.inversion) > 1e-9;
+
+  // Semáforos (contra umbrales base y data real)
+  r.stCpa  = stLower(r.cpaReal, r.cpaObj, r.cpaEq);
+  r.stRoas = stHigher(r.roasReal, r.roasObj, r.roasEq);
+  r.stUtil = stHigher(r.utilNeta, r.utilObjetivo, 0);
+  r.stMg   = stHigher(r.margenNetoPct, i.rentMin, 0);
+
+  return r;
+}
+
+/* --------- textos derivados --------- */
+function avisoDatosReales(r){
+  if (!r.hasCompReal && !r.hasIngReal) return "Sin datos reales cargados. Los umbrales ajustados son iguales a los objetivo.";
+  if (!r.hasCompReal) return "Sin compras reales cargadas. El factor de compras se asume 1,0: el CPA ajustado es igual al objetivo.";
+  if (!r.hasIngReal)  return "Sin ingresos reales cargados. El factor de ingresos se asume 1,0: el ROAS ajustado es igual al objetivo.";
+  return null;
+}
+
+function lecturaDescuadre(r){
+  if (!r.factorsFromData) return "Carga compras e ingresos reales para diagnosticar el origen del descuadre.";
+  var d = Math.abs(r.facComp - r.facIng);
+  if (d < 0.02) return "El descuadre es de conteo de pedidos, no de valor. El AOV coincide entre plataformas y la fuente real.";
+  if (r.facIng > r.facComp) return "El descuadre es mayor en ingresos que en pedidos: las plataformas están inflando el valor por pedido. Revisa el valor enviado en el evento Purchase.";
+  return "El descuadre es mayor en pedidos que en ingresos: revisa duplicación de eventos Pixel/CAPI y solapamiento de atribución entre canales.";
+}
+
+function notaAjustados(r){
+  if (r.noRealData) return "Sin datos reales, el factor de descuadre se asume 1,0: los umbrales ajustados coinciden con los objetivo.";
+  var x = r.desvCompPct, y = r.desvIngPct;
+  var s = "";
+  if (isNum(x) && isNum(y)) {
+    if (x >= 0 && y >= 0)      s = "Las plataformas sobre-reportan " + fPct(x) + " en compras y " + fPct(y) + " en ingresos.";
+    else if (x <= 0 && y <= 0) s = "Las plataformas sub-reportan " + fPct(Math.abs(x)) + " en compras y " + fPct(Math.abs(y)) + " en ingresos.";
+    else                       s = "Desvío de las plataformas: " + fPct(x, true) + " en compras y " + fPct(y, true) + " en ingresos.";
+  } else {
+    s = "Descuadre no calculable con los datos cargados.";
+  }
+  if (isNum(r.roasObjAdj) && isNum(r.roasObj)) {
+    s += " Un anuncio necesita marcar " + fRoas(r.roasObjAdj) + " en Ads Manager para realmente entregar " + fRoas(r.roasObj) + ".";
+  }
+  return s;
+}
+
+function mensajeBloqueo(i){
+  return "La rentabilidad mínima (" + fPct(i.rentMin) + ") iguala o supera el margen disponible (" +
+         fPct(i.margen) + "). No existe un CPA objetivo alcanzable con estos parámetros.";
+}
+
+function lineaBrecha(r){
+  if (!isNum(r.brecha)) return DASH;
+  if (r.brecha < 0) return "Déficit de utilidad: " + fMoney(Math.abs(r.brecha)) + " frente al objetivo de rentabilidad.";
+  return "Superávit de utilidad: " + fMoney(r.brecha) + " sobre el objetivo de rentabilidad.";
+}
+
+/* ===================== CORE:END ===================== */
+
+/* ===================== UI ===================== */
+(function(){
+  if (typeof document === "undefined") return;
+
+  var KEYS = ["aov","margen","rentMin","inversion","presupuesto","compRep","ingRep","compReal","ingReal"];
+  var STORE = "calc-entorno-hogar/v1";
+  var el = {};
+  KEYS.forEach(function(k){ el[k] = document.getElementById(k); });
+
+  function $(id){ return document.getElementById(id); }
+  function txt(id, s){ var n = $(id); if (n) n.textContent = s; }
+  function state(id, st){
+    var n = $(id); if (!n) return;
+    n.classList.remove("ok","warn","bad");
+    if (st) n.classList.add(st);
+  }
+  function show(id, on, s){
+    var n = $(id); if (!n) return;
+    n.hidden = !on;
+    if (on && s !== undefined) n.textContent = s;
+  }
+
+  function readInputs(){
+    var i = {};
+    KEYS.forEach(function(k){ i[k] = parseField(k, el[k].value); });
+    return i;
+  }
+
+  function save(i){
+    try { localStorage.setItem(STORE, JSON.stringify(i)); } catch (e) {}
+  }
+
+  function load(){
+    var v = null;
+    try { v = JSON.parse(localStorage.getItem(STORE) || "null"); } catch (e) { v = null; }
+    KEYS.forEach(function(k){
+      var raw = (v && typeof v === "object" && k in v) ? v[k] : DEFAULTS[k];
+      el[k].value = fInput(isNum(raw) ? clampField(k, raw) : parseField(k, raw));
+    });
+  }
+
+  function render(){
+    var i = readInputs();
+    var r = compute(i);
+
+    // Umbrales base
+    txt("lblRentMin", isNum(i.rentMin) ? nf1.format(i.rentMin) : DASH);
+    txt("cpaEq",   fMoney(r.cpaEq));
+    txt("roasEq",  fRoas(r.roasEq));
+    txt("cpaObj",  fMoney(r.cpaObj));
+    txt("roasObj", fRoas(r.roasObj));
+    show("alertBlock", r.blocked, r.blocked ? mensajeBloqueo(i) : "");
+
+    // Ajustados
+    txt("cpaEqAdj",   fMoney(r.cpaEqAdj));
+    txt("roasEqAdj",  fRoas(r.roasEqAdj));
+    txt("cpaObjAdj",  fMoney(r.cpaObjAdj));
+    txt("roasObjAdj", fRoas(r.roasObjAdj));
+    txt("adjNote", notaAjustados(r));
+    var aviso = avisoDatosReales(r);
+    show("alertNoReal", aviso !== null, aviso || "");
+
+    // Diagnóstico
+    txt("facComp",    fFactor(r.facComp));
+    txt("facIng",     fFactor(r.facIng));
+    txt("facCompPct", isNum(r.desvCompPct) ? fPct(r.desvCompPct, true) : DASH);
+    txt("facIngPct",  isNum(r.desvIngPct)  ? fPct(r.desvIngPct, true)  : DASH);
+    txt("fantasma",   fInt(r.fantasma));
+    txt("lectura",    lecturaDescuadre(r));
+
+    // Dónde estamos
+    txt("cpaReal",  fMoney(r.cpaReal));   state("cpaReal", r.stCpa);   state("ledCpa", r.stCpa);
+    txt("roasReal", fRoas(r.roasReal));   state("roasReal", r.stRoas); state("ledRoas", r.stRoas);
+    txt("contrib",  fMoney(r.contrib));
+    txt("utilNeta", fMoney(r.utilNeta));  state("utilNeta", r.stUtil); state("ledUtil", r.stUtil);
+    txt("margenNeto", fPct(r.margenNetoPct)); state("margenNeto", r.stMg); state("ledMg", r.stMg);
+
+    txt("refCpa",  "obj " + fMoney(r.cpaObj) + " / eq " + fMoney(r.cpaEq));
+    txt("refRoas", "obj " + fRoas(r.roasObj) + " / eq " + fRoas(r.roasEq));
+    txt("refUtil", "obj " + fMoney(r.utilObjetivo));
+    txt("refMg",   "obj " + fPct(i.rentMin));
+    txt("brecha",  lineaBrecha(r));
+    state("brecha", isNum(r.brecha) ? (r.brecha < 0 ? "bad" : "ok") : null);
+
+    // Metas
+    txt("pedEq",  fPedidos(r.pedEq));
+    txt("pedObj", fPedidos(r.pedObj));
+    txt("ingObj", fMoney(r.ingObj));
+    txt("lift",   isNum(r.liftPct) ? fPct(r.liftPct, true) : DASH);
+    state("lift", isNum(r.liftPct) ? (r.liftPct > 0 ? "warn" : "ok") : null);
+    show("liftTag", r.budgetChanged && isNum(r.liftPct));
+
+    save(i);
+  }
+
+  // Eventos
+  KEYS.forEach(function(k){
+    var input = el[k];
+    input.addEventListener("input", function(){
+      var clean = input.value.replace(/[^0-9.,\s $%]/g, "");   // sin negativos ni letras
+      if (clean !== input.value) {
+        var at = input.selectionStart;
+        input.value = clean;
+        try { input.setSelectionRange(at - 1, at - 1); } catch (e) {}
+      }
+      render();
+    });
+    input.addEventListener("blur", function(){
+      var v = parseField(k, input.value);
+      input.value = fInput(v);
+      render();
+    });
+    input.addEventListener("focus", function(){ input.select(); });
+  });
+
+  $("reset").addEventListener("click", function(){
+    KEYS.forEach(function(k){ el[k].value = fInput(DEFAULTS[k]); });
+    render();
+  });
+
+  load();
+  render();
+})();
+</script>
+</body>
+</html>
