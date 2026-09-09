@@ -247,13 +247,12 @@
         
         .result-image-container img {
             height: auto;
-            max-width: 100%; /* Desktop default */
+            max-width: 100%; 
             display: block;
             transition: transform 0.4s ease;
             transform-origin: center center;
         }
 
-        /* Zoom Hover solo en Desktop */
         @media (min-width: 769px) {
             .glass-box:hover .result-image-container img {
                 transform: scale(1.1);
@@ -261,7 +260,6 @@
             }
         }
 
-        /* INFO BOX (TEXTO ABAJO) */
         .result-info-box {
             padding: 25px 20px; 
             text-align: center;
@@ -284,14 +282,12 @@
             letter-spacing: 0.5px;
         }
 
-        /* Mobile specific styles */
         .result-hint { display: none; }
         
         /* =========================================
            4. SECCIONES
            ========================================= */
 
-        /* HERO */
         .hero {
             min-height: 95vh;
             display: flex;
@@ -329,7 +325,6 @@
             color: #C5C6C7;
         }
 
-        /* PROBLEM SECTION */
         .text-column {
             max-width: 700px;
             margin: 0 auto;
@@ -355,7 +350,6 @@
             50% { top: calc(100% - 30px); }
         }
 
-        /* MECHANISM */
         .mechanism-grid {
             display: grid;
             grid-template-columns: 1fr;
@@ -398,7 +392,6 @@
             box-shadow: 0 5px 15px rgba(102, 252, 241, 0.4);
         }
 
-        /* OFFER GRID */
         .offer-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -415,7 +408,6 @@
         .offer-item i { color: var(--accent-cyan); font-size: 1.8rem; }
         .offer-item p { font-size: 1rem; margin-bottom: 0; }
 
-        /* CHECKLIST */
         .checklist { list-style: none; margin: 40px 0; }
         .checklist li {
             margin-bottom: 20px;
@@ -437,7 +429,6 @@
             text-shadow: 0 0 10px var(--accent-cyan-glow);
         }
 
-        /* MOBILE STICKY */
         .mobile-sticky {
             position: fixed;
             bottom: 0; left: 0; width: 100%;
@@ -453,49 +444,7 @@
         .mobile-sticky .btn-cta { width: 100%; padding: 16px; margin: 0; font-size: 1rem; }
 
         /* =========================================
-           5. FORMULARIO & TRANSICIONES
-           ========================================= */
-        
-        #initial-offer-content {
-            transition: opacity 0.5s ease;
-        }
-        
-        #initial-offer-content.hidden-content {
-            display: none;
-        }
-
-        /* --- ESTILOS MEJORADOS PARA LA AGENDA CON SCROLL --- */
-        #embedded-agenda {
-            display: none; /* Asegura que inicie oculto */
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            width: 100%;
-            
-            /* ALTURA OPTIMIZADA PARA DESKTOP */
-            height: 700px; 
-            
-            /* HABILITAR SCROLL */
-            overflow-y: auto; 
-            -webkit-overflow-scrolling: touch; 
-            
-            /* Scrollbar styling */
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent-cyan-dark) rgba(255, 255, 255, 0.05);
-            padding-right: 5px; 
-        }
-
-        #embedded-agenda::-webkit-scrollbar { width: 6px; }
-        #embedded-agenda::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); border-radius: 10px; }
-        #embedded-agenda::-webkit-scrollbar-thumb { background-color: var(--accent-cyan-dark); border-radius: 10px; }
-        #embedded-agenda::-webkit-scrollbar-thumb:hover { background-color: var(--accent-cyan); }
-
-        #embedded-agenda.visible-content {
-            display: block;
-            opacity: 1;
-        }
-
-        /* =========================================
-           6. OPTIMIZACIÓN FULL-WIDTH MÓVIL
+           5. OPTIMIZACIÓN FULL-WIDTH MÓVIL
            ========================================= */
         @media (max-width: 768px) {
             .hero h1 { font-size: 2.5rem; }
@@ -503,15 +452,11 @@
             .letter-style { padding-left: 20px; border-left-width: 2px; }
             .offer-grid { grid-template-columns: 1fr; }
             
-            /* Sticky y Footer ajustes */
             .mobile-sticky { display: block; }
             .footer-btn-container { padding-bottom: 120px; } 
             
             .mechanism-grid::before { left: 20px; transform: none; } 
 
-            /* --- MÁRGENES CERO EN FOOTER PARA LA AGENDA --- */
-            
-            /* 1. Quitamos padding lateral al contenedor del footer */
             #audit.container {
                 padding-left: 0 !important;
                 padding-right: 0 !important;
@@ -519,46 +464,36 @@
                 max-width: 100%;
             }
 
-            /* 2. Mantener padding en el título y texto, pero no en la caja */
             #audit h2, #audit p, #audit ul {
                 padding-left: 20px;
                 padding-right: 20px;
             }
 
-            /* 3. La caja de conversión (Form) ocupa el 100% */
             #conversion-box {
                 margin-top: 30px;
-                border-radius: 0; /* Bordes cuadrados en móvil para full width */
+                border-radius: 0; 
                 border-left: none;
                 border-right: none;
                 padding-left: 0 !important;
                 padding-right: 0 !important;
-                width: 100vw; /* Ancho total de la ventana */
+                width: 100vw; 
                 position: relative;
                 left: 50%;
                 right: 50%;
                 margin-left: -50vw;
                 margin-right: -50vw;
-                background: #0B0C10; /* Fondo sólido para que no se vea raro el glass */
+                background: #0B0C10; 
             }
 
-            /* 4. Padding para el texto inicial dentro de la caja */
             #initial-offer-content {
-                padding: 0 20px; /* Recuperamos padding solo para el texto */
+                padding: 0 20px; 
             }
 
-            /* 5. Altura maximizada para la agenda en móvil */
-            #embedded-agenda {
-                height: 85vh; /* Casi toda la pantalla */
-                padding-right: 0;
-            }
-
-            /* RESULTADOS MÓVIL */
             .result-image-container {
                 justify-content: flex-start; 
             }
             .result-image-container img {
-                min-width: 600px; /* Forzar scroll para ver data */
+                min-width: 600px; 
                 max-width: none;
             }
             .result-hint {
@@ -724,26 +659,14 @@
         </ul>
 
         <div class="glass-box" style="margin-top: 50px;" id="conversion-box">
-            
             <div id="initial-offer-content">
                 <p>Si cumples con esto, te invito a una Auditoría de Escalamiento High Ticket.</p>
                 <p>No es una llamada de ventas presionante. Analizaremos tus números actuales, tu audiencia y te diremos honestamente si tu oferta soporta tráfico frío. Si vemos el potencial de agregar $30k extra a tu facturación en 90 días, te explicaremos cómo trabajar con nosotros.</p>
                 <p>Si no, te llevarás el plan de acción y el diagnóstico totalmente gratis.</p>
                 <p style="margin-bottom: 30px;"><strong>El mercado premia a los que actúan rápido.</strong></p>
                 
-                <button id="trigger-agenda-btn" class="btn-cta">SÍ, QUIERO AGENDAR MI AUDITORÍA AHORA</button>
+                <a href="https://wa.me/51936557619?text=Hola%20Álvaro,%20vengo%20de%20la%20página%20de%20Evo%20Launch.%20Quiero%20agendar%20mi%20auditoría%20gratuita%20para%20escalar%20mi%20oferta." target="_blank" class="btn-cta">SÍ, QUIERO AGENDAR MI AUDITORÍA AHORA</a>
             </div>
-
-            <div id="embedded-agenda">
-                <iframe 
-                    src="https://api.leadconnectorhq.com/widget/booking/gw54FBKGbicIab9gR34a" 
-                    style="width: 100%; border: none; overflow: hidden;" 
-                    scrolling="no" 
-                    id="gw54FBKGbicIab9gR34a_1770274040776">
-                </iframe>
-                <script src="https://link.msgsndr.com/js/form_embed.js" type="text/javascript"></script>
-            </div>
-
         </div>
     </footer>
 
@@ -778,50 +701,11 @@
         window.addEventListener('scroll', revealOnScroll);
         revealOnScroll(); 
 
-        // FORM SWAP LOGIC
-        const triggerBtn = document.getElementById('trigger-agenda-btn');
-        const initialContent = document.getElementById('initial-offer-content');
-        const agendaContent = document.getElementById('embedded-agenda');
-        const mobileSticky = document.querySelector('.mobile-sticky');
-
-        function activateForm() {
-            // 1. Desvanecer el contenido inicial
-            initialContent.style.opacity = '0';
-            
-            // 2. Ocultar el botón sticky móvil inmediatamente para que no estorbe
-            if(mobileSticky) mobileSticky.style.transform = 'translateY(100%)'; 
-
-            // 3. Esperar animación
-            setTimeout(() => {
-                initialContent.classList.add('hidden-content');
-                // Ocultar del todo para liberar espacio
-                initialContent.style.display = 'none';
-
-                // Mostrar agenda
-                agendaContent.style.display = 'block';
-                
-                // Trigger fade in
-                setTimeout(() => {
-                    agendaContent.classList.add('visible-content');
-                }, 50);
-            }, 500);
-        }
-
-        triggerBtn.addEventListener('click', activateForm);
-
-        // FUNCIÓN SCROLL SUAVE AL CLICKAR BOTONES DE ARRIBA
+        // FUNCIÓN SCROLL SUAVE AL CLICKAR BOTONES SUPERIORES O MÓVIL
         function scrollToAudit() {
             const auditSection = document.getElementById('audit-section');
-            
-            // 1. Scroll hasta la sección
             auditSection.scrollIntoView({ behavior: 'smooth' });
-
-            // 2. Si venimos del botón sticky o header, activamos el form automáticamente
-            setTimeout(() => {
-               activateForm();
-            }, 800); 
         }
-
     </script>
 
 </body>
