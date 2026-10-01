@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Laura Sofia Castillo · Bailarina Internacional</title>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Marcellus&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#111010;--bg2:#1A1918;--bg3:#222120;
+  --white:#F5F2EE;--gold:#C8A84B;--gold2:#E2C875;
+  --red:#C42535;--red2:#E03040;
+  --muted:rgba(245,242,238,.45);--faint:rgba(245,242,238,.2);
+  --border:rgba(245,242,238,.08);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+#cur{position:fixed;z-index:9999;pointer-events:none;mix-blend-mode:difference;
+  width:12px;height:12px;background:var(--white);border-radius:50%;
+  transform:translate(-50%,-50%);transition:width .2s,height .2s}
+#cur.xl{width:44px;height:44px}
+
+/* INTRO */
+#intro{position:fixed;inset:0;z-index:8000;background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  animation:introOut 1s .6s ease forwards;pointer-events:none}
+@keyframes introOut{0%{opacity:1}100%{opacity:0;pointer-events:none}}
+.intro-name{font-family:'Anton',sans-serif;font-size:clamp(4rem,12vw,10rem);
+  letter-spacing:.04em;color:var(--white);text-align:center;
+  animation:scaleIn .6s ease both}
+.intro-name span{color:var(--red)}
+@keyframes scaleIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:scale(1)}}
+
+/* TICKER */
+.ticker{position:fixed;top:0;left:0;right:0;z-index:501;
+  background:var(--red);overflow:hidden;padding:.3rem 0}
+.ticker-track{display:flex;white-space:nowrap;animation:tick 28s linear infinite}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ticker-item{font-family:'Anton',sans-serif;font-size:.8rem;letter-spacing:.18em;color:#fff;padding:0 2rem}
+.ticker-sep{color:rgba(255,255,255,.4)}
+
+/* NAV */
+.nav{position:fixed;top:28px;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 2.5rem;background:rgba(17,16,16,.9);
+  backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.nav-brand{font-family:'Anton',sans-serif;font-size:1.2rem;letter-spacing:.12em;color:var(--white)}
+.nav-brand em{color:var(--red);font-style:normal}
+.nav-links{display:flex;gap:1.8rem}
+.nl{font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+  text-decoration:none;cursor:none;transition:color .2s;position:relative}
+.nl::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;
+  background:var(--red);transition:width .3s}
+.nl:hover,.nl.on{color:var(--white)}
+.nl.on::after,.nl:hover::after{width:100%}
+@media(max-width:680px){.nav-links{display:none}}
+
+/* REVEAL */
+.up{opacity:0;transform:translateY(36px);transition:opacity .75s ease,transform .75s ease}
+.lft{opacity:0;transform:translateX(-36px);transition:opacity .75s ease,transform .75s ease}
+.rgt{opacity:0;transform:translateX(36px);transition:opacity .75s ease,transform .75s ease}
+.up.show,.lft.show,.rgt.show{opacity:1;transform:none}
+
+/* WRAP */
+.wrap{max-width:1100px;margin:0 auto;padding:0 2.5rem}
+@media(max-width:680px){.wrap{padding:0 1.2rem}}
+
+/* SECTION LABELS */
+.sec-tag{display:flex;align-items:center;gap:.8rem;margin-bottom:1.2rem}
+.sec-num{font-family:'Anton',sans-serif;font-size:.75rem;letter-spacing:.2em;color:var(--red)}
+.sec-line{flex:1;height:1px;background:var(--border);max-width:60px}
+.sec-txt{font-size:.65rem;letter-spacing:.4em;text-transform:uppercase;color:var(--muted)}
+.sec-h{font-family:'Anton',sans-serif;font-size:clamp(2.8rem,6vw,5rem);
+  letter-spacing:.04em;line-height:1;color:var(--white)}
+.sec-h .r{color:var(--red)}
+.sec-h .g{color:var(--gold)}
+
+/* ── HERO ── */
+#hero{min-height:100vh;padding-top:76px;display:grid;grid-template-columns:1fr 1fr;
+  background:var(--bg);position:relative;overflow:hidden}
+@media(max-width:800px){#hero{grid-template-columns:1fr}}
+
+.hero-l{display:flex;flex-direction:column;justify-content:center;
+  padding:4rem 2.5rem 3rem;position:relative;z-index:2}
+.hero-pretag{font-size:.65rem;letter-spacing:.5em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.4rem;
+  animation:fadeUp .7s .8s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.hero-name{font-family:'Anton',sans-serif;font-size:clamp(4.5rem,9vw,8rem);
+  letter-spacing:.02em;line-height:.92;color:var(--white);
+  animation:fadeUp .8s .95s ease both}
+.hero-name .accent{-webkit-text-stroke:2px var(--red);color:transparent;display:block}
+.hero-name .solid{color:var(--white);display:block}
+.hero-name .gold-line{color:var(--gold);display:block}
+.hero-role{margin:1.5rem 0;animation:fadeUp .7s 1.1s ease both}
+.hero-role-text{font-family:'Marcellus',serif;font-style:italic;font-size:1rem;
+  color:var(--muted);letter-spacing:.04em}
+.hero-info-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;
+  margin-bottom:2rem;animation:fadeUp .7s 1.25s ease both}
+.hi{background:var(--bg2);border:1px solid var(--border);padding:.8rem .9rem}
+.hi-label{font-size:.58rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-bottom:.25rem}
+.hi-val{font-size:.82rem;font-weight:500;color:var(--white)}
+.hero-cta-row{display:flex;gap:.75rem;flex-wrap:wrap;animation:fadeUp .7s 1.4s ease both}
+.btn-primary{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+  background:var(--red);color:#fff;padding:.75rem 1.6rem;border:none;cursor:none;
+  transition:background .2s;text-decoration:none;display:inline-flex;align-items:center;gap:.5rem}
+.btn-primary:hover{background:var(--red2)}
+.btn-ghost{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+  background:transparent;color:var(--white);padding:.75rem 1.6rem;
+  border:1px solid var(--border);cursor:none;transition:border-color .2s;text-decoration:none}
+.btn-ghost:hover{border-color:var(--gold)}
+
+.hero-r{position:relative;background:var(--bg2);overflow:hidden;
+  display:flex;align-items:flex-end;justify-content:center;min-height:600px}
+@media(max-width:800px){.hero-r{min-height:380px}}
+.hero-r-overlay{position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(17,16,16,.9) 0%,transparent 50%),
+             linear-gradient(to right,rgba(17,16,16,.4) 0%,transparent 40%)}
+.hero-photo-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.hero-r-label{position:absolute;bottom:1.5rem;left:1.5rem;z-index:3}
+.hero-r-label-main{font-family:'Anton',sans-serif;font-size:1.8rem;letter-spacing:.06em;color:var(--white);line-height:1}
+.hero-r-label-sub{font-size:.65rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin-top:.3rem}
+.hr-ring{position:absolute;border-radius:50%;border:1px solid;pointer-events:none;animation:spin linear infinite}
+@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+
+.hero-stats{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);
+  gap:1px;background:var(--border);border-top:1px solid var(--border)}
+@media(max-width:680px){.hero-stats{grid-template-columns:repeat(2,1fr)}}
+.hs{background:var(--bg);padding:1.4rem 1.2rem;text-align:center;transition:background .25s}
+.hs:hover{background:var(--bg2)}
+.hs-n{font-family:'Anton',sans-serif;font-size:2.4rem;color:var(--gold);line-height:1;margin-bottom:.2rem}
+.hs-l{font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+/* ── ABOUT ── */
+#about{padding:7rem 0 5rem;background:var(--bg)}
+.about-grid{display:grid;grid-template-columns:1fr 380px;gap:5rem;align-items:start}
+@media(max-width:900px){.about-grid{grid-template-columns:1fr;gap:3rem}}
+.about-quote{font-family:'Marcellus',serif;font-style:italic;
+  font-size:clamp(1.05rem,2vw,1.25rem);line-height:1.9;color:var(--white);
+  padding-left:1.6rem;border-left:2px solid var(--red);margin-bottom:2.5rem}
+.about-body{font-size:.88rem;font-weight:300;line-height:1.95;color:var(--muted);margin-bottom:1.8rem}
+.lang-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:1.5rem}
+.lang-l{font-size:.62rem;letter-spacing:.35em;text-transform:uppercase;color:var(--faint);margin-right:.3rem}
+.lang-tag{font-size:.7rem;padding:.28rem .8rem;border:1px solid var(--border);
+  color:var(--muted);transition:all .2s;cursor:none}
+.lang-tag:hover{border-color:var(--gold);color:var(--gold)}
+
+.photo-frame{width:100%;aspect-ratio:3/4;background:var(--bg2);border:1px solid var(--border);
+  position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.photo-frame::before{content:'';position:absolute;left:0;top:0;width:3px;height:50%;
+  background:linear-gradient(to bottom,var(--red),var(--gold));z-index:2}
+.photo-frame-lbl{position:absolute;bottom:0;left:0;right:0;padding:1rem;
+  background:linear-gradient(to top,rgba(17,16,16,.85),transparent);
+  font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;
+  color:rgba(245,242,238,.5);text-align:center}
+.photo-mini-row{display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px}
+.photo-mini{aspect-ratio:1;background:var(--bg2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
+  background:var(--border);margin-top:4rem}
+@media(max-width:540px){.stats-strip{grid-template-columns:repeat(2,1fr)}}
+
+/* ── GENRES ── */
+#genres{padding:5rem 0;background:var(--bg2)}
+.genres-header{display:grid;grid-template-columns:auto 1fr;gap:3rem;align-items:end;margin-bottom:3.5rem}
+@media(max-width:680px){.genres-header{grid-template-columns:1fr;gap:1.5rem}}
+.genres-header-right{font-size:.85rem;font-weight:300;line-height:1.85;color:var(--muted);max-width:420px}
+.genres-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
+@media(max-width:700px){.genres-grid{grid-template-columns:1fr 1fr}}
+.gc{background:var(--bg2);padding:2rem 1.6rem;position:relative;overflow:hidden;cursor:none;transition:background .3s}
+.gc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--red),var(--gold));
+  transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.gc:hover{background:var(--bg3)}
+.gc:hover::after{transform:scaleX(1)}
+.gc-n{font-family:'Anton',sans-serif;font-size:3.5rem;color:rgba(245,242,238,.04);
+  line-height:1;margin-bottom:.4rem;transition:color .3s}
+.gc:hover .gc-n{color:rgba(196,37,53,.15)}
+.gc-name{font-family:'Anton',sans-serif;font-size:1.35rem;letter-spacing:.05em;color:var(--white);margin-bottom:.5rem}
+.gc-desc{font-size:.78rem;font-weight:300;color:var(--muted);line-height:1.65}
+.gc-pill{display:inline-block;margin-top:.9rem;font-size:.58rem;letter-spacing:.18em;
+  text-transform:uppercase;padding:.2rem .6rem;border:1px solid rgba(196,37,53,.35);color:rgba(196,37,53,.7)}
+
+/* ── EXPERIENCE ── */
+#exp{padding:6rem 0 5rem;background:var(--bg)}
+.exp-countries{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;
+  background:var(--border);margin-bottom:4rem}
+@media(max-width:680px){.exp-countries{grid-template-columns:1fr}}
+.ec{background:var(--bg);padding:2.2rem 1.8rem;transition:background .3s;cursor:none;position:relative}
+.ec::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--red),var(--gold));
+  transform:scaleX(0);transform-origin:left;transition:transform .4s}
+.ec:hover{background:var(--bg2)}
+.ec:hover::before{transform:scaleX(1)}
+.ec-flag{font-size:2.2rem;display:block;margin-bottom:.9rem}
+.ec-country{font-family:'Anton',sans-serif;font-size:1.5rem;letter-spacing:.05em;color:var(--white)}
+.ec-period{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin:.3rem 0 .7rem}
+.ec-text{font-size:.8rem;font-weight:300;line-height:1.7;color:var(--muted)}
+
+.exp-gallery{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:220px 220px;gap:4px;margin-bottom:4rem}
+@media(max-width:700px){.exp-gallery{grid-template-columns:1fr 1fr;grid-template-rows:180px 180px 180px}}
+.eg{background:var(--bg2);border:1px solid var(--border);position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;cursor:none;transition:border-color .25s}
+.eg:first-child{grid-row:1/3}
+.eg:hover{border-color:var(--gold)}
+.eg-lbl{position:absolute;bottom:0;left:0;right:0;padding:.7rem;
+  background:linear-gradient(to top,rgba(17,16,16,.8),transparent);
+  font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
+  color:rgba(245,242,238,.55);text-align:center;opacity:0;transition:opacity .3s}
+.eg:hover .eg-lbl{opacity:1}
+
+.div-sep{display:flex;align-items:center;gap:1rem;margin:0 0 3.5rem}
+.div-sep-line{flex:1;height:1px}
+.div-sep-line.l{background:linear-gradient(90deg,var(--red),transparent)}
+.div-sep-line.r{background:linear-gradient(90deg,transparent,var(--red))}
+.div-sep-diamond{width:6px;height:6px;background:var(--gold);transform:rotate(45deg);flex-shrink:0}
+
+.tl{position:relative;padding-left:3.2rem}
+.tl::before{content:'';position:absolute;left:0;top:6px;bottom:0;width:1px;
+  background:linear-gradient(to bottom,var(--red),transparent)}
+.tl-row{position:relative;padding-bottom:3rem}
+.tl-dot{position:absolute;left:-3.2rem;top:4px;width:10px;height:10px;
+  background:var(--bg);border:2px solid var(--red);border-radius:50%;transform:translateX(-4.5px)}
+.tl-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;border:1px solid rgba(196,37,53,.2)}
+.tl-tag{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:.25rem}
+.tl-role{font-family:'Marcellus',serif;font-size:1.15rem;color:var(--white);margin-bottom:.2rem}
+.tl-per{font-size:.68rem;letter-spacing:.15em;color:var(--faint);margin-bottom:.7rem}
+.tl-desc{font-size:.82rem;font-weight:300;line-height:1.8;color:var(--muted)}
+.tl-chips{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:.8rem}
+.tl-chip{font-size:.6rem;letter-spacing:.1em;padding:.18rem .55rem;border:1px solid var(--border);color:var(--faint)}
+
+/* ── SERVICES ── */
+#svc{padding:6rem 0 5rem;background:var(--bg2);position:relative;overflow:hidden}
+.svc-bg-word{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  font-family:'Anton',sans-serif;font-size:20vw;letter-spacing:.05em;
+  color:rgba(245,242,238,.018);white-space:nowrap;pointer-events:none}
+.svc-top{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:end;margin-bottom:3.5rem}
+@media(max-width:680px){.svc-top{grid-template-columns:1fr;gap:2rem}}
+.svc-intro-txt{font-family:'Marcellus',serif;font-style:italic;font-size:.95rem;
+  line-height:1.9;color:var(--muted);max-width:380px}
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:4rem}
+@media(max-width:700px){.svc-grid{grid-template-columns:1fr}}
+.si{background:var(--bg2);padding:2rem 1.8rem;position:relative;overflow:hidden;cursor:none;transition:background .3s}
+.si::before{content:'';position:absolute;left:0;top:0;bottom:0;width:2px;
+  background:linear-gradient(to bottom,var(--red),var(--gold));
+  transform:scaleY(0);transform-origin:top;transition:transform .4s}
+.si:hover{background:var(--bg3)}
+.si:hover::before{transform:scaleY(1)}
+.si-n{font-family:'Anton',sans-serif;font-size:3rem;color:rgba(245,242,238,.05);
+  line-height:1;margin-bottom:.6rem;transition:color .3s}
+.si:hover .si-n{color:rgba(196,37,53,.18)}
+.si-title{font-family:'Marcellus',serif;font-size:1rem;color:var(--white);margin-bottom:.45rem}
+.si-desc{font-size:.78rem;font-weight:300;color:var(--muted);line-height:1.75}
+
+.sk-lbl{font-size:.62rem;letter-spacing:.38em;text-transform:uppercase;color:var(--gold);display:block;margin-bottom:1.8rem}
+.sk-row{display:flex;align-items:center;gap:1.2rem;margin-bottom:1.2rem}
+.sk-name{font-size:.78rem;font-weight:300;color:var(--muted);min-width:150px}
+.sk-track{flex:1;height:1px;background:rgba(245,242,238,.07);position:relative}
+.sk-fill{position:absolute;left:0;top:0;height:100%;
+  background:linear-gradient(90deg,var(--red),var(--gold));
+  width:0;transition:width 1.4s cubic-bezier(.4,0,.2,1) .2s}
+.sk-track.animated .sk-fill{width:var(--w)}
+.sk-pct{font-size:.68rem;color:var(--faint);min-width:30px;text-align:right}
+
+/* ── CONTACT ── */
+#contact{padding:6rem 0 5rem;background:var(--bg)}
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start}
+@media(max-width:800px){.contact-layout{grid-template-columns:1fr;gap:3rem}}
+.c-intro{font-family:'Marcellus',serif;font-style:italic;font-size:1rem;
+  line-height:1.9;color:var(--muted);margin-bottom:2.5rem}
+.avail{display:inline-flex;align-items:center;gap:.6rem;padding:.5rem 1rem;
+  border:1px solid rgba(76,175,80,.25);background:rgba(76,175,80,.06);margin-bottom:2.5rem}
+.avail-dot{width:7px;height:7px;border-radius:50%;background:#4CAF50;
+  animation:pg 2s ease-in-out infinite}
+@keyframes pg{0%,100%{box-shadow:0 0 0 0 rgba(76,175,80,.4)}50%{box-shadow:0 0 0 8px rgba(76,175,80,0)}}
+.avail-txt{font-size:.68rem;letter-spacing:.2em;color:rgba(150,220,150,.7);text-transform:uppercase}
+.cc-list{display:grid;gap:1px;background:var(--border);margin-bottom:2rem}
+.cc-item{background:var(--bg);padding:1.2rem 1.4rem;transition:background .25s;cursor:none}
+.cc-item:hover{background:var(--bg2)}
+.cc-lbl{font-size:.58rem;letter-spacing:.35em;text-transform:uppercase;color:var(--red);margin-bottom:.3rem}
+.cc-val{font-size:.85rem;font-weight:300;color:var(--white)}
+.cc-val a{color:var(--white);text-decoration:none;border-bottom:1px solid var(--border);transition:border-color .2s}
+.cc-val a:hover{border-color:var(--gold)}
+.cta-col{display:flex;flex-direction:column;gap:.6rem}
+.cta{display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 1.5rem;text-decoration:none;font-size:.72rem;letter-spacing:.2em;
+  text-transform:uppercase;transition:all .3s;cursor:none;border:none}
+.cta.primary{background:var(--red);color:#fff}
+.cta.primary:hover{background:var(--red2)}
+.cta.secondary{background:transparent;color:var(--white);border:1px solid var(--border)}
+.cta.secondary:hover{border-color:var(--gold);background:rgba(201,160,48,.05)}
+
+.contact-card{background:var(--bg2);position:relative;overflow:hidden;border:1px solid var(--border)}
+.contact-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--red),var(--gold))}
+.cc-inner{padding:2.5rem}
+.cc-bigname{font-family:'Anton',sans-serif;font-size:2.8rem;letter-spacing:.04em;
+  color:var(--white);line-height:1;margin-bottom:.4rem}
+.cc-bigsub{font-size:.68rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);margin-bottom:2.5rem}
+.cc-data{border-top:1px solid var(--border)}
+.cd{display:flex;align-items:flex-start;gap:1rem;padding:1.2rem 0;border-bottom:1px solid var(--border)}
+.cd:last-child{border-bottom:none}
+.cd-icon{width:34px;height:34px;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.cd-lbl{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.2rem}
+.cd-val{font-size:.82rem;font-weight:300;color:var(--muted);line-height:1.5}
+.cd-val a{color:var(--muted);text-decoration:none}
+
+/* ── SOCIAL ── */
+#social{padding:6rem 0 5rem;background:var(--bg2)}
+.social-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;
+  background:var(--border);margin-top:3.5rem}
+@media(max-width:680px){.social-grid{grid-template-columns:1fr}}
+.social-card{background:var(--bg2);padding:3rem 2.5rem;display:flex;
+  flex-direction:column;gap:1.8rem;position:relative;overflow:hidden;
+  cursor:none;transition:background .3s;text-decoration:none}
+.social-card:hover{background:var(--bg3)}
+.social-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  transform:scaleX(0);transform-origin:left;transition:transform .45s ease}
+.social-card:hover::before{transform:scaleX(1)}
+.social-card.instagram::before{background:linear-gradient(90deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)}
+.social-card.tiktok::before{background:linear-gradient(90deg,#010101,#69C9D0,#EE1D52)}
+.sc-top{display:flex;align-items:center;justify-content:space-between}
+.sc-platform{display:flex;align-items:center;gap:1rem}
+.sc-icon{width:52px;height:52px;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:border-color .3s}
+.social-card:hover .sc-icon{border-color:var(--gold)}
+.sc-name{font-family:'Anton',sans-serif;font-size:1.6rem;letter-spacing:.05em;color:var(--white)}
+.sc-handle{font-size:.72rem;letter-spacing:.15em;color:var(--muted);margin-top:.15rem}
+.sc-arrow{font-size:1.4rem;color:var(--faint);transition:transform .3s,color .3s}
+.social-card:hover .sc-arrow{transform:translate(4px,-4px);color:var(--gold)}
+.sc-desc{font-size:.85rem;font-weight:300;line-height:1.8;color:var(--muted)}
+.sc-meta{display:flex;gap:2rem;flex-wrap:wrap}
+.sc-stat-n{font-family:'Anton',sans-serif;font-size:1.4rem;color:var(--gold);line-height:1}
+.sc-stat-l{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);margin-top:.15rem}
+.sc-cta{display:inline-flex;align-items:center;gap:.6rem;align-self:flex-start;
+  font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--white);
+  padding:.65rem 1.4rem;border:1px solid var(--border);transition:all .3s}
+.social-card:hover .sc-cta{border-color:var(--gold);color:var(--gold)}
+.sc-pending{display:inline-flex;align-items:center;gap:.5rem;align-self:flex-start;
+  font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
+  padding:.5rem 1rem;border:1px dashed rgba(245,242,238,.15);color:var(--faint)}
+.sc-pending-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);
+  animation:blink 1.4s ease-in-out infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* ── FOOTER ── */
+footer{background:var(--bg2);border-top:1px solid var(--border);
+  padding:1.8rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.f-brand{font-family:'Anton',sans-serif;font-size:1.1rem;letter-spacing:.12em;color:var(--faint)}
+.f-brand em{color:var(--red);font-style:normal}
+.f-copy{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--faint)}
+.f-socials{display:flex;gap:1.5rem;align-items:center}
+.f-social-link{font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(245,242,238,.28);text-decoration:none;transition:color .2s;cursor:none}
+.f-social-link:hover{color:rgba(245,242,238,.7)}
+.f-dot{color:rgba(245,242,238,.1)}
+
+/* ── BG PARTICLES ── */
+.bgp{position:fixed;border-radius:50%;pointer-events:none;z-index:1;animation:bgrise linear forwards}
+@keyframes bgrise{0%{transform:translateY(0) scale(0);opacity:0}8%{opacity:.6}
+  92%{opacity:.1}100%{transform:translateY(-100vh) scale(1.5);opacity:0}}
+
+/* ── CANVAS TRAIL ── */
+#trail-canvas{position:fixed;inset:0;pointer-events:none;z-index:2}
+</style>
+</head>
+<body>
+
+<div id="intro"><div class="intro-name">LAURA<br><span>SOFIA</span></div></div>
+<div id="cur"></div>
+<canvas id="trail-canvas"></canvas>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item">LAURA SOFIA CASTILLO <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">BAILARINA INTERNACIONAL <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">CALI · COLOMBIA <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">TURQUÍA · EGIPTO <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">COREÓGRAFA <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">20+ AÑOS EN ESCENA <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">DISPONIBLE INTERNACIONALMENTE <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">LAURA SOFIA CASTILLO <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">BAILARINA INTERNACIONAL <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">CALI · COLOMBIA <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">TURQUÍA · EGIPTO <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">COREÓGRAFA <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">20+ AÑOS EN ESCENA <span class="ticker-sep">✦</span></span>
+    <span class="ticker-item">DISPONIBLE INTERNACIONALMENTE <span class="ticker-sep">✦</span></span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <span class="nav-brand">LSC <em>·</em></span>
+  <div class="nav-links">
+    <a href="#about"   class="nl" data-s="about">Perfil</a>
+    <a href="#genres"  class="nl" data-s="genres">Géneros</a>
+    <a href="#exp"     class="nl" data-s="exp">Experiencia</a>
+    <a href="#svc"     class="nl" data-s="svc">Servicios</a>
+    <a href="#contact" class="nl" data-s="contact">Contacto</a>
+    <a href="#social"  class="nl" data-s="social">Redes</a>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-l">
+    <span class="hero-pretag">Catálogo artístico internacional · 2025</span>
+    <h1 class="hero-name">
+      <span class="accent">LAURA</span>
+      <span class="solid">SOFIA</span>
+      <span class="gold-line">CASTILLO</span>
+    </h1>
+    <div class="hero-role">
+      <span class="hero-role-text">Bailarina Internacional · Coreógrafa · Performer</span>
+    </div>
+    <div class="hero-info-row">
+      <div class="hi"><div class="hi-label">Ciudad</div><div class="hi-val">Cali, Colombia</div></div>
+      <div class="hi"><div class="hi-label">Edad</div><div class="hi-val">28 años</div></div>
+      <div class="hi"><div class="hi-label">Idiomas</div><div class="hi-val">ES · EN · AR</div></div>
+    </div>
+    <div class="hero-cta-row">
+      <a href="#contact" class="btn-primary">Contratar <span>→</span></a>
+      <a href="#about"   class="btn-ghost">Ver perfil</a>
+    </div>
+  </div>
+
+  <div class="hero-r">
+    <div class="hr-ring" style="width:480px;height:480px;border-color:rgba(196,37,53,.1);animation-duration:45s"></div>
+    <div class="hr-ring" style="width:340px;height:340px;border-color:rgba(200,168,75,.08);animation-duration:30s;animation-direction:reverse"></div>
+    <div class="hr-ring" style="width:210px;height:210px;border-color:rgba(245,242,238,.04);animation-duration:20s"></div>
+    <div class="hero-r-overlay"></div>
+    <div class="hero-photo-ph">
+      <svg width="300" height="460" viewBox="0 0 300 480" fill="none">
+        <ellipse cx="150" cy="468" rx="90" ry="14" fill="rgba(196,37,53,.12)"/>
+        <circle cx="150" cy="62" r="30" fill="rgba(245,242,238,.06)" stroke="rgba(245,242,238,.12)" stroke-width="1"/>
+        <path d="M132 46 Q106 12 82 40 Q70 62 88 82" stroke="rgba(245,242,238,.2)" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <path d="M168 46 Q192 8 216 36 Q228 58 220 78" stroke="rgba(245,242,238,.13)" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <path d="M140 58 Q146 53 150 55 Q154 53 160 58 Q154 52 150 53 Q146 52 140 58Z" fill="rgba(196,37,53,.9)"/>
+        <path d="M140 58 Q146 64 150 65 Q154 64 160 58 Q154 61 150 62 Q146 61 140 58Z" fill="rgba(196,37,53,.75)"/>
+        <rect x="144" y="90" width="12" height="20" rx="4" fill="rgba(245,242,238,.06)"/>
+        <path d="M118 110 Q110 130 114 162 L150 172 L186 162 Q190 130 182 110 Q167 100 150 99 Q133 100 118 110Z" fill="rgba(245,242,238,.05)" stroke="rgba(245,242,238,.1)" stroke-width="1"/>
+        <path d="M118 118 Q88 100 66 66 Q56 48 72 40" stroke="rgba(196,37,53,.85)" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <circle cx="73" cy="38" r="9" fill="rgba(245,242,238,.05)" stroke="rgba(196,37,53,.6)" stroke-width="1.5"/>
+        <path d="M182 122 Q214 138 248 126 Q264 120 272 108" stroke="rgba(200,168,75,.65)" stroke-width="11" stroke-linecap="round" fill="none"/>
+        <circle cx="274" cy="106" r="9" fill="rgba(245,242,238,.05)" stroke="rgba(200,168,75,.5)" stroke-width="1.5"/>
+        <path d="M112 160 Q92 228 76 302 Q60 358 68 406 Q88 430 124 434 Q140 436 150 433 Q160 436 176 434 Q212 430 232 406 Q240 358 224 302 Q208 228 188 160Z" fill="rgba(196,37,53,.1)" stroke="rgba(196,37,53,.18)" stroke-width="1"/>
+        <path d="M128 432 Q116 466 100 490 Q92 502 84 506" stroke="rgba(245,242,238,.18)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <path d="M172 432 Q184 464 200 488 Q208 500 218 504" stroke="rgba(245,242,238,.14)" stroke-width="8" stroke-linecap="round" fill="none"/>
+        <ellipse cx="86" cy="508" rx="18" ry="6" fill="rgba(196,37,53,.8)"/>
+        <ellipse cx="216" cy="506" rx="16" ry="5.5" fill="rgba(196,37,53,.65)"/>
+        <path d="M44 148 L46 141 L48 148 L55 150 L48 152 L46 159 L44 152 L37 150Z" fill="rgba(196,37,53,.55)"/>
+        <path d="M268 132 L270 126 L272 132 L279 134 L272 136 L270 143 L268 136 L261 134Z" fill="rgba(200,168,75,.5)"/>
+        <circle cx="56" cy="230" r="2.5" fill="rgba(196,37,53,.5)"/>
+        <circle cx="260" cy="268" r="2" fill="rgba(200,168,75,.45)"/>
+      </svg>
+    </div>
+    <div class="hero-r-label">
+      <div class="hero-r-label-main">PERFORMER</div>
+      <div class="hero-r-label-sub">Bailarina Internacional · Cali, Colombia</div>
+    </div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hs"><div class="hs-n">20+</div><div class="hs-l">Años bailando</div></div>
+    <div class="hs"><div class="hs-n">3</div><div class="hs-l">Países</div></div>
+    <div class="hs"><div class="hs-n">6</div><div class="hs-l">Géneros</div></div>
+    <div class="hs"><div class="hs-n">3</div><div class="hs-l">Idiomas</div></div>
+  </div>
+</section>
+
+<!-- ══ ABOUT ══ -->
+<section id="about">
+  <div class="wrap">
+    <div class="sec-tag up"><span class="sec-num">01</span><div class="sec-line"></div><span class="sec-txt">Perfil</span></div>
+    <h2 class="sec-h up" style="margin-bottom:3.5rem">Una vida <span class="r">dedicada</span><br>al baile</h2>
+    <div class="about-grid">
+      <div class="lft">
+        <p class="about-quote">"El baile no es solo movimiento — es emoción hecha cuerpo, cultura hecha arte. Desde mis primeros pasos a los 8 años en Cali hasta los escenarios de Turquía y Egipto, cada presentación es una historia que cuento con mi cuerpo."</p>
+        <p class="about-body">Colombiana de Cali, ciudad que respira salsa y ritmo en cada esquina. Empecé a bailar a los 8 años y desde entonces el escenario ha sido mi hogar. Mi carrera me ha llevado desde las discotecas más icónicas de Cali — La Pérgola, Terraza, Bar 10-60 — hasta agencias internacionales en Turquía y Egipto, acumulando una experiencia multicultural única.</p>
+        <p class="about-body">Cuento con experiencia en discotecas, conciertos con artistas reconocidos, videos musicales, hoteles 5 estrellas y eventos privados de lujo. Soy creadora de coreografías, bailarina freestyle y performer de alto impacto visual.</p>
+        <div class="lang-row">
+          <span class="lang-l">Idiomas</span>
+          <span class="lang-tag">🇨🇴 Español</span>
+          <span class="lang-tag">🇬🇧 English</span>
+          <span class="lang-tag">🇸🇦 عربي</span>
+        </div>
+      </div>
+      <div class="rgt">
+        <div class="photo-frame">
+          <svg width="100%" height="100%" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid meet">
+            <rect width="300" height="400" fill="#1A1918"/>
+            <defs><radialGradient id="pg" cx="50%" cy="35%" r="55%"><stop offset="0%" stop-color="rgba(196,37,53,0.09)"/><stop offset="100%" stop-color="transparent"/></radialGradient></defs>
+            <rect width="300" height="400" fill="url(#pg)"/>
+            <circle cx="150" cy="90" r="38" fill="rgba(245,242,238,0.06)" stroke="rgba(245,242,238,0.12)" stroke-width="1"/>
+            <path d="M130 54 Q106 18 82 46 Q70 68 88 90" stroke="rgba(245,242,238,0.2)" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M138 82 Q144 76 150 79 Q156 76 162 82 Q156 75 150 77 Q144 75 138 82Z" fill="rgba(196,37,53,.85)"/>
+            <path d="M138 82 Q144 88 150 90 Q156 88 162 82 Q156 86 150 87 Q144 86 138 82Z" fill="rgba(196,37,53,.7)"/>
+            <rect x="144" y="126" width="12" height="18" rx="4" fill="rgba(245,242,238,0.06)"/>
+            <path d="M108 144 Q98 166 102 200 L150 212 L198 200 Q202 166 192 144 Q178 134 150 132 Q122 134 108 144Z" fill="rgba(245,242,238,0.04)" stroke="rgba(245,242,238,0.08)" stroke-width="1"/>
+            <path d="M108 152 Q80 138 64 110" stroke="rgba(196,37,53,.55)" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <path d="M192 152 Q220 138 236 112" stroke="rgba(200,168,75,.42)" stroke-width="7" stroke-linecap="round" fill="none"/>
+            <path d="M102 198 Q80 262 82 334 L110 352 L150 358 L190 352 L218 334 Q220 262 198 198Z" fill="rgba(196,37,53,.07)" stroke="rgba(196,37,53,.12)" stroke-width="1"/>
+            <path d="M116 350 Q108 372 104 392" stroke="rgba(196,37,53,.55)" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <path d="M184 350 Q192 372 196 392" stroke="rgba(196,37,53,.42)" stroke-width="5" stroke-linecap="round" fill="none"/>
+            <ellipse cx="106" cy="394" rx="14" ry="5" fill="rgba(196,37,53,.5)"/>
+            <ellipse cx="194" cy="394" rx="12" ry="4.5" fill="rgba(196,37,53,.4)"/>
+            <text x="150" y="395" text-anchor="middle" font-family="sans-serif" font-size="8" letter-spacing="4" fill="rgba(245,242,238,0.35)">FOTO PRINCIPAL</text>
+          </svg>
+          <div class="photo-frame-lbl">Reemplazar con foto real</div>
+        </div>
+        <div class="photo-mini-row">
+          <div class="photo-mini">
+            <svg width="100%" height="100%" viewBox="0 0 130 130"><rect width="130" height="130" fill="#1A1918"/><circle cx="65" cy="44" r="22" fill="rgba(245,242,238,0.05)" stroke="rgba(245,242,238,0.1)" stroke-width="1"/><path d="M43 66 Q38 92 41 118 L65 124 L89 118 Q92 92 87 66Z" fill="rgba(245,242,238,0.04)"/><path d="M40 74 Q24 64 18 46" stroke="rgba(196,37,53,.4)" stroke-width="5" stroke-linecap="round" fill="none"/><text x="65" y="128" text-anchor="middle" font-family="sans-serif" font-size="7" letter-spacing="3" fill="rgba(245,242,238,0.28)">FOTO 2</text></svg>
+          </div>
+          <div class="photo-mini">
+            <svg width="100%" height="100%" viewBox="0 0 130 130"><rect width="130" height="130" fill="#1A1918"/><circle cx="65" cy="42" r="20" fill="rgba(245,242,238,0.04)" stroke="rgba(245,242,238,0.08)" stroke-width="1"/><path d="M45 62 Q40 88 43 114 L65 120 L87 114 Q90 88 85 62Z" fill="rgba(245,242,238,0.03)"/><path d="M87 70 Q104 62 110 44" stroke="rgba(200,168,75,.35)" stroke-width="5" stroke-linecap="round" fill="none"/><text x="65" y="128" text-anchor="middle" font-family="sans-serif" font-size="7" letter-spacing="3" fill="rgba(245,242,238,0.22)">FOTO 3</text></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stats-strip up">
+      <div class="hs"><div class="hs-n">20+</div><div class="hs-l">Años bailando</div></div>
+      <div class="hs"><div class="hs-n">28</div><div class="hs-l">Años · Cali</div></div>
+      <div class="hs"><div class="hs-n">3</div><div class="hs-l">Países</div></div>
+      <div class="hs"><div class="hs-n">+2</div><div class="hs-l">Años exterior</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ GENRES ══ -->
+<section id="genres">
+  <div class="wrap">
+    <div class="genres-header">
+      <div>
+        <div class="sec-tag up"><span class="sec-num">02</span><div class="sec-line"></div><span class="sec-txt">Géneros</span></div>
+        <h2 class="sec-h up">Mi <span class="r">repertorio</span></h2>
+      </div>
+      <p class="genres-header-right up">Domino múltiples estilos con la misma intensidad. Cada género es un idioma diferente. Siempre abierta a aprender nuevos géneros y adaptarme a cualquier proyecto artístico.</p>
+    </div>
+    <div class="genres-grid up">
+      <div class="gc"><div class="gc-n">01</div><div class="gc-name">Urbano</div><div class="gc-desc">Hip-hop, dancehall y street styles. Actitud cruda y potencia escénica auténtica.</div><span class="gc-pill">Street · Club</span></div>
+      <div class="gc"><div class="gc-n">02</div><div class="gc-name">Pop</div><div class="gc-desc">Performances de alto impacto visual. Dinámicas y versátiles para shows y conciertos.</div><span class="gc-pill">Shows · Conciertos</span></div>
+      <div class="gc"><div class="gc-n">03</div><div class="gc-name">Afrodance</div><div class="gc-desc">Raíces africanas, energía pura. Conexión profunda con el ritmo ancestral y cultural.</div><span class="gc-pill">Cultural</span></div>
+      <div class="gc"><div class="gc-n">04</div><div class="gc-name">Latín</div><div class="gc-desc">Salsa caleña, cumbia y ritmos latinos en su máxima expresión. La sangre de Cali.</div><span class="gc-pill">Salsa · Cumbia</span></div>
+      <div class="gc"><div class="gc-n">05</div><div class="gc-name">Gogo</div><div class="gc-desc">Showgirl y club performance de alto perfil. Presencia escénica inigualable.</div><span class="gc-pill">Showgirl · Venues</span></div>
+      <div class="gc"><div class="gc-n">06</div><div class="gc-name">Freestyle</div><div class="gc-desc">Improvisación y expresión libre — el cuerpo habla sin guión, sin límites.</div><span class="gc-pill">Improv · Libre</span></div>
+    </div>
+    <p style="text-align:center;font-family:'Marcellus',serif;font-style:italic;font-size:.9rem;color:var(--faint);margin-top:2rem" class="up">+ Abierta a aprender nuevos géneros · adaptable a cualquier proyecto</p>
+  </div>
+</section>
+
+<!-- ══ EXPERIENCE ══ -->
+<section id="exp">
+  <div class="wrap">
+    <div class="sec-tag up"><span class="sec-num">03</span><div class="sec-line"></div><span class="sec-txt">Trayectoria</span></div>
+    <h2 class="sec-h up" style="margin-bottom:3rem">Experiencia <span class="r">internacional</span></h2>
+    <div class="exp-countries up">
+      <div class="ec"><span class="ec-flag">🇪🇬</span><div class="ec-country">Egipto</div><div class="ec-period">1 año y 1 mes</div><div class="ec-text">Shows de alto nivel en el mercado árabe. Hoteles 5★, clubs y eventos con agencia internacional.</div></div>
+      <div class="ec"><span class="ec-flag">🇹🇷</span><div class="ec-country">Turquía</div><div class="ec-period">5 meses</div><div class="ec-text">Temporada con agencia especializada. Venues exclusivos, hoteles de lujo y eventos privados.</div></div>
+      <div class="ec"><span class="ec-flag">🇨🇴</span><div class="ec-country">Colombia</div><div class="ec-period">Desde los 8 años</div><div class="ec-text">Discotecas icónicas en Cali, conciertos con artistas, videos musicales y eventos corporativos.</div></div>
+    </div>
+    <div class="exp-gallery up">
+      <div class="eg">
+        <svg width="100%" height="100%" viewBox="0 0 200 440" preserveAspectRatio="xMidYMid meet"><rect width="200" height="440" fill="#1A1918"/><circle cx="100" cy="95" r="30" fill="rgba(245,242,238,0.05)" stroke="rgba(245,242,238,0.1)" stroke-width="1"/><path d="M70 125 Q62 160 65 220 L100 234 L135 220 Q138 160 130 125Z" fill="rgba(196,37,53,0.07)"/><path d="M62 136 Q42 124 36 100" stroke="rgba(196,37,53,.4)" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M138 136 Q158 124 164 102" stroke="rgba(200,168,75,.32)" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M75 228 Q64 278 68 340" stroke="rgba(245,242,238,0.14)" stroke-width="6" stroke-linecap="round" fill="none"/><path d="M125 228 Q136 278 132 340" stroke="rgba(245,242,238,0.11)" stroke-width="6" stroke-linecap="round" fill="none"/><ellipse cx="70" cy="343" rx="14" ry="5" fill="rgba(196,37,53,.45)"/><ellipse cx="130" cy="343" rx="12" ry="4.5" fill="rgba(196,37,53,.35)"/><text x="100" y="432" text-anchor="middle" font-family="sans-serif" font-size="8" letter-spacing="3" fill="rgba(245,242,238,.28)">FOTO 1</text></svg>
+        <div class="eg-lbl">Performance</div>
+      </div>
+      <div class="eg"><svg width="100%" height="100%" viewBox="0 0 180 220" preserveAspectRatio="xMidYMid meet"><rect width="180" height="220" fill="#1A1918"/><circle cx="90" cy="56" r="26" fill="rgba(245,242,238,0.05)" stroke="rgba(245,242,238,0.09)" stroke-width="1"/><path d="M64 82 Q58 114 62 158 L90 168 L118 158 Q122 114 116 82Z" fill="rgba(245,242,238,0.04)"/><path d="M60 92 Q42 82 36 60" stroke="rgba(196,37,53,.38)" stroke-width="5" stroke-linecap="round" fill="none"/><text x="90" y="212" text-anchor="middle" font-family="sans-serif" font-size="7" letter-spacing="3" fill="rgba(245,242,238,.25)">FOTO 2</text></svg><div class="eg-lbl">Egipto</div></div>
+      <div class="eg"><svg width="100%" height="100%" viewBox="0 0 180 220" preserveAspectRatio="xMidYMid meet"><rect width="180" height="220" fill="#1A1918"/><circle cx="90" cy="54" r="24" fill="rgba(245,242,238,0.04)" stroke="rgba(245,242,238,0.08)" stroke-width="1"/><path d="M66 78 Q60 110 64 154 L90 164 L116 154 Q120 110 114 78Z" fill="rgba(245,242,238,0.03)"/><path d="M116 86 Q134 76 140 56" stroke="rgba(200,168,75,.3)" stroke-width="5" stroke-linecap="round" fill="none"/><text x="90" y="212" text-anchor="middle" font-family="sans-serif" font-size="7" letter-spacing="3" fill="rgba(245,242,238,.22)">FOTO 3</text></svg><div class="eg-lbl">Turquía</div></div>
+      <div class="eg"><svg width="100%" height="100%" viewBox="0 0 180 220" preserveAspectRatio="xMidYMid meet"><rect width="180" height="220" fill="#1A1918"/><circle cx="90" cy="54" r="25" fill="rgba(245,242,238,0.05)" stroke="rgba(245,242,238,0.09)" stroke-width="1"/><path d="M65 79 Q58 112 62 156 L90 166 L118 156 Q122 112 115 79Z" fill="rgba(196,37,53,0.06)"/><path d="M60 88 Q42 78 36 58" stroke="rgba(196,37,53,.34)" stroke-width="5" stroke-linecap="round" fill="none"/><text x="90" y="212" text-anchor="middle" font-family="sans-serif" font-size="7" letter-spacing="3" fill="rgba(245,242,238,.22)">FOTO 4</text></svg><div class="eg-lbl">Cali</div></div>
+      <div class="eg"><svg width="100%" height="100%" viewBox="0 0 180 220" preserveAspectRatio="xMidYMid meet"><rect width="180" height="220" fill="#1A1918"/><circle cx="90" cy="52" r="22" fill="rgba(245,242,238,0.04)" stroke="rgba(245,242,238,0.07)" stroke-width="1"/><path d="M68 74 Q62 106 66 150 L90 160 L114 150 Q118 106 112 74Z" fill="rgba(245,242,238,0.03)"/><text x="90" y="212" text-anchor="middle" font-family="sans-serif" font-size="7" letter-spacing="3" fill="rgba(245,242,238,.18)">FOTO 5</text></svg><div class="eg-lbl">Show</div></div>
+    </div>
+    <div class="div-sep up">
+      <div class="div-sep-line l"></div>
+      <div class="div-sep-diamond"></div>
+      <div class="div-sep-line r"></div>
+    </div>
+    <div class="tl up">
+      <div class="tl-row">
+        <div class="tl-dot"></div>
+        <div class="tl-tag">🇪🇬 Egipto</div>
+        <div class="tl-role">Bailarina con Agencia Internacional</div>
+        <div class="tl-per">1 año y 1 mes</div>
+        <div class="tl-desc">Actuaciones de alto nivel en venues internacionales del mercado árabe. Experiencia intercultural en shows, hoteles 5★ y eventos de lujo. Dominio del árabe adquirido en contexto real.</div>
+        <div class="tl-chips"><span class="tl-chip">Shows en vivo</span><span class="tl-chip">Hoteles 5★</span><span class="tl-chip">Agencia internacional</span></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-dot"></div>
+        <div class="tl-tag">🇹🇷 Turquía</div>
+        <div class="tl-role">Bailarina con Agencia Internacional</div>
+        <div class="tl-per">5 meses</div>
+        <div class="tl-desc">Temporada artística con agencia especializada. Hoteles exclusivos, clubs y eventos privados en uno de los mercados más exigentes de Europa.</div>
+        <div class="tl-chips"><span class="tl-chip">Entretenimiento</span><span class="tl-chip">Eventos privados</span><span class="tl-chip">Clubs</span></div>
+      </div>
+      <div class="tl-row">
+        <div class="tl-dot"></div>
+        <div class="tl-tag">🇨🇴 Colombia — Cali</div>
+        <div class="tl-role">Bailarina Profesional</div>
+        <div class="tl-per">Desde los 8 años</div>
+        <div class="tl-desc">Amplia trayectoria en la capital mundial de la salsa. La Pérgola, Terraza, Bar 10-60. Conciertos con artistas, videos musicales y eventos corporativos.</div>
+        <div class="tl-chips"><span class="tl-chip">La Pérgola</span><span class="tl-chip">Terraza</span><span class="tl-chip">Bar 10-60</span><span class="tl-chip">Conciertos</span><span class="tl-chip">Videos musicales</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICES ══ -->
+<section id="svc">
+  <div class="svc-bg-word">DANCE</div>
+  <div class="wrap">
+    <div class="svc-top">
+      <div>
+        <div class="sec-tag up"><span class="sec-num">04</span><div class="sec-line"></div><span class="sec-txt">Servicios</span></div>
+        <h2 class="sec-h up">Lo que <span class="g">ofrezco</span></h2>
+      </div>
+      <p class="svc-intro-txt up">"Cada proyecto es único. Traigo más de dos décadas de experiencia escénica, dominio de múltiples géneros, y la capacidad de adaptarme a cualquier formato, producción o mercado cultural."</p>
+    </div>
+    <div class="svc-grid up">
+      <div class="si"><div class="si-n">01</div><div class="si-title">Creación de coreografías</div><div class="si-desc">Diseño y montaje de coreografías personalizadas para artistas, grupos y eventos.</div></div>
+      <div class="si"><div class="si-n">02</div><div class="si-title">Shows para hoteles y resorts</div><div class="si-desc">Animación y entretenimiento de alto nivel para hospedajes nacionales e internacionales.</div></div>
+      <div class="si"><div class="si-n">03</div><div class="si-title">Eventos privados y corporativos</div><div class="si-desc">Performances únicas para bodas, lanzamientos, galas y celebraciones especiales.</div></div>
+      <div class="si"><div class="si-n">04</div><div class="si-title">Videos musicales</div><div class="si-desc">Participación como bailarina protagonista o backing en producciones musicales.</div></div>
+      <div class="si"><div class="si-n">05</div><div class="si-title">Gogo y club performance</div><div class="si-desc">Shows en discotecas, festivales y venues nocturnos de alto perfil.</div></div>
+      <div class="si"><div class="si-n">06</div><div class="si-title">Conciertos y giras artísticas</div><div class="si-desc">Disponibilidad para viajar nacional e internacionalmente con equipos artísticos.</div></div>
+    </div>
+    <div class="up">
+      <span class="sk-lbl">Habilidades clave</span>
+      <div class="sk-row"><span class="sk-name">Coreografía</span><div class="sk-track" style="--w:95%"><div class="sk-fill"></div></div><span class="sk-pct">95%</span></div>
+      <div class="sk-row"><span class="sk-name">Stage presence</span><div class="sk-track" style="--w:98%"><div class="sk-fill"></div></div><span class="sk-pct">98%</span></div>
+      <div class="sk-row"><span class="sk-name">Freestyle</span><div class="sk-track" style="--w:90%"><div class="sk-fill"></div></div><span class="sk-pct">90%</span></div>
+      <div class="sk-row"><span class="sk-name">Adaptación cultural</span><div class="sk-track" style="--w:97%"><div class="sk-fill"></div></div><span class="sk-pct">97%</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="wrap">
+    <div class="sec-tag up"><span class="sec-num">05</span><div class="sec-line"></div><span class="sec-txt">Contacto</span></div>
+    <h2 class="sec-h up" style="margin-bottom:3.5rem">Trabajemos <span class="g">juntos</span></h2>
+    <div class="contact-layout">
+      <div class="lft">
+        <p class="c-intro">Disponible para proyectos nacionales e internacionales. Si tienes un show, evento, producción o temporada en mente — escríbeme. Hablo español, inglés y árabe.</p>
+        <div class="avail"><div class="avail-dot"></div><span class="avail-txt">Disponible para contratación</span></div>
+        <div class="cc-list">
+          <div class="cc-item"><div class="cc-lbl">Correo electrónico</div><div class="cc-val"><a href="mailto:laurasofiacastillo24@gmail.com">laurasofiacastillo24@gmail.com</a></div></div>
+          <div class="cc-item"><div class="cc-lbl">WhatsApp Colombia</div><div class="cc-val"><a href="https://wa.me/573002088189" target="_blank">+57 300 208 8189</a></div></div>
+          <div class="cc-item"><div class="cc-lbl">WhatsApp Egipto</div><div class="cc-val"><a href="https://wa.me/201156378377" target="_blank">+20 115 637 8377</a></div></div>
+          <div class="cc-item"><div class="cc-lbl">Contacto adicional</div><div class="cc-val">33 746 388 342</div></div>
+        </div>
+        <div class="cta-col">
+          <a class="cta primary" href="https://wa.me/573002088189" target="_blank">Contratar por WhatsApp <span>→</span></a>
+          <a class="cta secondary" href="mailto:laurasofiacastillo24@gmail.com">Enviar correo <span>→</span></a>
+        </div>
+      </div>
+      <div class="rgt">
+        <div class="contact-card">
+          <div class="cc-inner">
+            <div class="cc-bigname">LAURA SOFIA<br>CASTILLO</div>
+            <div class="cc-bigsub">Bailarina Internacional · Cali, Colombia</div>
+            <div style="display:flex;justify-content:center;padding:1.5rem 0">
+              <svg width="110" height="150" viewBox="0 0 110 160" fill="none">
+                <circle cx="55" cy="26" r="18" fill="rgba(245,242,238,0.06)" stroke="rgba(245,242,238,0.1)" stroke-width="1"/>
+                <path d="M47 21 Q51 17 55 19 Q59 17 63 21 Q59 16 55 17 Q51 16 47 21Z" fill="rgba(196,37,53,.85)"/>
+                <path d="M47 21 Q51 26 55 27 Q59 26 63 21 Q59 24 55 25 Q51 24 47 21Z" fill="rgba(196,37,53,.7)"/>
+                <path d="M40 44 Q34 58 36 76 L55 84 L74 76 Q76 58 70 44 Q63 36 55 35 Q47 36 40 44Z" fill="rgba(245,242,238,0.04)" stroke="rgba(245,242,238,0.08)" stroke-width="1"/>
+                <path d="M40 50 Q26 42 18 26" stroke="rgba(196,37,53,.75)" stroke-width="7" stroke-linecap="round" fill="none"/>
+                <path d="M70 50 Q86 42 94 28" stroke="rgba(200,168,75,.55)" stroke-width="7" stroke-linecap="round" fill="none"/>
+                <path d="M36 74 Q28 108 30 138 L55 146 L80 138 Q82 108 74 74Z" fill="rgba(196,37,53,.08)" stroke="rgba(196,37,53,.14)" stroke-width="1"/>
+                <path d="M40 137 Q34 150 32 158" stroke="rgba(245,242,238,.14)" stroke-width="4" stroke-linecap="round" fill="none"/>
+                <path d="M70 137 Q76 150 78 158" stroke="rgba(245,242,238,.11)" stroke-width="4" stroke-linecap="round" fill="none"/>
+                <ellipse cx="33" cy="159" rx="9" ry="3.5" fill="rgba(196,37,53,.6)"/>
+                <ellipse cx="77" cy="159" rx="8" ry="3" fill="rgba(196,37,53,.45)"/>
+              </svg>
+            </div>
+            <div class="cc-data">
+              <div class="cd">
+                <div class="cd-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M7.5 1Q4.5 5 4.5 7.5Q4.5 11 7.5 14Q10.5 11 10.5 7.5Q10.5 5 7.5 1Z" stroke="rgba(200,168,75,.7)" stroke-width="1" fill="none"/><circle cx="7.5" cy="7.5" r="2" fill="rgba(200,168,75,.45)"/></svg></div>
+                <div><div class="cd-lbl">Ubicación</div><div class="cd-val">Cali, Colombia · Internacional</div></div>
+              </div>
+              <div class="cd">
+                <div class="cd-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="5.5" stroke="rgba(200,168,75,.6)" stroke-width="1" fill="none"/><path d="M7.5 4L7.5 7.5L10.5 9.5" stroke="rgba(200,168,75,.7)" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                <div><div class="cd-lbl">Experiencia</div><div class="cd-val">20+ años · 3 países · Coreógrafa</div></div>
+              </div>
+              <div class="cd">
+                <div class="cd-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><path d="M2 11.5Q2 4 7.5 2Q13 4 13 11.5" stroke="rgba(200,168,75,.6)" stroke-width="1" fill="none"/><line x1="1" y1="11.5" x2="14" y2="11.5" stroke="rgba(200,168,75,.4)" stroke-width="1" stroke-linecap="round"/></svg></div>
+                <div><div class="cd-lbl">Idiomas</div><div class="cd-val">Español · English · عربي</div></div>
+              </div>
+              <div class="cd">
+                <div class="cd-icon"><svg width="15" height="15" viewBox="0 0 15 15" fill="none"><rect x="1.5" y="3" width="12" height="9" rx="1.5" stroke="rgba(200,168,75,.6)" stroke-width="1" fill="none"/><path d="M1.5 6L7.5 9.5L13.5 6" stroke="rgba(200,168,75,.4)" stroke-width="1" stroke-linecap="round"/></svg></div>
+                <div><div class="cd-lbl">Email</div><div class="cd-val"><a href="mailto:laurasofiacastillo24@gmail.com">laurasofiacastillo24@gmail.com</a></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SOCIAL ══ -->
+<section id="social">
+  <div class="wrap">
+    <div class="sec-tag up"><span class="sec-num">06</span><div class="sec-line"></div><span class="sec-txt">Redes Sociales</span></div>
+    <h2 class="sec-h up">Sígueme <span class="r">en redes</span></h2>
+    <div class="social-grid up">
+
+      <!-- INSTAGRAM -->
+      <a class="social-card instagram" href="https://www.instagram.com/elmundodeesofi/" target="_blank" rel="noopener">
+        <div class="sc-top">
+          <div class="sc-platform">
+            <div class="sc-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <rect x="2" y="2" width="20" height="20" rx="5.5" stroke="rgba(245,242,238,.6)" stroke-width="1.5" fill="none"/>
+                <circle cx="12" cy="12" r="4.5" stroke="rgba(245,242,238,.6)" stroke-width="1.5" fill="none"/>
+                <circle cx="17.5" cy="6.5" r="1.2" fill="rgba(245,242,238,.6)"/>
+              </svg>
+            </div>
+            <div>
+              <div class="sc-name">Instagram</div>
+              <div class="sc-handle">@elmundodeesofi</div>
+            </div>
+          </div>
+          <span class="sc-arrow">↗</span>
+        </div>
+        <p class="sc-desc">Contenido exclusivo de mis shows, entrenamientos, viajes artísticos y vida detrás del escenario. Sígueme para ver el mundo de Sofia.</p>
+        <div class="sc-meta">
+          <div class="sc-stat"><div class="sc-stat-n">✦</div><div class="sc-stat-l">Contenido diario</div></div>
+          <div class="sc-stat"><div class="sc-stat-n">✦</div><div class="sc-stat-l">Shows y backstage</div></div>
+          <div class="sc-stat"><div class="sc-stat-n">✦</div><div class="sc-stat-l">Reels de baile</div></div>
+        </div>
+        <span class="sc-cta">Ver perfil en Instagram →</span>
+      </a>
+
+      <!-- TIKTOK -->
+      <div class="social-card tiktok">
+        <div class="sc-top">
+          <div class="sc-platform">
+            <div class="sc-icon">
+              <svg width="22" height="24" viewBox="0 0 22 26" fill="none">
+                <path d="M16 1C16.5 4 18.5 6 21 6.5V10.5C19 10.5 17.2 9.9 15.8 8.9V17C15.8 21.4 12.2 25 7.8 25C3.4 25 0 21.4 0 17C0 12.6 3.4 9 7.8 9C8.3 9 8.7 9.05 9.1 9.1V13.2C8.7 13.1 8.3 13 7.8 13C5.6 13 3.8 14.8 3.8 17C3.8 19.2 5.6 21 7.8 21C10 21 11.8 19.3 11.8 17.1V1H16Z" stroke="rgba(245,242,238,.6)" stroke-width="1.2" fill="none"/>
+              </svg>
+            </div>
+            <div>
+              <div class="sc-name">TikTok</div>
+              <div class="sc-handle">Próximamente</div>
+            </div>
+          </div>
+          <span class="sc-arrow" style="opacity:.3">↗</span>
+        </div>
+        <p class="sc-desc">Videos cortos de coreografías, tendencias de baile y momentos únicos en escena. El enlace estará disponible muy pronto.</p>
+        <div class="sc-meta">
+          <div class="sc-stat"><div class="sc-stat-n">✦</div><div class="sc-stat-l">Coreografías</div></div>
+          <div class="sc-stat"><div class="sc-stat-n">✦</div><div class="sc-stat-l">Tendencias</div></div>
+          <div class="sc-stat"><div class="sc-stat-n">✦</div><div class="sc-stat-l">Clips en vivo</div></div>
+        </div>
+        <div class="sc-pending"><span class="sc-pending-dot"></span>Enlace próximamente disponible</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <span class="f-brand">LSC <em>·</em> Bailarina</span>
+  <div class="f-socials">
+    <a href="https://www.instagram.com/elmundodeesofi/" target="_blank" rel="noopener" class="f-social-link">Instagram</a>
+    <span class="f-dot">·</span>
+    <span class="f-social-link" style="cursor:default;opacity:.5">TikTok</span>
+  </div>
+  <span class="f-copy">Laura Sofia Castillo · Cali, Colombia · 2025</span>
+</footer>
+
+<script>
+/* CURSOR */
+const cur = document.getElementById('cur');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top  = e.clientY + 'px';
+});
+document.querySelectorAll('a,button,.gc,.si,.ec,.eg,.cc-item,.hs,.social-card').forEach(el => {
+  el.addEventListener('mouseenter', () => cur.classList.add('xl'));
+  el.addEventListener('mouseleave', () => cur.classList.remove('xl'));
+});
+
+/* SCROLL REVEAL */
+const ro = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('show');
+      e.target.querySelectorAll('.sk-track').forEach(t => t.classList.add('animated'));
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.up,.lft,.rgt').forEach(el => ro.observe(el));
+
+/* SKILL BARS */
+const sro = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('animated'); });
+}, { threshold: 0.3 });
+document.querySelectorAll('.sk-track').forEach(t => sro.observe(t));
+
+/* ACTIVE NAV */
+document.querySelectorAll('section[id]').forEach(sec => {
+  new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        document.querySelectorAll('.nl').forEach(l => l.classList.remove('on'));
+        const a = document.querySelector(`.nl[data-s="${e.target.id}"]`);
+        if (a) a.classList.add('on');
+      }
+    });
+  }, { threshold: 0.35 }).observe(sec);
+});
+
+/* MOUSE TRAIL */
+const cv = document.getElementById('trail-canvas');
+const ctx = cv.getContext('2d');
+function rsz() { cv.width = window.innerWidth; cv.height = window.innerHeight; }
+rsz();
+window.addEventListener('resize', rsz);
+const pts = [];
+document.addEventListener('mousemove', e => pts.push({ x: e.clientX, y: e.clientY, t: Date.now() }));
+(function loop() {
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  const now = Date.now();
+  for (let i = 1; i < pts.length; i++) {
+    const p = pts[i], pp = pts[i-1], age = (now - p.t) / 500;
+    if (age > 1) { pts.splice(0, i); break; }
+    ctx.beginPath(); ctx.moveTo(pp.x, pp.y); ctx.lineTo(p.x, p.y);
+    ctx.strokeStyle = `rgba(196,37,53,${(1-age) * .09})`;
+    ctx.lineWidth = (1-age) * 2;
+    ctx.stroke();
+  }
+  requestAnimationFrame(loop);
+})();
+
+/* BG PARTICLES */
+const bst = document.createElement('style');
+bst.textContent = `@keyframes bgrise{0%{transform:translateY(0) scale(0);opacity:0}8%{opacity:.6}92%{opacity:.1}100%{transform:translateY(-100vh) scale(1.5);opacity:0}}`;
+document.head.appendChild(bst);
+setInterval(() => {
+  const p = document.createElement('div');
+  p.className = 'bgp';
+  const s = 1 + Math.random() * 2.5;
+  const c = Math.random() > .5 ? 'rgba(196,37,53,' : 'rgba(200,168,75,';
+  p.style.cssText = `left:${Math.random()*100}vw;bottom:-3px;width:${s}px;height:${s}px;background:${c}${.12+Math.random()*.28});animation-duration:${7+Math.random()*13}s`;
+  document.body.appendChild(p);
+  setTimeout(() => p.remove(), (7 + Math.random() * 13) * 1000);
+}, 500);
+</script>
+</body>
+</html>
