@@ -3,19 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Calculadora de Rentabilidad</title>
+    <title>Calculadora - Tu Ruta Financiera</title>
     <style>
         :root {
-            --bg-dark: #09090b;
-            --card-bg: #18181b;
-            --border-color: #27272a;
-            --text-main: #f4f4f5;
-            --text-muted: #a1a1aa;
-            --accent: #3b82f6;
-            --accent-glow: rgba(59, 130, 246, 0.2);
-            --success: #22c55e;
-            --warning: #eab308;
-            --radius: 16px;
+            /* PALETA OFICIAL - TU RUTA FINANCIERA */
+            --bg-dark: #060807; /* Negro verdoso - Fondo base */
+            --card-bg: #0a0e0c; /* Ligeramente más claro para las tarjetas */
+            --border-color: #1B7A34; /* Verde profundo - Degradados y glow */
+            --text-main: #EFF6F0; /* Blanco verdoso - Titulares y texto */
+            --text-muted: #8ba394; /* Variante apagada para etiquetas */
+            
+            --accent: #39FF60; /* Verde neón - Acentos, bordes, resplandor */
+            --accent-glow: rgba(57, 255, 96, 0.15);
+            
+            --btn-action: #C42828; /* Rojo acción - Solo botones y urgencia */
+            --btn-action-hover: #9e1f1f;
+            
+            --warning: #eab308; /* Alertas medias */
+            --radius: 12px;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -27,8 +32,9 @@
             width: 100%;
             max-width: 480px;
             border-radius: var(--radius);
-            border: 1px solid var(--border-color);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(27, 122, 52, 0.5); /* Borde Verde profundo */
+            /* Glow de fondo usando Verde Profundo */
+            box-shadow: 0 0 50px rgba(27, 122, 52, 0.15), 0 0 0 1px rgba(57, 255, 96, 0.05);
             position: relative;
             overflow: hidden;
             min-height: 500px;
@@ -44,27 +50,32 @@
         }
 
         /* Pantalla Bienvenida */
-        .welcome-content { padding: 40px 24px; text-align: center; display: flex; flex-direction: column; justify-content: center; min-height: 500px; }
-        .icon-pulse { width: 64px; height: 64px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; border: 1px solid rgba(59, 130, 246, 0.3); animation: pulse 2s infinite; }
-        .icon-pulse svg { width: 32px; height: 32px; color: var(--accent); }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-glow); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+        .welcome-content { padding: 40px 24px; text-align: center; display: flex; flex-direction: column; justify-content: center; min-height: 500px; 
+            background: radial-gradient(circle at 50% 0%, rgba(27, 122, 52, 0.2) 0%, transparent 60%);
+        }
         
-        .welcome-content h1 { font-size: 1.5rem; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.025em; }
+        .icon-pulse { width: 64px; height: 64px; background: rgba(57, 255, 96, 0.05); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; border: 1px solid rgba(57, 255, 96, 0.4); animation: pulse 2s infinite; }
+        .icon-pulse svg { width: 32px; height: 32px; color: var(--accent); }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-glow); } 70% { box-shadow: 0 0 0 15px rgba(57, 255, 96, 0); } 100% { box-shadow: 0 0 0 0 rgba(57, 255, 96, 0); } }
+        
+        /* Tipografía Branding */
+        .welcome-content h1 { font-size: 1.6rem; margin-bottom: 8px; font-weight: 800; letter-spacing: -0.025em; text-transform: uppercase; text-shadow: 0 0 15px rgba(57, 255, 96, 0.2); }
         .welcome-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 40px; }
         
-        .input-premium { width: 100%; padding: 18px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 12px; color: white; font-size: 1.1rem; text-align: center; outline: none; transition: all 0.3s; margin-bottom: 24px; }
-        .input-premium:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow); }
+        .input-premium { width: 100%; padding: 18px; background: rgba(6, 8, 7, 0.8); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); font-size: 1.1rem; text-align: center; outline: none; transition: all 0.3s; margin-bottom: 24px; }
+        .input-premium:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
         
-        .btn-primary { width: 100%; padding: 18px; background: var(--accent); color: white; font-size: 1.05rem; font-weight: 600; border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
-        .btn-primary:hover { background: #2563eb; transform: translateY(-2px); }
+        /* Botón Rojo Acción */
+        .btn-primary { width: 100%; padding: 18px; background: var(--btn-action); color: #fff; font-size: 1.05rem; font-weight: 700; text-transform: uppercase; border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(196, 40, 40, 0.3); letter-spacing: 0.05em; }
+        .btn-primary:hover { background: var(--btn-action-hover); transform: translateY(-2px); }
         .btn-primary:active { transform: translateY(0); }
 
         /* Pantalla Calculadora */
-        .header { background: linear-gradient(180deg, rgba(39,39,42,1) 0%, rgba(24,24,27,1) 100%); padding: 24px 20px; border-bottom: 1px solid var(--border-color); text-align: center; }
-        .header h2 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.025em; }
+        .header { background: radial-gradient(ellipse at top, rgba(27, 122, 52, 0.25) 0%, rgba(10, 14, 12, 1) 100%); padding: 24px 20px; border-bottom: 1px solid rgba(27, 122, 52, 0.4); text-align: center; }
+        .header h2 { font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: -0.025em; text-shadow: 0 0 10px rgba(57, 255, 96, 0.2); }
         .header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 6px; }
-        .user-highlight { color: white; font-weight: 600; }
-        .reset-btn { color: var(--accent); font-size: 0.75rem; text-decoration: none; margin-left: 8px; cursor: pointer; padding: 4px; }
+        .user-highlight { color: var(--text-main); font-weight: 700; }
+        .reset-btn { color: var(--btn-action); font-size: 0.75rem; text-decoration: none; margin-left: 8px; cursor: pointer; padding: 4px; font-weight: 600; text-transform: uppercase; }
 
         .content { padding: 20px; }
 
@@ -72,36 +83,37 @@
         .form-group:nth-child(2) { animation-delay: 0.1s; }
         .form-group:nth-child(3) { animation-delay: 0.2s; }
         
-        .form-group label { display: block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.05em; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.05em; }
 
-        .amount-display { position: relative; display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 12px; padding: 4px; transition: border-color 0.2s; }
-        .amount-display:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+        .amount-display { position: relative; display: flex; align-items: center; background: rgba(6, 8, 7, 0.8); border: 1px solid var(--border-color); border-radius: 8px; padding: 4px; transition: border-color 0.2s; }
+        .amount-display:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
         .currency-symbol { position: absolute; left: 16px; font-size: 1.5rem; font-weight: 600; color: var(--accent); }
         input[type="number"] { width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 1.75rem; font-weight: 700; padding: 14px 14px 14px 44px; outline: none; -moz-appearance: textfield; }
         
         input[type="range"] { width: 100%; margin-top: 20px; appearance: none; background: transparent; }
-        input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: var(--border-color); border-radius: 4px; }
-        input[type="range"]::-webkit-slider-thumb { appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--accent); cursor: pointer; margin-top: -9px; box-shadow: 0 0 12px rgba(59,130,246,0.5); transition: transform 0.1s; }
+        input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 4px; background: rgba(27, 122, 52, 0.4); border-radius: 4px; }
+        input[type="range"]::-webkit-slider-thumb { appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; margin-top: -8px; box-shadow: 0 0 12px rgba(57,255,96,0.6); transition: transform 0.1s; }
         
-        select { width: 100%; padding: 16px; background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 12px; font-size: 1rem; font-weight: 500; appearance: none; outline: none; cursor: pointer; transition: border-color 0.2s; }
-        select:focus { border-color: var(--accent); }
+        select { width: 100%; padding: 16px; background: rgba(6, 8, 7, 0.8); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 8px; font-size: 0.95rem; font-weight: 600; appearance: none; outline: none; cursor: pointer; transition: border-color 0.2s; }
+        select:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
         .select-wrapper { position: relative; }
-        .select-wrapper::after { content: "▼"; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: var(--text-muted); pointer-events: none; }
+        .select-wrapper::after { content: "▼"; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: var(--accent); pointer-events: none; }
 
         .hybrid-models { display: none; gap: 12px; margin-top: 12px; }
         .hybrid-models .select-wrapper { flex: 1; }
 
-        .dashboard { background: var(--bg-dark); border-radius: 16px; padding: 20px; border: 1px solid var(--border-color); margin-top: 32px; animation: slideUpFade 0.6s ease backwards; animation-delay: 0.3s; }
+        .dashboard { background: rgba(6, 8, 7, 0.5); border-radius: 12px; padding: 20px; border: 1px solid rgba(27, 122, 52, 0.3); margin-top: 32px; animation: slideUpFade 0.6s ease backwards; animation-delay: 0.3s; position: relative; overflow: hidden; }
+        .dashboard::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); opacity: 0.5; }
         
         .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .metric { background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; }
-        .metric-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
-        .metric-value { font-size: 1.35rem; font-weight: 700; color: var(--success); }
-        .metric-value.total { color: var(--text-main); font-size: 1.2rem; }
+        .metric { background: rgba(10, 14, 12, 0.8); padding: 16px; border-radius: 8px; border: 1px solid rgba(27, 122, 52, 0.2); display: flex; flex-direction: column; justify-content: center; }
+        .metric-label { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em; }
+        .metric-value { font-size: 1.35rem; font-weight: 800; color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .metric-value.total { color: var(--text-main); font-size: 1.2rem; text-shadow: none; }
         
-        .risk-bar-container { width: 100%; height: 6px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+        .risk-bar-container { width: 100%; height: 4px; background: rgba(27, 122, 52, 0.3); border-radius: 4px; overflow: hidden; margin-top: 10px; }
         .risk-bar { height: 100%; background: var(--warning); border-radius: 4px; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s; }
-        .risk-label { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-top: 20px; }
+        .risk-label { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); margin-top: 20px; text-transform: uppercase; letter-spacing: 0.05em; }
 
         /* Media Queries Mobile Optimizado */
         @media (max-width: 400px) {
@@ -120,10 +132,10 @@
             <div class="icon-pulse">
                 <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
-            <h1>Calculadora de Rentabilidad</h1>
-            <p>Proyección financiera por crédito empresarial</p>
+            <h1>Tu Ruta Financiera</h1>
+            <p>Masterclass en vivo • Simulador OPM</p>
             
-            <label style="text-align: left; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block;">Nombre del Inversor</label>
+            <label style="text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block; letter-spacing: 0.05em;">Nombre del Inversor</label>
             <input type="text" id="nameInput" class="input-premium" placeholder="Ej. Juan Pérez" autocomplete="off">
             
             <button id="startBtn" class="btn-primary">Configurar Portafolio</button>
@@ -133,7 +145,7 @@
     <!-- Pantalla 2: Calculadora Principal -->
     <div id="calcScreen" class="screen">
         <div class="header">
-            <h2>Calculadora de Rentabilidad</h2>
+            <h2>Tu Ruta Financiera</h2>
             <p>Inversor: <span id="userNameDisplay" class="user-highlight"></span> <span id="resetBtn" class="reset-btn">(Cambiar)</span></p>
         </div>
 
@@ -198,7 +210,7 @@
                 </div>
                 
                 <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 4px;">
-                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Capital + Beneficio (Mes 12)</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;">Capital + Beneficio (Mes 12)</span>
                     <span class="metric-value total" id="resTotal">$0</span>
                 </div>
 
@@ -223,7 +235,7 @@
     const userNameDisplay = document.getElementById('userNameDisplay');
     const resetBtn = document.getElementById('resetBtn');
 
-    // Base de datos de activos (Riesgos reales mapeados bajo)
+    // Base de datos de activos (Riesgos reales)
     const db = {
         conservador: [
             { id: 'bonos', name: 'Bonos / T-Bills', roi: 0.05, risk: 0.02 },
@@ -276,7 +288,6 @@
         welcomeScreen.classList.remove('active');
         calcScreen.classList.remove('active');
         
-        // Timeout para permitir que el DOM renderice antes de animar
         setTimeout(() => {
             screenEl.classList.add('active');
         }, 10);
@@ -290,7 +301,7 @@
             showScreen(calcScreen);
             handleScenarioChange();
         } else {
-            nameInput.style.borderColor = '#ef4444';
+            nameInput.style.borderColor = 'var(--btn-action)';
             setTimeout(() => nameInput.style.borderColor = 'var(--border-color)', 1000);
         }
     }
@@ -378,13 +389,24 @@
         uiTotal.innerText = formatMoney(capital + roiAnual);
         uiRiskText.innerText = formatPercent(riskLvl);
         
-        // HACK VISUAL DE RIESGO: Si el riesgo es 0.35 (35%), la barra solo ocupa el 35% de la pantalla.
-        // Esto la hace ver sutil y psicológicamente inofensiva aunque el número sea realista.
         uiRiskBar.style.width = (riskLvl * 100) + '%';
         
-        if (riskLvl < 0.05) { uiRiskBar.style.background = '#22c55e'; uiRiskText.style.color = '#22c55e'; }
-        else if (riskLvl <= 0.15) { uiRiskBar.style.background = '#eab308'; uiRiskText.style.color = '#eab308'; }
-        else { uiRiskBar.style.background = '#ef4444'; uiRiskText.style.color = '#ef4444'; }
+        // Colores de riesgo actualizados a la guía gráfica
+        if (riskLvl < 0.05) { 
+            uiRiskBar.style.background = 'var(--accent)'; 
+            uiRiskText.style.color = 'var(--accent)'; 
+            uiRiskText.style.textShadow = '0 0 10px var(--accent-glow)';
+        }
+        else if (riskLvl <= 0.15) { 
+            uiRiskBar.style.background = 'var(--warning)'; 
+            uiRiskText.style.color = 'var(--warning)'; 
+            uiRiskText.style.textShadow = 'none';
+        }
+        else { 
+            uiRiskBar.style.background = 'var(--btn-action)'; 
+            uiRiskText.style.color = 'var(--btn-action)'; 
+            uiRiskText.style.textShadow = 'none';
+        }
     }
 
     // Arrancar aplicación
