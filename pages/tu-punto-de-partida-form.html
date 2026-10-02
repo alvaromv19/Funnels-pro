@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060807">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Tu Punto de Partida</title>
+<meta name="description" content="Diagnóstico de 2 minutos: desde dónde arrancas y cuál es tu siguiente movimiento. Mercedes Ríos · Tu Ruta Financiera.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro: #060807;        /* Fondo base */
+    --neon: #39FF60;         /* Acento, bordes, resplandor (con moderación) */
+    --verde: #1B7A34;        /* Degradados y glow de fondo */
+    --rojo: #C42828;         /* Solo botones y urgencia */
+    --blanco: #EFF6F0;       /* Titulares y texto sobre oscuro */
+
+    --texto: rgba(239, 246, 240, 0.80);
+    --suave: rgba(239, 246, 240, 0.56);
+    --linea: rgba(239, 246, 240, 0.12);
+    --linea-neon: rgba(57, 255, 96, 0.28);
+    --panel: rgba(239, 246, 240, 0.035);
+    --glow: 0 0 18px rgba(57, 255, 96, 0.35);
+    --ease: cubic-bezier(.2, .8, .2, 1);
+
+    --display: "Montserrat", system-ui, sans-serif;
+    --body: "DM Sans", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh; min-height: 100svh;
+    background: var(--negro);
+    color: var(--texto);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+  [hidden] { display: none !important; }
+  :focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
+
+  /* ---------- Fondo con resplandor ---------- */
+  .glow {
+    position: fixed; z-index: 0; pointer-events: none;
+    width: 560px; height: 560px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(27, 122, 52, 0.48) 0%, rgba(27, 122, 52, 0) 68%);
+    transition: transform 1.2s var(--ease);
+  }
+  .glow.g1 { left: -260px; bottom: -240px; animation: flotar 16s ease-in-out infinite; }
+  .glow.g2 { right: -300px; top: -280px; opacity: .6; animation: flotar 20s ease-in-out infinite reverse; }
+  @keyframes flotar { 0%,100% { transform: translate(0,0); } 50% { transform: translate(30px,-24px); } }
+
+  .shell {
+    position: relative; z-index: 1;
+    max-width: 620px; margin: 0 auto;
+    padding: calc(env(safe-area-inset-top) + 24px) max(18px, env(safe-area-inset-right)) calc(env(safe-area-inset-bottom) + 48px) max(18px, env(safe-area-inset-left));
+  }
+
+  /* ---------- Barra superior ---------- */
+  .top {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; align-items: center; gap: 12px;
+    margin: 0 -18px 26px; padding: 12px 18px;
+    background: rgba(6, 8, 7, 0.72);
+    -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    animation: bajar .5s var(--ease) both;
+  }
+  @keyframes bajar { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+  .marca {
+    font-family: var(--display); font-weight: 800; font-size: 11px;
+    letter-spacing: .18em; text-transform: uppercase; color: var(--blanco); white-space: nowrap;
+  }
+  .barra { flex: 1; height: 4px; background: var(--linea); border-radius: 4px; overflow: hidden; min-width: 0; }
+  .barra i {
+    display: block; height: 100%; width: 0; border-radius: 4px;
+    background: var(--neon); box-shadow: var(--glow);
+    transition: width .5s var(--ease);
+  }
+  .paso {
+    font-family: var(--display); font-weight: 800; font-size: 12px;
+    color: var(--neon); font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+
+  /* ---------- Etiquetas y titulares ---------- */
+  .kicker {
+    display: inline-block;
+    font-family: var(--display); font-weight: 800; font-size: 12px;
+    letter-spacing: .22em; text-transform: uppercase; color: var(--blanco);
+    padding-bottom: 8px; border-bottom: 2px solid var(--neon);
+    margin: 0 0 22px;
+    align-self: flex-start;
+  }
+  .eyebrow {
+    font-family: var(--display); font-weight: 800; font-size: 12px;
+    letter-spacing: .2em; text-transform: uppercase; color: var(--neon);
+    margin: 0 0 12px;
+  }
+  h1, h2 {
+    font-family: var(--display); font-weight: 900; text-transform: uppercase;
+    color: var(--blanco); letter-spacing: -.01em; margin: 0; text-wrap: balance;
+  }
+
+  /* ---------- Portada ---------- */
+  .hero {
+    min-height: calc(100svh - 72px);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero h1 {
+    font-size: clamp(46px, 12vw, 78px); line-height: 1;
+    text-shadow: 0 0 28px rgba(57, 255, 96, .28);
+    animation: brillo 4.5s ease-in-out infinite;
+  }
+  @keyframes brillo {
+    0%,100% { text-shadow: 0 0 22px rgba(57,255,96,.2); }
+    50% { text-shadow: 0 0 40px rgba(57,255,96,.45); }
+  }
+  .hero .bajada { font-size: 19px; color: var(--blanco); margin: 22px 0 0; max-width: 36ch; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 28px 0 0; padding: 0; list-style: none; }
+  .chips li {
+    font-family: var(--display); font-weight: 700; font-size: 12px; letter-spacing: .06em;
+    color: var(--blanco); border: 1px solid var(--linea-neon); border-radius: 999px; padding: 7px 14px;
+  }
+  .chips li::before {
+    content: ""; display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--neon); box-shadow: var(--glow); margin-right: 8px; vertical-align: 2px;
+  }
+  .hero .firma { margin: 36px 0 0; font-size: 14px; color: var(--suave); }
+  .hero .firma strong { color: var(--blanco); }
+
+  /* ---------- Botones ---------- */
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; min-height: 58px; padding: 0 24px;
+    font-family: var(--display); font-weight: 800; font-size: 16px; letter-spacing: .02em;
+    border: 0; border-radius: 999px; cursor: pointer; text-decoration: none;
+    touch-action: manipulation;
+    transition: transform .15s var(--ease), filter .2s, box-shadow .25s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-neon {
+    background: transparent; color: var(--blanco);
+    border: 1.5px solid var(--neon);
+  }
+  .btn-neon:hover { background: rgba(57,255,96,.08); box-shadow: var(--glow); }
+  .btn-rojo { background: var(--rojo); color: #fff; }
+  .btn-rojo:hover { filter: brightness(1.08); box-shadow: 0 10px 30px -10px rgba(196,40,40,.7); }
+  .btn svg { width: 18px; height: 18px; transition: transform .25s var(--ease); }
+  .btn:hover svg { transform: translateX(3px); }
+  .hero .btn { margin-top: 34px; }
+
+  .volver {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: none; border: 0; padding: 12px 0; margin-top: 14px;
+    font: inherit; font-size: 14px; color: var(--suave); cursor: pointer;
+    transition: color .2s;
+  }
+  .volver:hover { color: var(--blanco); }
+
+  /* ---------- Pregunta ---------- */
+  .escena { position: relative; }
+  .q { margin: 0 0 24px; }
+  .q .n {
+    font-family: var(--display); font-weight: 800; font-size: 12px;
+    letter-spacing: .2em; text-transform: uppercase; color: var(--neon); margin: 0 0 12px;
+  }
+  .q h2 { font-size: clamp(25px, 6.4vw, 34px); line-height: 1.12; }
+  .q .ayuda { font-size: 15.5px; color: var(--suave); margin: 14px 0 0; }
+
+  .ops { display: flex; flex-direction: column; gap: 10px; }
+  button.op {
+    position: relative;
+    display: flex; align-items: center; gap: 14px;
+    width: 100%; text-align: left; font: inherit;
+    background: var(--panel); color: var(--texto);
+    border: 1px solid var(--linea); border-radius: 14px;
+    padding: 16px 18px; min-height: 60px; cursor: pointer;
+    touch-action: manipulation;
+    transition: border-color .2s, background .2s, transform .15s var(--ease), box-shadow .25s;
+  }
+  button.op .txt { flex: 1; min-width: 0; }
+  button.op b { display: block; color: var(--blanco); font-weight: 700; font-size: 16.5px; line-height: 1.35; }
+  button.op span.sub { display: block; font-size: 14px; color: var(--suave); margin-top: 3px; }
+  button.op .radio {
+    flex: none; width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid rgba(239,246,240,.28);
+    display: grid; place-items: center;
+    transition: border-color .2s, background .2s;
+  }
+  button.op .radio svg { width: 12px; height: 12px; opacity: 0; transform: scale(.4); transition: opacity .2s, transform .3s var(--ease); }
+  @media (hover: hover) {
+    button.op:hover { border-color: var(--linea-neon); background: rgba(57,255,96,.05); }
+  }
+  button.op:active { transform: scale(.985); }
+  button.op.elegida {
+    border-color: var(--neon); background: rgba(57,255,96,.09); box-shadow: var(--glow);
+  }
+  button.op.elegida .radio { border-color: var(--neon); background: var(--neon); }
+  button.op.elegida .radio svg { opacity: 1; transform: scale(1); }
+  button.op.previa { border-color: var(--linea-neon); }
+
+  input.campo {
+    display: block; width: 100%;
+    font-family: var(--display); font-weight: 700; font-size: 18px;
+    background: var(--panel); color: var(--blanco);
+    border: 1px solid var(--linea); border-radius: 14px;
+    padding: 17px 18px; margin: 0 0 12px;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  input.campo:focus { border-color: var(--neon); box-shadow: var(--glow); outline: none; }
+  input.campo::placeholder { color: rgba(239,246,240,.3); font-weight: 500; }
+  .error { margin: -2px 0 12px; font-size: 14.5px; color: #FF6B6B; animation: sacudir .35s; }
+  @keyframes sacudir { 0%,100% { transform: none; } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+  /* ---------- Transiciones entre pantallas ---------- */
+  .entra-der  { animation: entraDer .5s var(--ease) both; }
+  .entra-izq  { animation: entraIzq .5s var(--ease) both; }
+  .sale-izq   { animation: saleIzq .26s ease-in both; }
+  .sale-der   { animation: saleDer .26s ease-in both; }
+  @keyframes entraDer { from { opacity: 0; transform: translateX(42px); } to { opacity: 1; transform: none; } }
+  @keyframes entraIzq { from { opacity: 0; transform: translateX(-42px); } to { opacity: 1; transform: none; } }
+  @keyframes saleIzq  { to { opacity: 0; transform: translateX(-42px); } }
+  @keyframes saleDer  { to { opacity: 0; transform: translateX(42px); } }
+
+  .sube { animation: subir .7s var(--ease) both; animation-delay: var(--d, 0s); }
+  @keyframes subir {
+    from { opacity: 0; transform: translateY(24px); filter: blur(4px); }
+    to { opacity: 1; transform: none; filter: none; }
+  }
+
+  /* ---------- Pantalla de cálculo ---------- */
+  .calculando {
+    min-height: 60svh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+  }
+  .anillo {
+    width: 74px; height: 74px; border-radius: 50%;
+    border: 3px solid rgba(239,246,240,.1); border-top-color: var(--neon);
+    box-shadow: var(--glow);
+    animation: girar .9s linear infinite;
+    margin-bottom: 26px;
+  }
+  @keyframes girar { to { transform: rotate(360deg); } }
+  .calculando p { font-family: var(--display); font-weight: 800; text-transform: uppercase; letter-spacing: .16em; font-size: 13px; color: var(--blanco); margin: 0; }
+  .calculando small { display: block; margin-top: 10px; color: var(--suave); font-size: 14px; min-height: 1.5em; transition: opacity .3s; }
+
+  /* ---------- Resultado ---------- */
+  .res h1 {
+    font-size: clamp(40px, 10.5vw, 64px); line-height: 1;
+    margin: 0 0 18px;
+    text-shadow: 0 0 30px rgba(57,255,96,.3);
+  }
+  .res .intro { font-size: 18.5px; color: var(--blanco); margin: 0 0 28px; }
+
+  .mapa { position: relative; margin: 0 0 16px; padding-left: 22px; }
+  .mapa::before {
+    content: ""; position: absolute; left: 6px; top: 22px; bottom: 22px; width: 2px;
+    background: linear-gradient(var(--linea-neon), var(--linea));
+  }
+  .mapa .fila {
+    position: relative;
+    display: flex; gap: 14px; align-items: center;
+    padding: 14px 16px; margin-bottom: 8px;
+    border: 1px solid var(--linea); border-radius: 12px;
+    background: var(--panel); font-size: 15.5px;
+  }
+  .mapa .fila::before {
+    content: ""; position: absolute; left: -22px; top: 50%; margin-top: -7px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--negro); border: 2px solid rgba(239,246,240,.3);
+  }
+  .mapa .fila.aqui {
+    border-color: var(--neon);
+    background: linear-gradient(135deg, rgba(27,122,52,.38), rgba(27,122,52,.08));
+    box-shadow: var(--glow);
+  }
+  .mapa .fila.aqui::before { background: var(--neon); border-color: var(--neon); animation: latido 2s ease-out infinite; }
+  @keyframes latido { 0%,100% { box-shadow: 0 0 0 0 rgba(57,255,96,.6); } 50% { box-shadow: 0 0 0 8px rgba(57,255,96,0); } }
+  .mapa .pt {
+    flex: none; width: 74px;
+    font-family: var(--display); font-weight: 800; font-size: 11px;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--suave);
+  }
+  .mapa .fila.aqui .pt { color: var(--neon); }
+  .mapa .nb { color: var(--blanco); font-weight: 500; min-width: 0; }
+  .mapa .fila.aqui .nb { font-weight: 700; }
+  .mapa .tu {
+    margin-left: auto; flex: none;
+    font-family: var(--display); font-weight: 800; font-size: 10.5px;
+    letter-spacing: .12em; text-transform: uppercase;
+    color: var(--negro); background: var(--neon); border-radius: 999px; padding: 4px 9px;
+  }
+
+  .bloque {
+    border: 1px solid var(--linea); border-radius: 14px;
+    background: var(--panel);
+    padding: 20px 22px; margin: 0 0 12px;
+  }
+  .bloque h3 {
+    font-family: var(--display); font-weight: 800; font-size: 12px;
+    letter-spacing: .18em; text-transform: uppercase; color: var(--neon);
+    margin: 0 0 10px;
+  }
+  .bloque p { margin: 0; font-size: 16px; }
+  .bloque.destacado { border-color: var(--neon); background: rgba(6,8,7,.6); }
+  .mov { display: flex; gap: 16px; align-items: flex-start; }
+  .mov .num {
+    flex: none; width: 54px; height: 54px; border-radius: 14px;
+    display: grid; place-items: center;
+    font-family: var(--display); font-weight: 900; font-size: 28px;
+    color: var(--neon); border: 1px solid var(--linea-neon);
+    text-shadow: var(--glow);
+  }
+  .mov b { display: block; color: var(--blanco); font-family: var(--display); font-weight: 800; font-size: 17px; line-height: 1.25; margin-bottom: 6px; }
+
+  .cierre {
+    margin: 28px 0 0;
+    border: 1px solid var(--neon); border-radius: 18px;
+    padding: 28px 24px;
+    background: radial-gradient(ellipse at 0% 100%, rgba(27,122,52,.6), rgba(6,8,7,.92) 70%);
+  }
+  .cierre .kicker { margin-bottom: 16px; }
+  .cierre h3 {
+    font-family: var(--display); font-weight: 900; text-transform: uppercase;
+    color: var(--blanco); font-size: clamp(23px, 5.4vw, 30px); line-height: 1.1; margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .cierre p { margin: 0 0 22px; color: var(--texto); }
+  .nota { font-size: 13.5px; color: var(--suave); margin: 16px 0 0; text-align: center; }
+  .reiniciar { display: block; margin: 18px auto 0; }
+  footer { margin-top: 40px; font-size: 12.5px; color: var(--suave); text-align: center; }
+
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .bloque { padding: 18px; }
+    .cierre { padding: 24px 18px; }
+    .mapa .fila { padding: 13px 12px; gap: 10px; font-size: 15px; }
+    .mapa .pt { width: 70px; letter-spacing: .1em; white-space: nowrap; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="glow g1" aria-hidden="true"></div>
+<div class="glow g2" aria-hidden="true"></div>
+
+<main class="shell">
+
+  <div class="top" id="top" hidden>
+    <span class="marca">Tu Punto de Partida</span>
+    <span class="barra" role="progressbar" aria-label="Progreso" aria-valuemin="0" aria-valuemax="100"><i id="fill"></i></span>
+    <span class="paso" id="paso">1/10</span>
+  </div>
+
+  <!-- PORTADA -->
+  <section class="hero" id="portada">
+    <p class="kicker sube">Diagnóstico · 2 minutos</p>
+    <h1 class="sube" style="--d:.08s">Tu punto de partida</h1>
+    <p class="bajada sube" style="--d:.16s">Casi todo el mundo cree que empieza desde cero. Casi nadie empieza desde cero. Responde diez preguntas y sabrás exactamente desde dónde arrancas y cuál es tu siguiente movimiento.</p>
+    <ul class="chips sube" style="--d:.24s">
+      <li>10 preguntas</li><li>2 minutos</li><li>Resultado inmediato</li>
+    </ul>
+    <button class="btn btn-neon sube" style="--d:.32s" id="empezar" type="button">
+      Empezar
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+    </button>
+    <p class="firma sube" style="--d:.4s"><strong>Mercedes Ríos</strong> · Tu Ruta Financiera</p>
+  </section>
+
+  <!-- PREGUNTA -->
+  <section class="escena" id="pantalla" hidden>
+    <div id="tarjeta">
+      <div class="q">
+        <p class="n" id="qn"></p>
+        <h2 id="qt"></h2>
+        <p class="ayuda" id="qa" hidden></p>
+      </div>
+      <div class="ops" id="ops"></div>
+    </div>
+    <button class="volver" id="atras" type="button" hidden>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5"/><path d="m11 18-6-6 6-6"/></svg>
+      Volver
+    </button>
+  </section>
+
+  <!-- CALCULANDO -->
+  <section class="calculando" id="calculando" hidden>
+    <div class="anillo" aria-hidden="true"></div>
+    <p>Calculando tu punto de partida</p>
+    <small id="calcTxt" role="status" aria-live="polite">Revisando tu estructura…</small>
+  </section>
+
+  <!-- RESULTADO -->
+  <section class="res" id="resultado" hidden>
+    <p class="eyebrow" id="rEyebrow">Tu punto de partida</p>
+    <h1 id="rTitulo"></h1>
+    <p class="intro" id="rIntro"></p>
+
+    <div class="mapa" id="rMapa"></div>
+
+    <div class="bloque destacado">
+      <h3>Tu siguiente movimiento</h3>
+      <div class="mov"><span class="num" id="rMovNum"></span><span><b id="rMovT"></b><span id="rMovD"></span></span></div>
+    </div>
+
+    <div class="bloque">
+      <h3>Lo que NO tienes que hacer todavía</h3>
+      <p id="rNo"></p>
+    </div>
+
+    <div class="bloque">
+      <h3>El error típico desde aquí</h3>
+      <p id="rErr"></p>
+    </div>
+
+    <div class="bloque">
+      <h3>Tu contexto</h3>
+      <p id="rCtx"></p>
+    </div>
+
+    <div class="cierre">
+      <div class="kicker">Masterclass en vivo</div>
+      <h3 id="rCierreT"></h3>
+      <p id="rCierreD"></p>
+      <a class="btn btn-rojo" id="rCta" href="#" target="_blank" rel="noopener">
+        Entrar al grupo
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+      </a>
+    </div>
+    <p class="nota" id="rNota">Tu resultado viaja contigo. No tienes que escribir nada.</p>
+    <button class="volver reiniciar" id="reiniciar" type="button">Volver a hacer el diagnóstico</button>
+
+    <footer>Mercedes Ríos · Tu Ruta Financiera — Material educativo. No constituye asesoría financiera, fiscal ni de inversión.</footer>
+  </section>
+
+</main>
+
+<script>
+// ---------- configuración ----------
+// Número de WhatsApp de Mercedes (formato internacional, sin + ni espacios).
+// Si se deja vacío, el botón final lleva directo al grupo de WhatsApp.
+var WHATSAPP = "";
+
+// Enlace del grupo de la masterclass.
+var GRUPO = "https://chat.whatsapp.com/KHm7832vPcDH5N8yLbyfcl";
+
+// URL de la aplicación web de Google Apps Script (termina en /exec).
+// Cada respuesta se registra en la hoja de cálculo apenas se contesta,
+// en una sola fila por persona. Déjalo en "" para no guardar nada.
+var GUARDAR_URL = "";
+
+var PREGUNTAS = [
+  { id:"nombre", t:"Antes de empezar, ¿cómo te llamas?",
+    a:"Para hablarte por tu nombre y no como un número más.",
+    tipo:"texto", campo:"text", ph:"Tu nombre", boton:"Seguir" },
+  { id:"telefono", t:"¿A qué número te escribo?",
+    a:"Es para mandarte el acceso a la clase. No lo comparto con nadie ni te va a llegar publicidad.",
+    tipo:"texto", campo:"tel", ph:"Incluye el código de tu país", boton:"Seguir" },
+  { id:"pais", t:"¿Dónde vives hoy?",
+    a:"Cambia el proceso, no la posibilidad.",
+    ops:[
+      {v:"usa", b:"En Estados Unidos"},
+      {v:"fuera", b:"Fuera de Estados Unidos"}
+    ]},
+  { id:"empresa", t:"¿Tienes ya una empresa registrada en Estados Unidos?",
+    ops:[
+      {v:"no", b:"No, todavía no"},
+      {v:"nueva", b:"Sí, hace menos de 6 meses"},
+      {v:"vieja", b:"Sí, hace más de 6 meses"}
+    ]},
+  { id:"avance", t:"¿Qué tan lejos has llegado con esto?",
+    a:"Con sinceridad. No hay respuesta mala.",
+    ops:[
+      {v:"pense", b:"Solo lo he pensado", s:"Me suena, pero no he movido nada"},
+      {v:"investigue", b:"He investigado", s:"He visto videos, he leído, he preguntado"},
+      {v:"empece", b:"Empecé algo y lo dejé", s:"Arranqué un trámite o una gestión y ahí quedó"},
+      {v:"medias", b:"Lo tengo a medias", s:"Hay cosas hechas, pero sin terminar"}
+    ]},
+  { id:"credito", t:"¿Has pedido crédito empresarial antes?",
+    a:"Esta es la pregunta que más cambia tu punto de partida.",
+    ops:[
+      {v:"nunca", b:"Nunca lo he pedido"},
+      {v:"negado", b:"Lo pedí y me lo negaron"},
+      {v:"activo", b:"Sí, tengo líneas activas"}
+    ]},
+  { id:"efectivo", t:"Si hoy tuvieras que mover dinero tuyo para arrancar algo, ¿con cuánto contarías sin que te duela?",
+    a:"No te estoy pidiendo que lo muevas. Es para decirte qué es realista en tu caso.",
+    ops:[
+      {v:"a", b:"Con nada por ahora"},
+      {v:"b", b:"Menos de $500"},
+      {v:"c", b:"Entre $500 y $1,500"},
+      {v:"d", b:"Entre $1,500 y $3,000"},
+      {v:"e", b:"Más de $3,000"}
+    ]},
+  { id:"gasto", t:"¿Ya has pagado por intentar resolver esto?",
+    ops:[
+      {v:"nunca", b:"No, nunca he pagado por nada de esto"},
+      {v:"curso", b:"Sí, un curso o una formación"},
+      {v:"tramite", b:"Sí, una tramitadora o una asesoría"},
+      {v:"varias", b:"Sí, varias cosas"}
+    ]},
+  { id:"porque", t:"¿Por qué ahora y no hace un año?",
+    a:"Lo que te movió esta vez.",
+    ops:[
+      {v:"cansancio", b:"Me cansé de seguir igual"},
+      {v:"dinero", b:"Liberé o me llegó algo de dinero"},
+      {v:"cambio", b:"Cambió algo en mi trabajo o en mi situación"},
+      {v:"entendi", b:"Vi tu contenido y entendí que sí se puede"},
+      {v:"decidi", b:"Llevo tiempo queriendo y por fin me decidí"}
+    ]},
+  { id:"decide", t:"Esta decisión, ¿la tomas tú o la tomas con alguien más?",
+    ops:[
+      {v:"solo", b:"La tomo yo"},
+      {v:"pareja", b:"La tomo con mi pareja o mi familia"},
+      {v:"socio", b:"La tomo con un socio"}
+    ]}
+];
+
+var PUNTOS = {
+  limpio: {
+    nombre:"Arranque Limpio",
+    orden:0,
+    intro:"No tienes empresa todavía y no tienes rechazos en el archivo. Eso suena a desventaja y es justo lo contrario: tu camino está despejado.",
+    movNum:"1", movT:"Tu Empresa",
+    movD:"Formar tu LLC y obtener tu EIN. Es lo que te convierte en sujeto de crédito — sin eso, los otros dos movimientos no existen.",
+    no:"No tienes que buscar bancos todavía, ni armar un plan de negocio, ni tener clientes, ni saber en qué vas a invertir. Nada de eso aplica hasta que la empresa exista.",
+    err:"Elegir el estado por lo que dice un video de YouTube. Rehacer una LLC mal formada cuesta las tasas otra vez, el agente otra vez, y los meses de historial que ya se habían acumulado."
+  },
+  base: {
+    nombre:"Base Construida",
+    orden:1,
+    intro:"Ya tienes la estructura. Lo que te falta es la llave: convertir esa empresa en acceso a capital que no sale de tus ahorros.",
+    movNum:"2", movT:"Tu Crédito",
+    movD:"Activar crédito empresarial. Aquí el orden lo es todo: a quién se le pide primero determina si el segundo te dice que sí.",
+    no:"No tienes que volver a tocar la estructura, ni abrir otra empresa, ni esperar a tener ingresos. Tu empresa ya hace el trabajo que tenía que hacer.",
+    err:"Pedir antes de tiempo. Si la empresa todavía no acumuló los meses que el banco mira, el no llega solo — y ese no queda en el archivo para los siguientes."
+  },
+  curva: {
+    nombre:"Camino con Curva",
+    orden:1,
+    intro:"Ya pediste y te dijeron que no. No significa que no califiques: casi siempre significa que se pidió en el momento o en el orden equivocado. Eso se corrige.",
+    movNum:"2", movT:"Tu Crédito, corregido",
+    movD:"Entender por qué llegó ese no antes de volver a pedir. Un rechazo deja rastro, y volver a intentar sin corregir suele traer el segundo.",
+    no:"No tienes que empezar de cero ni cerrar tu empresa. Y no, no estás descalificado de por vida — ese es el miedo que hace que la gente abandone aquí.",
+    err:"Volver a pedir al mismo banco, o al siguiente de la lista, sin haber cambiado nada. El segundo no es más fácil de revertir que el primero."
+  },
+  milla: {
+    nombre:"Última Milla",
+    orden:2,
+    intro:"Tienes estructura y tienes acceso. Estás en el punto donde la mayoría se queda quieta: con el capital disponible y sin saber dónde ponerlo.",
+    movNum:"3", movT:"Tu Portafolio",
+    movD:"Definir dónde va ese capital según tu perfil y tu tiempo — bienes raíces, bolsa u oro — y arrancarlo. No todos van a la misma ruta.",
+    no:"No tienes que conseguir más crédito antes de empezar. Capital parado cuesta: tiene un costo financiero corriendo mientras tú decides.",
+    err:"Esperar a estar seguro. La certeza no llega sola, llega cuando se define el perfil y se empieza con lo que corresponde a ese perfil."
+  }
+};
+
+var MAPA = [
+  {k:"limpio", pt:"Punto 0", nb:"Sin empresa todavía"},
+  {k:"base",   pt:"Punto 1", nb:"Con empresa, sin crédito"},
+  {k:"curva",  pt:"Desvío",  nb:"Con un no en el archivo"},
+  {k:"milla",  pt:"Punto 2", nb:"Con capital, sin ruta"}
+];
+
+// ---------- estado ----------
+var i = 0, R = {}, ocupado = false;
+var $ = function(id){ return document.getElementById(id); };
+var reducido = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="#060807" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>';
+
+function vibrar(){ try { if (navigator.vibrate) navigator.vibrate(8); } catch(e){} }
+
+// Cambia la tarjeta con transición lateral (dir: 1 adelante, -1 atrás)
+function transicion(dir, despues){
+  var t = $('tarjeta');
+  if (reducido) { despues(); return; }
+  ocupado = true;
+  t.className = dir > 0 ? 'sale-izq' : 'sale-der';
+  setTimeout(function(){
+    despues();
+    t.className = '';
+    void t.offsetWidth;
+    t.className = dir > 0 ? 'entra-der' : 'entra-izq';
+    ocupado = false;
+  }, 240);
+}
+
+function pintar(){
+  var q = PREGUNTAS[i];
+  $('qn').textContent = 'Pregunta ' + (i+1) + ' de ' + PREGUNTAS.length;
+  $('qt').textContent = q.t;
+  if (q.a) { $('qa').textContent = q.a; $('qa').hidden = false; } else { $('qa').hidden = true; }
+  $('paso').textContent = (i+1) + '/' + PREGUNTAS.length;
+  $('fill').style.width = (i / PREGUNTAS.length * 100) + '%';
+  var ops = $('ops'); ops.textContent = '';
+
+  if (q.tipo === 'texto') {
+    var inp = document.createElement('input');
+    inp.className = 'campo'; inp.type = q.campo || 'text';
+    inp.id = 'campo-' + q.id; inp.placeholder = q.ph || '';
+    inp.autocomplete = (q.campo === 'tel') ? 'tel' : 'given-name';
+    if (q.campo === 'tel') inp.inputMode = 'tel';
+    inp.setAttribute('aria-label', q.t);
+    if (R[q.id]) inp.value = R[q.id];
+    var err = document.createElement('p'); err.className = 'error'; err.id = 'err'; err.hidden = true;
+    var btn = document.createElement('button');
+    btn.className = 'btn btn-neon'; btn.type = 'button';
+    btn.innerHTML = (q.boton || 'Seguir') + ' <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
+    var mostrarError = function(msg){
+      err.hidden = true; void err.offsetWidth;
+      err.textContent = msg; err.hidden = false; inp.focus();
+    };
+    var enviar = function(){
+      if (ocupado) return;
+      var v = inp.value.trim();
+      if (q.id === 'nombre' && v.length < 2) { mostrarError('Escribe tu nombre para seguir.'); return; }
+      if (q.id === 'telefono' && (v.replace(/\D/g,'').length < 7)) { mostrarError('Ese número se ve incompleto. Revísalo, por favor.'); return; }
+      err.hidden = true;
+      responder(q.id, v);
+    };
+    btn.addEventListener('click', enviar);
+    inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); enviar(); } });
+    ops.appendChild(inp); ops.appendChild(err); ops.appendChild(btn);
+    setTimeout(function(){ inp.focus({ preventScroll: true }); }, 320);
+  } else {
+    q.ops.forEach(function(o){
+      var b = document.createElement('button');
+      b.className = 'op' + (R[q.id] === o.v ? ' previa' : ''); b.type = 'button';
+      var txt = document.createElement('span'); txt.className = 'txt';
+      var strong = document.createElement('b'); strong.textContent = o.b; txt.appendChild(strong);
+      if (o.s) { var sp = document.createElement('span'); sp.className = 'sub'; sp.textContent = o.s; txt.appendChild(sp); }
+      var radio = document.createElement('span'); radio.className = 'radio'; radio.innerHTML = CHECK;
+      b.appendChild(txt); b.appendChild(radio);
+      b.addEventListener('click', function(){
+        if (ocupado) return;
+        ocupado = true; vibrar();
+        Array.prototype.forEach.call(ops.children, function(x){ x.classList.remove('elegida', 'previa'); });
+        b.classList.add('elegida');
+        setTimeout(function(){ ocupado = false; responder(q.id, o.v); }, reducido ? 0 : 320);
+      });
+      ops.appendChild(b);
+    });
+  }
+  $('atras').hidden = (i === 0);
+  window.scrollTo({ top: 0, behavior: reducido ? 'auto' : 'smooth' });
+}
+
+// Identificador de esta sesión: permite que todas las respuestas de una
+// persona caigan en la misma fila de la hoja.
+var SESION = nuevaSesion();
+function nuevaSesion(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
+
+// Texto legible de cada respuesta (la opción tal como la vio la persona).
+function etiqueta(id){
+  var v = R[id];
+  if (v === undefined) return '';
+  for (var n = 0; n < PREGUNTAS.length; n++) {
+    var q = PREGUNTAS[n];
+    if (q.id === id && q.ops) {
+      for (var j = 0; j < q.ops.length; j++) if (q.ops[j].v === v) return q.ops[j].b;
+    }
+  }
+  return v;
+}
+
+// Envía a Google Sheets todo lo respondido hasta ahora. Se dispara en cada respuesta.
+function guardar(estado){
+  if (!GUARDAR_URL) return;
+  try {
+    var datos = { id: SESION, estado: estado, paso: (i + 1) + '/' + PREGUNTAS.length };
+    PREGUNTAS.forEach(function(q){ datos[q.id] = etiqueta(q.id); });
+    if (estado === 'completo') { datos.resultado = PUNTOS[calcular()].nombre; datos.perfil = perfil(); }
+    fetch(GUARDAR_URL, { method:'POST', mode:'no-cors', keepalive:true,
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(datos) })['catch'](function(){});
+  } catch(e){}
+}
+
+function responder(id, v){
+  R[id] = v;
+  if (i < PREGUNTAS.length - 1) { guardar('en curso'); transicion(1, function(){ i++; pintar(); }); }
+  else { guardar('completo'); calcularConPausa(); }
+}
+
+function calcular(){
+  if (R.credito === 'negado') return 'curva';
+  if (R.credito === 'activo') return 'milla';
+  if (R.empresa === 'no') return 'limpio';
+  return 'base';
+}
+
+function contexto(){
+  var p = [];
+  p.push(R.pais === 'usa'
+    ? 'Vives en Estados Unidos, así que el trámite bancario presencial te queda abierto si en algún momento hace falta.'
+    : 'Vives fuera de Estados Unidos. Una LLC no exige residencia ni visa: el proceso es el mismo, solo cambian algunos trámites.');
+  if (R.avance === 'empece')
+    p.push('Empezaste algo y quedó a medias. Eso no es fracaso: es la señal más común de que faltaba el orden, no las ganas.');
+  else if (R.avance === 'investigue')
+    p.push('Has investigado bastante. Ojo con eso: informarse se siente como avanzar, y no lo es.');
+  else if (R.avance === 'medias')
+    p.push('Tienes cosas hechas sin terminar. Antes de agregar algo nuevo, lo que corresponde es cerrar lo que ya está abierto.');
+  if (R.gasto === 'nunca')
+    p.push('Nunca has pagado por resolver esto, así que vas a tener que decidir algo que no has decidido antes.');
+  else if (R.gasto === 'varias')
+    p.push('Ya pagaste por varias cosas que no te llevaron hasta el final. Lo que faltó no fue información: fue que alguien hiciera el recorrido contigo.');
+  if (R.porque === 'dinero')
+    p.push('Liberaste dinero recientemente. Ese es justo el momento en que se toman las mejores y las peores decisiones financieras.');
+  else if (R.porque === 'cansancio')
+    p.push('El cansancio de estar igual es el mejor combustible que existe, y también el que más rápido se apaga si no se convierte en un paso concreto.');
+  if (R.decide === 'pareja')
+    p.push('Decides con tu pareja o tu familia. Vale la pena que esta página la vean los dos: las decisiones a medias explicadas nunca se sostienen.');
+  return p.join(' ');
+}
+
+function perfil(){
+  return [calcular(), R.pais, R.empresa, R.avance, R.credito, R.efectivo, R.gasto, R.porque, R.decide].join('-');
+}
+
+// Pantalla intermedia breve antes del resultado
+function calcularConPausa(){
+  $('fill').style.width = '100%';
+  $('paso').textContent = '✓';
+  $('pantalla').hidden = true;
+  $('calculando').hidden = false;
+  window.scrollTo(0, 0);
+  if (reducido) { mostrar(); return; }
+  var frases = ['Revisando tu estructura…', 'Mirando tu historial de crédito…', 'Ubicándote en el mapa…'];
+  var n = 0, txt = $('calcTxt');
+  txt.textContent = frases[0];
+  var iv = setInterval(function(){
+    n++;
+    if (n < frases.length) { txt.textContent = frases[n]; }
+  }, 650);
+  setTimeout(function(){ clearInterval(iv); mostrar(); }, 2000);
+}
+
+function mostrar(){
+  var k = calcular(), P = PUNTOS[k];
+  $('rEyebrow').textContent = (R.nombre ? R.nombre + ', tu punto de partida es' : 'Tu punto de partida');
+  $('rTitulo').textContent = P.nombre;
+  $('rIntro').textContent = P.intro;
+  $('rMovNum').textContent = P.movNum;
+  $('rMovT').textContent = 'Movimiento ' + P.movNum + ' · ' + P.movT;
+  $('rMovD').textContent = P.movD;
+  $('rNo').textContent = P.no;
+  $('rErr').textContent = P.err;
+  $('rCtx').textContent = contexto();
+
+  var m = $('rMapa'); m.textContent = '';
+  MAPA.forEach(function(f){
+    var row = document.createElement('div');
+    row.className = 'fila' + (f.k === k ? ' aqui' : '');
+    var a = document.createElement('span'); a.className = 'pt'; a.textContent = f.pt;
+    var b = document.createElement('span'); b.className = 'nb'; b.textContent = f.nb;
+    row.appendChild(a); row.appendChild(b);
+    if (f.k === k) { var c = document.createElement('span'); c.className = 'tu'; c.textContent = 'Aquí estás'; row.appendChild(c); }
+    m.appendChild(row);
+  });
+
+  $('rCierreT').textContent = 'El viernes 16 te muestro el camino completo';
+  $('rCierreD').textContent = 'Clase en vivo, gratis: los tres movimientos explicados uno por uno. Entra al grupo y te aviso cuando empecemos.';
+
+  if (WHATSAPP) {
+    var texto = 'Hola Mercedes, soy ' + (R.nombre || '') + '. Hice el diagnóstico y mi punto de partida es: ' + P.nombre + '. [' + perfil() + ' | tel ' + (R.telefono || '') + ']';
+    $('rCta').href = 'https://wa.me/' + WHATSAPP + '?text=' + encodeURIComponent(texto);
+    $('rNota').hidden = false;
+  } else {
+    $('rCta').href = GRUPO;
+    $('rNota').hidden = true;
+  }
+
+  $('calculando').hidden = true;
+  $('top').hidden = true;
+  var res = $('resultado');
+  res.hidden = false;
+  // Aparición escalonada de los bloques del resultado
+  var hijos = res.querySelectorAll('.eyebrow, h1, .intro, .mapa .fila, .bloque, .cierre, .nota, .reiniciar, footer');
+  Array.prototype.forEach.call(hijos, function(el, n){
+    el.classList.remove('sube'); void el.offsetWidth;
+    el.style.setProperty('--d', Math.min(n * 0.08, 1.2) + 's');
+    el.classList.add('sube');
+  });
+  window.scrollTo(0, 0);
+}
+
+$('empezar').addEventListener('click', function(){
+  vibrar();
+  $('portada').hidden = true;
+  $('top').hidden = false;
+  $('pantalla').hidden = false;
+  pintar();
+  $('tarjeta').className = 'entra-der';
+});
+$('atras').addEventListener('click', function(){
+  if (i > 0 && !ocupado) transicion(-1, function(){ i--; pintar(); });
+});
+$('reiniciar').addEventListener('click', function(){
+  i = 0; R = {}; SESION = nuevaSesion();
+  $('resultado').hidden = true;
+  $('top').hidden = false;
+  $('pantalla').hidden = false;
+  pintar();
+  $('tarjeta').className = 'entra-izq';
+});
+</script>
+</body>
+</html>
