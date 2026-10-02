@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#060807">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>La Cuenta que Nadie te Hace</title>
+<meta name="description" content="Tres números que casi nadie conoce sobre su propio dinero. Mercedes Ríos · Tu Ruta Financiera.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,800;0,900;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --negro: #060807;        /* Fondo base */
+    --neon: #39FF60;         /* Acento, bordes, resplandor (con moderación) */
+    --verde: #1B7A34;        /* Degradados y glow de fondo */
+    --rojo: #C42828;         /* Solo botones y urgencia */
+    --blanco: #EFF6F0;       /* Titulares y texto sobre oscuro */
+
+    --texto: rgba(239, 246, 240, 0.80);
+    --texto-suave: rgba(239, 246, 240, 0.58);
+    --linea: rgba(57, 255, 96, 0.22);
+    --panel: rgba(239, 246, 240, 0.035);
+    --glow: 0 0 18px rgba(57, 255, 96, 0.35);
+
+    --display: "Montserrat", system-ui, sans-serif;
+    --body: "DM Sans", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--negro);
+    color: var(--texto);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.65;
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- Hoja / sección ---------- */
+  .hoja {
+    position: relative;
+    padding: 72px 0;
+    border-bottom: 1px solid rgba(239, 246, 240, 0.06);
+    overflow: hidden;
+  }
+  .hoja::before {
+    content: "";
+    position: absolute;
+    width: 520px; height: 520px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(27, 122, 52, 0.42) 0%, rgba(27, 122, 52, 0) 68%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .hoja:nth-of-type(odd)::before { left: -240px; bottom: -220px; }
+  .hoja:nth-of-type(even)::before { right: -260px; top: -240px; }
+  .hoja > .wrap { position: relative; z-index: 1; }
+
+  /* ---------- Tipografía ---------- */
+  .kicker {
+    display: inline-block;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--blanco);
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--neon);
+    margin-bottom: 22px;
+  }
+  .tiempo {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--display); font-weight: 800; font-size: 12px;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--neon);
+    border: 1px solid var(--linea);
+    border-radius: 999px;
+    padding: 6px 14px;
+    margin-bottom: 20px;
+  }
+  .tiempo::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--neon); box-shadow: var(--glow);
+  }
+
+  h1, h2 {
+    font-family: var(--display);
+    font-weight: 900;
+    text-transform: uppercase;
+    color: var(--blanco);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    margin: 0 0 22px;
+    text-wrap: balance;
+  }
+  h1 {
+    font-size: clamp(44px, 10vw, 84px);
+    text-shadow: 0 0 28px rgba(57, 255, 96, 0.28);
+  }
+  h2 { font-size: clamp(30px, 6vw, 46px); }
+  h2 .num { color: var(--neon); text-shadow: var(--glow); }
+
+  h3 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--neon);
+    margin: 40px 0 14px;
+  }
+
+  p { margin: 0 0 16px; }
+  strong { color: var(--blanco); font-weight: 700; }
+  .lead { font-size: 19px; color: var(--blanco); }
+
+  /* ---------- Portada ---------- */
+  .portada { padding: 96px 0 88px; min-height: 92vh; display: flex; align-items: center; }
+  .portada .wrap { width: 100%; }
+  .portada .sub {
+    font-family: var(--body);
+    font-style: italic;
+    font-size: clamp(19px, 3vw, 23px);
+    color: var(--blanco);
+    max-width: 580px;
+    margin-bottom: 40px;
+  }
+  .caja {
+    border: 1px solid var(--neon);
+    border-radius: 12px;
+    padding: 24px 26px;
+    background: rgba(6, 8, 7, 0.6);
+    box-shadow: 0 0 0 1px rgba(57, 255, 96, 0.05), inset 0 0 30px rgba(27, 122, 52, 0.12);
+  }
+  .caja .rotulo {
+    font-family: var(--display); font-weight: 800; font-size: 13px;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--neon);
+    margin-bottom: 14px;
+  }
+  .lista { list-style: none; margin: 0; padding: 0; }
+  .lista li {
+    position: relative;
+    padding: 10px 0 10px 30px;
+    border-top: 1px solid rgba(239, 246, 240, 0.07);
+    color: var(--blanco);
+  }
+  .lista li:first-child { border-top: 0; }
+  .lista li::before {
+    content: ""; position: absolute; left: 4px; top: 19px;
+    width: 9px; height: 9px; border-radius: 50%;
+    border: 2px solid var(--neon);
+  }
+  .firma {
+    margin-top: 44px;
+    font-size: 15px; color: var(--texto-suave);
+  }
+  .firma strong { color: var(--blanco); }
+
+  /* ---------- Bloques ---------- */
+  .cita {
+    border-left: 2px solid var(--neon);
+    padding: 4px 0 4px 20px;
+    margin: 26px 0;
+    color: var(--blanco);
+    font-style: italic;
+    font-size: 18px;
+  }
+  .aviso {
+    border: 1px solid var(--linea);
+    border-radius: 12px;
+    padding: 22px 24px;
+    background: var(--panel);
+    margin: 30px 0;
+  }
+  .aviso h3 { margin-top: 0; }
+  .aviso p:last-child { margin-bottom: 0; }
+
+  .pasos { counter-reset: paso; list-style: none; margin: 0; padding: 0; }
+  .pasos li {
+    counter-increment: paso;
+    position: relative;
+    padding: 12px 0 12px 52px;
+    border-top: 1px solid rgba(239, 246, 240, 0.07);
+  }
+  .pasos li:first-child { border-top: 0; }
+  .pasos li::before {
+    content: counter(paso);
+    position: absolute; left: 0; top: 10px;
+    width: 34px; height: 34px; border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: var(--display); font-weight: 800; font-size: 15px;
+    color: var(--neon);
+    border: 1px solid var(--linea);
+  }
+
+  .ejemplo {
+    border-radius: 12px;
+    padding: 24px 26px;
+    background: linear-gradient(135deg, rgba(27, 122, 52, 0.30), rgba(27, 122, 52, 0.06));
+    border: 1px solid rgba(27, 122, 52, 0.7);
+    margin: 30px 0;
+  }
+  .ejemplo h3 { margin-top: 0; }
+  .ejemplo p:last-child { margin-bottom: 0; }
+  .ejemplo .op {
+    font-family: var(--display); font-weight: 700;
+    color: var(--blanco);
+    font-variant-numeric: tabular-nums;
+  }
+  .ejemplo .op strong { color: var(--neon); }
+
+  .nota {
+    color: var(--texto);
+    padding-top: 6px;
+  }
+
+  /* ---------- Tabla "Tu cuenta" (interactiva) ---------- */
+  .cuenta {
+    border: 1px solid var(--neon);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 30px 0;
+    background: rgba(6, 8, 7, 0.65);
+  }
+  .cuenta-head {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 16px 22px;
+    border-bottom: 1px solid var(--linea);
+  }
+  .cuenta-head h3 { margin: 0; }
+  .cuenta-head small { color: var(--texto-suave); font-size: 13px; }
+  .fila {
+    display: grid;
+    grid-template-columns: 1fr minmax(140px, 200px);
+    gap: 16px;
+    align-items: center;
+    padding: 14px 22px;
+    border-top: 1px solid rgba(239, 246, 240, 0.07);
+  }
+  .fila:first-of-type { border-top: 0; }
+  .fila .concepto { color: var(--blanco); font-size: 16px; line-height: 1.4; }
+  .fila .concepto span { display: block; color: var(--texto-suave); font-size: 13px; }
+  .campo {
+    display: flex; align-items: center;
+    border: 1px solid rgba(239, 246, 240, 0.18);
+    border-radius: 8px;
+    background: rgba(239, 246, 240, 0.04);
+    transition: border-color .15s, box-shadow .15s;
+  }
+  .campo:focus-within { border-color: var(--neon); box-shadow: var(--glow); }
+  .campo .pre, .campo .suf {
+    padding: 0 10px; color: var(--texto-suave);
+    font-family: var(--display); font-weight: 700; font-size: 15px;
+  }
+  .campo .pre { padding-right: 0; }
+  .campo input {
+    width: 100%; min-width: 0;
+    background: transparent; border: 0; outline: 0;
+    color: var(--blanco);
+    font-family: var(--display); font-weight: 700; font-size: 17px;
+    padding: 10px 10px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .campo input::placeholder { color: rgba(239, 246, 240, 0.25); }
+  .resultado {
+    text-align: right;
+    font-family: var(--display); font-weight: 800; font-size: 19px;
+    color: var(--blanco);
+    font-variant-numeric: tabular-nums;
+    padding-right: 10px;
+  }
+  .fila.total { background: rgba(27, 122, 52, 0.16); }
+  .fila.total .resultado { color: var(--neon); text-shadow: var(--glow); font-size: 22px; }
+
+  .deuda + .deuda { border-top: 1px dashed var(--linea); }
+  .deuda-tag {
+    padding: 12px 22px 0;
+    font-family: var(--display); font-weight: 800; font-size: 11px;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--texto-suave);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .quitar {
+    background: none; border: 0; color: var(--texto-suave);
+    font: inherit; letter-spacing: inherit; cursor: pointer; padding: 0;
+  }
+  .quitar:hover { color: var(--blanco); }
+  .agregar {
+    display: block; width: 100%;
+    background: transparent;
+    border: 0; border-top: 1px solid var(--linea);
+    color: var(--neon);
+    font-family: var(--display); font-weight: 800; font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 14px 22px; text-align: left; cursor: pointer;
+  }
+  .agregar:hover { background: rgba(57, 255, 96, 0.05); }
+
+  /* ---------- Resumen ---------- */
+  .resumen .fila { padding: 18px 22px; }
+  .resumen .resultado { font-size: 26px; color: var(--neon); text-shadow: var(--glow); }
+
+  .significa dl { margin: 0; }
+  .significa dt {
+    font-family: var(--display); font-weight: 800; color: var(--blanco);
+    text-transform: uppercase; font-size: 15px; letter-spacing: 0.06em;
+    margin-top: 20px;
+  }
+  .significa dd { margin: 6px 0 0; }
+
+  .pregunta {
+    font-family: var(--display);
+    font-weight: 800;
+    font-style: italic;
+    font-size: clamp(22px, 4vw, 30px);
+    line-height: 1.25;
+    color: var(--blanco);
+    margin: 48px 0 24px;
+    text-wrap: balance;
+  }
+
+  /* ---------- CTA ---------- */
+  .cta {
+    margin-top: 40px;
+    border: 1px solid var(--neon);
+    border-radius: 14px;
+    padding: 30px 28px;
+    background: radial-gradient(ellipse at 0% 100%, rgba(27, 122, 52, 0.55), rgba(6, 8, 7, 0.9) 70%);
+  }
+  .cta .kicker { margin-bottom: 16px; }
+  .cta .fecha {
+    font-family: var(--display); font-weight: 900; text-transform: uppercase;
+    color: var(--blanco); font-size: clamp(24px, 5vw, 34px); line-height: 1.1;
+    margin-bottom: 14px;
+  }
+  .btn {
+    display: inline-block;
+    margin-top: 10px;
+    background: var(--rojo);
+    color: #fff;
+    font-family: var(--display); font-weight: 800; font-size: 16px;
+    text-decoration: none;
+    padding: 15px 30px;
+    border-radius: 999px;
+    transition: transform .15s, filter .15s;
+  }
+  .btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
+  .btn:focus-visible { outline: 2px solid var(--blanco); outline-offset: 3px; }
+
+  .cierre { margin-top: 28px; color: var(--blanco); }
+
+  /* ---------- Pie ---------- */
+  footer {
+    padding: 36px 0 48px;
+    font-size: 13px;
+    color: var(--texto-suave);
+    line-height: 1.6;
+  }
+  footer strong { color: var(--texto); }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .hoja { padding: 56px 0; }
+    .portada { padding: 72px 0 64px; min-height: auto; }
+    .fila { grid-template-columns: 1fr; gap: 8px; padding: 14px 18px; }
+    .resultado { text-align: left; padding-right: 0; }
+    .cuenta-head, .deuda-tag, .agregar { padding-left: 18px; padding-right: 18px; }
+    .caja, .aviso, .ejemplo, .cta { padding: 20px 18px; }
+  }
+
+  /* ---------- Capa APP: barra superior, progreso, navegación ---------- */
+  html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+  body { -webkit-tap-highlight-color: transparent; overscroll-behavior-y: none; }
+
+  .progreso {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60;
+    background: transparent;
+  }
+  .progreso span {
+    display: block; height: 100%; width: 100%;
+    background: var(--neon); box-shadow: var(--glow);
+    transform-origin: 0 50%; transform: scaleX(0);
+  }
+
+  .appbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    padding: calc(env(safe-area-inset-top) + 10px) 16px 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: rgba(6, 8, 7, 0.72);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    backdrop-filter: blur(14px) saturate(140%);
+    border-bottom: 1px solid rgba(239, 246, 240, 0.06);
+    transform: translateY(-110%);
+    transition: transform .45s cubic-bezier(.2, .8, .2, 1);
+  }
+  .appbar.visible { transform: translateY(0); }
+  .appbar .titulo {
+    font-family: var(--display); font-weight: 800; font-size: 12px;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--blanco);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .appbar .titulo em { font-style: normal; color: var(--neon); }
+  .puntos { display: flex; gap: 7px; flex-shrink: 0; }
+  .puntos a {
+    width: 8px; height: 8px; border-radius: 999px;
+    background: rgba(239, 246, 240, 0.22);
+    transition: width .35s cubic-bezier(.2, .8, .2, 1), background .3s;
+  }
+  .puntos a.activo { width: 22px; background: var(--neon); box-shadow: var(--glow); }
+
+  /* ---------- Animaciones ---------- */
+  @keyframes subir {
+    from { opacity: 0; transform: translateY(28px) scale(.985); filter: blur(4px); }
+    to   { opacity: 1; transform: none; filter: none; }
+  }
+  @keyframes latido {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(57, 255, 96, .55); }
+    50%      { box-shadow: 0 0 0 7px rgba(57, 255, 96, 0); }
+  }
+  @keyframes brillo {
+    0%, 100% { text-shadow: 0 0 22px rgba(57, 255, 96, .20); }
+    50%      { text-shadow: 0 0 38px rgba(57, 255, 96, .42); }
+  }
+  @keyframes flotar {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(24px, -18px); }
+  }
+  @keyframes pop {
+    0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); }
+  }
+  @keyframes entrarFila {
+    from { opacity: 0; transform: translateY(-8px); max-height: 0; }
+    to   { opacity: 1; transform: none; max-height: 400px; }
+  }
+  @keyframes girar { to { transform: rotate(360deg); } }
+
+  .js .reveal { opacity: 0; }
+  .js .reveal.in { animation: subir .8s cubic-bezier(.2, .8, .2, 1) both; animation-delay: var(--d, 0s); }
+
+  .portada h1 { animation: brillo 4.5s ease-in-out infinite; }
+  .tiempo::before { animation: latido 2s ease-out infinite; }
+  .hoja::before { animation: flotar 14s ease-in-out infinite; }
+  .pop { animation: pop .35s cubic-bezier(.2, .8, .2, 1); }
+  .deuda.nueva { animation: entrarFila .45s cubic-bezier(.2, .8, .2, 1) both; overflow: hidden; }
+
+  .pasos li { transition: background .25s, padding-left .25s; border-radius: 8px; }
+  .pasos li:hover { background: rgba(239, 246, 240, 0.03); }
+
+  .caja, .aviso, .ejemplo, .cuenta, .cta { transition: transform .35s cubic-bezier(.2, .8, .2, 1), box-shadow .35s; }
+  @media (hover: hover) {
+    .ejemplo:hover, .aviso:hover { transform: translateY(-3px); }
+    .cuenta:hover, .cta:hover { box-shadow: 0 10px 40px -12px rgba(57, 255, 96, .25); }
+  }
+
+  .btn, .agregar, .btn-pdf { touch-action: manipulation; }
+  .btn:active, .btn-pdf:active, .agregar:active { transform: scale(.96); }
+
+  .scroll-hint {
+    position: absolute; left: 50%; bottom: 24px; transform: translateX(-50%);
+    width: 26px; height: 42px; border: 2px solid rgba(239, 246, 240, .35); border-radius: 14px;
+  }
+  .scroll-hint::after {
+    content: ""; position: absolute; left: 50%; top: 8px; width: 4px; height: 8px; margin-left: -2px;
+    border-radius: 2px; background: var(--neon);
+    animation: rueda 1.8s ease-in-out infinite;
+  }
+  @keyframes rueda { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
+
+  /* ---------- Descarga PDF ---------- */
+  .descarga {
+    text-align: center;
+    padding: 56px 0 8px;
+  }
+  .descarga p { color: var(--texto-suave); font-size: 15px; margin-bottom: 18px; }
+  .btn-pdf {
+    display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+    min-height: 56px; padding: 0 30px;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--blanco);
+    border: 1.5px solid var(--neon);
+    font-family: var(--display); font-weight: 800; font-size: 15px;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    box-shadow: 0 0 0 0 rgba(57, 255, 96, 0);
+    transition: background .25s, box-shadow .25s, transform .15s;
+  }
+  .btn-pdf:hover { background: rgba(57, 255, 96, 0.08); box-shadow: var(--glow); }
+  .btn-pdf:focus-visible { outline: 2px solid var(--blanco); outline-offset: 3px; }
+  .btn-pdf svg { width: 20px; height: 20px; flex-shrink: 0; }
+  .btn-pdf .spin {
+    display: none; width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid rgba(239, 246, 240, .25); border-top-color: var(--neon);
+    animation: girar .7s linear infinite;
+  }
+  .btn-pdf.cargando .spin { display: block; }
+  .btn-pdf.cargando svg { display: none; }
+
+  .toast {
+    position: fixed; left: 50%; z-index: 70;
+    bottom: calc(env(safe-area-inset-bottom) + 20px);
+    transform: translate(-50%, calc(100% + 60px));
+    opacity: 0;
+    max-width: calc(100% - 32px);
+    background: rgba(239, 246, 240, 0.96); color: var(--negro);
+    font-weight: 500; font-size: 14px;
+    padding: 12px 20px; border-radius: 999px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+    transition: transform .45s cubic-bezier(.2, .8, .2, 1), opacity .3s;
+    text-align: center;
+  }
+  .toast.visible { transform: translate(-50%, 0); opacity: 1; }
+
+  /* ---------- Móvil ---------- */
+  @media (max-width: 560px) {
+    .wrap { padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+    .portada { min-height: 100svh; padding-top: calc(env(safe-area-inset-top) + 72px); }
+    .pasos li { padding-left: 46px; }
+    .pasos li::before { width: 32px; height: 32px; font-size: 14px; }
+    .campo input { font-size: 18px; padding: 13px 10px; }   /* >=16px evita el zoom de iOS */
+    .agregar { min-height: 50px; }
+    .btn, .btn-pdf { display: flex; width: 100%; justify-content: center; text-align: center; }
+    .btn { padding: 17px 24px; }
+    .cita { font-size: 17px; }
+    footer { padding-bottom: calc(env(safe-area-inset-bottom) + 40px); }
+    .scroll-hint { bottom: calc(env(safe-area-inset-bottom) + 20px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    html { scroll-behavior: auto; }
+    .js .reveal { opacity: 1; }
+  }
+
+  /* ---------- Impresión / PDF ---------- */
+  @page { size: A4; margin: 0; }
+  @media print {
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    html, body { background: var(--negro) !important; }
+    body { font-size: 12.5pt; }
+    .hoja { break-after: page; page-break-after: always; min-height: auto; padding: 18mm 0; }
+    .hoja::before { animation: none; }
+    .portada { min-height: 297mm; padding: 0; }
+    .wrap { max-width: none; padding: 0 16mm; }
+    .js .reveal { opacity: 1 !important; animation: none !important; }
+    .appbar, .progreso, .toast, .scroll-hint, .descarga, .agregar, .quitar, .btn { display: none !important; }
+    .ejemplo, .aviso, .cuenta, .cta, .caja, .pasos li, .significa dd { break-inside: avoid; }
+    .portada h1 { animation: none; }
+    footer { padding: 0 0 12mm; }
+  }
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add("js");</script>
+
+<div class="progreso" aria-hidden="true"><span id="barra"></span></div>
+<header class="appbar" id="appbar">
+  <div class="titulo">La cuenta <em>·</em> <span id="seccionActual">Inicio</span></div>
+  <nav class="puntos" id="puntos" aria-label="Secciones"></nav>
+</header>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ================= 1 · PORTADA ================= -->
+<section class="hoja portada">
+  <div class="wrap">
+    <div class="kicker">15 minutos · hoy mismo</div>
+    <h1>La cuenta que nadie te hace</h1>
+    <p class="sub">Tres números que casi nadie conoce sobre su propio dinero. No necesitas nada que no tengas ya: tu celular y un estado de cuenta.</p>
+
+    <div class="caja">
+      <div class="rotulo">Lo que vas a tener al terminar</div>
+      <ul class="lista">
+        <li>Cuánto te cuesta al año la deuda que ya tienes</li>
+        <li>Cuánto deja de producir el dinero que tienes quieto</li>
+        <li>Cuánto tardarías en juntar capital ahorrando, en tu situación real</li>
+      </ul>
+    </div>
+
+    <p class="firma"><strong>Mercedes Ríos</strong> · Tu Ruta Financiera</p>
+  </div>
+  <a class="scroll-hint" href="#por-que" aria-label="Bajar"></a>
+</section>
+
+<!-- ================= 2 · POR QUÉ ================= -->
+<section class="hoja">
+  <div class="wrap">
+    <h2>Por qué estos tres números</h2>
+    <p class="lead">Casi todas las decisiones de dinero se toman con una sensación, no con una cifra.</p>
+    <p class="cita">“Estoy más o menos bien.” “Ya casi junto.” “La tarjeta la tengo controlada.”</p>
+    <p>Son sensaciones, y las sensaciones no se pueden comparar con nada.</p>
+    <p>Cuando esas tres frases se convierten en tres números, pasa algo incómodo y útil al mismo tiempo: dejas de discutir contigo y empiezas a decidir.</p>
+
+    <div class="aviso">
+      <h3>Una advertencia honesta</h3>
+      <p>Estos números no van a gustarte. El primero casi siempre es más alto de lo que la gente cree, y el tercero casi siempre es más largo.</p>
+      <p>Eso no es para desanimarte. Es exactamente lo contrario: no se puede cambiar algo que no se ha medido, y llevas años sin medirlo porque nadie te dijo cómo.</p>
+    </div>
+
+    <h3>Lo que necesitas para hacerlo</h3>
+    <ul class="lista">
+      <li>El último estado de cuenta de cualquier tarjeta o préstamo que tengas</li>
+      <li>Saber cuánto tienes ahorrado hoy, aunque sea aproximado</li>
+      <li>Un lápiz, o el bloc de notas del celular</li>
+    </ul>
+    <p class="nota" style="margin-top:18px">Nada más. Y si no tienes deudas, igual haz la segunda y la tercera: te van a servir más todavía.</p>
+  </div>
+</section>
+
+<!-- ================= 3 · CUENTA 1 ================= -->
+<section class="hoja">
+  <div class="wrap">
+    <div class="tiempo">5 minutos</div>
+    <h2><span class="num">Cuenta 1</span> · Lo que te cuesta tu deuda</h2>
+    <p class="lead">No lo que debes. Lo que <strong>te cuesta deber</strong>, que es otra cosa y casi nadie la calcula.</p>
+
+    <h3>Cómo se hace</h3>
+    <ol class="pasos">
+      <li>Abre el estado de cuenta de tu tarjeta o tu préstamo.</li>
+      <li>Busca el saldo actual. Anótalo.</li>
+      <li>Busca la tasa de interés anual. Suele estar en letra pequeña, como APR o “tasa efectiva anual”.</li>
+      <li>Multiplica el saldo por la tasa. Eso es lo que esa deuda te cuesta en un año.</li>
+      <li>Divide ese resultado entre 12. Eso es lo que te cuesta cada mes, solo por tenerla.</li>
+    </ol>
+
+    <div class="ejemplo">
+      <h3>Ejemplo</h3>
+      <p>Saldo de <strong>$6,000</strong> en una tarjeta al <strong>24% anual</strong>.</p>
+      <p class="op">6,000 × 0.24 = <strong>$1,440 al año.</strong></p>
+      <p><span class="op">1,440 ÷ 12 = <strong>$120 al mes</strong></span> que salen de tu bolsillo sin que nadie te entregue nada a cambio.</p>
+    </div>
+
+    <div class="cuenta" id="cuenta1">
+      <div class="cuenta-head"><h3>Tu cuenta</h3><small>Escribe tus números</small></div>
+      <div id="deudas"></div>
+      <button type="button" class="agregar" id="agregarDeuda">+ Agregar otra deuda</button>
+      <div class="fila total">
+        <div class="concepto">Saldo × tasa = lo que te cuesta al año</div>
+        <div class="resultado" id="c1Anual">$0</div>
+      </div>
+      <div class="fila total">
+        <div class="concepto">Dividido entre 12 = lo que te cuesta al mes</div>
+        <div class="resultado" id="c1Mensual">$0</div>
+      </div>
+    </div>
+
+    <p class="nota"><strong>Si tienes más de una deuda,</strong> haz la cuenta de cada una y súmalas. El número total es el que importa, y es el que normalmente sorprende.</p>
+  </div>
+</section>
+
+<!-- ================= 4 · CUENTA 2 ================= -->
+<section class="hoja">
+  <div class="wrap">
+    <div class="tiempo">5 minutos</div>
+    <h2><span class="num">Cuenta 2</span> · Lo que te cuesta el dinero quieto</h2>
+    <p class="lead">El dinero parado no es neutral. Pierde valor mientras está quieto, y además deja de ganar lo que podría estar ganando.</p>
+
+    <h3>Cómo se hace</h3>
+    <ol class="pasos">
+      <li>Anota cuánto tienes hoy entre ahorros y cuentas, sin contar lo que necesitas para vivir este mes.</li>
+      <li>Multiplícalo por 0.04. Ese 4% es una referencia conservadora de lo que rinde el dinero bien colocado en instrumentos básicos.</li>
+      <li>El resultado es lo que ese dinero dejó de producirte en un año por estar quieto.</li>
+    </ol>
+
+    <div class="ejemplo">
+      <h3>Ejemplo</h3>
+      <p>Tienes <strong>$3,000</strong> en una cuenta de ahorros que no paga casi nada.</p>
+      <p><span class="op">3,000 × 0.04 = <strong>$120 al año</strong></span> que ese dinero no te dio.</p>
+      <p>No es que los hayas perdido. Es que nunca llegaron, y eso se siente distinto aunque sea lo mismo.</p>
+    </div>
+
+    <div class="cuenta" id="cuenta2">
+      <div class="cuenta-head"><h3>Tu cuenta</h3><small>Escribe tus números</small></div>
+      <div class="fila">
+        <div class="concepto">Lo que tienes hoy sin usar</div>
+        <label class="campo"><span class="pre">$</span><input type="text" inputmode="decimal" id="c2Monto" placeholder="0" aria-label="Lo que tienes hoy sin usar"></label>
+      </div>
+      <div class="fila">
+        <div class="concepto">Multiplicado por 0.04</div>
+        <div class="resultado" style="color:var(--texto-suave)">× 0.04</div>
+      </div>
+      <div class="fila total">
+        <div class="concepto">Eso dejó de producirte este año</div>
+        <div class="resultado" id="c2Resultado">$0</div>
+      </div>
+    </div>
+
+    <p class="nota"><strong>Si tu respuesta es cero,</strong> anota cero y sigue. No tener dinero quieto no es un problema: el problema es creer que hay que tenerlo antes de poder empezar.</p>
+  </div>
+</section>
+
+<!-- ================= 5 · CUENTA 3 ================= -->
+<section class="hoja">
+  <div class="wrap">
+    <div class="tiempo">5 minutos</div>
+    <h2><span class="num">Cuenta 3</span> · Lo que te cuesta esperar</h2>
+    <p class="lead">Esta es la cuenta que cambia la conversación, porque el resultado no se mide en dólares. Se mide en años.</p>
+
+    <h3>Cómo se hace</h3>
+    <ol class="pasos">
+      <li>Decide cuánto capital querrías tener para invertir. Un número real, no uno soñado.</li>
+      <li>Anota cuánto podrías ahorrar al mes de forma sostenida, siendo honesto contigo.</li>
+      <li>Divide el capital entre el ahorro mensual. Ese es el número de meses.</li>
+      <li>Divide los meses entre 12. Esos son los años.</li>
+    </ol>
+
+    <div class="ejemplo">
+      <h3>Ejemplo</h3>
+      <p>Quieres <strong>$10,000</strong> para invertir y puedes ahorrar <strong>$200 al mes</strong>.</p>
+      <p class="op">10,000 ÷ 200 = <strong>50 meses</strong>.</p>
+      <p><span class="op">50 ÷ 12 = <strong>4 años y 2 meses</strong></span> — y eso suponiendo que no toques un peso, que no haya una emergencia y que no suba el arriendo.</p>
+    </div>
+
+    <div class="cuenta" id="cuenta3">
+      <div class="cuenta-head"><h3>Tu cuenta</h3><small>Escribe tus números</small></div>
+      <div class="fila">
+        <div class="concepto">Capital que querrías tener</div>
+        <label class="campo"><span class="pre">$</span><input type="text" inputmode="decimal" id="c3Capital" placeholder="0" aria-label="Capital que querrías tener"></label>
+      </div>
+      <div class="fila">
+        <div class="concepto">Lo que puedes ahorrar al mes, de verdad</div>
+        <label class="campo"><span class="pre">$</span><input type="text" inputmode="decimal" id="c3Ahorro" placeholder="0" aria-label="Lo que puedes ahorrar al mes"></label>
+      </div>
+      <div class="fila total">
+        <div class="concepto">Capital ÷ ahorro = meses</div>
+        <div class="resultado" id="c3Meses">—</div>
+      </div>
+      <div class="fila total">
+        <div class="concepto">Meses ÷ 12 = años</div>
+        <div class="resultado" id="c3Anios">—</div>
+      </div>
+    </div>
+
+    <p class="nota"><strong>Ese plazo nunca se cumple.</strong> Lo escribo porque es verdad y porque es importante que lo veas antes de seguir: en la vida real siempre pasa algo, y el reloj se reinicia.</p>
+  </div>
+</section>
+
+<!-- ================= 6 · TUS TRES NÚMEROS ================= -->
+<section class="hoja">
+  <div class="wrap">
+    <h2>Tus tres números</h2>
+    <p class="lead">Pásalos aquí. Esta es la hoja que vas a querer tener a mano.</p>
+
+    <div class="cuenta resumen">
+      <div class="cuenta-head"><h3>Mi cuenta, hoy</h3><small>Se llena sola con lo que escribiste</small></div>
+      <div class="fila">
+        <div class="concepto">Lo que me cuesta mi deuda al año</div>
+        <div class="resultado" id="r1">$—</div>
+      </div>
+      <div class="fila">
+        <div class="concepto">Lo que mi dinero quieto dejó de producir</div>
+        <div class="resultado" id="r2">$—</div>
+      </div>
+      <div class="fila">
+        <div class="concepto">Años que tardaría ahorrando</div>
+        <div class="resultado" id="r3">— años</div>
+      </div>
+    </div>
+
+    <div class="significa">
+      <h3>Qué significa cada uno</h3>
+      <dl>
+        <dt>El primero</dt>
+        <dd>es dinero que ya estás pagando. No es hipotético: salió de tu cuenta este mes y va a volver a salir el que viene.</dd>
+        <dt>El segundo</dt>
+        <dd>es la diferencia entre guardar y colocar. Guardar se siente seguro, y tiene un costo que nadie te cobra de frente.</dd>
+        <dt>El tercero</dt>
+        <dd>es el que más duele, porque no se recupera. El dinero se puede volver a ganar. Los años no.</dd>
+      </dl>
+    </div>
+
+    <p class="pregunta">“Si esperar a juntar te toma cuatro años… ¿qué pasaría si el capital no tuviera que ser tuyo?”</p>
+    <p>Esa es la pregunta que me hice yo, y la respuesta cambió todo lo que vino después.</p>
+    <p>No se trata de ahorrar más rápido ni de ganar más. Se trata de dejar de depender de lo que tienes guardado — y para eso hace falta una estructura, no más disciplina.</p>
+
+    <div class="cta">
+      <div class="kicker">Masterclass en vivo</div>
+      <div class="fecha">Viernes 16 de octubre</div>
+      <p><strong>Te muestro cómo funciona esa estructura</strong>, en vivo y gratis. Los tres movimientos completos, explicados uno por uno.</p>
+      <a class="btn" href="https://chat.whatsapp.com/KHm7832vPcDH5N8yLbyfcl" target="_blank" rel="noopener">Reservar mi lugar</a>
+    </div>
+
+    <p class="cierre">Si llegaste hasta aquí e hiciste las tres cuentas, ya hiciste más que la mayoría. Nos vemos el viernes.</p>
+
+    <div class="descarga">
+      <p>Guárdala con tus números para tenerla a mano.</p>
+      <button type="button" class="btn-pdf" id="btnPdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+        <span class="spin" aria-hidden="true"></span>
+        <span>Descargar en PDF</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7 · PIE ================= -->
+<footer>
+  <div class="wrap">
+    <strong>Mercedes Ríos · Tu Ruta Financiera · Octubre 2026</strong> — Este material es educativo. No constituye asesoría financiera, fiscal ni de inversión. Las cifras de los ejemplos son ilustrativas.
+  </div>
+</footer>
+
+<script>
+(function () {
+  var fmt = function (n) {
+    return "$" + Math.round(n).toLocaleString("en-US");
+  };
+  var num = function (el) {
+    if (!el) return 0;
+    var v = parseFloat(String(el.value).replace(/[^0-9.]/g, ""));
+    return isNaN(v) ? 0 : v;
+  };
+
+  // ---- Cuenta 1: una o varias deudas ----
+  var deudas = document.getElementById("deudas");
+  var contador = 0;
+
+  function agregarDeuda() {
+    contador++;
+    var n = deudas.children.length + 1;
+    var div = document.createElement("div");
+    div.className = "deuda" + (deudas.children.length ? " nueva" : "");
+    div.innerHTML =
+      '<div class="deuda-tag"><span>Deuda ' + n + '</span>' +
+      (n > 1 ? '<button type="button" class="quitar" aria-label="Quitar deuda">Quitar ✕</button>' : '') + '</div>' +
+      '<div class="fila"><div class="concepto">Saldo que debes hoy</div>' +
+      '<label class="campo"><span class="pre">$</span><input type="text" inputmode="decimal" class="saldo" placeholder="0" aria-label="Saldo que debes hoy"></label></div>' +
+      '<div class="fila"><div class="concepto">Tasa de interés anual<span>Ej.: si dice 24%, escribe 24</span></div>' +
+      '<label class="campo"><input type="text" inputmode="decimal" class="tasa" placeholder="0" aria-label="Tasa de interés anual en porcentaje"><span class="suf">%</span></label></div>';
+    deudas.appendChild(div);
+    var q = div.querySelector(".quitar");
+    if (q) q.addEventListener("click", function () { div.remove(); renumerar(); calcular(); });
+  }
+  function renumerar() {
+    Array.prototype.forEach.call(deudas.children, function (d, i) {
+      d.querySelector(".deuda-tag span").textContent = "Deuda " + (i + 1);
+    });
+  }
+  document.getElementById("agregarDeuda").addEventListener("click", function () {
+    agregarDeuda();
+    var inputs = deudas.querySelectorAll(".saldo");
+    inputs[inputs.length - 1].focus();
+  });
+  agregarDeuda();
+
+  function calcular() {
+    // Cuenta 1
+    var anual = 0, hayDeuda = false;
+    Array.prototype.forEach.call(deudas.children, function (d) {
+      var s = num(d.querySelector(".saldo")), t = num(d.querySelector(".tasa"));
+      if (s > 0) hayDeuda = true;
+      anual += s * (t / 100);
+    });
+    document.getElementById("c1Anual").textContent = fmt(anual);
+    document.getElementById("c1Mensual").textContent = fmt(anual / 12);
+
+    // Cuenta 2
+    var monto = num(document.getElementById("c2Monto"));
+    var c2 = monto * 0.04;
+    document.getElementById("c2Resultado").textContent = fmt(c2);
+
+    // Cuenta 3
+    var capital = num(document.getElementById("c3Capital"));
+    var ahorro = num(document.getElementById("c3Ahorro"));
+    var mesesTxt = "—", aniosTxt = "—", aniosNum = null;
+    if (capital > 0 && ahorro > 0) {
+      var meses = Math.ceil(capital / ahorro);
+      var a = Math.floor(meses / 12), m = meses % 12;
+      aniosNum = meses / 12;
+      mesesTxt = meses.toLocaleString("en-US") + (meses === 1 ? " mes" : " meses");
+      aniosTxt = (a > 0 ? a + (a === 1 ? " año" : " años") : "") +
+                 (a > 0 && m > 0 ? " y " : "") +
+                 (m > 0 ? m + (m === 1 ? " mes" : " meses") : "");
+    }
+    document.getElementById("c3Meses").textContent = mesesTxt;
+    document.getElementById("c3Anios").textContent = aniosTxt;
+
+    // Resumen
+    document.getElementById("r1").textContent = hayDeuda ? fmt(anual) : "$—";
+    document.getElementById("r2").textContent = document.getElementById("c2Monto").value.trim() !== "" ? fmt(c2) : "$—";
+    document.getElementById("r3").textContent = aniosNum !== null ? aniosTxt : "— años";
+  }
+
+  document.addEventListener("input", function (e) {
+    if (e.target.matches(".campo input")) calcular();
+  });
+  calcular();
+
+  // ---- Micro-animación cuando cambia un resultado ----
+  var mo = new MutationObserver(function (muts) {
+    muts.forEach(function (m) {
+      var el = m.target.nodeType === 1 ? m.target : m.target.parentElement;
+      if (!el || !el.classList.contains("resultado")) return;
+      el.classList.remove("pop"); void el.offsetWidth; el.classList.add("pop");
+    });
+  });
+  document.querySelectorAll(".resultado").forEach(function (el) {
+    mo.observe(el, { childList: true, characterData: true, subtree: true });
+  });
+
+  // ---- Secciones, navegación y progreso ----
+  var hojas = Array.prototype.slice.call(document.querySelectorAll(".hoja"));
+  var nombres = ["Inicio", "Por qué", "Cuenta 1", "Cuenta 2", "Cuenta 3", "Tus números"];
+  var ids = ["inicio", "por-que", "cuenta-1", "cuenta-2", "cuenta-3", "tus-numeros"];
+  var puntos = document.getElementById("puntos");
+  hojas.forEach(function (h, i) {
+    h.id = ids[i] || "seccion-" + i;
+    var a = document.createElement("a");
+    a.href = "#" + h.id;
+    a.setAttribute("aria-label", nombres[i] || "");
+    puntos.appendChild(a);
+  });
+  var links = puntos.querySelectorAll("a");
+  var appbar = document.getElementById("appbar");
+  var barra = document.getElementById("barra");
+  var actual = document.getElementById("seccionActual");
+  var ticking = false;
+
+  function onScroll() {
+    var y = window.scrollY, h = document.documentElement.scrollHeight - window.innerHeight;
+    barra.style.transform = "scaleX(" + (h > 0 ? Math.min(1, y / h) : 0) + ")";
+    appbar.classList.toggle("visible", y > window.innerHeight * 0.6);
+    var idx = 0, mid = window.innerHeight * 0.4;
+    hojas.forEach(function (s, i) { if (s.getBoundingClientRect().top <= mid) idx = i; });
+    links.forEach(function (l, i) { l.classList.toggle("activo", i === idx); });
+    if (actual.textContent !== nombres[idx]) actual.textContent = nombres[idx];
+    ticking = false;
+  }
+  window.addEventListener("scroll", function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(onScroll); }
+  }, { passive: true });
+  window.addEventListener("resize", onScroll);
+  onScroll();
+
+  // ---- Aparición escalonada al hacer scroll ----
+  var items = document.querySelectorAll(
+    ".hoja .wrap > *:not(.cuenta), .cuenta, .pasos li, .lista li, .significa dt, .significa dd"
+  );
+  var grupos = new Map();
+  items.forEach(function (el) {
+    el.classList.add("reveal");
+    var p = el.parentElement, n = grupos.get(p) || 0;
+    el.style.setProperty("--d", Math.min(n * 0.07, 0.5) + "s");
+    grupos.set(p, n + 1);
+  });
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    items.forEach(function (el) { io.observe(el); });
+  } else {
+    items.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  // ---- Descargar en PDF ----
+  var toast = document.getElementById("toast"), toastT;
+  function avisar(msg) {
+    toast.textContent = msg;
+    toast.classList.add("visible");
+    clearTimeout(toastT);
+    toastT = setTimeout(function () { toast.classList.remove("visible"); }, 3600);
+  }
+  var btnPdf = document.getElementById("btnPdf");
+  btnPdf.addEventListener("click", function () {
+    btnPdf.classList.add("cargando");
+    items.forEach(function (el) { el.classList.add("in"); });
+    avisar("Elige “Guardar como PDF” en la ventana que se abre");
+    var tituloOriginal = document.title;
+    document.title = "La-Cuenta-que-Nadie-te-Hace";
+    setTimeout(function () {
+      window.print();
+      document.title = tituloOriginal;
+      btnPdf.classList.remove("cargando");
+    }, 650);
+  });
+})();
+</script>
+</body>
+</html>
