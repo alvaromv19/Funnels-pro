@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Capital - Ruta Financiera</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Calculadora de Rentabilidad</title>
     <style>
         :root {
             --bg-dark: #09090b;
@@ -18,9 +18,9 @@
             --radius: 16px;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
         
-        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        body { background-color: var(--bg-dark); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; overflow-x: hidden; }
         
         .app-container {
             background: var(--card-bg);
@@ -28,32 +28,62 @@
             max-width: 480px;
             border-radius: var(--radius);
             border: 1px solid var(--border-color);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            position: relative;
             overflow: hidden;
+            min-height: 500px;
         }
 
-        .header { background: linear-gradient(180deg, rgba(39,39,42,1) 0%, rgba(24,24,27,1) 100%); padding: 24px; border-bottom: 1px solid var(--border-color); text-align: center; }
+        /* Sistema de Vistas Animadas */
+        .screen { display: none; width: 100%; }
+        .screen.active { display: block; animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(20px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Pantalla Bienvenida */
+        .welcome-content { padding: 40px 24px; text-align: center; display: flex; flex-direction: column; justify-content: center; min-height: 500px; }
+        .icon-pulse { width: 64px; height: 64px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; border: 1px solid rgba(59, 130, 246, 0.3); animation: pulse 2s infinite; }
+        .icon-pulse svg { width: 32px; height: 32px; color: var(--accent); }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 var(--accent-glow); } 70% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+        
+        .welcome-content h1 { font-size: 1.5rem; margin-bottom: 8px; font-weight: 700; letter-spacing: -0.025em; }
+        .welcome-content p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 40px; }
+        
+        .input-premium { width: 100%; padding: 18px; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 12px; color: white; font-size: 1.1rem; text-align: center; outline: none; transition: all 0.3s; margin-bottom: 24px; }
+        .input-premium:focus { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-glow); }
+        
+        .btn-primary { width: 100%; padding: 18px; background: var(--accent); color: white; font-size: 1.05rem; font-weight: 600; border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+        .btn-primary:hover { background: #2563eb; transform: translateY(-2px); }
+        .btn-primary:active { transform: translateY(0); }
+
+        /* Pantalla Calculadora */
+        .header { background: linear-gradient(180deg, rgba(39,39,42,1) 0%, rgba(24,24,27,1) 100%); padding: 24px 20px; border-bottom: 1px solid var(--border-color); text-align: center; }
         .header h2 { font-size: 1.25rem; font-weight: 600; letter-spacing: -0.025em; }
-        .header p { color: var(--text-muted); font-size: 0.875rem; margin-top: 4px; }
+        .header p { color: var(--text-muted); font-size: 0.85rem; margin-top: 6px; }
+        .user-highlight { color: white; font-weight: 600; }
+        .reset-btn { color: var(--accent); font-size: 0.75rem; text-decoration: none; margin-left: 8px; cursor: pointer; padding: 4px; }
 
-        .content { padding: 24px; }
+        .content { padding: 20px; }
 
-        .form-group { margin-bottom: 24px; }
-        .form-group label { display: block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; letter-spacing: 0.05em; }
+        .form-group { margin-bottom: 24px; animation: slideUpFade 0.5s ease backwards; }
+        .form-group:nth-child(2) { animation-delay: 0.1s; }
+        .form-group:nth-child(3) { animation-delay: 0.2s; }
+        
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; letter-spacing: 0.05em; }
 
-        /* Custom Input dual */
         .amount-display { position: relative; display: flex; align-items: center; background: var(--bg-dark); border: 1px solid var(--border-color); border-radius: 12px; padding: 4px; transition: border-color 0.2s; }
         .amount-display:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
         .currency-symbol { position: absolute; left: 16px; font-size: 1.5rem; font-weight: 600; color: var(--accent); }
-        input[type="number"] { width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 1.75rem; font-weight: 700; padding: 12px 12px 12px 40px; outline: none; -moz-appearance: textfield; }
-        input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type="number"] { width: 100%; background: transparent; border: none; color: var(--text-main); font-size: 1.75rem; font-weight: 700; padding: 14px 14px 14px 44px; outline: none; -moz-appearance: textfield; }
         
-        input[type="range"] { width: 100%; margin-top: 16px; appearance: none; background: transparent; }
+        input[type="range"] { width: 100%; margin-top: 20px; appearance: none; background: transparent; }
         input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: var(--border-color); border-radius: 4px; }
-        input[type="range"]::-webkit-slider-thumb { appearance: none; height: 20px; width: 20px; border-radius: 50%; background: var(--accent); cursor: pointer; margin-top: -7px; box-shadow: 0 0 10px var(--accent); transition: transform 0.1s; }
-        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.15); }
-
-        select { width: 100%; padding: 14px 16px; background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 12px; font-size: 0.95rem; font-weight: 500; appearance: none; outline: none; cursor: pointer; transition: border-color 0.2s; }
+        input[type="range"]::-webkit-slider-thumb { appearance: none; height: 24px; width: 24px; border-radius: 50%; background: var(--accent); cursor: pointer; margin-top: -9px; box-shadow: 0 0 12px rgba(59,130,246,0.5); transition: transform 0.1s; }
+        
+        select { width: 100%; padding: 16px; background: var(--bg-dark); border: 1px solid var(--border-color); color: var(--text-main); border-radius: 12px; font-size: 1rem; font-weight: 500; appearance: none; outline: none; cursor: pointer; transition: border-color 0.2s; }
         select:focus { border-color: var(--accent); }
         .select-wrapper { position: relative; }
         .select-wrapper::after { content: "▼"; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 0.7rem; color: var(--text-muted); pointer-events: none; }
@@ -61,105 +91,139 @@
         .hybrid-models { display: none; gap: 12px; margin-top: 12px; }
         .hybrid-models .select-wrapper { flex: 1; }
 
-        .dashboard { background: var(--bg-dark); border-radius: 16px; padding: 20px; border: 1px solid var(--border-color); margin-top: 32px; }
+        .dashboard { background: var(--bg-dark); border-radius: 16px; padding: 20px; border: 1px solid var(--border-color); margin-top: 32px; animation: slideUpFade 0.6s ease backwards; animation-delay: 0.3s; }
         
-        .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
-        .metric { background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .metric-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; margin-bottom: 4px; }
-        .metric-value { font-size: 1.25rem; font-weight: 700; color: var(--success); }
-        .metric-value.total { color: var(--text-main); }
+        .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .metric { background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: center; }
+        .metric-label { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
+        .metric-value { font-size: 1.35rem; font-weight: 700; color: var(--success); }
+        .metric-value.total { color: var(--text-main); font-size: 1.2rem; }
         
-        .risk-bar-container { width: 100%; height: 6px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 8px; }
-        .risk-bar { height: 100%; background: var(--warning); border-radius: 4px; transition: width 0.4s ease; }
-        .risk-label { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-top: 16px; }
+        .risk-bar-container { width: 100%; height: 6px; background: var(--border-color); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+        .risk-bar { height: 100%; background: var(--warning); border-radius: 4px; transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.4s; }
+        .risk-label { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-top: 20px; }
+
+        /* Media Queries Mobile Optimizado */
+        @media (max-width: 400px) {
+            .metric-grid { grid-template-columns: 1fr; }
+            .metric-value { font-size: 1.5rem; }
+            .hybrid-models { flex-direction: column; }
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="header">
-        <h2>Simulador de Capital OPM</h2>
-        <p>Proyección de flujos basados en crédito empresarial</p>
+    <!-- Pantalla 1: Bienvenida -->
+    <div id="welcomeScreen" class="screen">
+        <div class="welcome-content">
+            <div class="icon-pulse">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            </div>
+            <h1>Calculadora de Rentabilidad</h1>
+            <p>Proyección financiera por crédito empresarial</p>
+            
+            <label style="text-align: left; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; display: block;">Nombre del Inversor</label>
+            <input type="text" id="nameInput" class="input-premium" placeholder="Ej. Juan Pérez" autocomplete="off">
+            
+            <button id="startBtn" class="btn-primary">Configurar Portafolio</button>
+        </div>
     </div>
 
-    <div class="content">
-        <!-- Input de Capital -->
-        <div class="form-group">
-            <label>Capital de Inversión Aprobado</label>
-            <div class="amount-display">
-                <span class="currency-symbol">$</span>
-                <input type="number" id="capitalInput" min="1000" max="100000" step="1000" value="30000">
-            </div>
-            <input type="range" id="capitalRange" min="1000" max="100000" step="1000" value="30000">
+    <!-- Pantalla 2: Calculadora Principal -->
+    <div id="calcScreen" class="screen">
+        <div class="header">
+            <h2>Calculadora de Rentabilidad</h2>
+            <p>Inversor: <span id="userNameDisplay" class="user-highlight"></span> <span id="resetBtn" class="reset-btn">(Cambiar)</span></p>
         </div>
 
-        <!-- Perfil de Riesgo -->
-        <div class="form-group">
-            <label>Escenario Estratégico</label>
-            <div class="select-wrapper">
-                <select id="scenarioSelect">
-                    <option value="conservador">Conservador (Flujo Estable)</option>
-                    <option value="medio">Medio (Crecimiento Sostenido)</option>
-                    <option value="agresivo">Agresivo (Alta Rentabilidad)</option>
-                    <option value="hibrido">Híbrido (Split 50/50)</option>
-                </select>
+        <div class="content">
+            <!-- Input de Capital -->
+            <div class="form-group">
+                <label>Línea de Crédito Aprobada</label>
+                <div class="amount-display">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" id="capitalInput" min="1000" max="100000" step="1000" value="30000">
+                </div>
+                <input type="range" id="capitalRange" min="1000" max="100000" step="1000" value="30000">
             </div>
-        </div>
 
-        <!-- Vehículo de Inversión (Simple) -->
-        <div class="form-group" id="singleModelGroup">
-            <label>Vehículo de Inversión</label>
-            <div class="select-wrapper">
-                <select id="assetSelect"></select>
+            <!-- Perfil de Riesgo -->
+            <div class="form-group">
+                <label>Escenario Estratégico</label>
+                <div class="select-wrapper">
+                    <select id="scenarioSelect">
+                        <option value="conservador">Conservador (Flujo Estable)</option>
+                        <option value="medio">Medio (Crecimiento Sostenido)</option>
+                        <option value="agresivo">Agresivo (Alta Rentabilidad)</option>
+                        <option value="hibrido">Híbrido (Split 50/50)</option>
+                    </select>
+                </div>
             </div>
-        </div>
 
-        <!-- Vehículo de Inversión (Híbrido) -->
-        <div class="form-group hybrid-models" id="hybridModelGroup">
-            <div style="width: 100%">
-                <label>Combinación de Vehículos (50% - 50%)</label>
-                <div style="display: flex; gap: 12px;">
-                    <div class="select-wrapper">
-                        <select id="hybridAsset1"></select>
+            <!-- Vehículo de Inversión (Simple) -->
+            <div class="form-group" id="singleModelGroup">
+                <label>Vehículo de Inversión</label>
+                <div class="select-wrapper">
+                    <select id="assetSelect"></select>
+                </div>
+            </div>
+
+            <!-- Vehículo de Inversión (Híbrido) -->
+            <div class="form-group hybrid-models" id="hybridModelGroup">
+                <div style="width: 100%">
+                    <label>Combinación (50% - 50%)</label>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                        <div class="select-wrapper" style="flex: 1; min-width: 140px;">
+                            <select id="hybridAsset1"></select>
+                        </div>
+                        <div class="select-wrapper" style="flex: 1; min-width: 140px;">
+                            <select id="hybridAsset2"></select>
+                        </div>
                     </div>
-                    <div class="select-wrapper">
-                        <select id="hybridAsset2"></select>
+                </div>
+            </div>
+
+            <!-- Dashboard de Resultados -->
+            <div class="dashboard">
+                <div class="metric-grid">
+                    <div class="metric">
+                        <div class="metric-label">Retorno Mensual</div>
+                        <div class="metric-value" id="resMonthly">+$0</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-label">Retorno Anual</div>
+                        <div class="metric-value" id="resAnnual">+$0</div>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Dashboard de Resultados -->
-        <div class="dashboard">
-            <div class="metric-grid">
-                <div class="metric">
-                    <div class="metric-label">Retorno Mensual</div>
-                    <div class="metric-value" id="resMonthly">+$0</div>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 4px;">
+                    <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">Capital + Beneficio (Mes 12)</span>
+                    <span class="metric-value total" id="resTotal">$0</span>
                 </div>
-                <div class="metric">
-                    <div class="metric-label">Retorno Anual</div>
-                    <div class="metric-value" id="resAnnual">+$0</div>
-                </div>
-            </div>
-            
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 4px;">
-                <span style="font-size: 0.875rem; color: var(--text-muted);">Capital + Beneficio (Mes 12)</span>
-                <span class="metric-value total" id="resTotal">$0</span>
-            </div>
 
-            <div class="risk-label">
-                <span>Nivel de Riesgo Operativo</span>
-                <span id="resRiskText" style="color: var(--warning);">0%</span>
-            </div>
-            <div class="risk-bar-container">
-                <div class="risk-bar" id="resRiskBar" style="width: 0%;"></div>
+                <div class="risk-label">
+                    <span>Índice de Volatilidad (Riesgo)</span>
+                    <span id="resRiskText" style="color: var(--warning);">0%</span>
+                </div>
+                <div class="risk-bar-container">
+                    <div class="risk-bar" id="resRiskBar" style="width: 0%;"></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // Base de datos de activos con riesgos artificialmente bajos para evitar objeciones
+    // Variables de Vistas y Usuario
+    const welcomeScreen = document.getElementById('welcomeScreen');
+    const calcScreen = document.getElementById('calcScreen');
+    const nameInput = document.getElementById('nameInput');
+    const startBtn = document.getElementById('startBtn');
+    const userNameDisplay = document.getElementById('userNameDisplay');
+    const resetBtn = document.getElementById('resetBtn');
+
+    // Base de datos de activos (Riesgos reales mapeados bajo)
     const db = {
         conservador: [
             { id: 'bonos', name: 'Bonos / T-Bills', roi: 0.05, risk: 0.02 },
@@ -175,22 +239,17 @@
             { id: 'cripto', name: 'Cripto Bluechips', roi: 0.30, risk: 0.35 }
         ]
     };
-
-    // Obtener array plano de todos los activos para el modo híbrido
     const allAssets = [...db.conservador, ...db.medio, ...db.agresivo];
 
-    // Elementos DOM
+    // Elementos DOM Calculadora
     const inputNum = document.getElementById('capitalInput');
     const inputRange = document.getElementById('capitalRange');
     const scenario = document.getElementById('scenarioSelect');
-    
     const singleGroup = document.getElementById('singleModelGroup');
     const hybridGroup = document.getElementById('hybridModelGroup');
-    
     const assetSelect = document.getElementById('assetSelect');
     const hybrid1 = document.getElementById('hybridAsset1');
     const hybrid2 = document.getElementById('hybridAsset2');
-
     const uiMonthly = document.getElementById('resMonthly');
     const uiAnnual = document.getElementById('resAnnual');
     const uiTotal = document.getElementById('resTotal');
@@ -200,7 +259,52 @@
     const formatMoney = (val) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
     const formatPercent = (val) => (val * 100).toFixed(1) + '%';
 
-    // Sincronizar inputs numérico y rango
+    // --- LÓGICA DE USUARIO Y PANTALLAS ---
+    function initApp() {
+        const savedName = localStorage.getItem('investorName');
+        if (savedName) {
+            userNameDisplay.textContent = savedName;
+            showScreen(calcScreen);
+            handleScenarioChange(); // Init calc
+        } else {
+            showScreen(welcomeScreen);
+            nameInput.focus();
+        }
+    }
+
+    function showScreen(screenEl) {
+        welcomeScreen.classList.remove('active');
+        calcScreen.classList.remove('active');
+        
+        // Timeout para permitir que el DOM renderice antes de animar
+        setTimeout(() => {
+            screenEl.classList.add('active');
+        }, 10);
+    }
+
+    function saveUser() {
+        const name = nameInput.value.trim();
+        if (name.length > 0) {
+            localStorage.setItem('investorName', name);
+            userNameDisplay.textContent = name;
+            showScreen(calcScreen);
+            handleScenarioChange();
+        } else {
+            nameInput.style.borderColor = '#ef4444';
+            setTimeout(() => nameInput.style.borderColor = 'var(--border-color)', 1000);
+        }
+    }
+
+    startBtn.addEventListener('click', saveUser);
+    nameInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') saveUser(); });
+
+    resetBtn.addEventListener('click', () => {
+        localStorage.removeItem('investorName');
+        nameInput.value = '';
+        showScreen(welcomeScreen);
+    });
+
+    // --- LÓGICA DE CALCULADORA ---
     const syncInputs = (e) => {
         let val = parseInt(e.target.value);
         if (val > 100000) val = 100000;
@@ -213,7 +317,6 @@
     inputNum.addEventListener('input', syncInputs);
     inputRange.addEventListener('input', syncInputs);
 
-    // Poblar selectores
     const populateSelect = (selectElement, optionsArray) => {
         selectElement.innerHTML = '';
         optionsArray.forEach(item => {
@@ -248,7 +351,6 @@
     hybrid1.addEventListener('change', calculate);
     hybrid2.addEventListener('change', calculate);
 
-    // Motor de cálculo
     function calculate() {
         const capital = parseInt(inputNum.value) || 0;
         const mode = scenario.value;
@@ -258,15 +360,9 @@
         if (mode === 'hibrido') {
             const opt1 = hybrid1.options[hybrid1.selectedIndex];
             const opt2 = hybrid2.options[hybrid2.selectedIndex];
-            // Split 50/50 del capital
             const cap1 = capital * 0.5;
             const cap2 = capital * 0.5;
-            
-            const roi1 = cap1 * parseFloat(opt1.dataset.roi);
-            const roi2 = cap2 * parseFloat(opt2.dataset.roi);
-            roiAnual = roi1 + roi2;
-            
-            // Promedio ponderado de riesgo
+            roiAnual = (cap1 * parseFloat(opt1.dataset.roi)) + (cap2 * parseFloat(opt2.dataset.roi));
             riskLvl = (parseFloat(opt1.dataset.risk) + parseFloat(opt2.dataset.risk)) / 2;
         } else {
             const opt = assetSelect.options[assetSelect.selectedIndex];
@@ -276,25 +372,23 @@
         }
 
         const roiMensual = roiAnual / 12;
-        const total = capital + roiAnual;
-
-        // Actualizar UI
+        
         uiMonthly.innerText = '+' + formatMoney(roiMensual);
         uiAnnual.innerText = '+' + formatMoney(roiAnual);
-        uiTotal.innerText = formatMoney(total);
-        
+        uiTotal.innerText = formatMoney(capital + roiAnual);
         uiRiskText.innerText = formatPercent(riskLvl);
-        // Escalar la barra visual: 10% de riesgo se verá como 100% de la barra roja (para diseño compacto)
-        uiRiskBar.style.width = Math.min((riskLvl * 10) * 100, 100) + '%';
         
-        // Color dinámico de riesgo
-        if (riskLvl < 0.03) { uiRiskBar.style.background = '#22c55e'; uiRiskText.style.color = '#22c55e'; }
-        else if (riskLvl < 0.08) { uiRiskBar.style.background = '#eab308'; uiRiskText.style.color = '#eab308'; }
+        // HACK VISUAL DE RIESGO: Si el riesgo es 0.35 (35%), la barra solo ocupa el 35% de la pantalla.
+        // Esto la hace ver sutil y psicológicamente inofensiva aunque el número sea realista.
+        uiRiskBar.style.width = (riskLvl * 100) + '%';
+        
+        if (riskLvl < 0.05) { uiRiskBar.style.background = '#22c55e'; uiRiskText.style.color = '#22c55e'; }
+        else if (riskLvl <= 0.15) { uiRiskBar.style.background = '#eab308'; uiRiskText.style.color = '#eab308'; }
         else { uiRiskBar.style.background = '#ef4444'; uiRiskText.style.color = '#ef4444'; }
     }
 
-    // Inicializar
-    handleScenarioChange();
+    // Arrancar aplicación
+    initApp();
 </script>
 
 </body>
