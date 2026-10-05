@@ -401,6 +401,32 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation: none !important; transition: none !important; }
   }
+
+  /* ---------- Teléfono con selector de país ---------- */
+  .fila-tel{display:flex;gap:8px;align-items:stretch}
+  .fila-tel .sel-pais{flex:0 0 auto;width:auto;min-width:9.5rem;max-width:45%}
+  .fila-tel input{flex:1 1 auto;min-width:0}
+  @media (max-width:380px){
+    .fila-tel{flex-direction:column}
+    .fila-tel .sel-pais{max-width:100%;width:100%}
+  }
+  .fila-tel { margin: 0 0 12px; }
+  .fila-tel .campo { margin: 0; }
+  select.campo {
+    display: block;
+    font-family: var(--display); font-weight: 700; font-size: 16px;
+    background-color: var(--panel); color: var(--blanco);
+    border: 1px solid var(--linea); border-radius: 14px;
+    padding: 17px 38px 17px 16px;
+    -webkit-appearance: none; appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2339FF60' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; background-size: 14px;
+    text-overflow: ellipsis; cursor: pointer;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  select.campo:focus { border-color: var(--neon); box-shadow: var(--glow); outline: none; }
+  select.campo option { background: #0d120f; color: var(--blanco); }
+  select.campo option:disabled { color: rgba(239,246,240,.4); }
 </style>
 </head>
 <body>
@@ -524,12 +550,36 @@
 var WHATSAPP = "";
 
 // Enlace del grupo de la masterclass.
-var GRUPO = "https://chat.whatsapp.com/GAOTNBv4XTjIKQIL4LP4Ul";
+var GRUPO = "https://chat.whatsapp.com/KHm7832vPcDH5N8yLbyfcl";
 
 // URL de la aplicación web de Google Apps Script (termina en /exec).
 // Cada respuesta se registra en la hoja de cálculo apenas se contesta,
 // en una sola fila por persona. Déjalo en "" para no guardar nada.
 var GUARDAR_URL = "https://script.google.com/macros/s/AKfycbyaICPSeRw5dJhsmTIucIHzgnarebTVzunJvkLl9IgsnWsYMQ3qAJ0GNVrxulMDDlYT/exec";
+
+var PAISES = [
+  { n:"Elige tu país", c:"" },
+  { n:"Estados Unidos", c:"+1" },
+  { n:"Colombia", c:"+57" },
+  { n:"México", c:"+52" },
+  { n:"Ecuador", c:"+593" },
+  { n:"Perú", c:"+51" },
+  { n:"Venezuela", c:"+58" },
+  { n:"Argentina", c:"+54" },
+  { n:"Chile", c:"+56" },
+  { n:"España", c:"+34" },
+  { n:"Rep. Dominicana", c:"+1" },
+  { n:"Guatemala", c:"+502" },
+  { n:"Honduras", c:"+504" },
+  { n:"El Salvador", c:"+503" },
+  { n:"Nicaragua", c:"+505" },
+  { n:"Costa Rica", c:"+506" },
+  { n:"Panamá", c:"+507" },
+  { n:"Bolivia", c:"+591" },
+  { n:"Paraguay", c:"+595" },
+  { n:"Uruguay", c:"+598" },
+  { n:"Otro país", c:"+" }
+];
 
 var PREGUNTAS = [
   { id:"nombre", t:"Antes de empezar, ¿cómo te llamas?",
@@ -537,7 +587,7 @@ var PREGUNTAS = [
     tipo:"texto", campo:"text", ph:"Tu nombre", boton:"Seguir" },
   { id:"telefono", t:"¿A qué número te escribo?",
     a:"Es para mandarte el acceso a la clase. No lo comparto con nadie ni te va a llegar publicidad.",
-    tipo:"texto", campo:"tel", ph:"Incluye el código de tu país", boton:"Seguir" },
+    tipo:"texto", campo:"tel", ph:"Tu número, sin el código de país", boton:"Seguir" },
   { id:"pais", t:"¿Dónde vives hoy?",
     a:"Cambia el proceso, no la posibilidad.",
     ops:[
@@ -692,6 +742,42 @@ function pintar(){
     if (q.campo === 'tel') inp.inputMode = 'tel';
     inp.setAttribute('aria-label', q.t);
     if (R[q.id]) inp.value = R[q.id];
+    var sel = null, fila = null;
+    if (q.id === 'telefono') {
+      fila = document.createElement('div');
+      fila.className = 'fila-tel';
+      sel = document.createElement('select');
+      sel.className = 'campo sel-pais';
+      sel.id = 'campo-paistel';
+      sel.setAttribute('aria-label', 'País del número');
+      PAISES.forEach(function(p){
+        var o = document.createElement('option');
+        o.value = p.c;
+        o.textContent = p.c ? (p.n + ' ' + p.c) : p.n;
+        o.dataset.n = p.n;
+        if (!p.c) { o.disabled = true; o.selected = true; }
+        sel.appendChild(o);
+      });
+      // Al volver atrás: recuperar el país elegido y mostrar el número sin el código
+      if (R.telefono && R.tel_pais) {
+        for (var k = 0; k < sel.options.length; k++) {
+          var op = sel.options[k];
+          if (op.dataset.n === R.tel_pais && R.telefono.indexOf(op.value) === 0) {
+            sel.selectedIndex = k;
+            inp.value = R.telefono.slice(op.value.length);
+            break;
+          }
+        }
+      }
+      // "Otro país": la persona escribe el número completo con su código
+      var ajustarPh = function(){
+        inp.placeholder = sel.value === '+' ? 'Tu número con el código de tu país' : q.ph;
+      };
+      sel.addEventListener('change', function(){ ajustarPh(); inp.focus(); });
+      ajustarPh();
+      fila.appendChild(sel);
+      fila.appendChild(inp);
+    }
     var err = document.createElement('p'); err.className = 'error'; err.id = 'err'; err.hidden = true;
     var btn = document.createElement('button');
     btn.className = 'btn btn-neon'; btn.type = 'button';
@@ -704,13 +790,24 @@ function pintar(){
       if (ocupado) return;
       var v = inp.value.trim();
       if (q.id === 'nombre' && v.length < 2) { mostrarError('Escribe tu nombre para seguir.'); return; }
-      if (q.id === 'telefono' && (v.replace(/\D/g,'').length < 7)) { mostrarError('Ese número se ve incompleto. Revísalo, por favor.'); return; }
+      if (q.id === 'telefono') {
+        if (!sel.value) {
+          mostrarError('Elige tu país para poder escribirte.'); sel.focus(); return;
+        }
+        // Quita el 0 inicial de marcación nacional (Ecuador 09…, Colombia 03…)
+        var num = v.replace(/\D/g, '').replace(/^0+/, '');
+        if (num.length < 7) {
+          mostrarError('Ese número se ve incompleto. Revísalo, por favor.'); return;
+        }
+        R.tel_pais = sel.options[sel.selectedIndex].dataset.n || '';
+        v = sel.value + num;
+      }
       err.hidden = true;
       responder(q.id, v);
     };
     btn.addEventListener('click', enviar);
     inp.addEventListener('keydown', function(e){ if (e.key === 'Enter') { e.preventDefault(); enviar(); } });
-    ops.appendChild(inp); ops.appendChild(err); ops.appendChild(btn);
+    ops.appendChild(fila || inp); ops.appendChild(err); ops.appendChild(btn);
     setTimeout(function(){ inp.focus({ preventScroll: true }); }, 320);
   } else {
     q.ops.forEach(function(o){
