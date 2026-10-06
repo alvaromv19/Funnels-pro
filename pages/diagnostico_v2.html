@@ -155,24 +155,34 @@ select.campo{appearance:none;background-image:linear-gradient(45deg,transparent 
 .h-pie{font-size:13px;color:var(--muted);margin:22px 0 0}
 .h-pie{border-top:1px solid var(--line);padding-top:18px}
 
-/* ── Pulido de interacción ──
-   Todas las entradas usan fill-mode "backwards": el elemento solo está oculto
-   durante su propio retardo. Si la animación no corre (navegador viejo, CSS
-   que no carga, movimiento reducido), todo queda visible. Nada depende de JS. */
+/* ── Pulido de diseño (solo CSS) ──
+   Las opciones, los campos, la burbuja y el resultado se crean de nuevo en cada
+   paso, así que su animación arranca sola al aparecer. Todas usan fill-mode
+   "backwards": solo están ocultas durante su propio retardo. Si la animación no
+   corre, todo queda visible. */
 @keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-/* 1. Cambio de pregunta: fade corto con desplazamiento mínimo */
-main.anim > *{animation:entra .16s ease-out backwards}
+/* Cambio de pregunta: fade corto con desplazamiento mínimo, opción por opción */
+.ops > *{animation:entra .16s ease-out backwards}
+.ops > :nth-child(2){animation-delay:.03s}
+.ops > :nth-child(3){animation-delay:.06s}
+.ops > :nth-child(4){animation-delay:.09s}
+.ops > :nth-child(n+5){animation-delay:.12s}
 
-/* 2. La devolución llega un instante después, como respuesta */
-main.anim .eco{animation:entra .18s ease-out .2s backwards}
+/* La burbuja de Mercedes llega un instante después, como respuesta */
+.eco{animation:entra .18s ease-out .2s backwards}
 
-/* 3. Opción marcada antes de avanzar: el punto se llena */
+/* Texto de la opción en blanco: ".op span" (pensada para el subtítulo)
+   también alcanzaba al contenedor .txt y dejaba el texto principal en gris. */
+.op .txt{color:var(--ink);margin-top:0}
+
+/* Al tocar una opción, se marca: borde verde y el punto se llena */
 .dot{transition:background-color .12s ease,border-color .12s ease,box-shadow .12s ease}
-.op.sel{border-color:var(--neon);background:var(--card-hi)}
-.op.sel .dot{border-color:var(--neon);background:var(--neon);box-shadow:inset 0 0 0 3px var(--card-hi)}
+.op:active{border-color:var(--neon);background:var(--card-hi)}
+.op:active .dot{border-color:var(--neon);background:var(--neon);box-shadow:inset 0 0 0 3px var(--card-hi)}
+.op:focus-visible{outline:2px solid var(--neon);outline-offset:2px}
 
-/* 5. Resultado: bloques escalonados, el último termina antes de 600 ms */
+/* Resultado: bloques escalonados, el último termina antes de 600 ms */
 .res > *{animation:entra .2s ease-out backwards}
 .res > :nth-child(2){animation-delay:.03s}
 .res > :nth-child(3){animation-delay:.06s}
@@ -188,14 +198,10 @@ main.anim .eco{animation:entra .18s ease-out .2s backwards}
 .res > :nth-child(13){animation-delay:.36s}
 .res > :nth-child(n+14){animation-delay:.38s}
 
-/* El texto de la opción en blanco: ".op span" (pensada para el subtítulo)
-   también alcanzaba al contenedor .txt y dejaba el texto principal en gris. */
-.op .txt{color:var(--ink);margin-top:0}
-
-/* 6. Con el teclado abierto, el botón no queda pegado al borde */
+/* Con el teclado abierto, el botón no queda pegado al borde */
 .cta{scroll-margin-bottom:16px}
 
-/* 7. Movimiento reducido: cero animación, todo visible */
+/* Movimiento reducido: cero animación, todo visible */
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
 }
@@ -249,9 +255,10 @@ var FOTO = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFB
 
 // ═══════════════ CONFIGURACIÓN ═══════════════
 // Lo único que hay que tocar al integrar. El copy de abajo es definitivo.
-var DEMO        = false;  // en pruebas contra la hoja real
+var DEMO        = false;  // true = no guarda ni redirige
+var DEBUG       = true;   // true = escribe en la consola cada envío. Poner false al terminar.
 var GRUPO_URL   = "https://chat.whatsapp.com/GAOTNBv4XTjIKQIL4LP4Ul";
-var GUARDAR_URL = "https://script.google.com/macros/s/AKfycbyrqQYzqAJmjd600R8U6QFJ_DucdvTQAf3aSnQa6LQ96ZNKVgPZ53wo8Y97o4m4TLvZ/exec";
+var GUARDAR_URL = "https://script.google.com/macros/s/AKfycbyd3SvLe1EvowqZG3_i5XWL6Q3DGjySiJQ7cSVSclGaUAieHd5LnTRpibiF59d9iofhMQ/exec";
 
 // Fecha y hora de la clase en vivo. Cambiar aquí si se mueve.
 var EVENTO = "2026-10-16T19:00:00-05:00";
@@ -481,24 +488,6 @@ var i = 0, R = {};
 var SESION = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
 function $(id){ return document.getElementById(id); }
 
-// ── Interacción ──
-var ocupado = false;      // evita doble toque mientras la opción se ve marcada
-var botonActual = null;   // botón de la pregunta de texto visible (para el teclado)
-
-// Reinicia la animación de entrada de la pregunta (solo CSS; sin JS el contenido se ve igual).
-function animarEntrada(){
-  var m = $('cuerpo');
-  m.classList.remove('anim'); void m.offsetWidth; m.classList.add('anim');
-}
-
-// Con el teclado del celular abierto, mantiene visible el botón de la pregunta de texto.
-function asegurarBoton(){
-  var a = document.activeElement;
-  if (!botonActual || !a || (a.tagName !== 'INPUT' && a.tagName !== 'SELECT')) return;
-  try { botonActual.scrollIntoView({ block:'nearest' }); } catch(e){}
-}
-if (window.visualViewport) window.visualViewport.addEventListener('resize', asegurarBoton);
-
 function calcular(){
   if (R.empresa !== 'no') return 'milla';
   if (R.credito_propio === 'negado' || R.credito_propio === 'limite') return 'curva';
@@ -554,8 +543,6 @@ function pintar(){
   pintarEco();
 
   var ops = $('ops'); ops.textContent = '';
-  botonActual = null;
-  ocupado = false;
 
   if (q.tipo === 'texto'){
     var inp = document.createElement('input');
@@ -601,9 +588,6 @@ function pintar(){
     btn.addEventListener('click', enviar);
     inp.addEventListener('keydown', function(e){ if (e.key === 'Enter'){ e.preventDefault(); enviar(); } });
     ops.appendChild(fila || inp); ops.appendChild(err); ops.appendChild(btn);
-    botonActual = btn;
-    inp.addEventListener('focus', function(){ setTimeout(asegurarBoton, 300); });
-    if (sel) sel.addEventListener('focus', function(){ setTimeout(asegurarBoton, 300); });
     setTimeout(function(){ inp.focus(); }, 60);
   } else {
     q.ops.forEach(function(o){
@@ -614,18 +598,12 @@ function pintar(){
       if (o.s){ var sp = document.createElement('span'); sp.textContent = o.s; t.appendChild(sp); }
       var dot = document.createElement('span'); dot.className = 'dot';
       b.appendChild(t); b.appendChild(dot);
-      b.addEventListener('click', function(){
-        if (ocupado) return;
-        ocupado = true;
-        b.classList.add('sel');   // se ve marcada un instante antes de avanzar
-        setTimeout(function(){ responder(q.id, o.v); }, 220);
-      });
+      b.addEventListener('click', function(){ responder(q.id, o.v); });
       ops.appendChild(b);
     });
   }
   $('atras').hidden = (i === 0);
   window.scrollTo(0,0);
-  animarEntrada();
 }
 
 function guardar(estado){
@@ -643,10 +621,16 @@ function guardar(estado){
       resultado: (estado === 'completo') ? calcular() : '',
       perfil: (estado === 'completo') ? perfil() : ''
     };
-    // text/plain: con mode no-cors el navegador descarta application/json de todas formas.
-    // keepalive: el último envío sobrevive aunque la persona salte de inmediato al grupo.
-    fetch(GUARDAR_URL, { method:'POST', mode:'no-cors', keepalive:true,
-      headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(datos) })['catch'](function(){});
+    // OJO: en mode no-cors el navegador solo admite Content-Type de la lista
+    // segura. Con application/json la cabecera se descarta y el envío puede
+    // romperse. text/plain es el que funciona con Apps Script.
+    fetch(GUARDAR_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(datos)
+    })['catch'](function(){});
+    if (DEBUG) console.log('[diagnostico] enviado', estado, datos);
   } catch(e){}
 }
 
@@ -661,15 +645,13 @@ function responder(id, v){
   else { guardar('completo'); mostrar(); }
 }
 
-$('atras').addEventListener('click', function(){ if (i > 0 && !ocupado){ i--; pintar(); } });
+$('atras').addEventListener('click', function(){ if (i > 0){ i--; pintar(); } });
 
 function mostrar(){
   var cod = calcular(), P = RESULTADOS[cod];
   $('fill').style.width = '100%';
   $('qt').textContent = '';
   $('qa').hidden = true; $('eco').textContent = ''; $('atras').hidden = true;
-  $('cuerpo').classList.remove('anim');   // el resultado usa su propio escalonado
-  botonActual = null;
 
   var ops = $('ops'); ops.textContent = '';
   var w = document.createElement('div'); w.className = 'res';
