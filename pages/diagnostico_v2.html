@@ -1,0 +1,778 @@
+<title>Punto de Partida v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;800;900&display=swap">
+
+<style>
+/* Sistema de captación de Mercedes: fondo casi negro, verde neón, Montserrat Black.
+   Diseño de un solo tema a propósito — es una pieza de captación, no un documento. */
+:root{
+  --bg:#060807;
+  --card:#101614;
+  --card-hi:#17201C;
+  --neon:#39FF60;
+  --deep:#1B7A34;
+  --ink:#EFF6F0;
+  --muted:#7E8F84;
+  --line:#1E2823;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:Montserrat,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:40rem;margin:0 auto;padding-inline:20px;padding-block:0;min-height:100%;display:flex;flex-direction:column}
+
+/* barra superior */
+.top{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:18px 14px;z-index:5}
+.top-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.brand{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--ink);white-space:nowrap}
+.bar{flex:1 1 auto;height:4px;background:var(--line);border-radius:999px;overflow:hidden;min-width:0}
+.fill{height:100%;background:var(--neon);width:0;transition:width .35s ease}
+.count{font-size:12px;font-weight:800;color:var(--neon);font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* cuerpo */
+main{flex:1 1 auto;padding-block:8px 40px}
+.qn{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon);margin:0 0 14px}
+h1{
+  font-weight:900;font-size:clamp(25px,6.4vw,38px);line-height:1.1;letter-spacing:-.01em;
+  text-transform:uppercase;margin:0 0 14px;text-wrap:balance
+}
+.qa{color:var(--muted);font-size:15px;margin:0 0 26px;max-width:34rem}
+
+/* devolución */
+.eco{display:flex;gap:10px;align-items:flex-end;margin:0 0 26px}
+.av{
+  flex:0 0 auto;width:40px;height:40px;border-radius:50%;object-fit:cover;
+  border:2px solid var(--deep);background:var(--card);margin-bottom:2px
+}
+.bub{
+  position:relative;background:var(--card-hi);border:1px solid var(--line);
+  border-radius:14px 14px 14px 4px;padding:12px 15px;min-width:0;max-width:30rem
+}
+.bub::before{
+  content:"";position:absolute;left:-7px;bottom:0;width:12px;height:12px;
+  background:var(--card-hi);border-left:1px solid var(--line);border-bottom:1px solid var(--line);
+  border-radius:0 0 0 4px;transform:skewX(-20deg)
+}
+.bub-n{
+  display:block;font-size:11px;font-weight:800;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--neon);margin-bottom:5px
+}
+.bub p{margin:0;font-size:15px;line-height:1.5;color:var(--ink)}
+
+/* opciones */
+.ops{display:flex;flex-direction:column;gap:10px}
+.op{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;cursor:pointer;text-align:left;color:var(--ink);
+  font-family:inherit;font-size:16px;transition:border-color .15s,background .15s
+}
+.op:hover,.op:focus-visible{background:var(--card-hi);border-color:var(--deep)}
+.op .txt{min-width:0}
+.op b{display:block;font-weight:700;line-height:1.3}
+.op span{display:block;color:var(--muted);font-size:13.5px;margin-top:3px;line-height:1.4}
+.dot{flex:0 0 auto;width:20px;height:20px;border-radius:50%;border:2px solid var(--line)}
+.op:hover .dot{border-color:var(--neon)}
+
+/* campos */
+.campo{
+  width:100%;background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:16px 18px;color:var(--ink);font-family:inherit;font-size:16px
+}
+.campo:focus{outline:none;border-color:var(--neon)}
+.campo::placeholder{color:#55655C}
+select.campo{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 20px) 55%,calc(100% - 14px) 55%;background-size:6px 6px;background-repeat:no-repeat;padding-right:40px}
+.fila-tel{display:flex;gap:8px;align-items:stretch}
+.fila-tel .sel-pais{flex:0 0 auto;width:auto;min-width:9.5rem;max-width:45%}
+.fila-tel input{flex:1 1 auto;min-width:0}
+.cta{
+  width:100%;margin:14px 0 8px;background:var(--neon);color:#04170B;border:0;border-radius:10px;
+  padding:17px;font-family:inherit;font-size:16px;font-weight:800;letter-spacing:.02em;
+  text-transform:uppercase;cursor:pointer
+}
+.cta:hover{filter:brightness(1.08)}
+.error{color:#FF6B5A;font-size:14px;margin:10px 0 0}
+.atras{
+  background:none;border:0;color:var(--muted);font-family:inherit;font-size:13.5px;
+  padding:10px 0;cursor:pointer;margin-top:18px
+}
+.atras:hover{color:var(--ink)}
+
+/* resultado */
+.res-k{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon);margin:0 0 12px}
+.res-h{font-weight:900;font-size:clamp(28px,7.4vw,44px);line-height:1.05;text-transform:uppercase;margin:0 0 18px;text-wrap:balance}
+.res p{font-size:16px;line-height:1.6;margin:0 0 16px}
+.mov{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin:22px 0}
+.mov .n{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon);margin:0 0 8px}
+.mov h3{font-size:19px;font-weight:800;margin:0 0 8px;line-height:1.25}
+.mov p{font-size:15px;color:var(--muted);margin:0}
+.nota{border-top:1px solid var(--line);margin-top:28px;padding-top:20px;font-size:13.5px;color:var(--muted)}
+
+/* aviso de demo */
+.demo{
+  background:#15110A;border:1px solid #3D3115;border-radius:8px;
+  padding:12px 15px;margin-block:14px 0;font-size:13px;color:#D7B86A;line-height:1.5
+}
+
+.sec{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon);margin:30px 0 12px}
+.lect{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.lect li{display:flex;gap:11px;align-items:flex-start;font-size:15.5px;line-height:1.55;color:var(--ink)}
+.lect .b{flex:0 0 auto;color:var(--neon);font-weight:800}
+.cierre{border-left:3px solid var(--neon);padding-left:16px;margin:26px 0 24px;font-size:16.5px;font-weight:600;line-height:1.5}
+.hoy{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px;margin-top:26px}
+.hoy .n{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon);margin:0 0 8px}
+.hoy h3{font-size:18px;font-weight:800;margin:0 0 8px;line-height:1.3}
+.hoy p{font-size:14.5px;color:var(--muted);margin:0;line-height:1.55}
+
+.evento{background:linear-gradient(180deg,#0E1A12,#0B130E);border:1px solid var(--deep);border-radius:12px;padding:22px;margin:26px 0 18px}
+.evento .n{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon);margin:0 0 12px}
+.ev-l{font-size:15.5px;line-height:1.55;margin:0 0 12px;color:var(--ink)}
+.ev-h{font-size:17px;font-weight:800;margin:0 0 6px;color:var(--ink)}
+.ev-c{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--neon);margin:0 0 14px}
+
+/* ---------- portada ---------- */
+.hero{padding-block:52px 44px}
+.h-k{font-size:11px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--neon);margin:0 0 20px}
+.h-t{
+  font-weight:900;font-size:clamp(42px,13vw,68px);line-height:.95;letter-spacing:-.02em;
+  text-transform:uppercase;margin:0 0 22px;color:var(--ink);
+  text-shadow:0 0 36px rgba(57,255,96,.26)
+}
+.h-l{font-size:17.5px;line-height:1.5;color:var(--muted);margin:0 0 26px;max-width:30rem}
+.h-l b{color:var(--ink);font-weight:700}
+.h-bub{display:flex;gap:10px;align-items:flex-end;margin:0 0 26px}
+.h-chips{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:0 0 26px;padding:0}
+.h-chips li{
+  display:flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--ink);
+  background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 14px
+}
+.h-chips li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--neon);flex:0 0 auto}
+.h-pie{font-size:13px;color:var(--muted);margin:22px 0 0}
+.h-pie{border-top:1px solid var(--line);padding-top:18px}
+
+/* ── Pulido de interacción ──
+   Todas las entradas usan fill-mode "backwards": el elemento solo está oculto
+   durante su propio retardo. Si la animación no corre (navegador viejo, CSS
+   que no carga, movimiento reducido), todo queda visible. Nada depende de JS. */
+@keyframes entra{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+/* 1. Cambio de pregunta: fade corto con desplazamiento mínimo */
+main.anim > *{animation:entra .16s ease-out backwards}
+
+/* 2. La devolución llega un instante después, como respuesta */
+main.anim .eco{animation:entra .18s ease-out .2s backwards}
+
+/* 3. Opción marcada antes de avanzar: el punto se llena */
+.dot{transition:background-color .12s ease,border-color .12s ease,box-shadow .12s ease}
+.op.sel{border-color:var(--neon);background:var(--card-hi)}
+.op.sel .dot{border-color:var(--neon);background:var(--neon);box-shadow:inset 0 0 0 3px var(--card-hi)}
+
+/* 5. Resultado: bloques escalonados, el último termina antes de 600 ms */
+.res > *{animation:entra .2s ease-out backwards}
+.res > :nth-child(2){animation-delay:.03s}
+.res > :nth-child(3){animation-delay:.06s}
+.res > :nth-child(4){animation-delay:.09s}
+.res > :nth-child(5){animation-delay:.12s}
+.res > :nth-child(6){animation-delay:.15s}
+.res > :nth-child(7){animation-delay:.18s}
+.res > :nth-child(8){animation-delay:.21s}
+.res > :nth-child(9){animation-delay:.24s}
+.res > :nth-child(10){animation-delay:.27s}
+.res > :nth-child(11){animation-delay:.30s}
+.res > :nth-child(12){animation-delay:.33s}
+.res > :nth-child(13){animation-delay:.36s}
+.res > :nth-child(n+14){animation-delay:.38s}
+
+/* El texto de la opción en blanco: ".op span" (pensada para el subtítulo)
+   también alcanzaba al contenedor .txt y dejaba el texto principal en gris. */
+.op .txt{color:var(--ink);margin-top:0}
+
+/* 6. Con el teclado abierto, el botón no queda pegado al borde */
+.cta{scroll-margin-bottom:16px}
+
+/* 7. Movimiento reducido: cero animación, todo visible */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+}
+</style>
+
+<div class="wrap">
+
+  <section class="hero" id="hero">
+    <p class="h-k">Diagnóstico · 2 minutos</p>
+    <h1 class="h-t">Tu punto<br>de partida</h1>
+    <p class="h-l">Casi todo el mundo cree que empieza desde cero.<br><b>Casi nadie empieza desde cero.</b></p>
+
+    <div class="h-bub">
+      <img class="av" id="heroFoto" width="40" height="40" alt="Mercedes Ríos">
+      <div class="bub">
+        <span class="bub-n">Mercedes</span>
+        <p id="heroMsg"></p>
+      </div>
+    </div>
+
+    <ul class="h-chips">
+      <li id="chipN"></li>
+      <li>2 minutos</li>
+      <li>Resultado inmediato</li>
+    </ul>
+
+    <button class="cta" id="empezar" type="button">Empezar</button>
+    <p class="h-pie">Mercedes Ríos · Tu Ruta Financiera</p>
+  </section>
+
+  <div class="top" id="barra" hidden>
+    <div class="top-row">
+      <span class="brand">Tu punto de partida</span>
+      <span class="bar"><span class="fill" id="fill"></span></span>
+    </div>
+  </div>
+
+  <main id="cuerpo" hidden>
+    <div id="eco"></div>
+    <h1 id="qt">—</h1>
+    <p class="qa" id="qa" hidden></p>
+    <div class="ops" id="ops"></div>
+    <button class="atras" id="atras" type="button" hidden>← Volver</button>
+    <div class="demo" id="demo">Vista previa. Ninguna respuesta se guarda ni se envía a ningún lado.</div>
+  </main>
+</div>
+
+<script>
+// Foto de Mercedes para la burbuja. Reemplazar por otra en base64 si hace falta.
+var FOTO = "data:image/jpeg;base64,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";
+
+// ═══════════════ CONFIGURACIÓN ═══════════════
+// Lo único que hay que tocar al integrar. El copy de abajo es definitivo.
+var DEMO        = false;  // en pruebas contra la hoja real
+var GRUPO_URL   = "https://chat.whatsapp.com/GAOTNBv4XTjIKQIL4LP4Ul";
+var GUARDAR_URL = "https://script.google.com/macros/s/AKfycbyrqQYzqAJmjd600R8U6QFJ_DucdvTQAf3aSnQa6LQ96ZNKVgPZ53wo8Y97o4m4TLvZ/exec";
+
+// Fecha y hora de la clase en vivo. Cambiar aquí si se mueve.
+var EVENTO = "2026-10-16T19:00:00-05:00";
+var EVENTO_TXT = "viernes 16 de octubre";
+
+var PAISES = [
+  { n:"Elige tu país", c:"" },
+  { n:"Estados Unidos", c:"+1" }, { n:"Colombia", c:"+57" }, { n:"México", c:"+52" },
+  { n:"Ecuador", c:"+593" }, { n:"Perú", c:"+51" }, { n:"Venezuela", c:"+58" },
+  { n:"Argentina", c:"+54" }, { n:"Chile", c:"+56" }, { n:"Brasil", c:"+55" },
+  { n:"España", c:"+34" }, { n:"Rep. Dominicana", c:"+1" }, { n:"Guatemala", c:"+502" },
+  { n:"Honduras", c:"+504" }, { n:"El Salvador", c:"+503" }, { n:"Nicaragua", c:"+505" },
+  { n:"Costa Rica", c:"+506" }, { n:"Panamá", c:"+507" }, { n:"Bolivia", c:"+591" },
+  { n:"Paraguay", c:"+595" }, { n:"Uruguay", c:"+598" }, { n:"Otro país", c:"+" }
+];
+
+var PREGUNTAS = [
+  { id:"nombre", t:"Antes de empezar, ¿cómo te llamas?",
+    a:"Para hablarte por tu nombre y no como un número más.",
+    tipo:"texto", campo:"text", ph:"Tu nombre", boton:"Seguir" },
+
+  { id:"motivo", t:"¿Qué te trajo hasta aquí?",
+    a:"No hay respuesta correcta. Esto define el resto del diagnóstico.",
+    ops:[
+      {v:"rendir", b:"Quiero que el dinero que tengo rinda más"},
+      {v:"ingreso", b:"Quiero un ingreso que no dependa de mi trabajo"},
+      {v:"sueldo", b:"Estoy cansado o cansada de depender del sueldo"},
+      {v:"intente", b:"Ya intenté cosas y ninguna me funcionó"}
+    ]},
+
+  { id:"pais", t:"¿Dónde vives hoy?",
+    a:"Cambia el proceso, no la posibilidad.",
+    ops:[
+      {v:"usa", b:"En Estados Unidos"},
+      {v:"fuera", b:"Fuera de Estados Unidos"}
+    ]},
+
+  { id:"avance", t:"¿Qué tan lejos has llegado con esto?",
+    a:"Con sinceridad. No hay respuesta mala.",
+    ops:[
+      {v:"pense", b:"Solo lo he pensado", s:"Me suena, pero no he movido nada"},
+      {v:"investigue", b:"He investigado", s:"He visto videos, he leído, he preguntado"},
+      {v:"empece", b:"Empecé algo y lo dejé", s:"Arranqué un trámite o una gestión y ahí quedó"},
+      {v:"medias", b:"Lo tengo a medias", s:"Hay cosas hechas, pero sin terminar"}
+    ]},
+
+  { id:"empresa", t:"¿Tienes ya una empresa registrada en Estados Unidos?",
+    a:"Si todavía no, estás donde empezaron todos los que hoy la tienen.",
+    ops:[
+      {v:"no", b:"No, todavía no"},
+      {v:"nueva", b:"Sí, hace menos de 6 meses"},
+      {v:"vieja", b:"Sí, hace más de 6 meses"}
+    ]},
+
+  { id:"credito_propio", t:"¿Tienes crédito a tu nombre en Estados Unidos?",
+    a:"Esto no define si puedes: el crédito empresarial no depende de tu historial personal. Lo pregunto para saber desde dónde empiezas.",
+    tFuera:"¿Tienes crédito a tu nombre en tu país?",
+    aFuera:"Tarjetas o préstamos donde vives hoy. El crédito empresarial en Estados Unidos no depende de tu historial ni de tu país — lo pregunto para saber desde dónde empiezas.",
+    ops:[
+      {v:"ninguno", b:"No, ninguno todavía"},
+      {v:"activo", b:"Sí, tarjetas o préstamos a mi nombre"},
+      {v:"limite", b:"Tengo, pero está al límite"},
+      {v:"negado", b:"Lo pedí y me lo negaron"}
+    ]},
+
+  { id:"invertido", t:"¿Cuánto has invertido hasta hoy en aprender a generar o manejar mejor tu dinero?",
+    a:"Cursos, formaciones, asesorías, trámites, herramientas. Cualquier cosa por la que hayas pagado buscando mejorar tu situación.",
+    ops:[
+      {v:"nada", b:"Nada todavía"},
+      {v:"menos500", b:"Menos de $500"},
+      {v:"500a2000", b:"Entre $500 y $2,000"},
+      {v:"mas2000", b:"Más de $2,000"}
+    ]},
+
+  { id:"decide", t:"Esta decisión, ¿la tomas tú o la tomas con alguien más?",
+    a:"No hay respuesta mejor. Solo cambia cómo te acompaño.",
+    ops:[
+      {v:"solo", b:"La tomo yo"},
+      {v:"pareja", b:"La tomo con mi pareja o mi familia"},
+      {v:"socio", b:"La tomo con un socio"}
+    ]},
+
+  { id:"porque", t:"¿Por qué ahora y no hace un año?",
+    a:"Lo que te movió esta vez. Es la última pregunta antes de tu resultado.",
+    ops:[
+      {v:"cansancio", b:"Me cansé de seguir igual"},
+      {v:"dinero", b:"Liberé o me llegó algo de dinero"},
+      {v:"cambio", b:"Cambió algo en mi trabajo o en mi situación"},
+      {v:"entendi", b:"Vi tu contenido y entendí que sí se puede"},
+      {v:"decidi", b:"Llevo tiempo queriendo y por fin me decidí"}
+    ]},
+
+  { id:"telefono", t:"¿A qué número te mando tu resultado?",
+    a:"Ahí te llega tu punto de partida completo y el acceso a la clase. Elige tu país al lado y escribe el número sin ese código. No lo comparto con nadie ni te va a llegar publicidad.",
+    tipo:"texto", campo:"tel", ph:"Tu número", boton:"Ver mi resultado" }
+];
+
+// Devoluciones: lo que la persona recibe DURANTE el recorrido, no solo al final.
+var ECOS = {
+  nombre: { _: "Hola, {nombre}. Vamos de a poco, son nueve cosas y ninguna es difícil." },
+  motivo: {
+    rendir:  "Tenerlo quieto también cuesta. Eso lo vamos a calcular.",
+    ingreso: "Para eso hace falta una estructura, no un segundo trabajo.",
+    sueldo:  "El 40% de quienes responden esto dice exactamente lo mismo.",
+    intente: "Casi siempre no es la idea. Es el orden en que se hizo."
+  },
+  avance: {
+    pense:      "El 62% está justo ahí. No estás atrás, estás al principio.",
+    investigue: "Investigar sin empezar es el punto donde más gente se queda.",
+    empece:     "Dejar algo a medias no borra lo hecho. Se retoma.",
+    medias:     "Terminarlo es más corto de lo que crees desde donde estás."
+  },
+  pais: {
+    usa:   "Estando allá, los tiempos de tu proceso son los más cortos que hay.",
+    fuera: "No vives allá y aun así puedes: una LLC no pide residencia ni visa."
+  },
+  empresa: {
+    no:    "Lo mismo que respondieron casi todos los que hoy ya la tienen.",
+    nueva: "Recién formada. Ese es justo el momento para hacer bien lo que sigue.",
+    vieja: "Más de seis meses. Eso ya te da antigüedad, y la antigüedad vale."
+  },
+  decide: {
+    solo:   "Entonces esto depende de ti y de nadie más, {nombre}.",
+    pareja: "Bien. Lo que te mande va a estar escrito para que lo puedas mostrar en casa.",
+    socio:  "Entonces lo que te mande tiene que servirles a los dos."
+  },
+  porque: {
+    cansancio: "Ese cansancio es el que mueve a la gente de verdad.",
+    dinero:    "Entonces lo que decidas estos días pesa más de lo normal.",
+    cambio:    "Los cambios son las únicas ventanas que de verdad se abren.",
+    entendi:   "Eso es lo que más me gusta leer. Ya pasaste la parte difícil.",
+    decidi:    "Entonces ya está, {nombre}. Lo que falta es no dejarlo pasar otra vez."
+  },
+  credito_propio: {
+    ninguno: "Eso no te frena. El crédito empresarial se construye aparte del tuyo.",
+    activo:  "Eso juega a tu favor: ya conoces el sistema por dentro.",
+    limite:  "Tenerlo copado es justo la razón para separar lo empresarial de lo tuyo.",
+    negado:  "Un no casi nunca es por ti. Suele ser por el orden en que tocaste."
+  },
+  invertido: {
+    nada:     "Entonces esto sería lo primero. Hay que elegir bien.",
+    menos500: "Ya pusiste algo. Vamos a ver qué faltó.",
+    "500a2000":"Pusiste dinero de verdad. Que no haya funcionado no te hace ingenuo.",
+    mas2000:  "Eso es mucho dinero buscando una respuesta. Merece una que sirva."
+  }
+};
+
+var RESULTADOS = {
+  limpio: { nombre:"Arranque Limpio",
+    intro:"Empiezas desde cero en Estados Unidos, y eso es una ventaja real: no arrastras decisiones mal tomadas que primero haya que deshacer. Tu historial se construye desde la empresa, no desde ti, así que no empezar con crédito propio no te resta nada.",
+    movNum:"Tu primer movimiento", movT:"Formar tu empresa en el estado correcto",
+    movD:"No es el más barato ni el más famoso. Es el que te deja pedir crédito después sin que te frenen. Elegirlo mal cuesta meses.",
+    ev:"Ese movimiento es el que decide los dos que vienen después. El viernes lo hacemos en vivo, en orden y desde cero — que es exactamente donde estás, y es la clase que a mí me habría ahorrado año y medio." },
+  base: { nombre:"Camino Empezado",
+    intro:"Ya tienes piso: o moviste trámites, o manejas crédito propio y sabes cómo funciona el sistema por dentro. Eso te ahorra la parte que a los demás les cuesta entender. Lo que falta es separar lo tuyo de lo de la empresa.",
+    movNum:"Tu primer movimiento", movT:"Montar la estructura que separa tu nombre del de tu empresa",
+    movD:"Mientras todo esté a tu nombre, tu techo es tu historial personal. Separarlo es lo que levanta ese techo.",
+    ev:"Tú ya empezaste, así que el viernes no vas a ver nada desde cero. Vas a ver dónde encaja lo que ya tienes, qué falta para que empiece a servirte, y en qué orden va lo que sigue." },
+  curva: { nombre:"Camino con Curva",
+    intro:"O te dijeron que no, o tienes el crédito propio al límite. En los dos casos pasa lo mismo: tu nombre personal ya no te da más espacio. Y eso no se arregla insistiendo por el mismo lado.",
+    movNum:"Tu primer movimiento", movT:"Dejar de pedir a tu nombre y construir por el lado de la empresa",
+    movD:"Volver a aplicar personalmente sin cambiar nada repite el resultado y deja otro registro en contra.",
+    ev:"El viernes abro explicando por qué se niegan las solicitudes y en qué orden hay que tocar cada puerta. Esa es justo la parte que a ti te falta, y es con la que empiezo." },
+  milla: { nombre:"Última Milla",
+    intro:"Ya tienes la empresa, que es la parte que a casi todos les toma meses. Tu pregunta ya no es cómo empezar — es cómo activar el acceso que esa estructura te permite y qué hacer con él.",
+    movNum:"Tu primer movimiento", movT:"Activar el crédito en el orden correcto y asignarle destino",
+    movD:"Capital disponible sin ruta asignada se consume en gastos. Es el error más caro de esta etapa.",
+    ev:"Tú ya tienes la empresa, así que los primeros minutos del viernes te van a sobrar. Quédate igual: lo tuyo es el final, el tercer movimiento, que es la parte que casi nadie explica en español." }
+};
+
+
+// Fragmentos: el resultado se compone con las respuestas reales, no con texto fijo.
+var LECTURA = {
+  motivo: {
+    rendir:"Lo que te trajo es querer que tu dinero rinda más, no trabajar más horas. Esa distinción es la correcta, y casi nadie la hace.",
+    ingreso:"Buscas un ingreso que no dependa de tu trabajo. Eso no se consigue con otro trabajo: se consigue con una estructura.",
+    sueldo:"Depender del sueldo es lo que te trajo hasta aquí. Ese cansancio no construye nada solo, pero es lo que hace que alguien por fin se siente a resolverlo.",
+    intente:"Ya intentaste cosas que no funcionaron. Casi siempre no falló la idea: falló el orden."
+  },
+  avance: {
+    pense:"Todavía no has movido nada, y eso quiere decir que no has cometido ningún error caro. Es mejor punto del que crees.",
+    investigue:"Has investigado. El riesgo de tu posición es quedarte ahí: la información sin un primer paso produce más dudas, no menos.",
+    empece:"Arrancaste algo y quedó a medias. Eso no se perdió, pero tampoco se queda quieto: un trámite abierto envejece.",
+    medias:"Tienes cosas hechas sin terminar. Estás más cerca de lo que sientes, y lo que falta es cerrar, no empezar."
+  },
+  pais: {
+    usa:"Vives en Estados Unidos, así que los tiempos de tu proceso son los más cortos que hay.",
+    fuera:"Vives fuera de Estados Unidos. Eso cambia el trámite, no la posibilidad: una LLC no exige residencia ni visa."
+  },
+  credito_propio: {
+    ninguno:"No tienes crédito propio todavía. Para esto no es una desventaja: el crédito empresarial se construye desde la empresa, no desde ti.",
+    activo_usa:"Ya manejas crédito en Estados Unidos. Eso te ahorra una curva de aprendizaje que a los demás les cuesta meses.",
+    activo_fuera:"Manejas crédito en tu país. No construye historial en Estados Unidos, pero sí significa que entiendes cómo funciona el sistema por dentro.",
+    limite:"Tu crédito propio está al límite. Esa es exactamente la razón para construir uno que no dependa de tu nombre.",
+    negado:"Te negaron, y eso pesa más de lo que debería. Un no casi nunca es sobre ti: es sobre el orden en que se tocó."
+  },
+  invertido: {
+    nada:"No has invertido nada en esto todavía, así que la primera decisión que tomes importa el doble.",
+    menos500:"Ya pusiste algo de dinero buscando esto. Vale la pena entender qué faltó.",
+    "500a2000":"Pusiste dinero de verdad y seguiste sin resolverlo. Eso no te hace ingenuo: te hace alguien que lo intentó.",
+    mas2000:"Más de dos mil dólares buscando una respuesta. Lo que te falta no es intención: es que alguien se siente contigo y lo haga."
+  },
+  porque: {
+    cansancio:"Dijiste que te cansaste de seguir igual. Es razón suficiente — nadie cambia nada estando cómodo.",
+    dinero:"Dijiste que liberaste algo de dinero. Lo que hagas con eso en los próximos 90 días pesa más que los últimos dos años.",
+    cambio:"Dijiste que algo cambió en tu situación. Esos son los momentos en que la gente de verdad se mueve.",
+    entendi:"Dijiste que viendo el contenido entendiste que sí se puede. Esa es la parte difícil, y ya la pasaste.",
+    decidi:"Dijiste que llevabas tiempo queriéndolo y por fin te decidiste. Lo único que falta es que no se quede en eso."
+  }
+};
+
+var TRAMPA = {
+  limpio:"Lo que frena a quien está donde tú estás no es la falta de dinero. Es elegir el estado por el precio y descubrir tres meses después que ese estado te cierra puertas con los bancos.",
+  base:"Lo que frena a quien está donde tú estás es seguir mezclando. Mientras todo siga a tu nombre, tu techo es tu historial personal por bueno que sea.",
+  curva:"Lo que frena a quien está donde tú estás es volver a intentarlo igual. Cada aplicación nueva por el mismo camino deja otro registro en contra.",
+  milla:"Lo que frena a quien está donde tú estás es tener acceso y no tener destino. El capital sin ruta asignada se va en gastos y no deja nada."
+};
+
+var HOY = {
+  limpio:{ t:"Haz la cuenta de los años", d:"Cuántos años tardarías juntando capital al ritmo que llevas hoy. Es el número que mejor explica por qué el orden importa. En el grupo te doy la herramienta para sacarlo en quince minutos, con tu celular y un estado de cuenta." },
+  base:{ t:"Haz la cuenta del dinero quieto", d:"Cuánto deja de producir al año el dinero que tienes parado. Para tu punto de partida es el cálculo más revelador. En el grupo te doy la herramienta para hacerlo hoy mismo." },
+  curva:{ t:"Haz la cuenta de tu deuda", d:"Cuánto te cuesta al año la deuda que ya tienes. Ese número es tu punto de referencia para todo lo que viene después. En el grupo te doy la herramienta para sacarlo hoy mismo." },
+  milla:{ t:"Haz la cuenta del dinero quieto", d:"Cuánto deja de producir el capital que todavía no tiene destino asignado. Ese es tu número. En el grupo te doy la herramienta para calcularlo." }
+};
+
+var i = 0, R = {};
+var SESION = 'd' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+function $(id){ return document.getElementById(id); }
+
+// ── Interacción ──
+var ocupado = false;      // evita doble toque mientras la opción se ve marcada
+var botonActual = null;   // botón de la pregunta de texto visible (para el teclado)
+
+// Reinicia la animación de entrada de la pregunta (solo CSS; sin JS el contenido se ve igual).
+function animarEntrada(){
+  var m = $('cuerpo');
+  m.classList.remove('anim'); void m.offsetWidth; m.classList.add('anim');
+}
+
+// Con el teclado del celular abierto, mantiene visible el botón de la pregunta de texto.
+function asegurarBoton(){
+  var a = document.activeElement;
+  if (!botonActual || !a || (a.tagName !== 'INPUT' && a.tagName !== 'SELECT')) return;
+  try { botonActual.scrollIntoView({ block:'nearest' }); } catch(e){}
+}
+if (window.visualViewport) window.visualViewport.addEventListener('resize', asegurarBoton);
+
+function calcular(){
+  if (R.empresa !== 'no') return 'milla';
+  if (R.credito_propio === 'negado' || R.credito_propio === 'limite') return 'curva';
+  if (R.avance === 'empece' || R.avance === 'medias') return 'base';
+  if (R.credito_propio === 'activo' && R.pais === 'usa') return 'base';
+  return 'limpio';
+}
+
+function diasPara(iso){
+  try {
+    var a = new Date(iso); a.setHours(0,0,0,0);
+    var b = new Date();    b.setHours(0,0,0,0);
+    var d = Math.round((a - b) / 86400000);
+    if (isNaN(d) || d < 0) return null;
+    if (d === 0) return 'Es hoy.';
+    if (d === 1) return 'Es mañana.';
+    return 'Faltan ' + d + ' días.';
+  } catch(e){ return null; }
+}
+
+function pintarEco(){
+  var box = $('eco'); box.textContent = '';
+  if (i === 0) return;
+  var prev = PREGUNTAS[i-1];
+  var tabla = ECOS[prev.id];
+  if (!tabla) return;
+  var txt = tabla[R[prev.id]] || tabla._;
+  if (!txt) return;
+  txt = txt.replace(/\{nombre\}/g, (R.nombre || '').split(' ')[0]);
+  var d = document.createElement('div');
+  d.className = 'eco';
+
+  var av = document.createElement('img');
+  av.className = 'av'; av.src = FOTO; av.alt = 'Mercedes Ríos';
+  av.width = 40; av.height = 40;
+
+  var bu = document.createElement('div'); bu.className = 'bub';
+  var qn = document.createElement('span'); qn.className = 'bub-n'; qn.textContent = 'Mercedes';
+  var tx = document.createElement('p'); tx.textContent = txt;
+  bu.appendChild(qn); bu.appendChild(tx);
+
+  d.appendChild(av); d.appendChild(bu);
+  box.appendChild(d);
+}
+
+function pintar(){
+  var q = PREGUNTAS[i];
+  var titulo = q.t, ayuda = q.a;
+  if (q.id === 'credito_propio' && R.pais === 'fuera'){ titulo = q.tFuera; ayuda = q.aFuera; }
+  $('qt').textContent = titulo;
+  if (ayuda){ $('qa').textContent = ayuda; $('qa').hidden = false; } else { $('qa').hidden = true; }
+  $('fill').style.width = (i / PREGUNTAS.length * 100) + '%';
+  pintarEco();
+
+  var ops = $('ops'); ops.textContent = '';
+  botonActual = null;
+  ocupado = false;
+
+  if (q.tipo === 'texto'){
+    var inp = document.createElement('input');
+    inp.className = 'campo'; inp.type = q.campo || 'text';
+    inp.id = 'campo-' + q.id; inp.placeholder = q.ph || '';
+    inp.autocomplete = (q.campo === 'tel') ? 'tel' : 'name';
+    if (R[q.id] && q.id !== 'telefono') inp.value = R[q.id];
+
+    var sel = null, fila = null;
+    if (q.id === 'telefono'){
+      fila = document.createElement('div'); fila.className = 'fila-tel';
+      sel = document.createElement('select'); sel.className = 'campo sel-pais'; sel.id = 'campo-paistel';
+      PAISES.forEach(function(p){
+        var o = document.createElement('option');
+        o.value = p.c; o.textContent = p.c ? (p.n + ' ' + p.c) : p.n;
+        if (!p.c){ o.disabled = true; o.selected = true; }
+        sel.appendChild(o);
+      });
+      fila.appendChild(sel); fila.appendChild(inp);
+    }
+
+    var err = document.createElement('p'); err.className = 'error'; err.id = 'err'; err.hidden = true;
+    var btn = document.createElement('button');
+    btn.className = 'cta'; btn.type = 'button'; btn.textContent = q.boton || 'Seguir';
+
+    var enviar = function(){
+      var v = inp.value.trim();
+      if (q.id === 'nombre' && v.length < 2){
+        err.textContent = 'Escribe tu nombre para seguir.'; err.hidden = false; inp.focus(); return;
+      }
+      if (q.id === 'telefono'){
+        if (!sel.value){
+          err.textContent = 'Elige tu país para poder escribirte.'; err.hidden = false; sel.focus(); return;
+        }
+        var num = v.replace(/\D/g,'').replace(/^0+/,'');
+        if (num.length < 7){
+          err.textContent = 'Ese número se ve incompleto. Revísalo, por favor.'; err.hidden = false; inp.focus(); return;
+        }
+        v = sel.value + num;
+      }
+      err.hidden = true; responder(q.id, v);
+    };
+    btn.addEventListener('click', enviar);
+    inp.addEventListener('keydown', function(e){ if (e.key === 'Enter'){ e.preventDefault(); enviar(); } });
+    ops.appendChild(fila || inp); ops.appendChild(err); ops.appendChild(btn);
+    botonActual = btn;
+    inp.addEventListener('focus', function(){ setTimeout(asegurarBoton, 300); });
+    if (sel) sel.addEventListener('focus', function(){ setTimeout(asegurarBoton, 300); });
+    setTimeout(function(){ inp.focus(); }, 60);
+  } else {
+    q.ops.forEach(function(o){
+      var b = document.createElement('button');
+      b.className = 'op'; b.type = 'button';
+      var t = document.createElement('span'); t.className = 'txt';
+      var st = document.createElement('b'); st.textContent = o.b; t.appendChild(st);
+      if (o.s){ var sp = document.createElement('span'); sp.textContent = o.s; t.appendChild(sp); }
+      var dot = document.createElement('span'); dot.className = 'dot';
+      b.appendChild(t); b.appendChild(dot);
+      b.addEventListener('click', function(){
+        if (ocupado) return;
+        ocupado = true;
+        b.classList.add('sel');   // se ve marcada un instante antes de avanzar
+        setTimeout(function(){ responder(q.id, o.v); }, 220);
+      });
+      ops.appendChild(b);
+    });
+  }
+  $('atras').hidden = (i === 0);
+  window.scrollTo(0,0);
+  animarEntrada();
+}
+
+function guardar(estado){
+  if (DEMO || !GUARDAR_URL) return;
+  try {
+    var datos = {
+      id: SESION,
+      estado: estado,
+      pregunta: Math.min(i + 1, PREGUNTAS.length) + '/' + PREGUNTAS.length,
+      fecha: new Date().toISOString(),
+      nombre: R.nombre || '', telefono: R.telefono || '',
+      motivo: R.motivo || '', pais: R.pais || '', avance: R.avance || '',
+      empresa: R.empresa || '', credito_propio: R.credito_propio || '',
+      invertido: R.invertido || '', decide: R.decide || '', porque: R.porque || '',
+      resultado: (estado === 'completo') ? calcular() : '',
+      perfil: (estado === 'completo') ? perfil() : ''
+    };
+    // text/plain: con mode no-cors el navegador descarta application/json de todas formas.
+    // keepalive: el último envío sobrevive aunque la persona salte de inmediato al grupo.
+    fetch(GUARDAR_URL, { method:'POST', mode:'no-cors', keepalive:true,
+      headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(datos) })['catch'](function(){});
+  } catch(e){}
+}
+
+function perfil(){
+  return [calcular(), R.motivo, R.pais, R.avance, R.empresa,
+          R.credito_propio, R.invertido, R.decide, R.porque].join('-');
+}
+
+function responder(id, v){
+  R[id] = v;
+  if (i < PREGUNTAS.length - 1){ guardar('en curso'); i++; pintar(); }
+  else { guardar('completo'); mostrar(); }
+}
+
+$('atras').addEventListener('click', function(){ if (i > 0 && !ocupado){ i--; pintar(); } });
+
+function mostrar(){
+  var cod = calcular(), P = RESULTADOS[cod];
+  $('fill').style.width = '100%';
+  $('qt').textContent = '';
+  $('qa').hidden = true; $('eco').textContent = ''; $('atras').hidden = true;
+  $('cuerpo').classList.remove('anim');   // el resultado usa su propio escalonado
+  botonActual = null;
+
+  var ops = $('ops'); ops.textContent = '';
+  var w = document.createElement('div'); w.className = 'res';
+
+  function h(tag, cls, txt){
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (txt) e.textContent = txt;
+    return e;
+  }
+  function botonGrupo(txt){
+    var b = h('button','cta',txt); b.type = 'button';
+    b.addEventListener('click', function(){
+      if (DEMO || !GRUPO_URL){ b.textContent = 'Aquí va el link del grupo'; return; }
+      window.location.href = GRUPO_URL;
+    });
+    return b;
+  }
+  function bloque(titulo){
+    var p = h('p','sec',titulo); w.appendChild(p);
+  }
+
+  w.appendChild(h('p','res-k', (R.nombre || '') + ', tu punto de partida es'));
+  w.appendChild(h('h2','res-h', P.nombre));
+  w.appendChild(h('p', null, P.intro));
+
+  // --- lectura compuesta con sus propias respuestas
+  bloque('Lo que veo en tus respuestas');
+  var cr = R.credito_propio;
+  if (cr === 'activo') cr = (R.pais === 'usa') ? 'activo_usa' : 'activo_fuera';
+  var lineas = [
+    LECTURA.motivo[R.motivo],
+    LECTURA.avance[R.avance],
+    LECTURA.pais[R.pais],
+    LECTURA.credito_propio[cr],
+    LECTURA.invertido[R.invertido]
+  ];
+  var ul = h('ul','lect');
+  lineas.forEach(function(t){
+    if (!t) return;
+    var li = document.createElement('li');
+    li.appendChild(h('span','b','→'));
+    li.appendChild(h('span',null,t));
+    ul.appendChild(li);
+  });
+  w.appendChild(ul);
+
+  // --- primer movimiento
+  var m = h('div','mov');
+  m.appendChild(h('p','n', P.movNum));
+  m.appendChild(h('h3', null, P.movT));
+  m.appendChild(h('p', null, P.movD));
+  w.appendChild(m);
+
+  // --- el evento: lo que conecta su diagnóstico con el grupo
+  var ev = h('div','evento');
+  ev.appendChild(h('p','n','El ' + EVENTO_TXT + ', en vivo'));
+  ev.appendChild(h('p','ev-l', P.ev));
+  var hr = h('p','ev-h','7:00 PM Colombia · 8:00 PM Miami');
+  ev.appendChild(hr);
+  var faltan = diasPara(EVENTO);
+  if (faltan !== null) ev.appendChild(h('p','ev-c', faltan));
+  ev.appendChild(h('p','ev-l','El acceso se manda por el grupo. Por eso te pido que entres ahora y no el viernes.'));
+  w.appendChild(ev);
+
+  // --- la trampa
+  bloque('Lo que te va a frenar');
+  w.appendChild(h('p', null, TRAMPA[cod]));
+
+  // --- cierre atado a su porqué
+  w.appendChild(h('p','cierre', LECTURA.porque[R.porque] || ''));
+
+  // --- qué hacer hoy: termina mandando al grupo, y el botón lo resuelve
+  var hoy = h('div','hoy');
+  hoy.appendChild(h('p','n','Y hoy mismo'));
+  hoy.appendChild(h('h3', null, HOY[cod].t));
+  hoy.appendChild(h('p', null, HOY[cod].d));
+  w.appendChild(hoy);
+
+  // --- un solo botón, al final
+  w.appendChild(botonGrupo('Entrar al grupo'));
+
+  if (DEMO) w.appendChild(h('p','nota','Vista previa. Las respuestas no se guardan. Código de perfil: ' + perfil()));
+
+  ops.appendChild(w);
+  window.scrollTo(0,0);
+}
+
+if (!DEMO) { var dm = document.getElementById('demo'); if (dm) dm.hidden = true; }
+// ---------- portada ----------
+(function(){
+  var n = PREGUNTAS.length;
+  document.getElementById('heroFoto').src = FOTO;
+  document.getElementById('chipN').textContent = n + ' preguntas';
+  document.getElementById('heroMsg').textContent =
+    'Son ' + n + ' preguntas sobre tu situación real, no un test genérico. Al final te digo en cuál de los cuatro puntos de partida estás y cuál es tu siguiente movimiento concreto.';
+  document.getElementById('empezar').addEventListener('click', function(){
+    document.getElementById('hero').hidden = true;
+    document.getElementById('barra').hidden = false;
+    document.getElementById('cuerpo').hidden = false;
+    pintar();
+    window.scrollTo(0,0);
+  });
+})();
+
+</script>
