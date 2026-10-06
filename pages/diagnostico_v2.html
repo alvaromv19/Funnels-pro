@@ -290,7 +290,7 @@ var FOTO = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFB
 // ═══════════════ CONFIGURACIÓN ═══════════════
 // Lo único que hay que tocar al integrar. El copy de abajo es definitivo.
 var DEMO        = false;  // true = no guarda ni redirige
-var DEBUG       = true;   // true = escribe en la consola cada envío. Poner false al terminar.
+var DEBUG       = false;  // true = muestra el panel verde de diagnóstico abajo. En producción va en false.
 var GRUPO_URL   = "https://chat.whatsapp.com/GAOTNBv4XTjIKQIL4LP4Ul";
 var GUARDAR_URL = "https://script.google.com/macros/s/AKfycbyd3SvLe1EvowqZG3_i5XWL6Q3DGjySiJQ7cSVSclGaUAieHd5LnTRpibiF59d9iofhMQ/exec";
 
@@ -673,61 +673,34 @@ function guardar(estado, listo){
     };
     var cuerpo = JSON.stringify(datos);
 
-    // Vía principal: formulario normal contra un iframe oculto.
-    // No es una petición XHR, así que no pasa por CORS ni por connect-src.
-    // Apps Script lo recibe en e.parameter.datos, que el script ya contempla.
-    var ok = enviarPorFormulario(cuerpo, estado, listo);
-
-    // Red de seguridad, por si el iframe estuviera bloqueado.
-    try {
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon(GUARDAR_URL, new Blob([cuerpo], { type: 'text/plain;charset=utf-8' }));
-      }
-    } catch (e) {}
-
-    if (!ok && typeof listo === 'function') setTimeout(listo, 400);
-  } catch(e){
-    traza('error ' + e.message);
-    if (typeof listo === 'function') setTimeout(listo, 200);
-  }
-}
-
-/* El envío real. Devuelve true si se pudo lanzar. */
-function enviarPorFormulario(cuerpo, estado, listo){
-  try {
-    var marco = document.getElementById('sumidero');
-    if (!marco) {
-      marco = document.createElement('iframe');
-      marco.id = 'sumidero'; marco.name = 'sumidero';
-      marco.setAttribute('aria-hidden','true'); marco.tabIndex = -1;
-      marco.style.cssText = 'position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none';
-      document.body.appendChild(marco);
-    }
-
+    // Comprobado contra el despliegue real: Apps Script acepta este POST y
+    // devuelve {"estado":"ok"} con cabeceras CORS. No hace falta no-cors,
+    // ni iframes, ni trucos: se puede leer la respuesta y confirmar de verdad.
     var cerrado = false;
     var cerrar = function(txt){
       if (cerrado) return; cerrado = true;
       traza(estado + ' · ' + txt);
-      marco.onload = null;
       if (typeof listo === 'function') listo();
     };
-    marco.onload = function(){ cerrar('guardado'); };
-    // Si Google tarda, no dejamos a la persona esperando.
-    setTimeout(function(){ cerrar('enviado (sin confirmar)'); }, 2500);
+    setTimeout(function(){ cerrar('sin respuesta de Google'); }, 6000);
 
-    var f = document.createElement('form');
-    f.method = 'POST'; f.action = GUARDAR_URL; f.target = 'sumidero';
-    f.style.display = 'none';
-    var c = document.createElement('input');
-    c.type = 'hidden'; c.name = 'datos'; c.value = cuerpo;
-    f.appendChild(c);
-    document.body.appendChild(f);
-    f.submit();
-    setTimeout(function(){ if (f.parentNode) f.parentNode.removeChild(f); }, 1000);
-    return true;
-  } catch (e) {
-    traza('fallo formulario: ' + e.message);
-    return false;
+    fetch(GUARDAR_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: cuerpo,
+      keepalive: true
+    })
+    .then(function(r){ return r.text(); })
+    .then(function(t){ cerrar(/"ok"/.test(t) ? 'guardado' : 'rechazado: ' + t.slice(0,40)); })
+    ['catch'](function(e){
+      // Si la petición no sale, al menos que el dato no se pierda.
+      try { navigator.sendBeacon(GUARDAR_URL, new Blob([cuerpo], { type:'text/plain;charset=utf-8' })); } catch(x){}
+      cerrar('reintentado por beacon');
+    });
+
+  } catch(e){
+    traza('error ' + e.message);
+    if (typeof listo === 'function') setTimeout(listo, 200);
   }
 }
 
