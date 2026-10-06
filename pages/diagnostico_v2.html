@@ -18,13 +18,13 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-html,body{height:100%}
+html{-webkit-text-size-adjust:100%}
 body{
   margin:0;background:var(--bg);color:var(--ink);
   font-family:Montserrat,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;
   font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased;
 }
-.wrap{max-width:40rem;margin:0 auto;padding-inline:20px;padding-block:0;min-height:100%;display:flex;flex-direction:column}
+.wrap{max-width:40rem;margin:0 auto;padding-inline:20px;padding-block:0}
 
 /* barra superior */
 .top{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:18px 14px;z-index:5}
@@ -35,7 +35,7 @@ body{
 .count{font-size:12px;font-weight:800;color:var(--neon);font-variant-numeric:tabular-nums;white-space:nowrap}
 
 /* cuerpo */
-main{flex:1 1 auto;padding-block:8px 40px}
+main{padding-block:8px 48px}
 .qn{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon);margin:0 0 14px}
 h1{
   font-weight:900;font-size:clamp(25px,6.4vw,38px);line-height:1.1;letter-spacing:-.01em;
@@ -154,6 +154,37 @@ select.campo{appearance:none;background-image:linear-gradient(45deg,transparent 
 .h-chips li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--neon);flex:0 0 auto}
 .h-pie{font-size:13px;color:var(--muted);margin:22px 0 0}
 .h-pie{border-top:1px solid var(--line);padding-top:18px}
+
+/* panel de depuración — solo con DEBUG en true */
+.traza{
+  position:fixed;left:0;right:0;bottom:0;z-index:9999;
+  background:rgba(0,0,0,.9);border-top:2px solid var(--neon);
+  color:var(--neon);font-family:ui-monospace,Menlo,monospace;font-size:11px;
+  line-height:1.5;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+  max-height:22vh;overflow:auto
+}
+body.condebug{padding-bottom:24vh}
+
+/* ---------- móvil ---------- */
+@media (max-width:430px){
+  .wrap{padding-inline:16px}
+  .hero{padding-block:34px 36px}
+  .h-t{font-size:clamp(38px,12vw,52px)}
+  .h-l{font-size:16.5px}
+  .h-bub .bub{padding:11px 13px}
+  .op{padding:15px 16px;font-size:15.5px}
+  .op b{font-size:15.5px}
+  .campo{padding:15px 16px;font-size:16px}
+  .cta{padding:16px;font-size:15.5px}
+  .res-h{font-size:clamp(26px,8vw,36px)}
+  .mov,.evento,.hoy{padding:17px}
+  .lect li{font-size:15px}
+}
+/* el teclado del móvil no debe tapar el botón */
+@media (max-height:620px){
+  .hero{padding-block:24px 28px}
+  main{padding-block:4px 28px}
+}
 
 /* ── Pulido de diseño (solo CSS) ──
    Las opciones, los campos, la burbuja y el resultado se crean de nuevo en cada
@@ -606,6 +637,22 @@ function pintar(){
   window.scrollTo(0,0);
 }
 
+function traza(txt){
+  if (!DEBUG) return;
+  try { console.log('[diagnostico]', txt); } catch(e){}
+  var p = document.getElementById('traza');
+  if (!p) {
+    p = document.createElement('div');
+    p.id = 'traza'; p.className = 'traza';
+    document.body.appendChild(p);
+    document.body.className += ' condebug';
+  }
+  var l = document.createElement('div');
+  l.textContent = new Date().toLocaleTimeString() + '  ' + txt;
+  p.appendChild(l);
+  while (p.children.length > 6) p.removeChild(p.firstChild);
+}
+
 function guardar(estado){
   if (DEMO || !GUARDAR_URL) return;
   try {
@@ -621,16 +668,31 @@ function guardar(estado){
       resultado: (estado === 'completo') ? calcular() : '',
       perfil: (estado === 'completo') ? perfil() : ''
     };
-    // OJO: en mode no-cors el navegador solo admite Content-Type de la lista
-    // segura. Con application/json la cabecera se descarta y el envío puede
-    // romperse. text/plain es el que funciona con Apps Script.
-    fetch(GUARDAR_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(datos)
-    })['catch'](function(){});
-    if (DEBUG) console.log('[diagnostico] enviado', estado, datos);
+    var cuerpo = JSON.stringify(datos);
+    var via = '';
+
+    // sendBeacon es el método correcto para esto: sobrevive a que la persona
+    // cambie de página y no necesita esperar respuesta.
+    try {
+      if (navigator.sendBeacon) {
+        var blob = new Blob([cuerpo], { type: 'text/plain;charset=utf-8' });
+        if (navigator.sendBeacon(GUARDAR_URL, blob)) via = 'beacon';
+      }
+    } catch (e) {}
+
+    // Respaldo. En no-cors el navegador solo admite Content-Type de la lista
+    // segura; application/json se descarta y rompe el envío. text/plain sí pasa.
+    if (!via) {
+      try {
+        fetch(GUARDAR_URL, {
+          method: 'POST', mode: 'no-cors', keepalive: true,
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: cuerpo
+        })['catch'](function(){ traza('fallo fetch'); });
+        via = 'fetch';
+      } catch (e) { via = 'error: ' + e.message; }
+    }
+    traza(estado + ' · ' + via);
   } catch(e){}
 }
 
