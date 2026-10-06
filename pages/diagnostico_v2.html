@@ -1,3 +1,6 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Punto de Partida v2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -653,8 +656,8 @@ function traza(txt){
   while (p.children.length > 6) p.removeChild(p.firstChild);
 }
 
-function guardar(estado){
-  if (DEMO || !GUARDAR_URL) return;
+function guardar(estado, listo){
+  if (DEMO || !GUARDAR_URL){ if (typeof listo === 'function') listo(); return; }
   try {
     var datos = {
       id: SESION,
@@ -669,31 +672,63 @@ function guardar(estado){
       perfil: (estado === 'completo') ? perfil() : ''
     };
     var cuerpo = JSON.stringify(datos);
-    var via = '';
 
-    // sendBeacon es el método correcto para esto: sobrevive a que la persona
-    // cambie de página y no necesita esperar respuesta.
+    // Vía principal: formulario normal contra un iframe oculto.
+    // No es una petición XHR, así que no pasa por CORS ni por connect-src.
+    // Apps Script lo recibe en e.parameter.datos, que el script ya contempla.
+    var ok = enviarPorFormulario(cuerpo, estado, listo);
+
+    // Red de seguridad, por si el iframe estuviera bloqueado.
     try {
       if (navigator.sendBeacon) {
-        var blob = new Blob([cuerpo], { type: 'text/plain;charset=utf-8' });
-        if (navigator.sendBeacon(GUARDAR_URL, blob)) via = 'beacon';
+        navigator.sendBeacon(GUARDAR_URL, new Blob([cuerpo], { type: 'text/plain;charset=utf-8' }));
       }
     } catch (e) {}
 
-    // Respaldo. En no-cors el navegador solo admite Content-Type de la lista
-    // segura; application/json se descarta y rompe el envío. text/plain sí pasa.
-    if (!via) {
-      try {
-        fetch(GUARDAR_URL, {
-          method: 'POST', mode: 'no-cors', keepalive: true,
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: cuerpo
-        })['catch'](function(){ traza('fallo fetch'); });
-        via = 'fetch';
-      } catch (e) { via = 'error: ' + e.message; }
+    if (!ok && typeof listo === 'function') setTimeout(listo, 400);
+  } catch(e){
+    traza('error ' + e.message);
+    if (typeof listo === 'function') setTimeout(listo, 200);
+  }
+}
+
+/* El envío real. Devuelve true si se pudo lanzar. */
+function enviarPorFormulario(cuerpo, estado, listo){
+  try {
+    var marco = document.getElementById('sumidero');
+    if (!marco) {
+      marco = document.createElement('iframe');
+      marco.id = 'sumidero'; marco.name = 'sumidero';
+      marco.setAttribute('aria-hidden','true'); marco.tabIndex = -1;
+      marco.style.cssText = 'position:absolute;width:0;height:0;border:0;opacity:0;pointer-events:none';
+      document.body.appendChild(marco);
     }
-    traza(estado + ' · ' + via);
-  } catch(e){}
+
+    var cerrado = false;
+    var cerrar = function(txt){
+      if (cerrado) return; cerrado = true;
+      traza(estado + ' · ' + txt);
+      marco.onload = null;
+      if (typeof listo === 'function') listo();
+    };
+    marco.onload = function(){ cerrar('guardado'); };
+    // Si Google tarda, no dejamos a la persona esperando.
+    setTimeout(function(){ cerrar('enviado (sin confirmar)'); }, 2500);
+
+    var f = document.createElement('form');
+    f.method = 'POST'; f.action = GUARDAR_URL; f.target = 'sumidero';
+    f.style.display = 'none';
+    var c = document.createElement('input');
+    c.type = 'hidden'; c.name = 'datos'; c.value = cuerpo;
+    f.appendChild(c);
+    document.body.appendChild(f);
+    f.submit();
+    setTimeout(function(){ if (f.parentNode) f.parentNode.removeChild(f); }, 1000);
+    return true;
+  } catch (e) {
+    traza('fallo formulario: ' + e.message);
+    return false;
+  }
 }
 
 function perfil(){
@@ -728,7 +763,13 @@ function mostrar(){
     var b = h('button','cta',txt); b.type = 'button';
     b.addEventListener('click', function(){
       if (DEMO || !GRUPO_URL){ b.textContent = 'Aquí va el link del grupo'; return; }
-      window.location.href = GRUPO_URL;
+      // Reenvía antes de salir: es la misma fila (se actualiza, no se duplica),
+      // y así nadie se pierde por irse al grupo antes de que Google responda.
+      b.disabled = true; b.textContent = 'Abriendo el grupo…';
+      var ido = false;
+      var ir = function(){ if (ido) return; ido = true; window.location.href = GRUPO_URL; };
+      setTimeout(ir, 1800);
+      guardar('completo', ir);
     });
     return b;
   }
