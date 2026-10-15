@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Tu Ruta Financiera - Agendar Sesión</title>
+  
+  <!-- Calendly -->
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+  <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+  
+  <!-- Intl Tel Input (Versión con utils integrados para que getNumber nunca falle) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.4/build/css/intlTelInput.css">
+  <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.4/build/js/intlTelInputWithUtils.min.js"></script>
+
+  <style>
+    :root {
+        --bg-dark: #060807;
+        --card-bg: #0a0e0c;
+        --border-color: #1B7A34;
+        --text-main: #EFF6F0;
+        --text-muted: #8ba394;
+        --accent: #39FF60;
+        --accent-glow: rgba(57, 255, 96, 0.15);
+        --btn-action: #C42828;
+        --btn-action-hover: #9e1f1f;
+        --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+    
+    body { 
+        background-color: var(--bg-dark); 
+        color: var(--text-main); 
+        display: flex; justify-content: center; align-items: flex-start; 
+        min-height: 100vh; padding: 20px; 
+        background-image: radial-gradient(circle at 50% 0%, rgba(27, 122, 52, 0.15) 0%, transparent 60%);
+    }
+
+    .container {
+        background: var(--card-bg);
+        width: 100%;
+        max-width: 550px;
+        border-radius: var(--radius);
+        border: 1px solid rgba(27, 122, 52, 0.4);
+        box-shadow: 0 0 50px rgba(27, 122, 52, 0.1), 0 0 0 1px rgba(57, 255, 96, 0.05);
+        padding: 40px 32px;
+        margin-top: 5vh;
+        position: relative;
+        overflow: hidden;
+    }
+
+    h2 { font-size: 1.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: -0.025em; margin-bottom: 24px; text-shadow: 0 0 10px rgba(57, 255, 96, 0.15); }
+    
+    .progress-bar { height: 4px; background: rgba(27, 122, 52, 0.3); border-radius: 4px; margin-bottom: 30px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent); width: 16%; transition: width 0.4s ease; box-shadow: 0 0 10px var(--accent-glow); }
+
+    .step { display: none; animation: slideUpFade 0.5s forwards; }
+    .step.active { display: block; }
+    
+    @keyframes slideUpFade {
+        from { opacity: 0; transform: translateY(15px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .campo label { display: block; font-size: 1rem; font-weight: 600; color: var(--text-main); margin-bottom: 16px; }
+    .campo label.sub { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; margin-top: -10px; margin-bottom: 16px; display: block;}
+
+    input[type="text"], input[type="email"], input[type="tel"], textarea {
+        width: 100%; padding: 18px; background: rgba(6, 8, 7, 0.8);
+        border: 1px solid var(--border-color); border-radius: 8px;
+        color: var(--text-main); font-size: 1.2rem; outline: none; transition: all 0.3s;
+    }
+    input:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
+    textarea { resize: vertical; min-height: 120px; font-size: 1rem; }
+
+    .opciones-grid { display: flex; flex-direction: column; gap: 12px; }
+    .opcion-radio {
+        display: flex; align-items: center; padding: 16px 20px;
+        background: rgba(6, 8, 7, 0.8); border: 1px solid var(--border-color);
+        border-radius: 8px; cursor: pointer; transition: all 0.2s;
+    }
+    .opcion-radio:hover { border-color: var(--accent); background: rgba(27, 122, 52, 0.1); }
+    .opcion-radio input[type="radio"] { display: none; }
+    .opcion-radio span { font-size: 1.05rem; font-weight: 600; }
+    
+    .opcion-radio::before {
+        content: ''; display: inline-block; width: 22px; height: 22px;
+        border: 2px solid var(--text-muted); border-radius: 50%;
+        margin-right: 14px; transition: all 0.2s; flex-shrink: 0;
+    }
+    .opcion-radio:has(input:checked) { border-color: var(--accent); background: rgba(57, 255, 96, 0.05); }
+    .opcion-radio:has(input:checked)::before {
+        border-color: var(--accent); background-color: var(--accent);
+        box-shadow: inset 0 0 0 4px var(--bg-dark), 0 0 10px var(--accent-glow);
+    }
+
+    .nav-buttons { display: flex; gap: 12px; margin-top: 30px; align-items: center; }
+    .btn-nav {
+        padding: 16px 32px; background: var(--btn-action); color: #fff;
+        font-size: 1.05rem; font-weight: 700; text-transform: uppercase;
+        border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s;
+        letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-nav:hover { background: var(--btn-action-hover); transform: translateY(-2px); }
+    
+    .btn-back { background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 16px; }
+    .btn-back:hover { background: rgba(27, 122, 52, 0.1); color: var(--text-main); transform: none; }
+
+    .error-msg { color: var(--btn-action); font-size: 0.85rem; margin-top: 10px; font-weight: 600; display: none; }
+
+    .iti { width: 100%; display: block; }
+    .iti__country-list { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-main); }
+    .iti__country.iti__highlight { background-color: rgba(27, 122, 52, 0.4); }
+    .iti__search-input { background: var(--bg-dark); color: white; border: 1px solid var(--border-color); }
+    .iti__arrow { border-top-color: var(--text-muted); }
+    .iti__selected-dial-code { color: var(--text-main); }
+
+    #paso-descalificado { text-align: center; padding: 20px 0; display: none; }
+    #paso-descalificado svg { width: 64px; height: 64px; color: var(--btn-action); margin-bottom: 20px; }
+    #paso-calendly { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="main-card">
+    
+    <div class="progress-bar" id="progress-container">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <form id="form-lanzamiento">
+
+      <!-- PASO 0: Nombre -->
+      <div class="step active" data-index="0">
+        <h2>Tu Ruta Financiera</h2>
+        <div class="campo">
+          <label for="nombre">1. ¿Cuál es tu nombre y apellido?</label>
+          <input type="text" id="nombre" placeholder="Ej. Juan Pérez" autocomplete="name">
+          <div class="error-msg" id="error-0">Por favor, ingresa tu nombre.</div>
+        </div>
+        <div class="nav-buttons">
+          <button type="button" class="btn-nav btn-next">Siguiente <span>&rarr;</span></button>
+        </div>
+      </div>
+
+      <!-- PASO 1: Correo -->
+      <div class="step" data-index="1">
+        <div class="campo">
+          <label for="email">2. ¿Cuál es tu mejor correo electrónico?</label>
+          <label class="sub">Aquí te enviaremos el enlace de acceso.</label>
+          <input type="email" id="email" placeholder="tucorreo@dominio.com" autocomplete="email">
+          <div class="error-msg" id="error-1">Ingresa un correo electrónico válido.</div>
+        </div>
+        <div class="nav-buttons">
+          <button type="button" class="btn-nav btn-back">&larr;</button>
+          <button type="button" class="btn-nav btn-next">Siguiente <span>&rarr;</span></button>
+        </div>
+      </div>
+
+      <!-- PASO 2: WhatsApp -->
+      <div class="step" data-index="2">
+        <div class="campo">
+          <label for="telefono">3. Tu número de WhatsApp</label>
+          <label class="sub">Selecciona tu país y verifica que esté correcto.</label>
+          <input type="tel" id="telefono" autocomplete="tel">
+          <div class="error-msg" id="error-2">Ingresa un número de WhatsApp válido.</div>
+        </div>
+        <div class="nav-buttons">
+          <button type="button" class="btn-nav btn-back">&larr;</button>
+          <button type="button" class="btn-nav btn-next">Siguiente <span>&rarr;</span></button>
+        </div>
+      </div>
+
+      <!-- PASO 3: Inversión -->
+      <div class="step" data-index="3">
+        <div class="campo">
+          <label>4. ¿Cuánto estás dispuesto a invertir en USD?</label>
+          <label class="sub">Capital disponible para apalancar el crédito.</label>
+          
+          <div class="opciones-grid">
+            <label class="opcion-radio">
+              <input type="radio" name="inversion" value="0 a 500 USD">
+              <span>0 a 500 USD</span>
+            </label>
+            <label class="opcion-radio">
+              <input type="radio" name="inversion" value="500 a 1000 USD">
+              <span>500 a 1,000 USD</span>
+            </label>
+            <label class="opcion-radio">
+              <input type="radio" name="inversion" value="1000 a 1500 USD">
+              <span>1,000 a 1,500 USD</span>
+            </label>
+            <label class="opcion-radio">
+              <input type="radio" name="inversion" value="Más de 1500 USD">
+              <span>Más de 1,500 USD</span>
+            </label>
+          </div>
+          <div class="error-msg" id="error-3">Por favor, selecciona una opción.</div>
+        </div>
+        <div class="nav-buttons">
+          <button type="button" class="btn-nav btn-back">&larr;</button>
+          <button type="button" class="btn-nav btn-next" style="display: none;">Siguiente</button>
+        </div>
+      </div>
+
+      <!-- PASO 4 (CONDICIONAL): Reserva 300 -->
+      <div class="step" data-index="4">
+        <div class="campo">
+          <label>5. ¿Estás dispuesto a conseguir al menos $300 USD para reservar tu lugar?</label>
+          <label class="sub">La creación de la estructura requiere de un mínimo de compromiso operativo.</label>
+          
+          <div class="opciones-grid">
+            <label class="opcion-radio">
+              <input type="radio" name="reserva" value="Si">
+              <span>Sí, estoy dispuesto</span>
+            </label>
+            <label class="opcion-radio">
+              <input type="radio" name="reserva" value="No">
+              <span>No, no es posible para mí ahora</span>
+            </label>
+          </div>
+          <div class="error-msg" id="error-4">Por favor, selecciona una opción.</div>
+        </div>
+        <div class="nav-buttons">
+          <button type="button" class="btn-nav btn-back">&larr;</button>
+        </div>
+      </div>
+
+      <!-- PASO 5: Motivación -->
+      <div class="step" data-index="5">
+        <div class="campo">
+          <label for="motivacion">Último paso. ¿Cuál fue tu motivación principal para llegar hasta aquí?</label>
+          <textarea id="motivacion" placeholder="Escribe tu objetivo o problema principal que deseas resolver..."></textarea>
+          <div class="error-msg" id="error-5">Por favor, cuéntanos brevemente tu motivación.</div>
+        </div>
+        <div class="nav-buttons">
+          <button type="button" class="btn-nav btn-back" id="btn-back-final">&larr;</button>
+          <button type="submit" class="btn-nav" id="btn-enviar" style="flex: 1; justify-content: center; background: var(--accent); color: var(--bg-dark);">Agendar Llamada ✓</button>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- PANTALLA DESCALIFICACIÓN -->
+    <section id="paso-descalificado">
+      <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+      <h2 style="font-size: 1.4rem;">Gracias por tu interés</h2>
+      <p style="color: var(--text-muted); line-height: 1.6; font-size: 1.1rem;">Actualmente las sesiones personalizadas requieren contar con capacidad de inversión o reserva inicial para proceder operativamente. Sigue atento a tu correo donde te compartiremos más valor gratuito.</p>
+    </section>
+
+    <!-- WIDGET DE CALENDLY -->
+    <section id="paso-calendly">
+      <h2 style="font-size: 1.4rem; text-align: center; margin-top: -20px;">Elige tu Horario</h2>
+      <div id="calendly-inline-container" style="min-width: 320px; height: 650px;"></div>
+    </section>
+
+  </div>
+
+  <script>
+    // 1. Configuración Integraciones
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzYaky4AMqmfzBFWTYCyIWdNiumgLXRy_HKVS0ARQMAAoxXTZumUoCbCUoRD3JP-E9PQg/exec';
+    const CALENDLY_BASE_URL = 'https://calendly.com/d/d2p2-8vz-9j5/tu-ruta-financiera';
+
+    // IMPORTANTE: Si en Calendly aún tienes "Google Meet" y "Zoom" al mismo tiempo en Ubicación,
+    // pon esto en true. Si ya borraste Zoom y dejaste solo Google Meet, déjalo en false.
+    const TIENE_DOBLE_UBICACION_EN_CALENDLY = false;
+
+    // 2. Inicializar IntlTelInput (con intlTelInputWithUtils incluido)
+    const inputTel = document.querySelector("#telefono");
+    const iti = window.intlTelInput(inputTel, {
+      initialCountry: "auto",
+      geoIpLookup: callback => {
+        fetch("https://ipapi.co/json").then(res => res.json()).then(data => callback(data.country_code)).catch(() => callback("PE"));
+      },
+      separateDialCode: true
+    });
+
+    // 3. Lógica Multi-step Typeform
+    const steps = document.querySelectorAll('.step');
+    const progressBar = document.getElementById('progress-fill');
+    let currentStep = 0;
+
+    function updateUI() {
+        steps.forEach((step, index) => {
+            step.classList.remove('active');
+            if(index === currentStep) step.classList.add('active');
+        });
+        
+        const totalSteps = 5; 
+        const progressPercentage = ((currentStep) / totalSteps) * 100;
+        progressBar.style.width = Math.max(16, progressPercentage) + '%';
+        
+        const activeInput = steps[currentStep].querySelector('input:not([type="radio"]), textarea');
+        if(activeInput) { setTimeout(() => activeInput.focus(), 100); }
+    }
+
+    function validateStep(index) {
+        const errorMsg = document.getElementById(`error-${index}`);
+        errorMsg.style.display = 'none';
+        
+        if (index === 0) {
+            if (document.getElementById('nombre').value.trim() === '') { errorMsg.style.display = 'block'; return false; }
+        }
+        else if (index === 1) {
+            const emailField = document.getElementById('email');
+            if (!emailField.checkValidity() || emailField.value.trim() === '') { errorMsg.style.display = 'block'; return false; }
+        }
+        else if (index === 2) {
+            const rawDigits = inputTel.value.replace(/\D/g, '');
+            const esValido = (typeof iti.isValidNumber === 'function' && iti.isValidNumber()) || rawDigits.length >= 7;
+            if (!esValido) { errorMsg.style.display = 'block'; return false; }
+        }
+        else if (index === 3) {
+            if (!document.querySelector('input[name="inversion"]:checked')) { errorMsg.style.display = 'block'; return false; }
+        }
+        else if (index === 4) {
+            if (!document.querySelector('input[name="reserva"]:checked')) { errorMsg.style.display = 'block'; return false; }
+        }
+        else if (index === 5) {
+            if (document.getElementById('motivacion').value.trim() === '') { errorMsg.style.display = 'block'; return false; }
+        }
+        return true;
+    }
+
+    document.querySelectorAll('.btn-next').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (!validateStep(currentStep)) return;
+            
+            if (currentStep === 3) {
+                const inversion = document.querySelector('input[name="inversion"]:checked').value;
+                currentStep = (inversion === "0 a 500 USD") ? 4 : 5;
+            } else {
+                currentStep++;
+            }
+            updateUI();
+        });
+    });
+
+    document.querySelectorAll('.btn-back').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentStep === 5) {
+                const inversion = document.querySelector('input[name="inversion"]:checked').value;
+                currentStep = (inversion === "0 a 500 USD") ? 4 : 3;
+            } else {
+                currentStep--;
+            }
+            updateUI();
+        });
+    });
+
+    document.querySelectorAll('input[name="inversion"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            setTimeout(() => {
+                steps[3].querySelector('.btn-next').click();
+            }, 350);
+        });
+    });
+    
+    document.querySelectorAll('input[name="reserva"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            setTimeout(() => {
+                if (!validateStep(4)) return;
+                currentStep = 5;
+                updateUI();
+            }, 350);
+        });
+    });
+
+    document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"]').forEach(input => {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const btn = steps[currentStep].querySelector('.btn-next');
+                if(btn) btn.click();
+            }
+        });
+    });
+
+    // 4. Envío Final Blindado
+    document.getElementById('form-lanzamiento').addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (!validateStep(5)) return;
+
+        const boton = document.getElementById('btn-enviar');
+        boton.disabled = true;
+        boton.textContent = 'Procesando...';
+
+        const nombre = document.getElementById('nombre').value.trim();
+        const email = document.getElementById('email').value.trim();
+
+        // Extracción blindada del teléfono con código de país (nunca queda vacío)
+        const countryData = iti.getSelectedCountryData();
+        const dialCode = (countryData && countryData.dialCode) ? `+${countryData.dialCode}` : '';
+        const rawPhone = inputTel.value.trim();
+        const numeroIti = (typeof iti.getNumber === 'function') ? iti.getNumber() : '';
+        const telefono = numeroIti || `${dialCode} ${rawPhone}`.trim();
+
+        const motivacion = document.getElementById('motivacion').value.trim();
+        
+        let inversionFija = document.querySelector('input[name="inversion"]:checked').value;
+        let califica = true;
+
+        if (inversionFija === "0 a 500 USD") {
+            const reserva = document.querySelector('input[name="reserva"]:checked').value;
+            if (reserva === "No") {
+                califica = false;
+            } else {
+                inversionFija = "0 a 500 USD (Dispuesto a reservar con $300)";
+            }
+        }
+
+        // Enviar a Google Sheets en segundo plano (sin bloquear la carga del calendario)
+        fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({
+                source: 'html_form',
+                nombre: nombre,
+                email: email,
+                telefono: telefono,
+                inversion: inversionFija,
+                motivacion: motivacion,
+                califica: califica
+            })
+        }).catch(err => console.error('Error enviando pre-lead:', err));
+
+        // Ocultar formulario
+        document.getElementById('form-lanzamiento').style.display = 'none';
+        document.getElementById('progress-container').style.display = 'none';
+
+        if (!califica) {
+            document.getElementById('paso-descalificado').style.display = 'block';
+            return;
+        }
+
+        document.getElementById('paso-calendly').style.display = 'block';
+
+        const respuestasPersonalizadas = TIENE_DOBLE_UBICACION_EN_CALENDLY
+            ? { a1: '1', a2: telefono, a3: inversionFija, a4: motivacion }
+            : { a1: telefono, a2: inversionFija, a3: motivacion };
+
+        // Construir parámetros en la URL (obligatorio para que el link corto /d/... de Calendly no pierda el prefill)
+        const params = new URLSearchParams({
+            hide_gdpr_banner: '1',
+            hide_event_type_details: '1',
+            background_color: '0a0e0c',
+            text_color: 'EFF6F0',
+            primary_color: '39FF60',
+            name: nombre,
+            email: email,
+            ...respuestasPersonalizadas,
+            // También viajan ocultos por UTM por si decides apagar las 3 preguntas en Calendly (Opción 1)
+            utm_term: telefono,
+            utm_content: inversionFija,
+            utm_campaign: motivacion.substring(0, 100)
+        });
+
+        const separador = CALENDLY_BASE_URL.includes('?') ? '&' : '?';
+        const urlFinalCalendly = `${CALENDLY_BASE_URL}${separador}${params.toString()}`;
+
+        Calendly.initInlineWidget({
+            url: urlFinalCalendly,
+            parentElement: document.getElementById('calendly-inline-container'),
+            prefill: {
+                name: nombre,
+                email: email,
+                customAnswers: respuestasPersonalizadas
+            }
+        });
+    });
+  </script>
+</body>
+</html>
