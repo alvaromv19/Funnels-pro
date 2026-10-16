@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contrato Oficial - Money Credit | LIFEOFNENA LLC</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    :root {
+      --primary: #111827;
+      --accent: #2563eb;
+      --success: #15803d;
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --border: #d1d5db;
+      --text: #1f2937;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 20px;
+      line-height: 1.55;
+    }
+    .container { max-width: 860px; margin: 0 auto; }
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 22px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .panel-admin { border-left: 5px solid #dc2626; background: #fff5f5; }
+    .panel-client { border-left: 5px solid var(--accent); }
+    .panel-onboarding { border-left: 5px solid var(--success); background: #f0fdf4; display: none; text-align: center; }
+    .panel h2 { margin-top: 0; font-size: 1.15rem; color: var(--primary); }
+    .section-label {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #dc2626;
+      font-weight: 700;
+      margin: 14px 0 8px 0;
+      border-bottom: 1px solid #fecaca;
+      padding-bottom: 4px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 4px; }
+    input[type="text"], input[type="email"], input[type="number"], input[type="date"], select {
+      width: 100%;
+      padding: 8px 11px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.92rem;
+    }
+    .checkbox-group label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-bottom: 6px;
+    }
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 12px 22px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn:disabled { background: #9ca3af; cursor: not-allowed; }
+    .btn-secondary { background: #4b5563; }
+    .btn-danger { background: #dc2626; }
+    .btn-success { background: var(--success); }
+
+    /* Hoja del Contrato A4 */
+    #contract-document {
+      background: #ffffff;
+      padding: 35px 45px;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      font-family: 'Georgia', 'Times New Roman', serif;
+      color: #000000;
+      font-size: 10pt;
+      line-height: 1.5;
+      text-align: justify;
+    }
+    #contract-document h1 {
+      font-size: 12.5pt;
+      text-align: center;
+      text-transform: uppercase;
+      margin-top: 0;
+      margin-bottom: 18px;
+      line-height: 1.35;
+    }
+    #contract-document h2 {
+      font-size: 10.5pt;
+      text-transform: uppercase;
+      margin-top: 18px;
+      margin-bottom: 6px;
+      border-bottom: 1px solid #d1d5db;
+      padding-bottom: 3px;
+      page-break-after: avoid;
+    }
+    #contract-document h3 {
+      font-size: 10pt;
+      margin-top: 12px;
+      margin-bottom: 4px;
+      page-break-after: avoid;
+    }
+    #contract-document p, #contract-document li {
+      page-break-inside: avoid;
+      margin-bottom: 7px;
+    }
+    #contract-document ul { padding-left: 20px; margin-top: 4px; margin-bottom: 8px; }
+    .dyn {
+      font-weight: bold;
+      background-color: #fef08a;
+      padding: 0 3px;
+      border-radius: 2px;
+    }
+    .pdf-clean .dyn { background-color: transparent !important; padding: 0 !important; }
+    .pdf-clean .hide-in-pdf { display: none !important; }
+
+    .sig-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      page-break-inside: avoid;
+    }
+    .sig-table td {
+      width: 50%;
+      vertical-align: top;
+      padding: 12px;
+      border: 1px solid #9ca3af;
+    }
+    .company-signature {
+      font-family: 'Brush Script MT', 'Segoe Script', cursive;
+      font-size: 22pt;
+      color: #1e3a8a;
+      height: 65px;
+      display: flex;
+      align-items: center;
+    }
+    #sig-canvas {
+      border: 2px dashed #6b7280;
+      border-radius: 6px;
+      background: #f9fafb;
+      cursor: crosshair;
+      touch-action: none;
+      width: 100%;
+      max-width: 320px;
+      height: 110px;
+      display: block;
+    }
+    .sig-preview-img {
+      display: none;
+      max-width: 240px;
+      max-height: 80px;
+      object-fit: contain;
+      margin-bottom: 6px;
+    }
+    .audit-box {
+      margin-top: 20px;
+      padding: 10px 12px;
+      border: 1px solid #9ca3af;
+      background: #f8fafc;
+      font-family: monospace;
+      font-size: 8pt;
+      page-break-inside: avoid;
+    }
+    .status-msg { margin-top: 12px; font-weight: 600; font-size: 0.92rem; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <!-- PANEL EXCLUSIVO DE SOPORTE / ADMINISTRACIÓN (Se oculta para el cliente) -->
+  <div id="admin-panel" class="panel panel-admin">
+    <h2>🛠️ Panel de Administración y Soporte (Generador de Contrato Post-Cierre)</h2>
+    <p style="font-size:0.85rem; margin-top:0;">Carga aquí los datos levantados por el Closer en la llamada. Al copiar el link, el cliente verá el contrato ya lleno y solo tendrá que estampar su firma.</p>
+
+    <div class="section-label">1. Configuración Técnica y Empresa</div>
+    <div class="grid">
+      <div>
+        <label>Domicilio LIFEOFNENA LLC (Florida):</label>
+        <input type="text" id="cfg-company-address" value="Miami, Estado de Florida, EE. UU." />
+      </div>
+      <div>
+        <label>Webhook URL de Make (Custom Webhook):</label>
+        <input type="text" id="cfg-webhook" placeholder="https://hook.us1.make.com/xxxxxxxxxxxx" />
+      </div>
+      <div>
+        <label>Link de Agenda Onboarding (Opcional - Calendly/GHL/WhatsApp):</label>
+        <input type="text" id="cfg-onboarding-url" placeholder="https://calendly.com/tu-equipo/onboarding" />
+      </div>
+    </div>
+
+    <div class="section-label">2. Datos Personales del Cliente (Levantados en Llamada)</div>
+    <div class="grid">
+      <div>
+        <label>Nombre Completo del Cliente:</label>
+        <input type="text" id="cli-name" placeholder="Ej. Carlos Mendoza" oninput="syncContract()" />
+      </div>
+      <div>
+        <label>N° Documento / Pasaporte:</label>
+        <input type="text" id="cli-id" placeholder="Ej. PE9876543" oninput="syncContract()" />
+      </div>
+      <div>
+        <label>Domicilio Completo:</label>
+        <input type="text" id="cli-address" placeholder="Av. Principal 123, Ciudad" oninput="syncContract()" />
+      </div>
+      <div>
+        <label>País de Residencia:</label>
+        <input type="text" id="cli-country" placeholder="Ej. Perú" oninput="syncContract()" />
+      </div>
+      <div>
+        <label>Correo Electrónico del Cliente:</label>
+        <input type="email" id="cli-email" placeholder="cliente@email.com" oninput="syncContract()" />
+      </div>
+    </div>
+
+    <div class="section-label">3. Condiciones Comerciales del Cierre</div>
+    <div class="checkbox-group" style="margin-bottom: 12px;">
+      <label style="font-weight:700; margin-bottom:4px;">Bonos de Acción Rápida Incluidos (Cláusula Tercera B):</label>
+      <label><input type="checkbox" id="cfg-b1" /> Membresía Ruta Black por 12 meses</label>
+      <label><input type="checkbox" id="cfg-b2" /> La Agenda Privada</label>
+      <label><input type="checkbox" id="cfg-b3" /> El Acelerador (Primeros 5 clientes - Tope $200 USD)</label>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label>Modalidad de Pago Acordada (Cláusula Cuarta):</label>
+        <select id="cfg-pay-mode">
+          <option value="A">Opción A — Pago Único ($1,500.00 USD)</option>
+          <option value="B">Opción B — Plan de Dos (2) Cuotas</option>
+        </select>
+      </div>
+      <div id="box-cuota1" style="display:none;">
+        <label>Monto 1er Pago Realizado (USD):</label>
+        <input type="number" id="cfg-c1" value="750.00" step="0.01" />
+      </div>
+      <div id="box-cuota2" style="display:none;">
+        <label>Monto 2da Cuota Pendiente (USD):</label>
+        <input type="number" id="cfg-c2" value="750.00" step="0.01" />
+      </div>
+      <div id="box-fecha2" style="display:none;">
+        <label>Fecha Límite 2da Cuota:</label>
+        <input type="date" id="cfg-date2" />
+      </div>
+    </div>
+
+    <button class="btn btn-danger" onclick="generateClientLink()">🔗 Generar y Copiar Link para Enviar por WhatsApp al Cliente</button>
+    <div id="link-copied-msg" class="status-msg" style="color:#15803d;"></div>
+  </div>
+
+  <!-- BARRA SUPERIOR QUE VE EL CLIENTE AL ABRIR EL LINK DE WHATSAPP -->
+  <div id="client-welcome-bar" class="panel panel-client" style="display:none;">
+    <h2>👋 ¡Bienvenido(a) a Money Credit! Verifica tus Datos y Firma tu Contrato</h2>
+    <p style="font-size:0.9rem; margin-top:0;">Nuestro equipo de Soporte ya ha cargado tus datos personales en el contrato a continuación. Por favor léelo detenidamente, desplázate hasta el final para dibujar tu firma y recibirás una copia en PDF en tu dispositivo y en tu correo electrónico.</p>
+    <button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleClientEdit()">
+      ✏️ ¿Algún dato personal tiene un error ortográfico? Haz clic aquí para corregirlo
+    </button>
+    <div id="client-edit-box" class="grid" style="display:none; margin-top:14px;">
+      <div>
+        <label>Nombre Completo:</label>
+        <input type="text" id="edit-name" oninput="syncFromClientEdit()" />
+      </div>
+      <div>
+        <label>ID / Pasaporte:</label>
+        <input type="text" id="edit-id" oninput="syncFromClientEdit()" />
+      </div>
+      <div>
+        <label>Domicilio:</label>
+        <input type="text" id="edit-address" oninput="syncFromClientEdit()" />
+      </div>
+      <div>
+        <label>País:</label>
+        <input type="text" id="edit-country" oninput="syncFromClientEdit()" />
+      </div>
+      <div>
+        <label>Correo Electrónico:</label>
+        <input type="email" id="edit-email" oninput="syncFromClientEdit()" />
+      </div>
+    </div>
+  </div>
+
+  <!-- DOCUMENTO DEL CONTRATO -->
+  <div id="contract-document">
+    <h1>CONTRATO DE PRESTACIÓN DE SERVICIOS DE MENTORÍA, ACOMPAÑAMIENTO Y ESTRUCTURACIÓN ("MONEY CREDIT")</h1>
+
+    <p>Este Contrato de Prestación de Servicios (en adelante, el <strong>"Contrato"</strong>) se celebra en la fecha de su firma al pie del presente documento, entre las siguientes partes:</p>
+
+    <p><strong>I. LA PRESTADORA:</strong><br/>
+    <strong>LIFEOFNENA LLC</strong>, compañía de responsabilidad limitada debidamente organizada y existente bajo las leyes del Estado de Florida, Estados Unidos de América, registrada el 9 de febrero de 2024 ante el Departamento de Estado de Florida (Certificate of Status Tracking Number: 5866550542CC), con domicilio principal en <span id="doc-company-address" class="dyn">7901 4TH St N Ste 300, Saint Petersburg, Florida.</span>, representada en este acto por su titular y representante autorizada, <strong>Mercedes Ríos</strong> (en adelante, "LA EMPRESA" o "Mercedes Ríos").</p>
+
+    <p><strong>II. EL CLIENTE:</strong><br/>
+    <span id="doc-cli-name" class="dyn">[NOMBRE DEL CLIENTE]</span>, mayor de edad, identificado(a) con documento de identidad / pasaporte número <span id="doc-cli-id" class="dyn">[NÚMERO ID / PASAPORTE]</span>, con domicilio en <span id="doc-cli-address" class="dyn">[DOMICILIO DEL CLIENTE]</span> y correo electrónico <span id="doc-cli-email" class="dyn">[CORREO ELECTRÓNICO]</span> (en adelante, <strong>"EL CLIENTE"</strong>).</p>
+
+    <p>LA EMPRESA y EL CLIENTE podrán ser denominados conjuntamente como las <strong>"Partes"</strong> e individualmente como la <strong>"Parte"</strong>.</p>
+
+    <h2>CLÁUSULA PRIMERA: OBJETO DEL CONTRATO</h2>
+    <p>Por medio del presente Contrato, LA EMPRESA se obliga a prestar a favor de EL CLIENTE el servicio de acompañamiento personalizado de noventa (90) días denominado "Money Credit" (derivado del evento Tu Ruta Financiera), ejecutado personalmente por Mercedes Ríos para un grupo limitado a diez (10) cupos, cuyo objetivo es guiar y acompañar paso a paso a EL CLIENTE en la estructuración o auditoría de su empresa en los Estados Unidos, la activación de su perfil bancario comercial, la gestión de acceso a crédito empresarial y la definición de su ruta de inversión, sin prometer ni garantizar montos de ingresos, rentabilidades ni sumas específicas de aprobación crediticia.</p>
+
+    <h2>CLÁUSULA SEGUNDA: ENTREGABLES PRINCIPALES DEL PROGRAMA ("RUTA 90")</h2>
+    <p>El núcleo del servicio tiene una duración de noventa (90) días calendario contados a partir de la Fecha de Inicio efectiva del acompañamiento (en adelante, <strong>"Ruta 90"</strong>) e incluye los siguientes entregables ejecutados paso a paso con EL CLIENTE:</p>
+    <ul>
+      <li><strong>Movimiento 1 · Tu Empresa:</strong>
+        <ul>
+          <li><strong>Modalidad A (Si EL CLIENTE no posee empresa en EE. UU.):</strong> Acompañamiento paso a paso, ejecutado conjuntamente con EL CLIENTE, para la formación de su compañía de responsabilidad limitada (<em>LLC</em>) en los Estados Unidos y la tramitación de su Número de Identificación del Empleador (<em>EIN</em>) ante el IRS.</li>
+          <li><strong>Modalidad B (Si EL CLIENTE ya posee una empresa en EE. UU.):</strong> Auditoría integral de la entidad existente —incluyendo estado registral, EIN, <em>Operating Agreement</em> y estructura— y corrección administrativa de los elementos que impiden su elegibilidad ante instituciones bancarias.</li>
+        </ul>
+      </li>
+      <li><strong>Movimiento 1.5 · Tu Activación:</strong> Acompañamiento en la apertura correcta de la cuenta bancaria de negocio y diseño de la estrategia de construcción de historial transaccional legítimo previo a las solicitudes de crédito. Queda expresamente establecido que las transacciones bancarias de activación deberán corresponder a <strong>operaciones comerciales reales con contrapartes reales</strong> (venta de productos o prestación de servicios documentables), quedando estrictamente prohibido el uso de <strong>movimientos circulares</strong> (transferencias artificiales desde y hacia cuentas personales de EL CLIENTE sin actividad comercial real).</li>
+      <li><strong>Movimiento 2 · Tu Crédito:</strong> Acompañamiento estratégico para la solicitud y activación de líneas de crédito empresarial en los Estados Unidos que no dependan de los ahorros de EL CLIENTE. EL CLIENTE reconoce y acepta que la aprobación final y el monto del crédito otorgado dependen del perfil aplicable y de los criterios de evaluación propios de las instituciones financieras o bancos correspondientes.</li>
+      <li><strong>Movimiento 3 · Tu Portafolio:</strong> Definición y puesta en marcha inicial de la ruta de inversión de EL CLIENTE (en las verticales de bienes raíces, bolsa u oro), adaptada según su perfil de riesgo, disponibilidad de tiempo y capital o crédito recibido.</li>
+      <li><strong>Herramienta Incluida · La Calculadora de Ruta:</strong> Acceso a la herramienta de simulación comparativa para evaluar el comportamiento del capital y niveles de riesgo entre las rutas de bienes raíces, bolsa u oro antes de desplegar recursos.</li>
+    </ul>
+
+    <h2>CLÁUSULA TERCERA: BONOS INCLUIDOS Y CONDICIONES DE ACCIÓN RÁPIDA</h2>
+    <p>Adicionalmente a los entregables de la Cláusula Segunda, EL CLIENTE recibirá los siguientes bonos sin costo adicional sobre el precio pactado:</p>
+    <h3>A. Bonos Generales del Programa:</h3>
+    <ul>
+      <li><strong>Bono 1 · Academia Ruta Financiera:</strong> Acceso desde el día uno (1) al entrenamiento completo pregrabado sobre creación de LLC, obtención y construcción de crédito en Estados Unidos, y explicación detallada de las rutas de inversión. El acceso estará habilitado por un periodo de <strong>12 meses</strong> (salvo extensión expresa otorgada por LA EMPRESA).</li>
+      <li><strong>Bono 2 · El Movimiento 0:</strong> Acceso al módulo especial de cuatro (4) clases grabadas enfocado en vías legítimas de generación de capital de arranque para cubrir la inversión del programa y los costos de radicación de la empresa antes de la aprobación del primer crédito (incluyendo: <em>1. Para qué sirve este dinero y para qué no; 2. Las vías que existen; 3. Cálculo neto de costos y retenciones; 4. Cuándo parar y documentación para los 90 días</em>).</li>
+    </ul>
+    <h3>B. Bonos de Acción Rápida (Sujetos a Ventana de Cierre):</h3>
+    <p>Los siguientes beneficios solo formarán parte integrante de este Contrato si EL CLIENTE concretó su ingreso dentro de la ventana temporal o de cupo correspondiente (marcados con "X" los que aplican según el cierre en llamada):</p>
+    <ul>
+      <li><strong>(<span id="doc-b1" class="dyn">&nbsp;&nbsp;&nbsp;</span>) Membresía Ruta Black por 12 meses (Exclusivo para cierres hasta el día del evento a las 11:59 PM):</strong> Doce (12) meses de acceso sin costo mensual (valor público de $47 USD/mes) a la comunidad activa de inversiones, que incluye una (1) reunión semanal en vivo con expertos invitados y acceso a la biblioteca de clases grabadas.</li>
+      <li><strong>(<span id="doc-b2" class="dyn">&nbsp;&nbsp;&nbsp;</span>) La Agenda Privada (Exclusivo para cierres hasta el día siguiente del evento a las 11:59 PM):</strong> Acceso al listado estructurado de bancos y proveedores con los que trabaja LA EMPRESA y la secuencia exacta de solicitud para minimizar rechazos bancarios.</li>
+      <li><strong>(<span id="doc-b3" class="dyn">&nbsp;&nbsp;&nbsp;</span>) El Acelerador (Exclusivo para los primeros 5 clientes inscritos):</strong> Inicio prioritario en la Semana 1 sin lista de espera y cobertura por parte de LA EMPRESA del <strong>sobrecosto de tramitación por vía express</strong> de la radicación de la empresa (hasta un tope de $200 USD).</li>
+    </ul>
+
+    <h2>CLÁUSULA CUARTA: PRECIO, FORMA DE PAGO Y ORDEN DE FORMALIZACIÓN</h2>
+    <ul>
+      <li><strong>Orden de formalización y activación:</strong> Tras haber sido informado de las condiciones del programa en la llamada de admisión y haberse confirmado el primer pago acordado, EL CLIENTE recibe, lee íntegramente en idioma español y firma el presente Contrato a través del área de Soporte y Administración como requisito indispensable para formalizar su inscripción, programar su sesión de <em>Onboarding</em> e iniciar el cómputo de los noventa (90) días del programa.</li>
+      <li><strong>Precio Total del Servicio:</strong> El valor total de inversión por el programa <strong>Money Credit</strong> es de <strong>$1,500.00 USD (Mil quinientos dólares de los Estados Unidos de América)</strong>, pagaderos bajo la modalidad seleccionada a continuación:
+        <ul>
+          <li><strong>(<span id="doc-pay-a" class="dyn"> X </span>) Opción A — Pago Único:</strong> Un (1) solo pago de <strong>$1,500.00 USD</strong>.</li>
+          <li><strong>(<span id="doc-pay-b" class="dyn">&nbsp;&nbsp;&nbsp;</span>) Opción B — Plan de Dos (2) Cuotas:</strong> Un primer pago inicial de <strong>$<span id="doc-c1" class="dyn">---</span> USD</strong>, y una segunda cuota de <strong>$<span id="doc-c2" class="dyn">---</span> USD</strong> pagadera a más tardar el día <strong><span id="doc-date2" class="dyn">---</span></strong>.</li>
+        </ul>
+      </li>
+      <li><strong>Mora e Incumplimiento de Pago:</strong> En caso de elegir el Plan de Dos (2) Cuotas, el retraso mayor a cinco (5) días calendario en el pago de la segunda cuota facultará a LA EMPRESA a suspender temporalmente las sesiones de acompañamiento, el acceso a las plataformas y la aplicación de las garantías de la Cláusula Quinta hasta la regularización del saldo pendiente.</li>
+    </ul>
+
+    <h2>CLÁUSULA QUINTA: GARANTÍA CONTRACTUAL DE RESULTADO Y ACOMPAÑAMIENTO</h2>
+    <p>LA EMPRESA otorga a EL CLIENTE una garantía fusionada y dividida en dos (2) remedios específicos según la naturaleza de cada etapa:</p>
+    <h3>5.1. Garantía sobre Estructura y Ruta (Empresa O Ruta a los 90 días):</h3>
+    <p>Si al cumplirse los <strong>noventa (90) días calendario</strong> de acompañamiento, y habiendo EL CLIENTE cumplido con sus obligaciones detalladas en el numeral 5.3 ("Hacer su parte"), EL CLIENTE no tiene su empresa formada (o auditada y corregida, en caso de haber ingresado con empresa previa) O no tiene su ruta de inversión definida, la garantía se activará por la falta de cualquiera de las dos (2) cosas de manera individual. En tal escenario, <strong>EL CLIENTE tendrá el derecho exclusivo de elegir</strong> entre una de las siguientes dos opciones:</p>
+    <ul>
+      <li><strong>Continuidad sin costo:</strong> Que LA EMPRESA y Mercedes Ríos continúen trabajando con EL CLIENTE, sin ningún cobro adicional, hasta que tenga tanto su empresa formada como su ruta definida; <strong>O</strong></li>
+      <li><strong>Reembolso total:</strong> Solicitar la devolución del <strong>cien por ciento (100%)</strong> del dinero efectivamente pagado a LA EMPRESA en virtud de este Contrato, reembolso que se ejecutará dentro de los diez (10) días hábiles siguientes a la notificación escrita de EL CLIENTE.</li>
+    </ul>
+    <h3>5.2. Garantía de Acompañamiento Ilimitado sobre el Crédito Empresarial:</h3>
+    <p>Las Partes reconocen que la aprobación de líneas de crédito depende de la decisión de analistas e instituciones bancarias externas y no del control unilateral de LA EMPRESA. Por lo tanto, el rechazo bancario o la no obtención de crédito dentro de los primeros noventa (90) días <strong>no constituye causal de reembolso de dinero</strong>, sino que activa automáticamente la <strong>Garantía de Acompañamiento sin Fecha de Salida</strong>: LA EMPRESA se obliga a seguir acompañando a EL CLIENTE, <strong>sin costo adicional y sin fecha límite de vencimiento</strong>, ajustando su perfil y secuencia de solicitudes hasta que su crédito empresarial sea aprobado.</p>
+    <h3>5.3. Condiciones de Elegibilidad de la Garantía ("Hacer tu parte"):</h3>
+    <p>Para que opere cualquiera de las garantías previstas en los numerales 5.1 y 5.2, es requisito indispensable que EL CLIENTE haya cumplido con su parte del proceso, lo cual comprende:</p>
+    <ul>
+      <li><strong>a) Entrega documental en plazo:</strong> Enviar la documentación personal, societaria o bancaria requerida por LA EMPRESA dentro de los plazos acordados en cada sesión (máximo cinco (5) días hábiles desde su solicitud, salvo causa justificada).</li>
+      <li><strong>b) Asistencia y ejecución:</strong> Asistir puntualmente a las sesiones de acompañamiento programadas (o reprogramar con al menos 24 horas de anticipación) y ejecutar las instrucciones paso a paso indicadas en los Movimientos 1, 1.5, 2 y 3.</li>
+      <li><strong>c) Transacciones legítimas:</strong> Abstenerse de realizar movimientos bancarios circulares o fraudulentos prohibidos en el Movimiento 1.5.</li>
+      <li><strong>d) Suspensión del cómputo de 90 días:</strong> Cualquier demora en la entrega de documentos por parte de EL CLIENTE, o retrasos administrativos extraordinarios imputables exclusivamente a organismos estatales (Secretaría de Estado o IRS), suspenderá el conteo del plazo de noventa (90) días por el mismo número de días que dure dicho retraso.</li>
+    </ul>
+
+    <h2>CLÁUSULA SEXTA: GASTOS ESTATALES Y DE TERCEROS NO INCLUIDOS</h2>
+    <p>El precio del Contrato cubre íntegramente los honorarios de acompañamiento, mentoría y herramientas de LA EMPRESA. Salvo el sobrecosto de tramitación express cubierto por el bono El Acelerador para los primeros cinco (5) cupos, corren por cuenta exclusiva de EL CLIENTE los costos externos ante terceros, tales como tasas estatales base de radicación de LLC (<em>State Filing Fees</em>), servicio de Agente Registrado (<em>Registered Agent</em>), alquiler de dirección física/comercial en EE. UU. si no reside en el país, depósitos iniciales para apertura o activación de cuentas bancarias y capital destinado a sus propias transacciones o inversiones.</p>
+
+    <h2>CLÁUSULA SÉPTIMA: DECLARACIÓN DE ALCANCE, NO PROMESA DE INGRESOS Y DESCARGO REGULATORIO</h2>
+    <ul>
+      <li><strong>No Promesa de Ingresos ni Rentabilidad:</strong> EL CLIENTE declara comprender y aceptar que LA EMPRESA <strong>no promete ni garantiza cuánto dinero va a ganar, ni un plazo de ingresos, ni un rendimiento financiero esperado</strong>. El programa entrega estructura societaria, acompañamiento de acceso crediticio y definición de ruta de inversión.</li>
+      <li><strong>Naturaleza de Mentoría y Acompañamiento (No Asesoría Legal, Contable ni de Valores):</strong> LA EMPRESA y Mercedes Ríos prestan servicios de educación ejecutiva, mentoría y acompañamiento administrativo paso a paso. LA EMPRESA no es una firma de abogados, firma de contadores públicos certificados (<em>CPA</em>), bróker ni asesor de inversiones registrado ante la <em>Securities and Exchange Commission (SEC)</em> o <em>FINRA</em>. Toda decisión final de inversión en bienes raíces, bolsa u oro es ejecutada de forma autónoma por EL CLIENTE bajo su propio criterio.</li>
+    </ul>
+
+    <h2>CLÁUSULA OCTAVA: PROPIEDAD INTELECTUAL Y CONFIDENCIALIDAD</h2>
+    <p>Todo el material contenido en la <em>Academia Ruta Financiera</em>, <em>El Movimiento 0</em>, <em>La Calculadora de Ruta</em>, <em>La Agenda Privada</em> y las sesiones de <em>Ruta Black</em> es propiedad intelectual exclusiva de LIFEOFNENA LLC. Se concede a EL CLIENTE una licencia de uso estrictamente personal, individual e intransferible. Queda prohibida su reproducción, reventa, distribución o cesión de accesos a terceros.</p>
+
+    <h2>CLÁUSULA NOVENA: LEY APLICABLE Y JURISDICCIÓN</h2>
+    <p>Para todos los efectos legales derivados de la interpretación, cumplimiento o ejecución de este Contrato, las Partes se someten a las leyes del <strong>Estado de Florida, Estados Unidos de América</strong>, lugar de constitución y registro de <strong>LIFEOFNENA LLC</strong>, renunciando a cualquier otro fuero o jurisdicción que pudiera corresponderles por razón de sus domicilios presentes o futuros.</p>
+
+    <p>En señal de expresa conformidad, y tras haber leído íntegramente este documento en idioma español, las Partes firman el presente Contrato en la fecha indicada al pie:</p>
+
+    <p><strong>Fecha de firma:</strong> <span id="doc-sign-date" class="dyn"></span>.</p>
+
+    <table class="sig-table">
+      <tr>
+        <td>
+          <strong>POR LA EMPRESA</strong><br/><br/>
+          <div class="company-signature">Mercedes Ríos</div>
+          <strong>Mercedes Ríos</strong><br/>
+          Titular y Representante Autorizada<br/>
+          <strong>LIFEOFNENA LLC</strong> (Estado de Florida)
+        </td>
+        <td>
+          <strong>POR EL CLIENTE</strong><br/>
+          <span class="hide-in-pdf" style="font-size:0.8rem; color:#4b5563;">Dibuja tu firma aquí con el dedo o mouse:</span>
+          <canvas id="sig-canvas" class="hide-in-pdf" width="320" height="110"></canvas>
+          <img id="sig-preview" class="sig-preview-img" alt="Firma del Cliente" />
+          <div class="hide-in-pdf" style="margin-top:6px;">
+            <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:0.75rem;" onclick="clearSignature()">Borrar Firma</button>
+          </div>
+          <strong>Nombre:</strong> <span id="doc-sig-name" class="dyn">[NOMBRE DEL CLIENTE]</span><br/>
+          <strong>ID / Pasaporte:</strong> <span id="doc-sig-id" class="dyn">[NÚMERO ID / PASAPORTE]</span><br/>
+          <strong>País de residencia:</strong> <span id="doc-sig-country" class="dyn">[PAÍS]</span>
+        </td>
+      </tr>
+    </table>
+
+    <div class="audit-box">
+      <strong>CERTIFICADO DE AUDITORÍA Y FIRMA ELECTRÓNICA (ESIGN ACT / UETA COMPLIANT)</strong><br/>
+      ID Único de Documento: <span id="audit-id">Pendiente de firma</span><br/>
+      Dirección IP del Firmante: <span id="audit-ip">Detectando...</span><br/>
+      Fecha y Hora Exacta (UTC): <span id="audit-utc">Pendiente de firma</span><br/>
+      Dispositivo / Navegador: <span id="audit-ua"></span>
+    </div>
+  </div>
+
+  <!-- BOTÓN DE FIRMA Y DESCARGA -->
+  <div id="action-panel" class="panel" style="margin-top: 22px; text-align: center;">
+    <button id="btn-submit" class="btn" style="font-size: 1.05rem; padding: 14px 28px;" onclick="processSignatureAndSend()">
+      ✅ Firmar Contrato, Descargar mi Copia en PDF y Recibir por Correo
+    </button>
+    <div id="final-status" class="status-msg"></div>
+  </div>
+
+  <!-- PANEL POST-FIRMA: PASO AL ONBOARDING -->
+  <div id="onboarding-panel" class="panel panel-onboarding">
+    <h2>🎉 ¡Contrato Firmado y Enviado Exitosamente!</h2>
+    <p>Tu copia en PDF se ha descargado en tu dispositivo y también ha sido enviada a tu correo electrónico. El siguiente paso es programar tu sesión de <strong>Onboarding</strong> con nuestro equipo.</p>
+    <a id="onboarding-btn-link" href="#" target="_blank" class="btn btn-success" style="display:none; margin-top:8px;">
+      📅 Agendar mi Llamada de Onboarding Ahora
+    </a>
+    <p id="onboarding-whatsapp-msg" style="font-weight:600; color:#15803d; margin-top:10px;">
+      Por favor confírmale a nuestro equipo de Soporte por WhatsApp que ya firmaste para coordinar tu llamada de Onboarding.
+    </p>
+  </div>
+</div>
+
+<script>
+  let clientIP = "No disponible";
+  let hasSigned = false;
+  let webhookEndpoint = "";
+  let onboardingUrl = "";
+
+  fetch("https://api.ipify.org?format=json")
+    .then(r => r.json())
+    .then(d => { clientIP = d.ip; document.getElementById("audit-ip").innerText = clientIP; })
+    .catch(() => { document.getElementById("audit-ip").innerText = clientIP; });
+
+  document.getElementById("audit-ua").innerText = navigator.userAgent;
+
+  const todayStr = new Date().toLocaleDateString("es-ES", {
+    day: "2-digit", month: "long", year: "numeric"
+  });
+  document.getElementById("doc-sign-date").innerText = todayStr;
+
+  const payModeSelect = document.getElementById("cfg-pay-mode");
+  payModeSelect.addEventListener("change", () => {
+    const isB = payModeSelect.value === "B";
+    document.getElementById("box-cuota1").style.display = isB ? "block" : "none";
+    document.getElementById("box-cuota2").style.display = isB ? "block" : "none";
+    document.getElementById("box-fecha2").style.display = isB ? "block" : "none";
+    syncContract();
+  });
+
+  ["cfg-company-address", "cfg-b1", "cfg-b2", "cfg-b3", "cfg-c1", "cfg-c2", "cfg-date2"].forEach(id => {
+    document.getElementById(id).addEventListener("input", syncContract);
+    document.getElementById(id).addEventListener("change", syncContract);
+  });
+
+  // Leer configuración pre-llenada por Soporte desde la URL (?cfg=...)
+  const urlParams = new URLSearchParams(window.location.search);
+  const encodedCfg = urlParams.get("cfg");
+
+  if (encodedCfg) {
+    try {
+      const d = JSON.parse(decodeURIComponent(escape(atob(encodedCfg))));
+      document.getElementById("cfg-company-address").value = d.addr || "Miami, Estado de Florida, EE. UU.";
+      document.getElementById("cli-name").value = d.n || "";
+      document.getElementById("cli-id").value = d.id || "";
+      document.getElementById("cli-address").value = d.ca || "";
+      document.getElementById("cli-country").value = d.co || "";
+      document.getElementById("cli-email").value = d.em || "";
+
+      // Sincronizar campos de edición rápida del cliente
+      document.getElementById("edit-name").value = d.n || "";
+      document.getElementById("edit-id").value = d.id || "";
+      document.getElementById("edit-address").value = d.ca || "";
+      document.getElementById("edit-country").value = d.co || "";
+      document.getElementById("edit-email").value = d.em || "";
+
+      document.getElementById("cfg-b1").checked = !!d.b1;
+      document.getElementById("cfg-b2").checked = !!d.b2;
+      document.getElementById("cfg-b3").checked = !!d.b3;
+      document.getElementById("cfg-pay-mode").value = d.pm || "A";
+      document.getElementById("cfg-c1").value = d.c1 || "750.00";
+      document.getElementById("cfg-c2").value = d.c2 || "750.00";
+      document.getElementById("cfg-date2").value = d.d2 || "";
+      webhookEndpoint = d.wh || "";
+      onboardingUrl = d.ob || "";
+
+      // Ocultar panel de Soporte y mostrar barra de bienvenida al cliente
+      document.getElementById("admin-panel").style.display = "none";
+      document.getElementById("client-welcome-bar").style.display = "block";
+    } catch (e) {
+      console.error("Error leyendo parámetros del enlace:", e);
+    }
+  }
+
+  function toggleClientEdit() {
+    const box = document.getElementById("client-edit-box");
+    box.style.display = box.style.display === "none" ? "grid" : "none";
+  }
+
+  function syncFromClientEdit() {
+    document.getElementById("cli-name").value = document.getElementById("edit-name").value;
+    document.getElementById("cli-id").value = document.getElementById("edit-id").value;
+    document.getElementById("cli-address").value = document.getElementById("edit-address").value;
+    document.getElementById("cli-country").value = document.getElementById("edit-country").value;
+    document.getElementById("cli-email").value = document.getElementById("edit-email").value;
+    syncContract();
+  }
+
+  function syncContract() {
+    document.getElementById("doc-company-address").innerText =
+      document.getElementById("cfg-company-address").value.trim() || "Estado de Florida, EE. UU.";
+
+    document.getElementById("doc-b1").innerHTML = document.getElementById("cfg-b1").checked ? " X " : "&nbsp;&nbsp;&nbsp;";
+    document.getElementById("doc-b2").innerHTML = document.getElementById("cfg-b2").checked ? " X " : "&nbsp;&nbsp;&nbsp;";
+    document.getElementById("doc-b3").innerHTML = document.getElementById("cfg-b3").checked ? " X " : "&nbsp;&nbsp;&nbsp;";
+
+    const pm = document.getElementById("cfg-pay-mode").value;
+    if (pm === "A") {
+      document.getElementById("doc-pay-a").innerHTML = " X ";
+      document.getElementById("doc-pay-b").innerHTML = "&nbsp;&nbsp;&nbsp;";
+      document.getElementById("doc-c1").innerText = "---";
+      document.getElementById("doc-c2").innerText = "---";
+      document.getElementById("doc-date2").innerText = "---";
+    } else {
+      document.getElementById("doc-pay-a").innerHTML = "&nbsp;&nbsp;&nbsp;";
+      document.getElementById("doc-pay-b").innerHTML = " X ";
+      document.getElementById("doc-c1").innerText = document.getElementById("cfg-c1").value || "750.00";
+      document.getElementById("doc-c2").innerText = document.getElementById("cfg-c2").value || "750.00";
+      document.getElementById("doc-date2").innerText = document.getElementById("cfg-date2").value || "[FECHA SEGUNDA CUOTA]";
+    }
+
+    const name = document.getElementById("cli-name").value.trim() || "[NOMBRE DEL CLIENTE]";
+    const id = document.getElementById("cli-id").value.trim() || "[NÚMERO ID / PASAPORTE]";
+    const address = document.getElementById("cli-address").value.trim() || "[DOMICILIO DEL CLIENTE]";
+    const country = document.getElementById("cli-country").value.trim() || "[PAÍS]";
+    const email = document.getElementById("cli-email").value.trim() || "[CORREO ELECTRÓNICO]";
+
+    document.getElementById("doc-cli-name").innerText = name;
+    document.getElementById("doc-sig-name").innerText = name;
+    document.getElementById("doc-cli-id").innerText = id;
+    document.getElementById("doc-sig-id").innerText = id;
+    document.getElementById("doc-cli-address").innerText = address;
+    document.getElementById("doc-sig-country").innerText = country;
+    document.getElementById("doc-cli-email").innerText = email;
+  }
+
+  function generateClientLink() {
+    const n = document.getElementById("cli-name").value.trim();
+    const id = document.getElementById("cli-id").value.trim();
+    const ca = document.getElementById("cli-address").value.trim();
+    const co = document.getElementById("cli-country").value.trim();
+    const em = document.getElementById("cli-email").value.trim();
+    const msgEl = document.getElementById("link-copied-msg");
+
+    if (!n || !id || !ca || !co || !em) {
+      msgEl.style.color = "#dc2626";
+      msgEl.innerText = "⚠️ Completa los 5 datos personales del cliente antes de generar el link.";
+      return;
+    }
+
+    const payload = {
+      addr: document.getElementById("cfg-company-address").value.trim(),
+      n, id, ca, co, em,
+      b1: document.getElementById("cfg-b1").checked ? 1 : 0,
+      b2: document.getElementById("cfg-b2").checked ? 1 : 0,
+      b3: document.getElementById("cfg-b3").checked ? 1 : 0,
+      pm: document.getElementById("cfg-pay-mode").value,
+      c1: document.getElementById("cfg-c1").value,
+      c2: document.getElementById("cfg-c2").value,
+      d2: document.getElementById("cfg-date2").value,
+      wh: document.getElementById("cfg-webhook").value.trim(),
+      ob: document.getElementById("cfg-onboarding-url").value.trim()
+    };
+
+    const base64 = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+    const finalUrl = `${window.location.origin}${window.location.pathname}?cfg=${encodeURIComponent(base64)}`;
+    navigator.clipboard.writeText(finalUrl).then(() => {
+      msgEl.style.color = "#15803d";
+      msgEl.innerText = "✅ ¡Link personalizado copiado! Envíalo al cliente por WhatsApp.";
+    });
+  }
+
+  // Pad de Firma en Canvas
+  const canvas = document.getElementById("sig-canvas");
+  const ctx = canvas.getContext("2d");
+  let drawing = false;
+  ctx.lineWidth = 2.2;
+  ctx.lineCap = "round";
+  ctx.strokeStyle = "#111827";
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const cx = e.touches ? e.touches[0].clientX : e.clientX;
+    const cy = e.touches ? e.touches[0].clientY : e.clientY;
+    return {
+      x: (cx - rect.left) * (canvas.width / rect.width),
+      y: (cy - rect.top) * (canvas.height / rect.height)
+    };
+  }
+  function startDraw(e) { e.preventDefault(); drawing = true; hasSigned = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+  function moveDraw(e) { if (!drawing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
+  function endDraw() { drawing = false; }
+
+  canvas.addEventListener("mousedown", startDraw);
+  canvas.addEventListener("mousemove", moveDraw);
+  window.addEventListener("mouseup", endDraw);
+  canvas.addEventListener("touchstart", startDraw, { passive: false });
+  canvas.addEventListener("touchmove", moveDraw, { passive: false });
+  window.addEventListener("touchend", endDraw);
+
+  function clearSignature() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasSigned = false;
+    document.getElementById("sig-preview").src = "";
+  }
+
+  async function processSignatureAndSend() {
+    const name = document.getElementById("cli-name").value.trim();
+    const id = document.getElementById("cli-id").value.trim();
+    const address = document.getElementById("cli-address").value.trim();
+    const country = document.getElementById("cli-country").value.trim();
+    const email = document.getElementById("cli-email").value.trim();
+    const statusEl = document.getElementById("final-status");
+    const btn = document.getElementById("btn-submit");
+
+    if (!name || !id || !address || !country || !email) {
+      statusEl.style.color = "#dc2626";
+      statusEl.innerText = "⚠️ Faltan datos personales del cliente en el contrato.";
+      return;
+    }
+    if (!hasSigned) {
+      statusEl.style.color = "#dc2626";
+      statusEl.innerText = "⚠️ Por favor dibuja tu firma en el recuadro al final del contrato.";
+      return;
+    }
+
+    btn.disabled = true;
+    statusEl.style.color = "#2563eb";
+    statusEl.innerText = "⏳ Generando tu contrato en PDF y registrando certificado legal...";
+
+    const docId = "MC-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+    const utcNow = new Date().toISOString();
+    document.getElementById("audit-id").innerText = docId;
+    document.getElementById("audit-utc").innerText = utcNow;
+
+    const sigDataUrl = canvas.toDataURL("image/png");
+    const sigImg = document.getElementById("sig-preview");
+    sigImg.src = sigDataUrl;
+    sigImg.style.display = "block";
+
+    const contractEl = document.getElementById("contract-document");
+    contractEl.classList.add("pdf-clean");
+
+    const safeFileName = `Contrato_Money_Credit_${name.replace(/[^a-zA-Z0-9]/g, "_")}.pdf`;
+
+    const pdfOptions = {
+      margin: [12, 12, 12, 12],
+      filename: safeFileName,
+      image: { type: "jpeg", quality: 0.96 },
+      html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+      pagebreak: { mode: ["avoid-all", "css", "legacy"] }
+    };
+
+    try {
+      const worker = html2pdf().set(pdfOptions).from(contractEl);
+      const pdfDataUri = await worker.outputPdf("datauristring");
+      await worker.save();
+
+      const pdfBase64Clean = pdfDataUri.split(",")[1];
+      const activeWebhook = webhookEndpoint || document.getElementById("cfg-webhook").value.trim();
+
+      if (activeWebhook) {
+        statusEl.innerText = `📧 Enviando copia oficial en PDF a ${email}...`;
+        await fetch(activeWebhook, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }, // Make soporta application/json y CORS nativamente
+          body: JSON.stringify({
+            document_id: docId,
+            file_name: safeFileName,
+            signed_at_utc: utcNow,
+            signer_ip: clientIP,
+            client_name: name,
+            client_id: id,
+            client_address: address,
+            client_country: country,
+            client_email: email,
+            payment_option: document.getElementById("cfg-pay-mode").value,
+            installment_1: document.getElementById("cfg-c1").value,
+            installment_2: document.getElementById("cfg-c2").value,
+            installment_2_date: document.getElementById("cfg-date2").value,
+            bonus_ruta_black: document.getElementById("cfg-b1").checked,
+            bonus_agenda_privada: document.getElementById("cfg-b2").checked,
+            bonus_acelerador: document.getElementById("cfg-b3").checked,
+            pdf_base64: pdfBase64Clean
+          })
+        });
+      }
+
+      // Mostrar panel de éxito y paso a Onboarding
+      document.getElementById("action-panel").style.display = "none";
+      const obPanel = document.getElementById("onboarding-panel");
+      obPanel.style.display = "block";
+
+      const activeObUrl = onboardingUrl || document.getElementById("cfg-onboarding-url").value.trim();
+      if (activeObUrl) {
+        const obBtn = document.getElementById("onboarding-btn-link");
+        obBtn.href = activeObUrl;
+        obBtn.style.display = "inline-block";
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      statusEl.style.color = "#dc2626";
+      statusEl.innerText = "⚠️ Tu PDF se descargó en tu dispositivo, pero hubo un error al enviar la copia por correo. Envía tu PDF descargado a Soporte por WhatsApp.";
+      btn.disabled = false;
+    } finally {
+      contractEl.classList.remove("pdf-clean");
+      sigImg.style.display = "none";
+    }
+  }
+
+  syncContract();
+</script>
+</body>
+</html>
