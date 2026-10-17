@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Grabación - Tu Ruta Financiera</title>
+  
+  <style>
+    :root {
+        /* PALETA OFICIAL - TU RUTA FINANCIERA */
+        --bg-dark: #060807; /* Negro verdoso */
+        --card-bg: #0a0e0c;
+        --border-color: #1B7A34; /* Verde profundo */
+        --text-main: #EFF6F0; /* Blanco verdoso */
+        --text-muted: #8ba394;
+        --accent: #39FF60; /* Verde neón */
+        --accent-glow: rgba(57, 255, 96, 0.15);
+        --btn-action: #C42828; /* Rojo acción */
+        --btn-action-hover: #9e1f1f;
+        --radius: 12px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-tap-highlight-color: transparent; }
+    
+    body { 
+        background-color: var(--bg-dark); 
+        color: var(--text-main); 
+        display: flex; flex-direction: column; align-items: center; 
+        min-height: 100vh; padding: 40px 20px; 
+        background-image: radial-gradient(circle at 50% 0%, rgba(27, 122, 52, 0.2) 0%, transparent 70%);
+    }
+
+    .container {
+        background: var(--card-bg);
+        width: 100%;
+        max-width: 900px; /* Más ancho para alojar un video */
+        border-radius: var(--radius);
+        border: 1px solid rgba(27, 122, 52, 0.4);
+        box-shadow: 0 0 50px rgba(27, 122, 52, 0.1), 0 0 0 1px rgba(57, 255, 96, 0.05);
+        padding: 40px;
+        position: relative;
+        overflow: hidden;
+        animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Encabezado */
+    .header { text-align: center; margin-bottom: 30px; }
+    .badge { 
+        display: inline-block; background: rgba(57, 255, 96, 0.1); 
+        color: var(--accent); font-size: 0.75rem; font-weight: 800; 
+        text-transform: uppercase; letter-spacing: 0.1em; 
+        padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(57, 255, 96, 0.3);
+        margin-bottom: 16px;
+    }
+    h1 { font-size: 2.5rem; font-weight: 800; text-transform: uppercase; letter-spacing: -0.025em; margin-bottom: 8px; text-shadow: 0 0 15px rgba(57, 255, 96, 0.2); line-height: 1.1; }
+    p.subtitle { color: var(--text-muted); font-size: 1.1rem; font-weight: 500; }
+    .highlight { color: var(--text-main); font-weight: 700; }
+
+    /* Contenedor del Video Responsivo */
+    .video-wrapper {
+        position: relative;
+        width: 100%;
+        /* Truco para mantener proporción 16:9 en iframes */
+        padding-bottom: 56.25%; 
+        height: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid var(--border-color);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 0 2px var(--accent-glow);
+        margin-bottom: 30px;
+        background-color: #000;
+    }
+    .video-wrapper iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 0;
+    }
+
+    /* Llamado a la Acción */
+    .cta-container { text-align: center; padding-top: 10px; }
+    .cta-text { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 16px; }
+    
+    .btn-primary { 
+        display: inline-block; width: 100%; max-width: 400px; padding: 20px; 
+        background: var(--btn-action); color: #fff; font-size: 1.1rem; 
+        font-weight: 800; text-transform: uppercase; text-decoration: none;
+        border: none; border-radius: 8px; cursor: pointer; transition: all 0.2s; 
+        box-shadow: 0 6px 20px rgba(196, 40, 40, 0.3); letter-spacing: 0.05em; 
+    }
+    .btn-primary:hover { background: var(--btn-action-hover); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(196, 40, 40, 0.4); }
+    .btn-primary:active { transform: translateY(0); }
+
+    /* Media Queries Mobile */
+    @media (max-width: 600px) {
+        .container { padding: 24px 16px; }
+        h1 { font-size: 1.8rem; }
+        p.subtitle { font-size: 0.95rem; }
+        body { padding: 20px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <div class="header">
+      <div class="badge">Grabación Oficial</div>
+      <h1>Tu Ruta Financiera</h1>
+      <p class="subtitle">Masterclass con <span class="highlight">Mercedes Ríos</span></p>
+    </div>
+
+    <!-- Contenedor del video con proporción 16:9 -->
+    <div class="video-wrapper">
+      <iframe src="https://drive.google.com/file/d/1cUQMMuj51hRiCjksKR4GtynJVaQFv17P/preview" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    </div>
+
+    <div class="cta-container">
+      <p class="cta-text">¿Estás listo para dar el siguiente paso y apalancarte de capital que no es tuyo?</p>
+      <!-- Reemplaza el '#' con el enlace real hacia tu formulario de Typeform/Calendly -->
+      <a href="https://evo-launch.agency/pages/form-tu-ruta-financiera" class="btn-primary">Aplicar a Sesión 1 a 1</a>
+    </div>
+
+  </div>
+
+</body>
+</html>
