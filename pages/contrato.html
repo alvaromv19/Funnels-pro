@@ -194,23 +194,26 @@
     <h2>🛠️ Panel de Administración y Soporte (Generador de Contrato Post-Cierre)</h2>
     <p style="font-size:0.85rem; margin-top:0;">Carga aquí los datos levantados por el Closer en la llamada. Al copiar el link, el cliente verá el contrato ya lleno y solo tendrá que estampar su firma y descargar su PDF.</p>
 
-    <div class="section-label">1. Configuración de Empresa y Respaldo</div>
-    <div class="grid">
-      <div>
-        <label>Domicilio LIFEOFNENA LLC (Florida):</label>
-        <input type="text" id="cfg-company-address" value="Miami, Estado de Florida, EE. UU." />
-      </div>
-      <div>
-        <label>Webhook URL de Make (Respaldo en Drive):</label>
-        <input type="text" id="cfg-webhook" placeholder="https://hook.us1.make.com/..." />
-      </div>
-      <div>
-        <label>Link de Agenda Onboarding (Opcional):</label>
-        <input type="text" id="cfg-onboarding-url" placeholder="https://calendly.com/..." />
+    <!-- PUNTO 1 OCULTO CON DIRECCIÓN DE SAINT PETERSBURG Y WEBHOOK FIJOS -->
+    <div id="hidden-config-section" style="display:none;">
+      <div class="section-label">1. Configuración de Empresa y Respaldo</div>
+      <div class="grid">
+        <div>
+          <label>Domicilio LIFEOFNENA LLC (Florida):</label>
+          <input type="text" id="cfg-company-address" value="7901 4TH St N Ste 300, Saint Petersburg, Florida, US 33702-4399" />
+        </div>
+        <div>
+          <label>Webhook URL de Make (Respaldo en Drive):</label>
+          <input type="text" id="cfg-webhook" value="https://hook.us2.make.com/l5a1jgewhykugo81lm47gd0w2is6rtpf" />
+        </div>
+        <div>
+          <label>Link de Agenda Onboarding (Opcional):</label>
+          <input type="text" id="cfg-onboarding-url" placeholder="https://calendly.com/..." />
+        </div>
       </div>
     </div>
 
-    <div class="section-label">2. Datos Personales del Cliente (Levantados en Llamada)</div>
+    <div class="section-label">Datos Personales del Cliente (Levantados en Llamada)</div>
     <div class="grid">
       <div>
         <label>Nombre Completo del Cliente:</label>
@@ -234,7 +237,7 @@
       </div>
     </div>
 
-    <div class="section-label">3. Condiciones Comerciales del Cierre</div>
+    <div class="section-label">Condiciones Comerciales del Cierre</div>
     <div class="checkbox-group" style="margin-bottom: 12px;">
       <label style="font-weight:700; margin-bottom:4px;">Bonos de Acción Rápida Incluidos (Cláusula Tercera B):</label>
       <label><input type="checkbox" id="cfg-b1" /> Membresía Ruta Black por 12 meses</label>
@@ -246,21 +249,41 @@
       <div>
         <label>Modalidad de Pago Acordada (Cláusula Cuarta):</label>
         <select id="cfg-pay-mode">
-          <option value="A">Opción A — Pago Único ($1,500.00 USD)</option>
-          <option value="B">Opción B — Plan de Dos (2) Cuotas</option>
+          <option value="A">Opción A — Pago Único ($2,000.00 USD)</option>
+          <option value="B">Opción B — 2 Cuotas de $1,000.00 USD ($2,000.00 USD)</option>
+          <option value="C">Opción C — 3 Cuotas de $700.00 USD ($2,100.00 USD)</option>
+          <option value="D">Opción D — Reserva de Cupo + Saldo Pendiente</option>
         </select>
       </div>
-      <div id="box-cuota1" style="display:none;">
-        <label>Monto 1er Pago Realizado (USD):</label>
-        <input type="number" id="cfg-c1" value="750.00" step="0.01" />
+
+      <!-- Campos para Opción B (2 cuotas de $1,000) -->
+      <div id="box-opt-b" style="display:none;">
+        <label>Fecha Límite 2da Cuota ($1,000.00 USD):</label>
+        <input type="date" id="cfg-b-date2" />
       </div>
-      <div id="box-cuota2" style="display:none;">
-        <label>Monto 2da Cuota Pendiente (USD):</label>
-        <input type="number" id="cfg-c2" value="750.00" step="0.01" />
+
+      <!-- Campos para Opción C (3 cuotas de $700) -->
+      <div id="box-opt-c-d2" style="display:none;">
+        <label>Fecha Límite 2da Cuota ($700.00 USD):</label>
+        <input type="date" id="cfg-c-date2" />
       </div>
-      <div id="box-fecha2" style="display:none;">
-        <label>Fecha Límite 2da Cuota:</label>
-        <input type="date" id="cfg-date2" />
+      <div id="box-opt-c-d3" style="display:none;">
+        <label>Fecha Límite 3ra Cuota ($700.00 USD):</label>
+        <input type="date" id="cfg-c-date3" />
+      </div>
+
+      <!-- Campos para Opción D (Reserva variable) -->
+      <div id="box-opt-d-res" style="display:none;">
+        <label>Monto de Reserva Abonado Hoy (USD):</label>
+        <input type="number" id="cfg-d-res" value="500.00" step="0.01" oninput="updateReservaSaldo()" />
+      </div>
+      <div id="box-opt-d-bal" style="display:none;">
+        <label>Saldo Restante a Pagar (USD):</label>
+        <input type="number" id="cfg-d-bal" value="1500.00" step="0.01" />
+      </div>
+      <div id="box-opt-d-date" style="display:none;">
+        <label>Fecha Límite para Completar el Saldo:</label>
+        <input type="date" id="cfg-d-date" />
       </div>
     </div>
 
@@ -306,7 +329,7 @@
     <p>Este Contrato de Prestación de Servicios (en adelante, el <strong>"Contrato"</strong>) se celebra en la fecha de su firma al pie del presente documento, entre las siguientes partes:</p>
 
     <p><strong>I. LA PRESTADORA:</strong><br/>
-    <strong>LIFEOFNENA LLC</strong>, compañía de responsabilidad limitada debidamente organizada y existente bajo las leyes del Estado de Florida, Estados Unidos de América, registrada el 9 de febrero de 2024 ante el Departamento de Estado de Florida (Certificate of Status Tracking Number: 5866550542CC), con domicilio principal en <span id="doc-company-address" class="dyn">Miami, Estado de Florida, EE. UU.</span>, representada en este acto por su titular y representante autorizada, <strong>Mercedes Ríos</strong> (en adelante, "LA EMPRESA" o "Mercedes Ríos").</p>
+    <strong>LIFEOFNENA LLC</strong>, compañía de responsabilidad limitada debidamente organizada y existente bajo las leyes del Estado de Florida, Estados Unidos de América, registrada el 9 de febrero de 2024 ante el Departamento de Estado de Florida (Certificate of Status Tracking Number: 5866550542CC), con domicilio principal en <span id="doc-company-address" class="dyn">7901 4TH St N Ste 300, Saint Petersburg, Florida, US 33702-4399</span>, representada en este acto por su titular y representante autorizada, <strong>Mercedes Ríos</strong> (en adelante, "LA EMPRESA" o "Mercedes Ríos").</p>
 
     <p><strong>II. EL CLIENTE:</strong><br/>
     <span id="doc-cli-name" class="dyn">[NOMBRE DEL CLIENTE]</span>, mayor de edad, identificado(a) con documento de identidad / pasaporte número <span id="doc-cli-id" class="dyn">[NÚMERO ID / PASAPORTE]</span>, con domicilio en <span id="doc-cli-address" class="dyn">[DOMICILIO DEL CLIENTE]</span> y correo electrónico <span id="doc-cli-email" class="dyn">[CORREO ELECTRÓNICO]</span> (en adelante, <strong>"EL CLIENTE"</strong>).</p>
@@ -348,14 +371,16 @@
 
     <h2>CLÁUSULA CUARTA: PRECIO, FORMA DE PAGO Y ORDEN DE FORMALIZACIÓN</h2>
     <ul>
-      <li><strong>Orden de formalización y activación:</strong> Tras haber sido informado de las condiciones del programa en la llamada de admisión y haberse confirmado el primer pago acordado, EL CLIENTE recibe, lee íntegramente en idioma español y firma el presente Contrato a través del área de Soporte y Administración como requisito indispensable para formalizar su inscripción, programar su sesión de <em>Onboarding</em> e iniciar el cómputo de los noventa (90) días del programa.</li>
-      <li><strong>Precio Total del Servicio:</strong> El valor total de inversión por el programa <strong>Money Credit</strong> es de <strong>$1,500.00 USD (Mil quinientos dólares de los Estados Unidos de América)</strong>, pagaderos bajo la modalidad seleccionada a continuación:
+      <li><strong>Orden de formalización y activación:</strong> Tras haber sido informado de las condiciones del programa en la llamada de admisión y haberse confirmado el pago inicial o de reserva acordado, EL CLIENTE recibe, lee íntegramente en idioma español y firma el presente Contrato a través del área de Soporte y Administración como requisito indispensable para formalizar su inscripción, programar su sesión de <em>Onboarding</em> e iniciar el cómputo de los noventa (90) días del programa.</li>
+      <li><strong>Precio Total del Servicio y Modalidad de Pago:</strong> El valor total de inversión por el programa <strong>Money Credit</strong> es de <strong><span id="doc-total-price" class="dyn">$2,000.00 USD (Dos mil dólares de los Estados Unidos de América)</span></strong>, pagaderos bajo la modalidad seleccionada a continuación:
         <ul>
-          <li><strong>(<span id="doc-pay-a" class="dyn"> X </span>) Opción A — Pago Único:</strong> Un (1) solo pago de <strong>$1,500.00 USD</strong>.</li>
-          <li><strong>(<span id="doc-pay-b" class="dyn">&nbsp;&nbsp;&nbsp;</span>) Opción B — Plan de Dos (2) Cuotas:</strong> Un primer pago inicial de <strong>$<span id="doc-c1" class="dyn">---</span> USD</strong>, y una segunda cuota de <strong>$<span id="doc-c2" class="dyn">---</span> USD</strong> pagadera a más tardar el día <strong><span id="doc-date2" class="dyn">---</span></strong>.</li>
+          <li><strong>(<span id="doc-pay-a" class="dyn"> X </span>) Opción A — Pago Único:</strong> Un (1) solo pago de <strong>$2,000.00 USD</strong>.</li>
+          <li><strong>(<span id="doc-pay-b" class="dyn">&nbsp;&nbsp;&nbsp;</span>) Opción B — Plan de Dos (2) Cuotas:</strong> Un primer pago inicial de <strong>$1,000.00 USD</strong> y una segunda cuota de <strong>$1,000.00 USD</strong> pagadera a más tardar el día <strong><span id="doc-b-date2" class="dyn">---</span></strong> (Total: $2,000.00 USD).</li>
+          <li><strong>(<span id="doc-pay-c" class="dyn">&nbsp;&nbsp;&nbsp;</span>) Opción C — Plan de Tres (3) Cuotas:</strong> Un primer pago inicial de <strong>$700.00 USD</strong>, una segunda cuota de <strong>$700.00 USD</strong> pagadera a más tardar el día <strong><span id="doc-c-date2" class="dyn">---</span></strong> y una tercera cuota de <strong>$700.00 USD</strong> pagadera a más tardar el día <strong><span id="doc-c-date3" class="dyn">---</span></strong> (Total financiado: $2,100.00 USD).</li>
+          <li><strong>(<span id="doc-pay-d" class="dyn">&nbsp;&nbsp;&nbsp;</span>) Opción D — Reserva de Cupo (Acuerdo Especial según Capacidad de Pago):</strong> Un abono inicial en concepto de reserva de cupo por <strong>$<span id="doc-d-res" class="dyn">---</span> USD</strong> y un saldo restante de <strong>$<span id="doc-d-bal" class="dyn">---</span> USD</strong> pagadero a más tardar el día <strong><span id="doc-d-date" class="dyn">---</span></strong>. Queda expresamente establecido que el abono de reserva asegura el cupo y las condiciones comerciales pactadas, iniciando las sesiones de acompañamiento y el cómputo de los noventa (90) días una vez integrado el pago acordado para la activación del programa.</li>
         </ul>
       </li>
-      <li><strong>Mora e Incumplimiento de Pago:</strong> En caso de elegir el Plan de Dos (2) Cuotas, el retraso mayor a cinco (5) días calendario en el pago de la segunda cuota facultará a LA EMPRESA a suspender temporalmente las sesiones de acompañamiento, el acceso a las plataformas y la aplicación de las garantías de la Cláusula Quinta hasta la regularización del saldo pendiente.</li>
+      <li><strong>Mora e Incumplimiento de Pago:</strong> En caso de elegir modalidad en cuotas o reserva con saldo pendiente, el retraso mayor a cinco (5) días calendario en el pago de cualquiera de las cuotas o saldos pactados facultará a LA EMPRESA a suspender temporalmente las sesiones de acompañamiento, el acceso a las plataformas y la aplicación de las garantías de la Cláusula Quinta hasta la regularización total del saldo vencido.</li>
     </ul>
 
     <h2>CLÁUSULA QUINTA: GARANTÍA CONTRACTUAL DE RESULTADO Y ACOMPAÑAMIENTO</h2>
@@ -456,10 +481,8 @@
 </div>
 
 <script>
-  // =========================================================================
-  // CONFIGURACIÓN FIJA: PEGA AQUÍ TU URL DE MAKE ENTRE LAS COMILLAS
-  // =========================================================================
   const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/l5a1jgewhykugo81lm47gd0w2is6rtpf";
+  const DEFAULT_LLC_ADDRESS = "7901 4TH St N Ste 300, Saint Petersburg, Florida, US 33702-4399";
 
   let clientIP = "No disponible";
   let hasSigned = false;
@@ -468,6 +491,7 @@
   let savedPdfWorker = null;
 
   document.getElementById("cfg-webhook").value = MAKE_WEBHOOK_URL;
+  document.getElementById("cfg-company-address").value = DEFAULT_LLC_ADDRESS;
 
   fetch("https://api.ipify.org?format=json")
     .then(r => r.json())
@@ -482,17 +506,35 @@
   document.getElementById("doc-sign-date").innerText = todayStr;
 
   const payModeSelect = document.getElementById("cfg-pay-mode");
-  payModeSelect.addEventListener("change", () => {
-    const isB = payModeSelect.value === "B";
-    document.getElementById("box-cuota1").style.display = isB ? "block" : "none";
-    document.getElementById("box-cuota2").style.display = isB ? "block" : "none";
-    document.getElementById("box-fecha2").style.display = isB ? "block" : "none";
+  function updatePaymentBoxes() {
+    const pm = payModeSelect.value;
+    document.getElementById("box-opt-b").style.display = pm === "B" ? "block" : "none";
+    document.getElementById("box-opt-c-d2").style.display = pm === "C" ? "block" : "none";
+    document.getElementById("box-opt-c-d3").style.display = pm === "C" ? "block" : "none";
+    document.getElementById("box-opt-d-res").style.display = pm === "D" ? "block" : "none";
+    document.getElementById("box-opt-d-bal").style.display = pm === "D" ? "block" : "none";
+    document.getElementById("box-opt-d-date").style.display = pm === "D" ? "block" : "none";
     syncContract();
-  });
+  }
+  payModeSelect.addEventListener("change", updatePaymentBoxes);
 
-  ["cfg-company-address", "cfg-b1", "cfg-b2", "cfg-b3", "cfg-c1", "cfg-c2", "cfg-date2"].forEach(id => {
-    document.getElementById(id).addEventListener("input", syncContract);
-    document.getElementById(id).addEventListener("change", syncContract);
+  function updateReservaSaldo() {
+    const resVal = parseFloat(document.getElementById("cfg-d-res").value) || 0;
+    const balVal = Math.max(0, 2000 - resVal);
+    document.getElementById("cfg-d-bal").value = balVal.toFixed(2);
+    syncContract();
+  }
+
+  [
+    "cfg-company-address", "cfg-b1", "cfg-b2", "cfg-b3",
+    "cfg-b-date2", "cfg-c-date2", "cfg-c-date3",
+    "cfg-d-res", "cfg-d-bal", "cfg-d-date"
+  ].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("input", syncContract);
+      el.addEventListener("change", syncContract);
+    }
   });
 
   const urlParams = new URLSearchParams(window.location.search);
@@ -501,7 +543,7 @@
   if (encodedCfg) {
     try {
       const d = JSON.parse(decodeURIComponent(escape(atob(encodedCfg))));
-      document.getElementById("cfg-company-address").value = d.addr || "Miami, Estado de Florida, EE. UU.";
+      document.getElementById("cfg-company-address").value = d.addr || DEFAULT_LLC_ADDRESS;
       document.getElementById("cli-name").value = d.n || "";
       document.getElementById("cli-id").value = d.id || "";
       document.getElementById("cli-address").value = d.ca || "";
@@ -518,9 +560,14 @@
       document.getElementById("cfg-b2").checked = !!d.b2;
       document.getElementById("cfg-b3").checked = !!d.b3;
       document.getElementById("cfg-pay-mode").value = d.pm || "A";
-      document.getElementById("cfg-c1").value = d.c1 || "750.00";
-      document.getElementById("cfg-c2").value = d.c2 || "750.00";
-      document.getElementById("cfg-date2").value = d.d2 || "";
+
+      document.getElementById("cfg-b-date2").value = d.bd2 || "";
+      document.getElementById("cfg-c-date2").value = d.cd2 || "";
+      document.getElementById("cfg-c-date3").value = d.cd3 || "";
+      document.getElementById("cfg-d-res").value = d.dres || "500.00";
+      document.getElementById("cfg-d-bal").value = d.dbal || "1500.00";
+      document.getElementById("cfg-d-date").value = d.ddate || "";
+
       if (d.wh) webhookEndpoint = d.wh;
       onboardingUrl = d.ob || "";
 
@@ -547,26 +594,41 @@
 
   function syncContract() {
     document.getElementById("doc-company-address").innerText =
-      document.getElementById("cfg-company-address").value.trim() || "Estado de Florida, EE. UU.";
+      document.getElementById("cfg-company-address").value.trim() || DEFAULT_LLC_ADDRESS;
 
     document.getElementById("doc-b1").innerHTML = document.getElementById("cfg-b1").checked ? " X " : "&nbsp;&nbsp;&nbsp;";
     document.getElementById("doc-b2").innerHTML = document.getElementById("cfg-b2").checked ? " X " : "&nbsp;&nbsp;&nbsp;";
     document.getElementById("doc-b3").innerHTML = document.getElementById("cfg-b3").checked ? " X " : "&nbsp;&nbsp;&nbsp;";
 
     const pm = document.getElementById("cfg-pay-mode").value;
-    if (pm === "A") {
-      document.getElementById("doc-pay-a").innerHTML = " X ";
-      document.getElementById("doc-pay-b").innerHTML = "&nbsp;&nbsp;&nbsp;";
-      document.getElementById("doc-c1").innerText = "---";
-      document.getElementById("doc-c2").innerText = "---";
-      document.getElementById("doc-date2").innerText = "---";
+    document.getElementById("doc-pay-a").innerHTML = pm === "A" ? " X " : "&nbsp;&nbsp;&nbsp;";
+    document.getElementById("doc-pay-b").innerHTML = pm === "B" ? " X " : "&nbsp;&nbsp;&nbsp;";
+    document.getElementById("doc-pay-c").innerHTML = pm === "C" ? " X " : "&nbsp;&nbsp;&nbsp;";
+    document.getElementById("doc-pay-d").innerHTML = pm === "D" ? " X " : "&nbsp;&nbsp;&nbsp;";
+
+    // Ajustar texto de Precio Total ($2,000 USD vs $2,100 USD en 3 cuotas)
+    const totalPriceEl = document.getElementById("doc-total-price");
+    if (pm === "C") {
+      totalPriceEl.innerText = "$2,100.00 USD (Dos mil cien dólares de los Estados Unidos de América)";
     } else {
-      document.getElementById("doc-pay-a").innerHTML = "&nbsp;&nbsp;&nbsp;";
-      document.getElementById("doc-pay-b").innerHTML = " X ";
-      document.getElementById("doc-c1").innerText = document.getElementById("cfg-c1").value || "750.00";
-      document.getElementById("doc-c2").innerText = document.getElementById("cfg-c2").value || "750.00";
-      document.getElementById("doc-date2").innerText = document.getElementById("cfg-date2").value || "[FECHA SEGUNDA CUOTA]";
+      totalPriceEl.innerText = "$2,000.00 USD (Dos mil dólares de los Estados Unidos de América)";
     }
+
+    // Rellenar valores de cada modalidad
+    document.getElementById("doc-b-date2").innerText =
+      pm === "B" ? (document.getElementById("cfg-b-date2").value || "[FECHA 2DA CUOTA]") : "---";
+
+    document.getElementById("doc-c-date2").innerText =
+      pm === "C" ? (document.getElementById("cfg-c-date2").value || "[FECHA 2DA CUOTA]") : "---";
+    document.getElementById("doc-c-date3").innerText =
+      pm === "C" ? (document.getElementById("cfg-c-date3").value || "[FECHA 3RA CUOTA]") : "---";
+
+    document.getElementById("doc-d-res").innerText =
+      pm === "D" ? (document.getElementById("cfg-d-res").value || "---") : "---";
+    document.getElementById("doc-d-bal").innerText =
+      pm === "D" ? (document.getElementById("cfg-d-bal").value || "---") : "---";
+    document.getElementById("doc-d-date").innerText =
+      pm === "D" ? (document.getElementById("cfg-d-date").value || "[FECHA LÍMITE SALDO]") : "---";
 
     const name = document.getElementById("cli-name").value.trim() || "[NOMBRE DEL CLIENTE]";
     const id = document.getElementById("cli-id").value.trim() || "[NÚMERO ID / PASAPORTE]";
@@ -598,15 +660,18 @@
     }
 
     const payload = {
-      addr: document.getElementById("cfg-company-address").value.trim(),
+      addr: document.getElementById("cfg-company-address").value.trim() || DEFAULT_LLC_ADDRESS,
       n, id, ca, co, em,
       b1: document.getElementById("cfg-b1").checked ? 1 : 0,
       b2: document.getElementById("cfg-b2").checked ? 1 : 0,
       b3: document.getElementById("cfg-b3").checked ? 1 : 0,
       pm: document.getElementById("cfg-pay-mode").value,
-      c1: document.getElementById("cfg-c1").value,
-      c2: document.getElementById("cfg-c2").value,
-      d2: document.getElementById("cfg-date2").value,
+      bd2: document.getElementById("cfg-b-date2").value,
+      cd2: document.getElementById("cfg-c-date2").value,
+      cd3: document.getElementById("cfg-c-date3").value,
+      dres: document.getElementById("cfg-d-res").value,
+      dbal: document.getElementById("cfg-d-bal").value,
+      ddate: document.getElementById("cfg-d-date").value,
       wh: document.getElementById("cfg-webhook").value.trim() || MAKE_WEBHOOK_URL,
       ob: document.getElementById("cfg-onboarding-url").value.trim()
     };
@@ -730,9 +795,12 @@
             client_country: country,
             client_email: email,
             payment_option: document.getElementById("cfg-pay-mode").value,
-            installment_1: document.getElementById("cfg-c1").value,
-            installment_2: document.getElementById("cfg-c2").value,
-            installment_2_date: document.getElementById("cfg-date2").value,
+            b_date2: document.getElementById("cfg-b-date2").value,
+            c_date2: document.getElementById("cfg-c-date2").value,
+            c_date3: document.getElementById("cfg-c-date3").value,
+            reserva_paid: document.getElementById("cfg-d-res").value,
+            reserva_balance: document.getElementById("cfg-d-bal").value,
+            reserva_due_date: document.getElementById("cfg-d-date").value,
             bonus_ruta_black: document.getElementById("cfg-b1").checked,
             bonus_agenda_privada: document.getElementById("cfg-b2").checked,
             bonus_acelerador: document.getElementById("cfg-b3").checked,
@@ -761,7 +829,7 @@
     }
   }
 
-  syncContract();
+  updatePaymentBoxes();
 </script>
 </body>
 </html>
