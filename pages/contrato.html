@@ -192,21 +192,21 @@
   <!-- PANEL EXCLUSIVO DE SOPORTE / ADMINISTRACIÓN (Se oculta para el cliente) -->
   <div id="admin-panel" class="panel panel-admin">
     <h2>🛠️ Panel de Administración y Soporte (Generador de Contrato Post-Cierre)</h2>
-    <p style="font-size:0.85rem; margin-top:0;">Carga aquí los datos levantados por el Closer en la llamada. Al copiar el link, el cliente verá el contrato ya lleno y solo tendrá que estampar su firma.</p>
+    <p style="font-size:0.85rem; margin-top:0;">Carga aquí los datos levantados por el Closer en la llamada. Al copiar el link, el cliente verá el contrato ya lleno y solo tendrá que estampar su firma y descargar su PDF.</p>
 
-    <div class="section-label">1. Configuración Técnica y Empresa</div>
+    <div class="section-label">1. Configuración de Empresa y Respaldo</div>
     <div class="grid">
       <div>
         <label>Domicilio LIFEOFNENA LLC (Florida):</label>
         <input type="text" id="cfg-company-address" value="Miami, Estado de Florida, EE. UU." />
       </div>
       <div>
-        <label>Webhook URL de Make (Custom Webhook):</label>
-        <input type="text" id="cfg-webhook" placeholder="https://hook.us1.make.com/xxxxxxxxxxxx" />
+        <label>Webhook URL de Make (Respaldo en Drive):</label>
+        <input type="text" id="cfg-webhook" placeholder="https://hook.us1.make.com/..." />
       </div>
       <div>
-        <label>Link de Agenda Onboarding (Opcional - Calendly/GHL/WhatsApp):</label>
-        <input type="text" id="cfg-onboarding-url" placeholder="https://calendly.com/tu-equipo/onboarding" />
+        <label>Link de Agenda Onboarding (Opcional):</label>
+        <input type="text" id="cfg-onboarding-url" placeholder="https://calendly.com/..." />
       </div>
     </div>
 
@@ -271,7 +271,7 @@
   <!-- BARRA SUPERIOR QUE VE EL CLIENTE AL ABRIR EL LINK DE WHATSAPP -->
   <div id="client-welcome-bar" class="panel panel-client" style="display:none;">
     <h2>👋 ¡Bienvenido(a) a Money Credit! Verifica tus Datos y Firma tu Contrato</h2>
-    <p style="font-size:0.9rem; margin-top:0;">Nuestro equipo de Soporte ya ha cargado tus datos personales en el contrato a continuación. Por favor léelo detenidamente, desplázate hasta el final para dibujar tu firma y recibirás una copia en PDF en tu dispositivo y en tu correo electrónico.</p>
+    <p style="font-size:0.9rem; margin-top:0;">Nuestro equipo de Soporte ya ha cargado tus datos personales en el contrato a continuación. Por favor léelo detenidamente, desplázate hasta el final para dibujar tu firma y se descargará automáticamente tu copia oficial en PDF.</p>
     <button type="button" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleClientEdit()">
       ✏️ ¿Algún dato personal tiene un error ortográfico? Haz clic aquí para corregirlo
     </button>
@@ -306,7 +306,7 @@
     <p>Este Contrato de Prestación de Servicios (en adelante, el <strong>"Contrato"</strong>) se celebra en la fecha de su firma al pie del presente documento, entre las siguientes partes:</p>
 
     <p><strong>I. LA PRESTADORA:</strong><br/>
-    <strong>LIFEOFNENA LLC</strong>, compañía de responsabilidad limitada debidamente organizada y existente bajo las leyes del Estado de Florida, Estados Unidos de América, registrada el 9 de febrero de 2024 ante el Departamento de Estado de Florida (Certificate of Status Tracking Number: 5866550542CC), con domicilio principal en <span id="doc-company-address" class="dyn">7901 4TH St N Ste 300, Saint Petersburg, Florida.</span>, representada en este acto por su titular y representante autorizada, <strong>Mercedes Ríos</strong> (en adelante, "LA EMPRESA" o "Mercedes Ríos").</p>
+    <strong>LIFEOFNENA LLC</strong>, compañía de responsabilidad limitada debidamente organizada y existente bajo las leyes del Estado de Florida, Estados Unidos de América, registrada el 9 de febrero de 2024 ante el Departamento de Estado de Florida (Certificate of Status Tracking Number: 5866550542CC), con domicilio principal en <span id="doc-company-address" class="dyn">Miami, Estado de Florida, EE. UU.</span>, representada en este acto por su titular y representante autorizada, <strong>Mercedes Ríos</strong> (en adelante, "LA EMPRESA" o "Mercedes Ríos").</p>
 
     <p><strong>II. EL CLIENTE:</strong><br/>
     <span id="doc-cli-name" class="dyn">[NOMBRE DEL CLIENTE]</span>, mayor de edad, identificado(a) con documento de identidad / pasaporte número <span id="doc-cli-id" class="dyn">[NÚMERO ID / PASAPORTE]</span>, con domicilio en <span id="doc-cli-address" class="dyn">[DOMICILIO DEL CLIENTE]</span> y correo electrónico <span id="doc-cli-email" class="dyn">[CORREO ELECTRÓNICO]</span> (en adelante, <strong>"EL CLIENTE"</strong>).</p>
@@ -432,29 +432,42 @@
   <!-- BOTÓN DE FIRMA Y DESCARGA -->
   <div id="action-panel" class="panel" style="margin-top: 22px; text-align: center;">
     <button id="btn-submit" class="btn" style="font-size: 1.05rem; padding: 14px 28px;" onclick="processSignatureAndSend()">
-      ✅ Firmar Contrato, Descargar mi Copia en PDF y Recibir por Correo
+      ✅ Confirmar Firma Electrónica y Descargar mi Contrato en PDF
     </button>
     <div id="final-status" class="status-msg"></div>
   </div>
 
-  <!-- PANEL POST-FIRMA: PASO AL ONBOARDING -->
+  <!-- PANEL POST-FIRMA: PASO AL ONBOARDING + RE-DESCARGA -->
   <div id="onboarding-panel" class="panel panel-onboarding">
-    <h2>🎉 ¡Contrato Firmado y Enviado Exitosamente!</h2>
-    <p>Tu copia en PDF se ha descargado en tu dispositivo y también ha sido enviada a tu correo electrónico. El siguiente paso es programar tu sesión de <strong>Onboarding</strong> con nuestro equipo.</p>
+    <h2>🎉 ¡Contrato Firmado y Registrado Exitosamente!</h2>
+    <p>Tu copia oficial en PDF se ha descargado en tu dispositivo y ha quedado archivada en el sistema de <strong>LIFEOFNENA LLC</strong>.</p>
+    <div style="margin: 14px 0;">
+      <button type="button" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.85rem;" onclick="redownloadPDF()">
+        📥 ¿No viste la descarga? Haz clic aquí para descargar tu PDF nuevamente
+      </button>
+    </div>
     <a id="onboarding-btn-link" href="#" target="_blank" class="btn btn-success" style="display:none; margin-top:8px;">
       📅 Agendar mi Llamada de Onboarding Ahora
     </a>
     <p id="onboarding-whatsapp-msg" style="font-weight:600; color:#15803d; margin-top:10px;">
-      Por favor confírmale a nuestro equipo de Soporte por WhatsApp que ya firmaste para coordinar tu llamada de Onboarding.
+      Por favor avísale ahora a nuestro equipo de Soporte por WhatsApp que ya firmaste para programar tu llamada de Onboarding.
     </p>
   </div>
 </div>
 
 <script>
+  // =========================================================================
+  // CONFIGURACIÓN FIJA: PEGA AQUÍ TU URL DE MAKE ENTRE LAS COMILLAS
+  // =========================================================================
+  const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/l5a1jgewhykugo81lm47gd0w2is6rtpf";
+
   let clientIP = "No disponible";
   let hasSigned = false;
-  let webhookEndpoint = "";
+  let webhookEndpoint = MAKE_WEBHOOK_URL;
   let onboardingUrl = "";
+  let savedPdfWorker = null;
+
+  document.getElementById("cfg-webhook").value = MAKE_WEBHOOK_URL;
 
   fetch("https://api.ipify.org?format=json")
     .then(r => r.json())
@@ -482,7 +495,6 @@
     document.getElementById(id).addEventListener("change", syncContract);
   });
 
-  // Leer configuración pre-llenada por Soporte desde la URL (?cfg=...)
   const urlParams = new URLSearchParams(window.location.search);
   const encodedCfg = urlParams.get("cfg");
 
@@ -496,7 +508,6 @@
       document.getElementById("cli-country").value = d.co || "";
       document.getElementById("cli-email").value = d.em || "";
 
-      // Sincronizar campos de edición rápida del cliente
       document.getElementById("edit-name").value = d.n || "";
       document.getElementById("edit-id").value = d.id || "";
       document.getElementById("edit-address").value = d.ca || "";
@@ -510,10 +521,9 @@
       document.getElementById("cfg-c1").value = d.c1 || "750.00";
       document.getElementById("cfg-c2").value = d.c2 || "750.00";
       document.getElementById("cfg-date2").value = d.d2 || "";
-      webhookEndpoint = d.wh || "";
+      if (d.wh) webhookEndpoint = d.wh;
       onboardingUrl = d.ob || "";
 
-      // Ocultar panel de Soporte y mostrar barra de bienvenida al cliente
       document.getElementById("admin-panel").style.display = "none";
       document.getElementById("client-welcome-bar").style.display = "block";
     } catch (e) {
@@ -597,7 +607,7 @@
       c1: document.getElementById("cfg-c1").value,
       c2: document.getElementById("cfg-c2").value,
       d2: document.getElementById("cfg-date2").value,
-      wh: document.getElementById("cfg-webhook").value.trim(),
+      wh: document.getElementById("cfg-webhook").value.trim() || MAKE_WEBHOOK_URL,
       ob: document.getElementById("cfg-onboarding-url").value.trim()
     };
 
@@ -609,7 +619,6 @@
     });
   }
 
-  // Pad de Firma en Canvas
   const canvas = document.getElementById("sig-canvas");
   const ctx = canvas.getContext("2d");
   let drawing = false;
@@ -643,6 +652,12 @@
     document.getElementById("sig-preview").src = "";
   }
 
+  async function redownloadPDF() {
+    if (savedPdfWorker) {
+      await savedPdfWorker.save();
+    }
+  }
+
   async function processSignatureAndSend() {
     const name = document.getElementById("cli-name").value.trim();
     const id = document.getElementById("cli-id").value.trim();
@@ -665,7 +680,7 @@
 
     btn.disabled = true;
     statusEl.style.color = "#2563eb";
-    statusEl.innerText = "⏳ Generando tu contrato en PDF y registrando certificado legal...";
+    statusEl.innerText = "⏳ Sellando certificado legal y generando tu archivo PDF...";
 
     const docId = "MC-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
     const utcNow = new Date().toISOString();
@@ -692,18 +707,18 @@
     };
 
     try {
-      const worker = html2pdf().set(pdfOptions).from(contractEl);
-      const pdfDataUri = await worker.outputPdf("datauristring");
-      await worker.save();
+      savedPdfWorker = html2pdf().set(pdfOptions).from(contractEl);
+      const pdfDataUri = await savedPdfWorker.outputPdf("datauristring");
+      await savedPdfWorker.save();
 
       const pdfBase64Clean = pdfDataUri.split(",")[1];
       const activeWebhook = webhookEndpoint || document.getElementById("cfg-webhook").value.trim();
 
-      if (activeWebhook) {
-        statusEl.innerText = `📧 Enviando copia oficial en PDF a ${email}...`;
+      if (activeWebhook && activeWebhook.startsWith("http")) {
+        statusEl.innerText = "⏳ Registrando copia oficial en el servidor...";
         await fetch(activeWebhook, {
           method: "POST",
-          headers: { "Content-Type": "application/json" }, // Make soporta application/json y CORS nativamente
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             document_id: docId,
             file_name: safeFileName,
@@ -726,10 +741,8 @@
         });
       }
 
-      // Mostrar panel de éxito y paso a Onboarding
       document.getElementById("action-panel").style.display = "none";
-      const obPanel = document.getElementById("onboarding-panel");
-      obPanel.style.display = "block";
+      document.getElementById("onboarding-panel").style.display = "block";
 
       const activeObUrl = onboardingUrl || document.getElementById("cfg-onboarding-url").value.trim();
       if (activeObUrl) {
@@ -740,7 +753,7 @@
     } catch (err) {
       console.error("Error:", err);
       statusEl.style.color = "#dc2626";
-      statusEl.innerText = "⚠️ Tu PDF se descargó en tu dispositivo, pero hubo un error al enviar la copia por correo. Envía tu PDF descargado a Soporte por WhatsApp.";
+      statusEl.innerText = "⚠️ Tu contrato se descargó en tu dispositivo, pero hubo un detalle de conexión. Confirma a Soporte por WhatsApp.";
       btn.disabled = false;
     } finally {
       contractEl.classList.remove("pdf-clean");
