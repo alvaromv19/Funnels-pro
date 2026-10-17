@@ -266,7 +266,7 @@
         Confirmar Asistencia
       </a>
     </section>
-    
+
   </div>
 
   <script>
@@ -480,7 +480,9 @@
                 customAnswers: respuestasPersonalizadas
             }
         });
-      // 5. Escuchar evento de Calendly para exigir confirmación por WhatsApp
+    });
+
+    // 5. Escuchar evento de Calendly para exigir confirmación por WhatsApp
     window.addEventListener('message', function(e) {
         if (e.data && e.data.event === 'calendly.event_scheduled') {
             document.getElementById('paso-calendly').style.display = 'none';
@@ -489,7 +491,6 @@
             // Opcional: Hacer scroll suave hacia arriba por si el iframe era muy largo
             window.scrollTo({ top: document.getElementById('main-card').offsetTop - 20, behavior: 'smooth' });
         }
-    });
     });
   </script>
 </body>
