@@ -1,0 +1,287 @@
+<title>Ruta 90</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap">
+<style>
+/* Layout: una columna de lectura, ancha y tranquila. Los movimientos numerados en vertical; el resto en bloques que colapsan a una sola columna en celular. */
+:root{
+  --paper:#FAF7F0; --surface:#FFFFFF; --ink:#13342A; --body:#283A31;
+  --muted:#5C6C63; --gold:#A8762A; --gold-soft:#F4EAD6; --rule:#E0D9CA;
+  --band:#13342A; --band-ink:#FAF7F0; --band-dim:rgba(250,247,240,.68);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0D1E18; --surface:#15291F; --ink:#F2ECDF; --body:#D5DED6;
+    --muted:#95A79C; --gold:#D9A64A; --gold-soft:#2A2113; --rule:#2B4036;
+    --band:#081611; --band-ink:#F5EFE2; --band-dim:rgba(245,239,226,.68);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0D1E18; --surface:#15291F; --ink:#F2ECDF; --body:#D5DED6;
+  --muted:#95A79C; --gold:#D9A64A; --gold-soft:#2A2113; --rule:#2B4036;
+  --band:#081611; --band-ink:#F5EFE2; --band-dim:rgba(245,239,226,.68);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--body);
+  font-family:'DM Sans',system-ui,-apple-system,Segoe UI,sans-serif;
+  font-size:17px;line-height:1.68;-webkit-font-smoothing:antialiased}
+.wrap{max-width:720px;margin:0 auto;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:0 72px}
+p{margin:0 0 18px;max-width:62ch}
+p:last-child{margin-bottom:0}
+strong{color:var(--ink);font-weight:700}
+
+/* ---------- marca ---------- */
+.marca{display:flex;flex-direction:column;align-items:center;gap:10px;
+  padding-block:60px 0;text-align:center}
+.marca svg{display:block}
+.marca .nom{font-family:'Libre Baskerville',Georgia,serif;font-style:italic;
+  font-size:clamp(27px,5.2vw,34px);line-height:1.1;letter-spacing:.015em;
+  color:var(--ink);margin:2px 0 0}
+.marca .desc{font-size:10px;letter-spacing:.36em;text-transform:uppercase;
+  color:var(--gold);font-weight:500;margin:2px 0 0;padding-left:.36em}
+
+/* ---------- portada ---------- */
+header.top{padding-block:46px 0;text-align:center}
+.eyebrow{font-size:10.5px;letter-spacing:.26em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;margin:0 0 16px}
+h1{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;
+  font-size:clamp(38px,8.5vw,64px);line-height:1.02;letter-spacing:-.02em;
+  color:var(--ink);margin:0;text-wrap:balance}
+.sub{font-family:'Libre Baskerville',Georgia,serif;font-style:italic;
+  font-size:clamp(16px,2.6vw,20px);line-height:1.5;color:var(--muted);
+  margin:20px auto 0;max-width:40ch}
+.filete{width:48px;height:1px;background:var(--gold);margin:34px auto 0}
+
+/* ---------- secciones ---------- */
+section{margin-block:56px 0}
+.sn{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--gold);font-weight:700;margin:0 0 9px}
+h2{font-family:'Libre Baskerville',Georgia,serif;font-weight:700;
+  font-size:clamp(23px,4.2vw,31px);line-height:1.18;color:var(--ink);
+  margin:0 0 20px;text-wrap:balance}
+h2 + p.lede{font-size:18.5px;line-height:1.58;color:var(--ink);margin-bottom:26px}
+
+/* ---------- movimientos ---------- */
+.mov{border-top:1px solid var(--rule);padding-block:26px 0;margin-top:26px}
+.mov:first-of-type{border-top:0;margin-top:0;padding-top:0}
+.mov-t{display:flex;align-items:baseline;gap:14px;margin-bottom:12px;flex-wrap:wrap}
+.mov-t b{font-family:'Libre Baskerville',Georgia,serif;font-size:26px;
+  color:var(--gold);line-height:1;flex:none}
+.mov-t h3{font-family:'Libre Baskerville',Georgia,serif;font-size:21px;
+  font-weight:700;color:var(--ink);margin:0;flex:1 1 auto;min-width:0}
+.mov .caso{margin-bottom:12px}
+.mov .caso em{font-style:normal;color:var(--gold);font-weight:700;
+  font-size:11px;letter-spacing:.13em;text-transform:uppercase;
+  display:block;margin-bottom:3px}
+
+/* ---------- incluido ---------- */
+.inc{display:grid;gap:14px;margin-top:4px}
+.ii{background:var(--surface);border:1px solid var(--rule);border-radius:3px;
+  padding:19px 20px;min-width:0}
+.ii h3{font-family:'Libre Baskerville',Georgia,serif;font-size:18px;
+  font-weight:700;color:var(--ink);margin:0 0 8px}
+.ii p{font-size:16px;margin:0;max-width:none}
+
+/* ---------- linea de tiempo ---------- */
+.ln{margin-top:4px;border-left:1px solid var(--rule);padding-left:26px;
+  display:grid;gap:22px}
+.li{position:relative;min-width:0}
+.li::before{content:"";position:absolute;left:-30.5px;top:.62em;width:9px;height:9px;
+  border-radius:50%;background:var(--gold)}
+.li b{display:block;font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--gold);font-weight:700;margin-bottom:3px}
+.li span{display:block;font-size:16.5px;line-height:1.5;color:var(--ink)}
+
+/* ---------- checks ---------- */
+.ck{list-style:none;margin:0;padding:0;display:grid;gap:12px}
+.ck li{position:relative;padding-left:30px;font-size:17.5px;line-height:1.48;color:var(--ink)}
+.ck li::before{content:"";position:absolute;left:4px;top:.52em;width:9px;height:9px;
+  border:1.5px solid var(--gold);border-right:0;border-top:0;
+  transform:rotate(-45deg)}
+.legal{margin-top:22px;font-size:14.5px;line-height:1.6;color:var(--muted);
+  padding-left:15px;border-left:2px solid var(--rule)}
+
+/* ---------- banda ---------- */
+.banda{background:var(--band);color:var(--band-ink);margin-top:56px;border-radius:4px;
+  padding-block:38px;padding-left:max(24px,env(safe-area-inset-left,0px));
+  padding-right:max(24px,env(safe-area-inset-right,0px))}
+.banda .sn{color:var(--gold)}
+.banda h2{color:var(--band-ink);margin-bottom:18px}
+.banda p{color:var(--band-dim);max-width:58ch}
+.banda strong{color:var(--band-ink)}
+.firma-l{font-family:'Libre Baskerville',Georgia,serif;font-size:clamp(20px,3.4vw,25px);
+  line-height:1.35;color:var(--band-ink);margin:0 0 20px;max-width:30ch}
+
+/* ---------- valores ---------- */
+.val{margin-top:4px;display:grid;gap:0}
+.vi{display:flex;justify-content:space-between;align-items:baseline;gap:20px;
+  padding-block:13px;border-bottom:1px solid var(--rule);min-width:0}
+.vi span{min-width:0;font-size:16.5px;color:var(--ink)}
+.vi span i{display:block;font-style:normal;font-size:14px;color:var(--muted);margin-top:1px}
+.vi b{flex:none;font-family:'Libre Baskerville',Georgia,serif;font-size:17px;
+  color:var(--muted);font-variant-numeric:tabular-nums;text-decoration:line-through;
+  text-decoration-thickness:1px}
+.vi.tot{border-bottom:0;border-top:1.5px solid var(--gold);padding-top:17px;margin-top:4px}
+.vi.tot span{font-weight:700}
+.vi.tot b{font-size:26px;color:var(--gold)}
+
+/* ---------- pie ---------- */
+footer{margin-top:60px;padding-block:30px 0;border-top:1px solid var(--rule);
+  text-align:center}
+footer .nom{font-family:'Libre Baskerville',Georgia,serif;font-style:italic;
+  font-size:24px;line-height:1.1;letter-spacing:.015em;color:var(--ink);margin:0}
+footer .desc{font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;
+  color:var(--gold);margin:5px 0 18px;padding-left:.34em}
+footer p{font-size:13px;line-height:1.7;color:var(--muted);margin:0 auto;max-width:48ch}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+</style>
+
+<div class="wrap">
+
+<div class="marca">
+  <svg width="58" height="58" viewBox="0 0 64 64" role="img" aria-label="Marca Mercedes Ríos">
+    <circle cx="32" cy="32" r="29" fill="none" stroke="var(--gold)" stroke-width="1"/>
+    <path d="M18 44 L30 35 L39 38 L47 20" fill="none" stroke="var(--gold)"
+          stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="18" cy="44" r="2.4" fill="var(--gold)"/>
+    <circle cx="30" cy="35" r="2.4" fill="var(--gold)"/>
+    <circle cx="39" cy="38" r="2.4" fill="var(--gold)"/>
+    <circle cx="47" cy="20" r="4" fill="none" stroke="var(--gold)" stroke-width="1.4"/>
+    <circle cx="47" cy="20" r="1.6" fill="var(--gold)"/>
+  </svg>
+  <p class="nom">Mercedes Ríos</p>
+  <p class="desc">Ruta Financiera</p>
+</div>
+
+<header class="top">
+  <p class="eyebrow">El programa</p>
+  <h1>Ruta 90</h1>
+  <p class="sub">El proceso completo, ejecutado contigo. Noventa días.</p>
+  <div class="filete"></div>
+</header>
+
+<section>
+  <p class="sn">Qué es</p>
+  <h2>Tu empresa, tu crédito y tu ruta de inversión — hechos contigo, no explicados</h2>
+  <p class="lede">Ruta 90 no es un curso que ves. Es un proceso que ejecutamos a tu lado durante noventa días, en cuatro movimientos que van en este orden porque saltarse uno es donde la mayoría se traba.</p>
+  <p>Cada movimiento resuelve un punto concreto donde la gente se queda sola: formar la empresa bien, hacerla visible para un banco, conseguir el crédito que no sale de tus ahorros, y definir dónde va ese dinero según tu perfil.</p>
+</section>
+
+<section>
+  <p class="sn">El proceso</p>
+  <h2>Los cuatro movimientos</h2>
+
+  <div class="mov">
+    <div class="mov-t"><b>1</b><h3>Tu Empresa</h3></div>
+    <div class="caso"><em>Si no tienes empresa</em>
+      <p>Tu empresa en Estados Unidos. Formamos tu LLC y sacamos tu EIN contigo, paso a paso — no te mandamos un tutorial, lo hacemos juntos.</p></div>
+    <div class="caso"><em>Si ya la tienes</em>
+      <p>Auditamos la que tienes — estado, EIN, operating agreement, estructura — y arreglamos lo que la tiene dormida ante un banco. Una empresa mal formada o inactiva no es medio camino andado: es lo que hace que te nieguen en el movimiento 2.</p></div>
+  </div>
+
+  <div class="mov">
+    <div class="mov-t"><b>2</b><h3>Tu Activación</h3></div>
+    <p><strong>El puente entre tener empresa y poder pedir.</strong> Abrimos tu cuenta de negocio como corresponde y construimos el historial que el analista necesita ver antes de que tú solicites nada. Una empresa recién formada, con EIN y una cuenta en ceros, es invisible para un banco.</p>
+  </div>
+
+  <div class="mov">
+    <div class="mov-t"><b>3</b><h3>Tu Crédito</h3></div>
+    <p><strong>La llave que abre el capital.</strong> Activamos tu crédito empresarial: dinero que no sale de tus ahorros ni depende de tu historial personal. El monto depende de tu perfil y de los bancos que apliquen.</p>
+  </div>
+
+  <div class="mov">
+    <div class="mov-t"><b>4</b><h3>Tu Portafolio</h3></div>
+    <p>Tu ruta de inversión definida y arrancada: bienes raíces, bolsa u oro, según tu perfil de riesgo y tu tiempo disponible. Personalizado según tu perfil y el crédito recibido.</p>
+  </div>
+</section>
+
+<section>
+  <p class="sn">También incluido</p>
+  <h2>Lo que entra contigo el primer día</h2>
+  <div class="inc">
+    <article class="ii">
+      <h3>Academia Ruta Financiera</h3>
+      <p>El entrenamiento completo, grabado y listo para ver a tu ritmo. Cómo se crea una LLC, cómo se saca y se construye crédito en Estados Unidos, y las rutas de inversión una por una. Disponible desde el día uno, para que las sesiones en vivo no se vayan en explicar lo básico.</p>
+    </article>
+    <article class="ii">
+      <h3>El Movimiento 0</h3>
+      <p>Tu empresa tarda semanas en existir. El Movimiento 0 es lo que haces mientras tanto, desde el día uno, para cubrir lo que invertiste en entrar y los costos de radicación — sin tocar tus ahorros y sin esperar a nadie. No es un ingreso nuevo: es capital de arranque, se junta una vez para un fin específico y tiene fecha de salida.</p>
+    </article>
+    <article class="ii">
+      <h3>La Calculadora de Ruta</h3>
+      <p>Te muestra qué puede hacer tu capital en cada ruta y con qué nivel de riesgo, antes de mover un peso tuyo. Metes tu punto de partida y ves, lado a lado, cómo se comporta el mismo capital en bienes raíces, en bolsa o en oro.</p>
+    </article>
+    <article class="ii">
+      <h3>Membresía Ruta Black · 12 meses</h3>
+      <p>La comunidad activa donde se habla de inversiones. Reunión en vivo una vez por semana con expertos invitados, y todas las clases quedan grabadas en la biblioteca. El proceso dura noventa días; el acompañamiento sigue doce meses.</p>
+    </article>
+  </div>
+</section>
+
+<section>
+  <p class="sn">Los noventa días</p>
+  <h2>Semana por semana</h2>
+  <div class="ln">
+    <div class="li"><b>Semana 1</b><span>Tu sesión de diagnóstico. Punto de partida y ruta definidos.</span></div>
+    <div class="li"><b>Semanas 2 a 4</b><span>Formamos tu empresa. LLC y EIN.</span></div>
+    <div class="li"><b>Semanas 4 a 8</b><span>La activación. Tu cuenta empieza a tener historia.</span></div>
+    <div class="li"><b>Mes 2 a 3</b><span>Arranca tu crédito empresarial, en el orden correcto.</span></div>
+    <div class="li"><b>Mes 3</b><span>Defines y arrancas tu ruta de inversión.</span></div>
+  </div>
+</section>
+
+<section>
+  <p class="sn">El resultado</p>
+  <h2>Lo que vas a tener a los noventa días</h2>
+  <ul class="ck">
+    <li>Tu LLC formada</li>
+    <li>Tu EIN</li>
+    <li>Tu cuenta de negocio con historial</li>
+    <li>Tu línea de crédito empresarial activa</li>
+    <li>Tu ruta de inversión definida</li>
+  </ul>
+  <p class="legal">Eso es lo que el proceso entrega. Lo que generes con eso depende de ti, del mercado y de tu ejecución. Toda inversión implica riesgo, incluida la pérdida del capital. Nada de esto es una recomendación de inversión.</p>
+</section>
+
+<div class="banda">
+  <p class="sn">La garantía</p>
+  <h2>No te lo prometo. Te lo firmo.</h2>
+  <p class="firma-l">Si a los noventa días no tienes tu empresa formada y tu ruta definida, tú eliges: o sigo trabajando contigo sin costo hasta que las tengas, o te devuelvo el cien por ciento.</p>
+  <p><strong>Decides tú, no yo.</strong></p>
+  <p>Y con el crédito no me voy. Cuando un banco dice que no, eso no es el final del proceso: es parte del proceso. Sigo contigo, sin costo y sin fecha de salida, hasta que salga.</p>
+  <p>Recibes el contrato <strong>en español</strong>, lo lees completo, y solo entonces pagas.</p>
+</div>
+
+<section>
+  <p class="sn">Cómo se entra</p>
+  <h2>Cupos limitados, y una conversación antes</h2>
+  <p>Los cupos son <strong>limitados de verdad</strong>, porque Mercedes ejecuta el proceso personalmente con cada persona.</p>
+  <p>Aquí no hay un botón para pagar. Hay una evaluación y una llamada con el equipo para revisar si de verdad podemos ayudarte. Si vemos que este no es tu momento, te lo vamos a decir: preferimos perder una venta que meterte en algo que no puedas sostener.</p>
+  <p>En esa llamada te explicamos exactamente qué incluye, cuánto es y cómo se paga. Si decides entrar, recibes el contrato en español antes de pagar nada.</p>
+</section>
+
+<section>
+  <p class="sn">El valor de cada pieza</p>
+  <h2>Lo que cuesta por separado</h2>
+  <div class="val">
+    <div class="vi"><span>Ruta 90 · el proceso completo ejecutado contigo<i>Tu Empresa · Tu Activación · Tu Crédito · Tu Portafolio</i></span><b>$8,488</b></div>
+    <div class="vi"><span>Academia Ruta Financiera<i>El entrenamiento completo grabado</i></span><b>$997</b></div>
+    <div class="vi"><span>El Movimiento 0<i>El capital de arranque, antes de que exista la empresa</i></span><b>$997</b></div>
+    <div class="vi"><span>Membresía Ruta Black<i>12 meses en la comunidad activa</i></span><b>$564</b></div>
+    <div class="vi"><span>La Calculadora de Ruta<i>Qué hace tu capital en cada ruta, antes de mover un peso</i></span><b>$497</b></div>
+    <div class="vi tot"><span>Valor total</span><b>$11,543</b></div>
+  </div>
+</section>
+
+<footer>
+  <p class="nom">Mercedes Ríos</p>
+  <p class="desc">Ruta Financiera</p>
+  <p>Money Credit · Ruta 90 · 90 días de acompañamiento más Membresía Ruta Black por 12 meses.</p>
+</footer>
+
+</div>
