@@ -192,7 +192,7 @@
   <!-- PANEL EXCLUSIVO DE SOPORTE / ADMINISTRACIÓN (Se oculta para el cliente) -->
   <div id="admin-panel" class="panel panel-admin">
     <h2>🛠️ Panel de Administración y Soporte (Generador de Contrato Post-Cierre)</h2>
-    <p style="font-size:0.85rem; margin-top:0;">Carga aquí los datos levantados por el Closer en la llamada. Al copiar el link, el cliente verá el contrato ya lleno y solo tendrá que estampar su firma y descargar su PDF.</p>
+    <p style="font-size:0.85rem; margin-top:0;">Carga aquí los datos levantados por el Closer en la llamada. En el contrato del cliente solo se mostrará la modalidad de pago que selecciones aquí.</p>
 
     <!-- PUNTO 1 OCULTO CON DIRECCIÓN DE SAINT PETERSBURG Y WEBHOOK FIJOS -->
     <div id="hidden-config-section" style="display:none;">
@@ -247,12 +247,13 @@
 
     <div class="grid">
       <div>
-        <label>Modalidad de Pago Acordada (Cláusula Cuarta):</label>
+        <label>Modalidad de Pago Acordada (Única visible en el contrato):</label>
         <select id="cfg-pay-mode">
-          <option value="A">Opción A — Pago Único ($2,000.00 USD)</option>
-          <option value="B">Opción B — 2 Cuotas de $1,000.00 USD ($2,000.00 USD)</option>
-          <option value="C">Opción C — 3 Cuotas de $700.00 USD ($2,100.00 USD)</option>
-          <option value="D">Opción D — Reserva de Cupo + Saldo Pendiente</option>
+          <option value="A">Pago Único — $2,000.00 USD</option>
+          <option value="E">Pago Único — $1,500.00 USD</option>
+          <option value="B">Plan de 2 Cuotas de $1,000.00 USD (Total: $2,000.00 USD)</option>
+          <option value="C">Plan de 3 Cuotas de $700.00 USD (Total: $2,100.00 USD)</option>
+          <option value="D">Reserva de Cupo + Saldo Pendiente</option>
         </select>
       </div>
 
@@ -273,13 +274,20 @@
       </div>
 
       <!-- Campos para Opción D (Reserva variable) -->
+      <div id="box-opt-d-base" style="display:none;">
+        <label>Ticket Base de la Reserva:</label>
+        <select id="cfg-d-base" onchange="updateReservaSaldo()">
+          <option value="2000">$2,000.00 USD</option>
+          <option value="1500">$1,500.00 USD</option>
+        </select>
+      </div>
       <div id="box-opt-d-res" style="display:none;">
         <label>Monto de Reserva Abonado Hoy (USD):</label>
         <input type="number" id="cfg-d-res" value="500.00" step="0.01" oninput="updateReservaSaldo()" />
       </div>
       <div id="box-opt-d-bal" style="display:none;">
         <label>Saldo Restante a Pagar (USD):</label>
-        <input type="number" id="cfg-d-bal" value="1500.00" step="0.01" />
+        <input type="number" id="cfg-d-bal" value="1500.00" step="0.01" oninput="syncContract()" />
       </div>
       <div id="box-opt-d-date" style="display:none;">
         <label>Fecha Límite para Completar el Saldo:</label>
@@ -372,15 +380,14 @@
     <h2>CLÁUSULA CUARTA: PRECIO, FORMA DE PAGO Y ORDEN DE FORMALIZACIÓN</h2>
     <ul>
       <li><strong>Orden de formalización y activación:</strong> Tras haber sido informado de las condiciones del programa en la llamada de admisión y haberse confirmado el pago inicial o de reserva acordado, EL CLIENTE recibe, lee íntegramente en idioma español y firma el presente Contrato a través del área de Soporte y Administración como requisito indispensable para formalizar su inscripción, programar su sesión de <em>Onboarding</em> e iniciar el cómputo de los noventa (90) días del programa.</li>
-      <li><strong>Precio Total del Servicio y Modalidad de Pago:</strong> El valor total de inversión por el programa <strong>Money Credit</strong> es de <strong><span id="doc-total-price" class="dyn">$2,000.00 USD (Dos mil dólares de los Estados Unidos de América)</span></strong>, pagaderos bajo la modalidad seleccionada a continuación:
+      <li><strong>Precio Total del Servicio y Modalidad de Pago:</strong> El valor total de inversión por el programa <strong>Money Credit</strong> es de <strong><span id="doc-total-price" class="dyn">$2,000.00 USD (Dos mil dólares de los Estados Unidos de América)</span></strong>, pagaderos bajo la siguiente modalidad acordada:
         <ul>
-          <li><strong>(<span id="doc-pay-a" class="dyn"> X </span>) Opción A — Pago Único:</strong> Un (1) solo pago de <strong>$2,000.00 USD</strong>.</li>
-          <li><strong>(<span id="doc-pay-b" class="dyn">&nbsp;&nbsp;&nbsp;</span>) Opción B — Plan de Dos (2) Cuotas:</strong> Un primer pago inicial de <strong>$1,000.00 USD</strong> y una segunda cuota de <strong>$1,000.00 USD</strong> pagadera a más tardar el día <strong><span id="doc-b-date2" class="dyn">---</span></strong> (Total: $2,000.00 USD).</li>
-          <li><strong>(<span id="doc-pay-c" class="dyn">&nbsp;&nbsp;&nbsp;</span>) Opción C — Plan de Tres (3) Cuotas:</strong> Un primer pago inicial de <strong>$700.00 USD</strong>, una segunda cuota de <strong>$700.00 USD</strong> pagadera a más tardar el día <strong><span id="doc-c-date2" class="dyn">---</span></strong> y una tercera cuota de <strong>$700.00 USD</strong> pagadera a más tardar el día <strong><span id="doc-c-date3" class="dyn">---</span></strong> (Total financiado: $2,100.00 USD).</li>
-          <li><strong>(<span id="doc-pay-d" class="dyn">&nbsp;&nbsp;&nbsp;</span>) Opción D — Reserva de Cupo (Acuerdo Especial según Capacidad de Pago):</strong> Un abono inicial en concepto de reserva de cupo por <strong>$<span id="doc-d-res" class="dyn">---</span> USD</strong> y un saldo restante de <strong>$<span id="doc-d-bal" class="dyn">---</span> USD</strong> pagadero a más tardar el día <strong><span id="doc-d-date" class="dyn">---</span></strong>. Queda expresamente establecido que el abono de reserva asegura el cupo y las condiciones comerciales pactadas, iniciando las sesiones de acompañamiento y el cómputo de los noventa (90) días una vez integrado el pago acordado para la activación del programa.</li>
+          <li id="doc-single-payment-plan">
+            <strong>Modalidad de Pago Único:</strong> Un (1) solo pago total de <strong><span class="dyn">$2,000.00 USD</span></strong>.
+          </li>
         </ul>
       </li>
-      <li><strong>Mora e Incumplimiento de Pago:</strong> En caso de elegir modalidad en cuotas o reserva con saldo pendiente, el retraso mayor a cinco (5) días calendario en el pago de cualquiera de las cuotas o saldos pactados facultará a LA EMPRESA a suspender temporalmente las sesiones de acompañamiento, el acceso a las plataformas y la aplicación de las garantías de la Cláusula Quinta hasta la regularización total del saldo vencido.</li>
+      <li id="doc-mora-clause" style="display:none;"><strong>Mora e Incumplimiento de Pago:</strong> El retraso mayor a cinco (5) días calendario en el pago de cualquiera de las cuotas o saldos pactados en las fechas límite establecidas facultará a LA EMPRESA a suspender temporalmente las sesiones de acompañamiento, el acceso a las plataformas y la aplicación de las garantías de la Cláusula Quinta hasta la regularización total del saldo vencido.</li>
     </ul>
 
     <h2>CLÁUSULA QUINTA: GARANTÍA CONTRACTUAL DE RESULTADO Y ACOMPAÑAMIENTO</h2>
@@ -510,6 +517,7 @@
     document.getElementById("box-opt-b").style.display = pm === "B" ? "block" : "none";
     document.getElementById("box-opt-c-d2").style.display = pm === "C" ? "block" : "none";
     document.getElementById("box-opt-c-d3").style.display = pm === "C" ? "block" : "none";
+    document.getElementById("box-opt-d-base").style.display = pm === "D" ? "block" : "none";
     document.getElementById("box-opt-d-res").style.display = pm === "D" ? "block" : "none";
     document.getElementById("box-opt-d-bal").style.display = pm === "D" ? "block" : "none";
     document.getElementById("box-opt-d-date").style.display = pm === "D" ? "block" : "none";
@@ -518,8 +526,9 @@
   payModeSelect.addEventListener("change", updatePaymentBoxes);
 
   function updateReservaSaldo() {
+    const baseTicket = parseFloat(document.getElementById("cfg-d-base").value) || 2000;
     const resVal = parseFloat(document.getElementById("cfg-d-res").value) || 0;
-    const balVal = Math.max(0, 2000 - resVal);
+    const balVal = Math.max(0, baseTicket - resVal);
     document.getElementById("cfg-d-bal").value = balVal.toFixed(2);
     syncContract();
   }
@@ -563,6 +572,7 @@
       document.getElementById("cfg-b-date2").value = d.bd2 || "";
       document.getElementById("cfg-c-date2").value = d.cd2 || "";
       document.getElementById("cfg-c-date3").value = d.cd3 || "";
+      if (d.dbase) document.getElementById("cfg-d-base").value = d.dbase;
       document.getElementById("cfg-d-res").value = d.dres || "500.00";
       document.getElementById("cfg-d-bal").value = d.dbal || "1500.00";
       document.getElementById("cfg-d-date").value = d.ddate || "";
@@ -591,6 +601,14 @@
     syncContract();
   }
 
+  function formatPriceText(amount) {
+    const num = Math.round(amount * 100) / 100;
+    if (num === 2000) return "$2,000.00 USD (Dos mil dólares de los Estados Unidos de América)";
+    if (num === 1500) return "$1,500.00 USD (Mil quinientos dólares de los Estados Unidos de América)";
+    if (num === 2100) return "$2,100.00 USD (Dos mil cien dólares de los Estados Unidos de América)";
+    return `$${num.toFixed(2)} USD (Dólares de los Estados Unidos de América)`;
+  }
+
   function syncContract() {
     document.getElementById("doc-company-address").innerText =
       document.getElementById("cfg-company-address").value.trim() || DEFAULT_LLC_ADDRESS;
@@ -600,34 +618,37 @@
     document.getElementById("doc-b3").innerHTML = document.getElementById("cfg-b3").checked ? " X " : "&nbsp;&nbsp;&nbsp;";
 
     const pm = document.getElementById("cfg-pay-mode").value;
-    document.getElementById("doc-pay-a").innerHTML = pm === "A" ? " X " : "&nbsp;&nbsp;&nbsp;";
-    document.getElementById("doc-pay-b").innerHTML = pm === "B" ? " X " : "&nbsp;&nbsp;&nbsp;";
-    document.getElementById("doc-pay-c").innerHTML = pm === "C" ? " X " : "&nbsp;&nbsp;&nbsp;";
-    document.getElementById("doc-pay-d").innerHTML = pm === "D" ? " X " : "&nbsp;&nbsp;&nbsp;";
-
-    // Ajustar texto de Precio Total ($2,000 USD vs $2,100 USD en 3 cuotas)
     const totalPriceEl = document.getElementById("doc-total-price");
-    if (pm === "C") {
-      totalPriceEl.innerText = "$2,100.00 USD (Dos mil cien dólares de los Estados Unidos de América)";
-    } else {
-      totalPriceEl.innerText = "$2,000.00 USD (Dos mil dólares de los Estados Unidos de América)";
+    const planContainerEl = document.getElementById("doc-single-payment-plan");
+    const moraClauseEl = document.getElementById("doc-mora-clause");
+
+    if (pm === "A") {
+      totalPriceEl.innerText = formatPriceText(2000);
+      planContainerEl.innerHTML = `<strong>Modalidad de Pago Único:</strong> Un (1) solo pago total de <strong><span class="dyn">$2,000.00 USD</span></strong>.`;
+      moraClauseEl.style.display = "none";
+    } else if (pm === "E") {
+      totalPriceEl.innerText = formatPriceText(1500);
+      planContainerEl.innerHTML = `<strong>Modalidad de Pago Único:</strong> Un (1) solo pago total de <strong><span class="dyn">$1,500.00 USD</span></strong>.`;
+      moraClauseEl.style.display = "none";
+    } else if (pm === "B") {
+      const bDate2 = document.getElementById("cfg-b-date2").value || "[FECHA 2DA CUOTA]";
+      totalPriceEl.innerText = formatPriceText(2000);
+      planContainerEl.innerHTML = `<strong>Plan de Dos (2) Cuotas:</strong> Un primer pago inicial de <strong>$1,000.00 USD</strong> y una segunda cuota de <strong>$1,000.00 USD</strong> pagadera a más tardar el día <strong><span class="dyn">${bDate2}</span></strong>.`;
+      moraClauseEl.style.display = "list-item";
+    } else if (pm === "C") {
+      const cDate2 = document.getElementById("cfg-c-date2").value || "[FECHA 2DA CUOTA]";
+      const cDate3 = document.getElementById("cfg-c-date3").value || "[FECHA 3RA CUOTA]";
+      totalPriceEl.innerText = formatPriceText(2100);
+      planContainerEl.innerHTML = `<strong>Plan de Tres (3) Cuotas:</strong> Un primer pago inicial de <strong>$700.00 USD</strong>, una segunda cuota de <strong>$700.00 USD</strong> pagadera a más tardar el día <strong><span class="dyn">${cDate2}</span></strong> y una tercera cuota de <strong>$700.00 USD</strong> pagadera a más tardar el día <strong><span class="dyn">${cDate3}</span></strong>.`;
+      moraClauseEl.style.display = "list-item";
+    } else if (pm === "D") {
+      const dRes = parseFloat(document.getElementById("cfg-d-res").value) || 0;
+      const dBal = parseFloat(document.getElementById("cfg-d-bal").value) || 0;
+      const dDate = document.getElementById("cfg-d-date").value || "[FECHA LÍMITE SALDO]";
+      totalPriceEl.innerText = formatPriceText(dRes + dBal);
+      planContainerEl.innerHTML = `<strong>Reserva de Cupo y Saldo Pendiente:</strong> Un abono inicial en concepto de reserva de cupo por <strong>$<span class="dyn">${dRes.toFixed(2)}</span> USD</strong> y un saldo restante de <strong>$<span class="dyn">${dBal.toFixed(2)}</span> USD</strong> pagadero a más tardar el día <strong><span class="dyn">${dDate}</span></strong>. Queda expresamente establecido que el abono de reserva asegura el cupo y las condiciones comerciales pactadas, iniciando las sesiones de acompañamiento y el cómputo de los noventa (90) días una vez integrado el pago acordado para la activación del programa.`;
+      moraClauseEl.style.display = "list-item";
     }
-
-    // Rellenar valores de cada modalidad
-    document.getElementById("doc-b-date2").innerText =
-      pm === "B" ? (document.getElementById("cfg-b-date2").value || "[FECHA 2DA CUOTA]") : "---";
-
-    document.getElementById("doc-c-date2").innerText =
-      pm === "C" ? (document.getElementById("cfg-c-date2").value || "[FECHA 2DA CUOTA]") : "---";
-    document.getElementById("doc-c-date3").innerText =
-      pm === "C" ? (document.getElementById("cfg-c-date3").value || "[FECHA 3RA CUOTA]") : "---";
-
-    document.getElementById("doc-d-res").innerText =
-      pm === "D" ? (document.getElementById("cfg-d-res").value || "---") : "---";
-    document.getElementById("doc-d-bal").innerText =
-      pm === "D" ? (document.getElementById("cfg-d-bal").value || "---") : "---";
-    document.getElementById("doc-d-date").innerText =
-      pm === "D" ? (document.getElementById("cfg-d-date").value || "[FECHA LÍMITE SALDO]") : "---";
 
     const name = document.getElementById("cli-name").value.trim() || "[NOMBRE DEL CLIENTE]";
     const id = document.getElementById("cli-id").value.trim() || "[NÚMERO ID / PASAPORTE]";
@@ -668,6 +689,7 @@
       bd2: document.getElementById("cfg-b-date2").value,
       cd2: document.getElementById("cfg-c-date2").value,
       cd3: document.getElementById("cfg-c-date3").value,
+      dbase: document.getElementById("cfg-d-base").value,
       dres: document.getElementById("cfg-d-res").value,
       dbal: document.getElementById("cfg-d-bal").value,
       ddate: document.getElementById("cfg-d-date").value,
