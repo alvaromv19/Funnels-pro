@@ -1,0 +1,2249 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagnóstico Pre-Llamada 1 a 1 · Mercedes Ríos | Tu Ruta Financiera</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: DM Sans & Libre Baskerville -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400..800;1,9..40,400..700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            canvas: '#060807',
+            surface: '#0D140F',
+            neon: '#39FF60',
+            deepGreen: '#1B7A34',
+            ctaRed: '#C42828',
+            ctaRedHover: '#DC2626',
+            ivory: '#EFF6F0',
+            gold: '#D4AF37',
+          },
+          fontFamily: {
+            sans: ['"DM Sans"', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['"Libre Baskerville"', 'Georgia', 'serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    :root {
+      --bg-canvas: #060807;
+      --bg-surface: #0D140F;
+      --neon-green: #39FF60;
+      --deep-green: #1B7A34;
+      --cta-red: #C42828;
+      --text-ivory: #EFF6F0;
+      --gold-accent: #D4AF37;
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-ivory);
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* Fondos Radiales y Glows de la Guía de Estilo */
+    .ambient-glow-top {
+      position: fixed;
+      top: -140px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 750px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(27, 122, 52, 0.28) 0%, rgba(6, 8, 7, 0) 70%);
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .ambient-glow-bottom {
+      position: fixed;
+      bottom: -180px;
+      right: -100px;
+      width: 600px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(57, 255, 96, 0.09) 0%, rgba(6, 8, 7, 0) 70%);
+      filter: blur(110px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Tarjetas High-Ticket */
+    .glass-card {
+      background: rgba(13, 20, 15, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(57, 255, 96, 0.18);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(239, 246, 240, 0.06);
+    }
+
+    /* Inputs del Formulario */
+    .input-premium {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(27, 122, 52, 0.65);
+      color: #EFF6F0;
+      transition: all 0.2s ease-in-out;
+    }
+    .input-premium::placeholder {
+      color: rgba(239, 246, 240, 0.38);
+    }
+    .input-premium:focus {
+      outline: none;
+      border-color: #39FF60;
+      background: rgba(27, 122, 52, 0.12);
+      box-shadow: 0 0 18px rgba(57, 255, 96, 0.22);
+    }
+
+    /* Opciones seleccionables (Radio & Checkboxes tipo tarjeta) */
+    .option-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(239, 246, 240, 0.12);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .option-card:hover {
+      border-color: rgba(57, 255, 96, 0.45);
+      background: rgba(27, 122, 52, 0.12);
+      transform: translateY(-1px);
+    }
+    .option-card.selected {
+      background: linear-gradient(135deg, rgba(27, 122, 52, 0.32) 0%, rgba(13, 20, 15, 0.9) 100%);
+      border-color: #39FF60;
+      box-shadow: 0 0 20px rgba(57, 255, 96, 0.18), inset 0 0 0 1px rgba(57, 255, 96, 0.3);
+    }
+
+    /* Botón Primario Rojo Acción (Guía de Estilo) */
+    .btn-primary-cta {
+      background: linear-gradient(180deg, #D93030 0%, #C42828 100%);
+      color: #FFFFFF;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      box-shadow: 0 8px 28px rgba(196, 40, 40, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: all 0.2s ease-in-out;
+    }
+    .btn-primary-cta:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 34px rgba(196, 40, 40, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+      background: linear-gradient(180deg, #E53939 0%, #C42828 100%);
+    }
+    .btn-primary-cta:active:not(:disabled) {
+      transform: translateY(0);
+    }
+
+    /* Botón Secundario Outline Verde Neón */
+    .btn-secondary-neon {
+      background: transparent;
+      border: 1px solid rgba(57, 255, 96, 0.55);
+      color: #EFF6F0;
+      transition: all 0.2s ease-in-out;
+    }
+    .btn-secondary-neon:hover {
+      background: rgba(27, 122, 52, 0.22);
+      border-color: #39FF60;
+      box-shadow: 0 0 16px rgba(57, 255, 96, 0.2);
+    }
+
+    /* Callout de Herramientas Recomendadas */
+    .tool-callout {
+      background: linear-gradient(135deg, rgba(27, 122, 52, 0.22) 0%, rgba(6, 8, 7, 0.85) 100%);
+      border-left: 3px solid #39FF60;
+      border-top: 1px solid rgba(57, 255, 96, 0.22);
+      border-right: 1px solid rgba(57, 255, 96, 0.15);
+      border-bottom: 1px solid rgba(57, 255, 96, 0.15);
+    }
+
+    /* Select custom */
+    select.input-premium option {
+      background-color: #0D140F;
+      color: #EFF6F0;
+      padding: 10px;
+    }
+
+    /* Animaciones suaves */
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-step {
+      animation: fadeInSlide 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Scrollbar elegante */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #060807; }
+    ::-webkit-scrollbar-thumb { background: #1B7A34; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #39FF60; }
+  </style>
+</head>
+<body class="relative selection:bg-neon selection:text-canvas">
+
+  <!-- Luces ambientales de fondo -->
+  <div class="ambient-glow-top"></div>
+  <div class="ambient-glow-bottom"></div>
+
+  <!-- BARRA SUPERIOR DE NAVEGACIÓN Y HERRAMIENTAS DE ADMINISTRADOR -->
+  <header class="relative z-20 border-b border-neon/15 bg-canvas/80 backdrop-blur-md sticky top-0">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <!-- Marca -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-lg bg-deepGreen/30 border border-neon/40 flex items-center justify-center shadow-[0_0_15px_rgba(57,255,96,0.2)]">
+          <span class="font-serif font-bold text-neon text-lg tracking-tighter">MR</span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-[11px] uppercase tracking-[0.22em] text-neon font-bold">Tu Ruta Financiera</span>
+            <span class="hidden sm:inline-block text-[10px] uppercase tracking-widest px-2 py-0.5 rounded bg-gold/15 text-gold border border-gold/30 font-semibold">Ruta 90 · 1 a 1</span>
+          </div>
+          <p class="text-xs text-ivory/70">LIFEOFNENA LLC · Diagnóstico Pre-Llamada con Mercedes Ríos</p>
+        </div>
+      </div>
+
+      <!-- Controles de Vista y Configuración de Google Sheets -->
+      <div class="flex items-center gap-2">
+        <!-- Selector de Modo: Paso a Paso vs Vista Completa -->
+        <button id="btn-toggle-view" onclick="toggleViewMode()" type="button"
+          class="text-xs px-3 py-2 rounded-lg border border-ivory/15 bg-white/5 hover:border-neon/50 text-ivory/85 flex items-center gap-1.5 transition"
+          title="Alternar entre Paso a Paso o Vista Completa">
+          <i data-lucide="layers" class="w-3.5 h-3.5 text-neon"></i>
+          <span id="view-mode-label">Vista: Paso a Paso</span>
+        </button>
+
+        <!-- Botón de Revisión & Criterio de las 3 Rutas -->
+        <button onclick="openModal('modal-criterios')" type="button"
+          class="text-xs px-3 py-2 rounded-lg border border-gold/35 bg-gold/10 hover:bg-gold/20 text-gold flex items-center gap-1.5 transition">
+          <i data-lucide="compass" class="w-3.5 h-3.5"></i>
+          <span class="hidden md:inline">Rutas y Análisis</span>
+        </button>
+
+        <!-- Botón Configuración Google Sheets / Apps Script -->
+        <button onclick="openModal('modal-sheets')" type="button"
+          class="text-xs px-3 py-2 rounded-lg border border-neon/40 bg-deepGreen/25 hover:bg-deepGreen/40 text-ivory font-medium flex items-center gap-1.5 transition shadow-[0_0_12px_rgba(57,255,96,0.15)]">
+          <i data-lucide="database" class="w-3.5 h-3.5 text-neon"></i>
+          <span>Apps Script / Sheets</span>
+          <span id="sheets-status-dot" class="w-2 h-2 rounded-full bg-amber-400"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-8 pb-20">
+
+    <!-- ENCABEZADO EDITORIAL DEL FORMULARIO -->
+    <section class="text-center mb-8">
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-deepGreen/25 border border-neon/30 text-neon text-xs font-semibold uppercase tracking-widest mb-4">
+        <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+        Expediente Confidencial Pre-Llamada 1 a 1
+      </div>
+      <h1 class="text-2xl sm:text-4xl md:text-[42px] font-extrabold uppercase tracking-tight text-ivory leading-[1.08] mb-3">
+        Diagnóstico Estratégico <span class="text-neon">Ruta 90</span>
+      </h1>
+      <p class="font-serif italic text-ivory/75 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed">
+        “No me faltaba dinero. Me faltaba una ruta — y una ruta arranca con una estructura.”
+      </p>
+      <p class="text-xs sm:text-sm text-ivory/65 max-w-xl mx-auto mt-3">
+        Completa este diagnóstico en menos de 3 minutos antes de nuestra sesión 1 a 1. Con tus respuestas diseñaremos tu plan exacto de estructura (LLC), activación bancaria, acceso a crédito e inversión.
+      </p>
+    </section>
+
+    <!-- BARRA DE PROGRESO Y NAVEGADOR DE SECCIONES -->
+    <div id="progress-container" class="glass-card rounded-2xl p-4 sm:p-5 mb-6">
+      <div class="flex items-center justify-between text-xs mb-2.5">
+        <span class="font-bold uppercase tracking-wider text-neon flex items-center gap-1.5">
+          <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+          <span id="progress-step-title">Paso 1 de 6 · Identificación y Situación Fiscal</span>
+        </span>
+        <span id="progress-percent" class="font-mono font-bold text-ivory/80 bg-white/5 px-2.5 py-0.5 rounded border border-ivory/10">17%</span>
+      </div>
+      <!-- Barra visual -->
+      <div class="w-full h-2 bg-white/5 rounded-full overflow-hidden p-0.5 border border-white/10">
+        <div id="progress-bar-fill" class="h-full bg-gradient-to-r from-deepGreen via-neon to-neon rounded-full transition-all duration-300 shadow-[0_0_12px_#39FF60]" style="width: 16.66%"></div>
+      </div>
+      <!-- Píldoras de acceso rápido a los 6 pasos -->
+      <div class="grid grid-cols-6 gap-1.5 mt-3.5">
+        <button type="button" onclick="goToStep(1)" id="pill-step-1" class="step-pill text-[11px] py-1.5 px-2 rounded-lg font-semibold border transition truncate text-center">
+          1. Fiscal / ID
+        </button>
+        <button type="button" onclick="goToStep(2)" id="pill-step-2" class="step-pill text-[11px] py-1.5 px-2 rounded-lg font-semibold border transition truncate text-center">
+          2. Crédito
+        </button>
+        <button type="button" onclick="goToStep(3)" id="pill-step-3" class="step-pill text-[11px] py-1.5 px-2 rounded-lg font-semibold border transition truncate text-center">
+          3. Empresa LLC
+        </button>
+        <button type="button" onclick="goToStep(4)" id="pill-step-4" class="step-pill text-[11px] py-1.5 px-2 rounded-lg font-semibold border transition truncate text-center">
+          4. Inversión
+        </button>
+        <button type="button" onclick="goToStep(5)" id="pill-step-5" class="step-pill text-[11px] py-1.5 px-2 rounded-lg font-semibold border transition truncate text-center">
+          5. Dudas
+        </button>
+        <button type="button" onclick="goToStep(6)" id="pill-step-6" class="step-pill text-[11px] py-1.5 px-2 rounded-lg font-semibold border transition truncate text-center">
+          6. Cierre
+        </button>
+      </div>
+    </div>
+
+    <!-- BANNER DE ALERTA DE VALIDACIÓN (SIN ALERT NATIVO) -->
+    <div id="validation-banner" class="hidden mb-5 rounded-xl bg-ctaRed/20 border border-ctaRed text-ivory px-4 py-3.5 flex items-start gap-3 animate-step">
+      <i data-lucide="alert-triangle" class="w-5 h-5 text-red-400 shrink-0 mt-0.5"></i>
+      <div class="flex-1 text-sm">
+        <p class="font-bold text-red-200">Por favor completa los campos requeridos antes de continuar:</p>
+        <p id="validation-message" class="text-ivory/85 text-xs mt-0.5"></p>
+      </div>
+      <button type="button" onclick="hideValidationBanner()" class="text-ivory/60 hover:text-ivory">
+        <i data-lucide="x" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- FORMULARIO PRINCIPAL -->
+    <form id="diagnostic-form" onsubmit="handleFormSubmit(event)" novalidate>
+
+      <!-- ===================================================================
+           SECCIÓN 1: DATOS DE CONTACTO Y SITUACIÓN MIGRATORIA / FISCAL
+           =================================================================== -->
+      <section id="step-1" class="form-step glass-card rounded-2xl p-6 sm:p-8 mb-6 animate-step">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 mb-6 border-b border-ivory/10">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-neon">Sección 01 de 06</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold uppercase tracking-tight text-ivory mt-0.5">
+              Datos de Contacto y Situación Fiscal
+            </h2>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-ivory/10 text-ivory/70">
+            Identificación del Cliente
+          </span>
+        </div>
+
+        <!-- Bloque de Identificación Obligatoria (Nombre, Correo y WhatsApp) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-7 p-4 rounded-xl bg-white/[0.02] border border-neon/20">
+          <!-- Nombre Completo -->
+          <div>
+            <label for="nombreCompleto" class="block text-xs font-bold uppercase tracking-wider text-neon mb-1.5">
+              Nombre Completo <span class="text-red-400">*</span>
+            </label>
+            <div class="relative">
+              <i data-lucide="user" class="w-4 h-4 text-ivory/40 absolute left-3.5 top-3.5"></i>
+              <input type="text" id="nombreCompleto" name="nombreCompleto" required
+                placeholder="Ej. María Fernanda Gómez"
+                class="input-premium w-full pl-10 pr-4 py-2.5 rounded-xl text-sm" />
+            </div>
+          </div>
+
+          <!-- Correo Electrónico -->
+          <div>
+            <label for="correoElectronico" class="block text-xs font-bold uppercase tracking-wider text-neon mb-1.5">
+              Correo Electrónico <span class="text-red-400">*</span>
+            </label>
+            <div class="relative">
+              <i data-lucide="mail" class="w-4 h-4 text-ivory/40 absolute left-3.5 top-3.5"></i>
+              <input type="email" id="correoElectronico" name="correoElectronico" required
+                placeholder="tu@correo.com"
+                class="input-premium w-full pl-10 pr-4 py-2.5 rounded-xl text-sm" />
+            </div>
+          </div>
+
+          <!-- Teléfono (WhatsApp) -->
+          <div>
+            <label for="telefonoWhatsapp" class="block text-xs font-bold uppercase tracking-wider text-neon mb-1.5">
+              Teléfono / WhatsApp <span class="text-red-400">*</span>
+            </label>
+            <div class="relative">
+              <i data-lucide="phone" class="w-4 h-4 text-ivory/40 absolute left-3.5 top-3.5"></i>
+              <input type="tel" id="telefonoWhatsapp" name="telefonoWhatsapp" required
+                placeholder="+1 (786) 000-0000"
+                class="input-premium w-full pl-10 pr-4 py-2.5 rounded-xl text-sm" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Pregunta 1.1: SSN o ITIN -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            1. ¿Cuentas actualmente con SSN (Seguro Social) o ITIN en EE. UU.? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" data-radio-group="estatusFiscal">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="estatusFiscal" value="SSN" class="sr-only" onchange="handleRadioChange(this); updateDynamicCallouts();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <div>
+                <span class="text-sm font-bold text-ivory block">SSN (Seguro Social)</span>
+                <span class="text-xs text-ivory/60">Vigente para operar y construir crédito</span>
+              </div>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="estatusFiscal" value="ITIN vigente" class="sr-only" onchange="handleRadioChange(this); updateDynamicCallouts();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <div>
+                <span class="text-sm font-bold text-ivory block">ITIN vigente</span>
+                <span class="text-xs text-ivory/60">Número de identificación fiscal activo</span>
+              </div>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="estatusFiscal" value="ITIN en trámite" class="sr-only" onchange="handleRadioChange(this); updateDynamicCallouts();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <div>
+                <span class="text-sm font-bold text-ivory block">ITIN en trámite</span>
+                <span class="text-xs text-ivory/60">Ya envié la solicitud al IRS</span>
+              </div>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="estatusFiscal" value="No tengo ninguno" class="sr-only" onchange="handleRadioChange(this); updateDynamicCallouts();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <div>
+                <span class="text-sm font-bold text-ivory block">No tengo ninguno</span>
+                <span class="text-xs text-ivory/60">Necesito orientación desde cero</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Callout Dinámico Herramienta ITIN (MyFreeScoreNow & Firstcard) -->
+        <div id="callout-itin" class="tool-callout rounded-xl p-4 mb-6 hidden animate-step">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-neon/15 border border-neon/40 flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="sparkles" class="w-4 h-4 text-neon"></i>
+            </div>
+            <div class="text-xs sm:text-sm">
+              <p class="font-bold text-neon uppercase tracking-wider text-xs mb-1">
+                Recurso Recomendado por Mercedes para Perfiles con ITIN
+              </p>
+              <p class="text-ivory/85 leading-relaxed">
+                Si no cuentas con SSN pero operas o vas a operar con <strong>ITIN</strong>, puedes monitorear tus 3 burós de crédito en <strong>MyFreeScoreNow</strong> (una de las pocas plataformas que da acceso real a los 3 burós con ITIN). Además, <strong>Firstcard</strong> es una excelente herramienta aliada para empezar a construir historial crediticio con ITIN.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pregunta 1.2: Guía para tramitar o renovar ITIN -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            2. Si no tienes ITIN o está vencido, ¿te gustaría recibir la guía para tramitarlo o renovarlo? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" data-radio-group="guiaItin">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="guiaItin" value="Sí" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, me interesa</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="guiaItin" value="No" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No por ahora</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="guiaItin" value="Ya lo tengo" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Ya tengo SSN / ITIN vigente</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 1.3: Declaraciones de impuestos (Taxes) últimos 2 años -->
+        <div>
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            3. ¿Tienes declaraciones de impuestos (Taxes) presentadas en EE. UU. en los últimos 2 años? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" data-radio-group="impuestos2Anios">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="impuestos2Anios" value="Sí" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, al día</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="impuestos2Anios" value="No" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No he declarado</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="impuestos2Anios" value="No estoy seguro" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No estoy seguro(a)</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SECCIÓN 2: SITUACIÓN CREDITICIA PERSONAL ACTUAL
+           =================================================================== -->
+      <section id="step-2" class="form-step glass-card rounded-2xl p-6 sm:p-8 mb-6 hidden animate-step">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 mb-6 border-b border-ivory/10">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-neon">Sección 02 de 06</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold uppercase tracking-tight text-ivory mt-0.5">
+              Situación Crediticia Personal Actual
+            </h2>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-ivory/10 text-ivory/70">
+            Evaluación de Garantía Personal
+          </span>
+        </div>
+
+        <!-- Pregunta 2.1: Conoces tu puntaje crediticio -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            4. ¿Conoces tu puntaje crediticio personal actual en EE. UU.? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" data-radio-group="conocePuntaje">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="conocePuntaje" value="Sí, lo reviso regularmente" class="sr-only" onchange="handleRadioChange(this); updateDynamicCallouts();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, lo reviso regularmente</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="conocePuntaje" value="Lo revisé hace tiempo" class="sr-only" onchange="handleRadioChange(this); updateDynamicCallouts();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Lo revisé hace tiempo</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="conocePuntaje" value="No lo conozco" class="sr-only" onchange="handleRadioChange(this); updateDynamicCallouts();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No lo conozco</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="conocePuntaje" value="No tengo crédito aún" class="sr-only" onchange="handleRadioChange(this); updateDynamicCallouts();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No tengo crédito aún</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 2.2 (Optimización para clasificar Ruta > 680): Rango aproximado de puntaje -->
+        <div class="mb-6">
+          <label for="rangoPuntaje" class="block text-sm sm:text-base font-bold text-ivory mb-2">
+            5. Si conoces tu puntaje aproximado, ¿en qué rango se encuentra hoy? <span class="text-red-400">*</span>
+          </label>
+          <p class="text-xs text-ivory/60 mb-2.5">Este dato nos ayuda a saber si tu crédito ya supera los 680 puntos para apalancar la LLC de inmediato.</p>
+          <select id="rangoPuntaje" name="rangoPuntaje" required class="input-premium w-full px-4 py-3 rounded-xl text-sm">
+            <option value="">Selecciona el rango aproximado...</option>
+            <option value="Más de 740 (Excelente)">Más de 740 (Excelente · Listo para fondeo)</option>
+            <option value="680 – 739 (Bueno - Califica Ruta Express)">680 – 739 (Bueno · Califica para crédito empresarial)</option>
+            <option value="620 – 679 (Regular - Requiere optimización)">620 – 679 (Regular · Requiere optimización previa)</option>
+            <option value="Menos de 620 (Necesita reparación)">Menos de 620 (Comprometido · Necesita reparación primero)</option>
+            <option value="No lo sé / Aún no tengo historial">No lo sé con certeza / Aún no tengo historial</option>
+          </select>
+        </div>
+
+        <!-- Pregunta 2.3: Revisarlo gratis o con herramienta de monitoreo -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            6. Si no lo conoces con exactitud, ¿te gustaría que te indique cómo revisarlo gratis o con una herramienta de monitoreo? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" data-radio-group="ayudaMonitoreo">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="ayudaMonitoreo" value="Sí" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, envíame la herramienta</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="ayudaMonitoreo" value="No" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No, ya monitoreo mis 3 burós</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 2.4: Tarjetas o préstamos activos -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            7. ¿Tienes tarjetas de crédito o préstamos personales activos a tu nombre en EE. UU.? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" data-radio-group="tarjetasActivas">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="tarjetasActivas" value="Sí" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, varios activos</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="tarjetasActivas" value="Algunos" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Algunos (pocos)</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="tarjetasActivas" value="No" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No tengo ninguno</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 2.5: Colecciones, bancarrota o pagos tardíos -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            8. ¿Has tenido alguna cuenta en colecciones, bancarrota o cargos por pagos tardíos en los últimos 2 años? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" data-radio-group="historialNegativo">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="historialNegativo" value="No" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No, historial limpio</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="historialNegativo" value="Sí" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, he tenido</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="historialNegativo" value="Prefiero discutirlo en la llamada" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Prefiero discutirlo en la llamada</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Callout Herramienta para Crédito: SmartCredit -->
+        <div class="tool-callout rounded-xl p-4">
+          <div class="flex items-start gap-3">
+            <div class="w-8 h-8 rounded-lg bg-neon/15 border border-neon/40 flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="trending-up" class="w-4 h-4 text-neon"></i>
+            </div>
+            <div class="text-xs sm:text-sm">
+              <p class="font-bold text-neon uppercase tracking-wider text-xs mb-1">
+                Herramienta Clave de Diagnóstico: SmartCredit
+              </p>
+              <p class="text-ivory/85 leading-relaxed">
+                Para nuestra llamada recomendamos <strong>SmartCredit (smartcredit.com)</strong>: te permite visualizar el reporte completo de los <strong>3 burós (Experian, Equifax y TransUnion)</strong> y activar su plan de acción de 120 días para optimizar tu puntaje antes de tocar los bancos para tu LLC.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SECCIÓN 3: PERFIL DE LA EMPRESA (LLC) Y NEGOCIO ACTUAL
+           =================================================================== -->
+      <section id="step-3" class="form-step glass-card rounded-2xl p-6 sm:p-8 mb-6 hidden animate-step">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 mb-6 border-b border-ivory/10">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-neon">Sección 03 de 06</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold uppercase tracking-tight text-ivory mt-0.5">
+              Perfil de la Empresa (LLC) y Negocio Actual
+            </h2>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-ivory/10 text-ivory/70">
+            Movimiento 1 y 1.5 · Estructura
+          </span>
+        </div>
+
+        <!-- Pregunta 3.1: ¿Ya tienes una LLC formada? -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            9. ¿Ya tienes una LLC formada en los Estados Unidos? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" data-radio-group="tieneLLC">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="tieneLLC" value="Sí, activa" class="sr-only" onchange="handleRadioChange(this); handleLLCToggle();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <div>
+                <span class="text-sm font-bold text-ivory block">Sí, activa</span>
+                <span class="text-xs text-ivory/60">Al día con el estado</span>
+              </div>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="tieneLLC" value="Sí, pero inactiva" class="sr-only" onchange="handleRadioChange(this); handleLLCToggle();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <div>
+                <span class="text-sm font-bold text-ivory block">Sí, pero inactiva</span>
+                <span class="text-xs text-ivory/60">Requiere auditoría / activación</span>
+              </div>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="tieneLLC" value="No, la quiero formar con tu asesoría" class="sr-only" onchange="handleRadioChange(this); handleLLCToggle();" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <div>
+                <span class="text-sm font-bold text-ivory block">No tengo aún</span>
+                <span class="text-xs text-ivory/60">La quiero formar con tu asesoría</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 3.2: ¿En qué estado está registrada la LLC? -->
+        <div class="mb-6">
+          <label for="estadoLLC" class="block text-sm sm:text-base font-bold text-ivory mb-2">
+            10. ¿En qué estado está registrada la LLC (o en cuál te gustaría registrarla)? <span class="text-red-400">*</span>
+          </label>
+          <input type="text" id="estadoLLC" name="estadoLLC" required
+            placeholder="Ej. Florida, Wyoming, Delaware, o 'Aún no tengo / Por definir en llamada'"
+            class="input-premium w-full px-4 py-3 rounded-xl text-sm" />
+        </div>
+
+        <!-- Pregunta 3.3: ¿La LLC ya tiene EIN? -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            11. ¿La LLC ya tiene EIN (Número de Identificación Fiscal Empresarial del IRS)? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" data-radio-group="tieneEIN">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="tieneEIN" value="Sí" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, ya tiene EIN</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="tieneEIN" value="En trámite" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">En trámite con el IRS</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="tieneEIN" value="No" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No tiene aún</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 3.4: ¿Tienes cuenta bancaria empresarial separada? -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            12. ¿Tienes una cuenta bancaria empresarial separada de tu cuenta personal? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" data-radio-group="cuentaBancaria">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="cuentaBancaria" value="Sí" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, cuenta de negocio activa</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="cuentaBancaria" value="No" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No, aún no tengo cuenta empresarial</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 3.5: Presencia digital o página web -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            13. ¿La empresa o negocio tiene página web o presencia digital activa? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" data-radio-group="presenciaDigital">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="presenciaDigital" value="Sí, con ventas" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, con ventas</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="presenciaDigital" value="Sí, solo informativa" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, solo informativa</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="presenciaDigital" value="No tiene" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No tiene</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 3.6 y 3.7 en Grid: Años operando e Ingreso mensual -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="aniosOperando" class="block text-sm font-bold text-ivory mb-2">
+              14. ¿Cuántos años lleva operando la empresa o negocio? <span class="text-red-400">*</span>
+            </label>
+            <select id="aniosOperando" name="aniosOperando" required class="input-premium w-full px-4 py-3 rounded-xl text-sm">
+              <option value="">Selecciona una opción...</option>
+              <option value="Aún no opera / Proyecto nuevo">Aún no opera / Proyecto nuevo</option>
+              <option value="Menos de 1 año">Menos de 1 año</option>
+              <option value="1–2 años">1–2 años</option>
+              <option value="3–5 años">3–5 años</option>
+              <option value="Más de 5 años">Más de 5 años</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="ingresoMensual" class="block text-sm font-bold text-ivory mb-2">
+              15. ¿Cuál es el ingreso mensual aproximado de la empresa? <span class="text-red-400">*</span>
+            </label>
+            <select id="ingresoMensual" name="ingresoMensual" required class="input-premium w-full px-4 py-3 rounded-xl text-sm">
+              <option value="">Selecciona el rango mensual...</option>
+              <option value="Aún no genera ingresos">Aún no genera ingresos</option>
+              <option value="Menos de $2,000 USD">Menos de $2,000 USD</option>
+              <option value="$2,000 – $5,000 USD">$2,000 – $5,000 USD</option>
+              <option value="$5,000 – $10,000 USD">$5,000 – $10,000 USD</option>
+              <option value="Más de $10,000 USD">Más de $10,000 USD</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SECCIÓN 4: OBJETIVO CON EL CRÉDITO Y TIPO DE INVERSIÓN
+           =================================================================== -->
+      <section id="step-4" class="form-step glass-card rounded-2xl p-6 sm:p-8 mb-6 hidden animate-step">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 mb-6 border-b border-ivory/10">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-neon">Sección 04 de 06</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold uppercase tracking-tight text-ivory mt-0.5">
+              Objetivo con el Crédito y Tipo de Inversión
+            </h2>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-ivory/10 text-ivory/70">
+            Movimiento 2 y 3 · Capital y Despliegue
+          </span>
+        </div>
+
+        <!-- Pregunta 4.1: ¿Qué esperas lograr con esta asesoría? (Selección Múltiple) -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-1">
+            16. ¿Qué esperas lograr con esta asesoría? <span class="text-red-400">*</span>
+          </label>
+          <p class="text-xs text-ivory/60 mb-3">Puedes seleccionar todas las opciones que apliquen a tu caso.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="group-objetivosAsesoria">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="objetivosAsesoria" value="Formar la LLC correctamente" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Formar la LLC correctamente</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="objetivosAsesoria" value="Abrir línea de crédito empresarial" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Abrir línea de crédito empresarial</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="objetivosAsesoria" value="Obtener financiamiento para invertir" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Obtener financiamiento para invertir</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="objetivosAsesoria" value="Mejorar mi crédito personal para calificar" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Mejorar mi crédito personal para calificar</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="objetivosAsesoria" value="Tramitar mi ITIN" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Tramitar mi ITIN</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3 border-neon/30">
+              <input type="checkbox" name="objetivosAsesoria" value="Todo lo anterior en orden" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-bold text-neon">Todo lo anterior en orden (Ruta 90)</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 4.2: ¿En qué piensas invertir el financiamiento? (Selección Múltiple) -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-1">
+            17. ¿En qué piensas invertir el financiamiento? <span class="text-red-400">*</span>
+          </label>
+          <p class="text-xs text-ivory/60 mb-3">Selecciona una o varias verticales de interés.</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="group-destinoInversion">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="destinoInversion" value="Bienes raíces" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Bienes raíces (Ej. Préstamo DSCR / Rentas)</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="destinoInversion" value="Bolsa / Trading" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Bolsa de Valores / Trading / Oro</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="destinoInversion" value="Capital de trabajo para mi negocio actual" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Capital de trabajo para mi negocio actual</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="destinoInversion" value="Comprar equipo o inventario" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Comprar equipo o inventario</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3 sm:col-span-2">
+              <input type="checkbox" name="destinoInversion" value="Aún no lo defino" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Aún no lo defino — quiero definir mi ruta en la asesoría</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 4.3 y 4.4 en Grid: Monto de Capital y Urgencia -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="capitalNecesario" class="block text-sm font-bold text-ivory mb-2">
+              18. ¿Cuánto capital aproximadamente necesitas para arrancar o escalar? <span class="text-red-400">*</span>
+            </label>
+            <select id="capitalNecesario" name="capitalNecesario" required class="input-premium w-full px-4 py-3 rounded-xl text-sm">
+              <option value="">Selecciona el monto estimado...</option>
+              <option value="Menos de $10,000 USD">Menos de $10,000 USD</option>
+              <option value="$10,000 – $25,000 USD">$10,000 – $25,000 USD</option>
+              <option value="$25,000 – $50,000 USD">$25,000 – $50,000 USD</option>
+              <option value="$50,000 – $100,000 USD">$50,000 – $100,000 USD</option>
+              <option value="Más de $100,000 USD">Más de $100,000 USD</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="urgenciaFinanciamiento" class="block text-sm font-bold text-ivory mb-2">
+              19. ¿Qué nivel de urgencia tienes por obtener el financiamiento? <span class="text-red-400">*</span>
+            </label>
+            <select id="urgenciaFinanciamiento" name="urgenciaFinanciamiento" required class="input-premium w-full px-4 py-3 rounded-xl text-sm">
+              <option value="">Selecciona tu horizonte de tiempo...</option>
+              <option value="Lo antes posible">Lo antes posible (Acción inmediata)</option>
+              <option value="En los próximos 3 meses">En los próximos 3 meses (Ruta 90)</option>
+              <option value="En 6 meses o más">En 6 meses o más</option>
+              <option value="Solo quiero dejar todo listo para el futuro">Solo quiero dejar todo listo para el futuro</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SECCIÓN 5: DUDAS PRINCIPALES Y EXPECTATIVAS DE LA ASESORÍA
+           =================================================================== -->
+      <section id="step-5" class="form-step glass-card rounded-2xl p-6 sm:p-8 mb-6 hidden animate-step">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 mb-6 border-b border-ivory/10">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-neon">Sección 05 de 06</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold uppercase tracking-tight text-ivory mt-0.5">
+              Dudas Principales y Expectativas
+            </h2>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full bg-white/5 border border-ivory/10 text-ivory/70">
+            Enfoque de la Llamada 1 a 1
+          </span>
+        </div>
+
+        <!-- Pregunta 5.1: Mayor duda o preocupación (Selección múltiple) -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-1">
+            20. ¿Cuál es tu mayor duda o preocupación sobre este proceso? <span class="text-red-400">*</span>
+          </label>
+          <p class="text-xs text-ivory/60 mb-3">Marca todas las que quieras resolver directamente con Mercedes en la llamada.</p>
+          <div class="grid grid-cols-1 gap-3" id="group-dudasPrincipales">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="dudasPrincipales" value="No sé si mi crédito personal me permite calificar" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No sé si mi crédito personal actual me permite calificar</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="dudasPrincipales" value="No entiendo cómo separar mis finanzas personales de la LLC" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No entiendo cómo separar mis finanzas personales de la LLC</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="dudasPrincipales" value="No sé qué banco o lender aprobará a una LLC nueva" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No sé qué banco o lender aprobará a una LLC nueva</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="dudasPrincipales" value="Me preocupa el tema de impuestos o migratorio" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Me preocupa el tema de impuestos o migratorio</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" name="dudasPrincipales" value="No sé si invertir en bolsa o bienes raíces con crédito empresarial" class="sr-only" onchange="handleCheckboxChange(this)" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No sé si invertir en bolsa o bienes raíces con crédito empresarial</span>
+            </label>
+
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="checkbox" id="chk-otra-duda" name="dudasPrincipales" value="Otra" class="sr-only" onchange="handleCheckboxChange(this); toggleOtraDuda();" />
+              <span class="w-5 h-5 rounded-md border border-ivory/30 flex items-center justify-center shrink-0 check-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Otra duda específica (especificar abajo)</span>
+            </label>
+          </div>
+
+          <!-- Campo abierto condicional para "Otra" -->
+          <div id="box-otra-duda" class="mt-3 hidden animate-step">
+            <input type="text" id="otraDudaTexto" name="otraDudaTexto"
+              placeholder="Escribe aquí tu duda o caso particular para revisarlo en la sesión..."
+              class="input-premium w-full px-4 py-3 rounded-xl text-sm" />
+          </div>
+        </div>
+
+        <!-- Pregunta 5.2: Comodidad manejando trámites en línea -->
+        <div>
+          <label for="comodidadDigital" class="block text-sm sm:text-base font-bold text-ivory mb-2">
+            21. ¿Qué tan cómodo(a) te sientes manejando trámites en línea (portales de burós, aplicaciones bancarias)? <span class="text-red-400">*</span>
+          </label>
+          <select id="comodidadDigital" name="comodidadDigital" required class="input-premium w-full px-4 py-3 rounded-xl text-sm">
+            <option value="">Selecciona tu nivel de comodidad digital...</option>
+            <option value="Muy cómodo">Muy cómodo(a) — me manejo bien con portales y apps</option>
+            <option value="Algo cómodo">Algo cómodo(a) — puedo hacerlo con indicaciones claras</option>
+            <option value="Poco cómodo">Poco cómodo(a) — prefiero supervisión cercana</option>
+            <option value="Necesito ayuda paso a paso">Necesito ayuda paso a paso en pantalla compartida</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           SECCIÓN 6: AUTORIZACIÓN Y SIGUIENTE PASO
+           =================================================================== -->
+      <section id="step-6" class="form-step glass-card rounded-2xl p-6 sm:p-8 mb-6 hidden animate-step">
+        <div class="flex flex-wrap items-center justify-between gap-2 pb-5 mb-6 border-b border-ivory/10">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-neon">Sección 06 de 06</span>
+            <h2 class="text-xl sm:text-2xl font-extrabold uppercase tracking-tight text-ivory mt-0.5">
+              Autorización y Compromiso de Seguimiento
+            </h2>
+          </div>
+          <span class="text-xs px-3 py-1 rounded-full bg-gold/15 border border-gold/35 text-gold font-semibold">
+            Paso Final
+          </span>
+        </div>
+
+        <!-- Pregunta 6.1: Autorización para revisar reporte en llamada -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            22. ¿Autorizas que durante la llamada 1 a 1 revisemos juntos tu reporte de crédito (personal o empresarial) para darte un diagnóstico más preciso? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" data-radio-group="autorizaRevision">
+            <label class="option-card rounded-xl p-4 flex items-center gap-3">
+              <input type="radio" name="autorizaRevision" value="Sí" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <div>
+                <span class="text-sm font-bold text-ivory block">Sí, autorizo revisarlo en vivo</span>
+                <span class="text-xs text-ivory/60">Para definir mi estrategia exacta sin suposiciones</span>
+              </div>
+            </label>
+            <label class="option-card rounded-xl p-4 flex items-center gap-3">
+              <input type="radio" name="autorizaRevision" value="No" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <div>
+                <span class="text-sm font-bold text-ivory block">No por el momento</span>
+                <span class="text-xs text-ivory/60">Prefiero conversar primero sobre mi caso</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Pregunta 6.2: Disponibilidad para 2-3 llamadas de seguimiento -->
+        <div class="mb-6">
+          <label class="block text-sm sm:text-base font-bold text-ivory mb-2.5">
+            23. ¿Tienes disponibilidad para 2–3 llamadas de seguimiento e implementación si tu ruta lo requiere? <span class="text-red-400">*</span>
+          </label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" data-radio-group="disponibilidadLlamadas">
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="disponibilidadLlamadas" value="Sí" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Sí, 100% comprometido(a)</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="disponibilidadLlamadas" value="Depende" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">Depende de los horarios</span>
+            </label>
+            <label class="option-card rounded-xl p-3.5 flex items-center gap-3">
+              <input type="radio" name="disponibilidadLlamadas" value="No" class="sr-only" onchange="handleRadioChange(this)" />
+              <span class="w-5 h-5 rounded-full border border-ivory/30 flex items-center justify-center shrink-0 radio-indicator"></span>
+              <span class="text-sm font-semibold text-ivory">No tengo disponibilidad</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Nota opcional o comentario adicional para Mercedes -->
+        <div class="mb-2">
+          <label for="notasAdicionales" class="block text-xs font-bold uppercase tracking-wider text-ivory/75 mb-2">
+            Comentario adicional para Mercedes (Opcional)
+          </label>
+          <textarea id="notasAdicionales" name="notasAdicionales" rows="2"
+            placeholder="Si deseas agregar algún detalle sobre tu situación actual o meta para estos 90 días..."
+            class="input-premium w-full px-4 py-3 rounded-xl text-sm"></textarea>
+        </div>
+      </section>
+
+      <!-- BOTONES DE NAVEGACIÓN DEL FORMULARIO -->
+      <div id="form-nav-bar" class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+        <button type="button" id="btn-prev" onclick="prevStep()"
+          class="btn-secondary-neon w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hidden">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i>
+          Paso Anterior
+        </button>
+
+        <div class="flex-1"></div>
+
+        <button type="button" id="btn-next" onclick="nextStep()"
+          class="btn-primary-cta w-full sm:w-auto px-8 py-4 rounded-xl text-sm flex items-center justify-center gap-2.5">
+          <span>Siguiente Paso</span>
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+
+        <button type="submit" id="btn-submit"
+          class="btn-primary-cta w-full sm:w-auto px-9 py-4 rounded-xl text-sm hidden items-center justify-center gap-2.5">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          <span id="submit-btn-text">Finalizar y Enviar Diagnóstico</span>
+        </button>
+      </div>
+
+    </form>
+
+    <!-- ===================================================================
+         PANTALLA DE ÉXITO Y DIAGNÓSTICO DE RUTA ESTIMADA (POST-ENVÍO)
+         =================================================================== -->
+    <section id="success-screen" class="hidden glass-card rounded-2xl p-6 sm:p-10 animate-step">
+      <div class="text-center border-b border-ivory/10 pb-6 mb-6">
+        <div class="w-16 h-16 rounded-2xl bg-neon/15 border-2 border-neon flex items-center justify-center mx-auto mb-4 shadow-[0_0_30px_rgba(57,255,96,0.3)]">
+          <i data-lucide="check-circle-2" class="w-9 h-9 text-neon"></i>
+        </div>
+        <span class="text-xs font-bold uppercase tracking-[0.2em] text-neon">Expediente Registrado con Éxito</span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold uppercase text-ivory mt-1">
+          ¡Listo, <span id="res-nombre" class="text-neon">Cliente</span>!
+        </h2>
+        <p class="text-sm text-ivory/75 max-w-xl mx-auto mt-2">
+          Mercedes Ríos y su equipo ya tienen tu radiografía financiera para aprovechar al máximo cada minuto de tu llamada 1 a 1.
+        </p>
+        <div id="sheets-sync-badge" class="inline-flex items-center gap-2 mt-3 px-3 py-1 rounded-full bg-white/5 border border-ivory/15 text-xs text-ivory/80">
+          <i data-lucide="cloud-check" class="w-3.5 h-3.5 text-neon"></i>
+          <span id="sheets-sync-text">Respuestas respaldadas en el sistema</span>
+        </div>
+      </div>
+
+      <!-- Tarjeta de Clasificación Automática de Ruta -->
+      <div class="rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-deepGreen/30 via-surface to-canvas border border-neon/40 mb-6">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+          <span class="text-xs font-bold uppercase tracking-widest text-gold flex items-center gap-1.5">
+            <i data-lucide="compass" class="w-4 h-4"></i>
+            Pre-Diagnóstico de Ruta Estimada
+          </span>
+          <span id="res-llamadas-badge" class="text-xs font-extrabold uppercase px-3 py-1 rounded-full bg-neon text-canvas">
+            Estimación: 1–2 Llamadas
+          </span>
+        </div>
+        <h3 id="res-ruta-titulo" class="text-xl sm:text-2xl font-extrabold text-ivory mb-2">
+          Ruta Express
+        </h3>
+        <p id="res-ruta-desc" class="text-sm text-ivory/80 leading-relaxed mb-4"></p>
+
+        <!-- Resumen rápido de pilares -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-3 border-t border-ivory/10 text-xs">
+          <div class="bg-white/5 rounded-lg p-2.5">
+            <span class="text-ivory/50 block">ID Fiscal</span>
+            <strong id="res-pillar-fiscal" class="text-ivory font-bold">-</strong>
+          </div>
+          <div class="bg-white/5 rounded-lg p-2.5">
+            <span class="text-ivory/50 block">Crédito Personal</span>
+            <strong id="res-pillar-credito" class="text-ivory font-bold">-</strong>
+          </div>
+          <div class="bg-white/5 rounded-lg p-2.5">
+            <span class="text-ivory/50 block">Estructura LLC</span>
+            <strong id="res-pillar-llc" class="text-ivory font-bold">-</strong>
+          </div>
+          <div class="bg-white/5 rounded-lg p-2.5">
+            <span class="text-ivory/50 block">Meta de Capital</span>
+            <strong id="res-pillar-capital" class="text-neon font-bold">-</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Herramientas sugeridas antes de entrar a Zoom -->
+      <div class="rounded-xl p-5 bg-white/[0.03] border border-ivory/10 mb-6">
+        <h4 class="text-xs font-bold uppercase tracking-wider text-neon mb-3 flex items-center gap-2">
+          <i data-lucide="check-square" class="w-4 h-4"></i>
+          3 Cosas que te pide Mercedes para tu llamada 1 a 1:
+        </h4>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div class="p-3 rounded-lg bg-canvas/70 border border-ivory/10">
+            <strong class="text-ivory block mb-0.5">1. Un lugar tranquilo</strong>
+            <span class="text-ivory/65">Sin interrupciones para revisar números y estructura con calma.</span>
+          </div>
+          <div class="p-3 rounded-lg bg-canvas/70 border border-ivory/10">
+            <strong class="text-ivory block mb-0.5">2. Reporte a la mano</strong>
+            <span class="text-ivory/65">Si usas ITIN revisa <em>MyFreeScoreNow</em>; si usas SSN/ITIN ten listo <em>SmartCredit</em>.</span>
+          </div>
+          <div class="p-3 rounded-lg bg-canvas/70 border border-ivory/10">
+            <strong class="text-ivory block mb-0.5">3. Hoja y lápiz</strong>
+            <span class="text-ivory/65">Saldrás con los pasos exactos de tu Ruta 90 en orden.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Acciones Post-Diagnóstico -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a id="btn-whatsapp-confirm" href="#" target="_blank" rel="noopener noreferrer"
+          class="btn-primary-cta w-full sm:w-auto px-7 py-3.5 rounded-xl text-xs sm:text-sm flex items-center justify-center gap-2">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          Confirmar por WhatsApp que completé mi Diagnóstico
+        </a>
+        <button type="button" onclick="resetFormForNewClient()"
+          class="btn-secondary-neon w-full sm:w-auto px-5 py-3.5 rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          Nuevo Diagnóstico
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =====================================================================
+       MODAL 1: CONFIGURACIÓN DE GOOGLE SHEETS + CÓDIGO APPS SCRIPT COMPLETO
+       ===================================================================== -->
+  <div id="modal-sheets" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card rounded-2xl max-w-4xl w-full p-6 sm:p-8 border border-neon/40 my-8 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-4 pb-4 mb-5 border-b border-ivory/15">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-neon">Integración en Tiempo Real</span>
+          <h3 class="text-xl sm:text-2xl font-extrabold text-ivory mt-0.5">
+            Conectar con Google Sheets Nuevo (Apps Script)
+          </h3>
+        </div>
+        <button type="button" onclick="closeModal('modal-sheets')" class="text-ivory/60 hover:text-ivory p-1">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <!-- Paso 1: Pegar la URL del Web App de Google Apps Script -->
+      <div class="p-4 sm:p-5 rounded-xl bg-deepGreen/15 border border-neon/30 mb-6">
+        <label for="script-url-input" class="block text-xs font-bold uppercase tracking-wider text-neon mb-2">
+          URL de tu Web App de Google Apps Script (Pégala aquí):
+        </label>
+        <div class="flex flex-col sm:flex-row gap-2.5">
+          <input type="url" id="script-url-input"
+            placeholder="https://script.google.com/macros/s/AKfycb.../exec"
+            class="input-premium flex-1 px-4 py-2.5 rounded-xl text-sm font-mono" />
+          <button type="button" onclick="saveScriptUrl()"
+            class="btn-primary-cta px-5 py-2.5 rounded-xl text-xs whitespace-nowrap flex items-center justify-center gap-1.5">
+            <i data-lucide="save" class="w-4 h-4"></i>
+            Guardar URL
+          </button>
+          <button type="button" onclick="testGoogleSheetsConnection()"
+            class="btn-secondary-neon px-4 py-2.5 rounded-xl text-xs font-bold whitespace-nowrap flex items-center justify-center gap-1.5">
+            <i data-lucide="zap" class="w-4 h-4 text-neon"></i>
+            Enviar Fila de Prueba
+          </button>
+        </div>
+        <p id="script-url-feedback" class="text-xs text-ivory/75 mt-2"></p>
+      </div>
+
+      <!-- Paso 2: Instrucciones rápidas de 4 pasos -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-3 mb-6 text-xs">
+        <div class="p-3.5 rounded-xl bg-white/[0.03] border border-ivory/10">
+          <span class="text-neon font-bold block mb-1">PASO 1 · Crear Sheet</span>
+          Abre una hoja de cálculo nueva en Google Sheets (<code class="text-gold">sheets.new</code>) y ponle de título <strong>Diagnósticos 1 a 1 - Mercedes Ríos</strong>.
+        </div>
+        <div class="p-3.5 rounded-xl bg-white/[0.03] border border-ivory/10">
+          <span class="text-neon font-bold block mb-1">PASO 2 · Apps Script</span>
+          En el menú superior ve a <strong>Extensiones &gt; Apps Script</strong>. Borra el código que aparece y pega el código de abajo.
+        </div>
+        <div class="p-3.5 rounded-xl bg-white/[0.03] border border-ivory/10">
+          <span class="text-neon font-bold block mb-1">PASO 3 · Implementar</span>
+          Haz clic en <strong>Implementar &gt; Nueva implementación</strong>, elige tipo <strong>Aplicación web</strong> y en "Quién tiene acceso" elige <strong>Cualquier persona (Anyone)</strong>.
+        </div>
+        <div class="p-3.5 rounded-xl bg-white/[0.03] border border-ivory/10">
+          <span class="text-neon font-bold block mb-1">PASO 4 · Conectar</span>
+          Copia la <strong>URL de la aplicación web</strong> que te entrega Google, pégala arriba y pulsa <em>Enviar Fila de Prueba</em>.
+        </div>
+      </div>
+
+      <!-- Paso 3: Bloque de Código Google Apps Script (Code.gs) -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-gold flex items-center gap-1.5">
+            <i data-lucide="file-code" class="w-4 h-4"></i>
+            Código Completo para Google Apps Script (Code.gs)
+          </span>
+          <button type="button" onclick="copyAppsScriptCode()"
+            class="text-xs px-3.5 py-1.5 rounded-lg bg-neon text-canvas font-extrabold hover:opacity-90 transition flex items-center gap-1.5">
+            <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+            <span id="copy-code-label">Copiar Código Apps Script</span>
+          </button>
+        </div>
+        <pre id="apps-script-code" class="p-4 rounded-xl bg-black/90 border border-ivory/15 text-[11px] font-mono text-emerald-300 overflow-x-auto max-h-72 leading-relaxed select-all">/**
+ * GOOGLE APPS SCRIPT - DIAGNÓSTICO PRE-LLAMADA 1 A 1 CON MERCEDES RÍOS
+ * Programa: Tu Ruta Financiera / Ruta 90 (LIFEOFNENA LLC)
+ * 
+ * INSTRUCCIONES:
+ * 1. Pega este código en Extensiones > Apps Script dentro de tu nuevo Google Sheet.
+ * 2. Guarda (Ctrl+S) y haz clic en "Implementar" > "Nueva implementación".
+ * 3. Tipo: "Aplicación web" | Ejecutar como: "Yo" | Acceso: "Cualquier persona".
+ * 4. Copia la URL generada y pégala en el formulario web.
+ */
+
+const SHEET_NAME = 'Diagnosticos_1a1';
+
+function doPost(e) {
+  const lock = LockService.getScriptLock();
+  lock.tryLock(10000);
+
+  try {
+    const doc = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = doc.getSheetByName(SHEET_NAME);
+
+    // Si la pestaña no existe, la crea y formatea automáticamente con estilo ejecutivo
+    if (!sheet) {
+      sheet = doc.insertSheet(SHEET_NAME);
+      const headers = [
+        'Fecha y Hora',
+        'ID Registro',
+        'Ruta Estimada',
+        'Llamadas Estimadas',
+        'Nombre Completo',
+        'Correo Electrónico',
+        'Teléfono / WhatsApp',
+        '1. SSN o ITIN',
+        '2. ¿Desea Guía ITIN?',
+        '3. Taxes Últimos 2 Años',
+        '4. ¿Conoce Puntaje Crédito?',
+        '5. Rango Puntaje Personal',
+        '6. ¿Ayuda Monitoreo Gratis?',
+        '7. Tarjetas/Préstamos Activos',
+        '8. Colecciones/Bancarrota (2 años)',
+        '9. ¿Tiene LLC Formada?',
+        '10. Estado de la LLC',
+        '11. ¿Tiene EIN?',
+        '12. ¿Cuenta Bancaria Empresarial?',
+        '13. Presencia Digital / Web',
+        '14. Años Operando',
+        '15. Ingreso Mensual Empresa',
+        '16. Objetivos de la Asesoría',
+        '17. Destino de la Inversión',
+        '18. Capital Necesario',
+        '19. Urgencia de Financiamiento',
+        '20. Mayores Dudas / Preocupaciones',
+        '21. Comodidad Trámites en Línea',
+        '22. ¿Autoriza Revisar Reporte en Llamada?',
+        '23. Disponibilidad 2-3 Llamadas Seguimiento',
+        'Notas Adicionales Cliente',
+        'Herramientas Recomendadas'
+      ];
+      sheet.appendRow(headers);
+      sheet.setFrozenRows(1);
+
+      // Estilo visual de cabecera (Verde Oscuro Ruta 90 + Texto Blanco/Dorado)
+      const headerRange = sheet.getRange(1, 1, 1, headers.length);
+      headerRange.setBackground('#0D2818');
+      headerRange.setFontColor('#EFF6F0');
+      headerRange.setFontWeight('bold');
+      headerRange.setHorizontalAlignment('center');
+    }
+
+    // Parsear los datos enviados desde el formulario
+    const rawData = e.postData ? e.postData.contents : '{}';
+    const data = JSON.parse(rawData);
+
+    const newRow = [
+      new Date(),
+      data.idRegistro || ('MR-' + new Date().getTime()),
+      data.rutaEstimada || '',
+      data.llamadasEstimadas || '',
+      data.nombreCompleto || '',
+      data.correoElectronico || '',
+      data.telefonoWhatsapp || '',
+      data.estatusFiscal || '',
+      data.guiaItin || '',
+      data.impuestos2Anios || '',
+      data.conocePuntaje || '',
+      data.rangoPuntaje || '',
+      data.ayudaMonitoreo || '',
+      data.tarjetasActivas || '',
+      data.historialNegativo || '',
+      data.tieneLLC || '',
+      data.estadoLLC || '',
+      data.tieneEIN || '',
+      data.cuentaBancaria || '',
+      data.presenciaDigital || '',
+      data.aniosOperando || '',
+      data.ingresoMensual || '',
+      Array.isArray(data.objetivosAsesoria) ? data.objetivosAsesoria.join(' | ') : (data.objetivosAsesoria || ''),
+      Array.isArray(data.destinoInversion) ? data.destinoInversion.join(' | ') : (data.destinoInversion || ''),
+      data.capitalNecesario || '',
+      data.urgenciaFinanciamiento || '',
+      Array.isArray(data.dudasPrincipales) ? data.dudasPrincipales.join(' | ') : (data.dudasPrincipales || ''),
+      data.comodidadDigital || '',
+      data.autorizaRevision || '',
+      data.disponibilidadLlamadas || '',
+      data.notasAdicionales || '',
+      data.herramientasRecomendadas || ''
+    ];
+
+    sheet.appendRow(newRow);
+
+    // Colorear automáticamente la celda de Ruta Estimada para identificar rápido a las 11 personas
+    const lastRow = sheet.getLastRow();
+    const rutaCell = sheet.getRange(lastRow, 3);
+    const rutaTexto = String(data.rutaEstimada || '');
+    if (rutaTexto.indexOf('Express') !== -1) {
+      rutaCell.setBackground('#1B7A34').setFontColor('#FFFFFF').setFontWeight('bold');
+    } else if (rutaTexto.indexOf('Intermedia') !== -1) {
+      rutaCell.setBackground('#D4AF37').setFontColor('#060807').setFontWeight('bold');
+    } else {
+      rutaCell.setBackground('#C42828').setFontColor('#FFFFFF').setFontWeight('bold');
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'ok', row: lastRow }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({ status: 'error', message: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+function doGet() {
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: 'active', service: 'Diagnóstico 1 a 1 Mercedes Ríos' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}</pre>
+      </div>
+
+      <!-- Respaldo Local de Respuestas (CSV / Tabla rápida) -->
+      <div class="pt-4 border-t border-ivory/15 flex flex-wrap items-center justify-between gap-3">
+        <div class="text-xs text-ivory/70">
+          <strong class="text-ivory">Respaldo Local en Navegador:</strong>
+          <span id="local-count-badge">0 registros guardados localmente</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="exportLocalSubmissionsCSV()"
+            class="btn-secondary-neon px-3.5 py-2 rounded-lg text-xs font-semibold flex items-center gap-1.5">
+            <i data-lucide="download" class="w-3.5 h-3.5 text-neon"></i>
+            Descargar CSV para Excel/Sheets
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       MODAL 2: REVISIÓN DE PREGUNTAS Y MATRIZ DE LAS 3 RUTAS DE MERCEDES
+       ===================================================================== -->
+  <div id="modal-criterios" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="glass-card rounded-2xl max-w-3xl w-full p-6 sm:p-8 border border-gold/40 my-8 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-start justify-between gap-4 pb-4 mb-5 border-b border-ivory/15">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-gold">Auditoría del Formulario y Clasificación</span>
+          <h3 class="text-xl sm:text-2xl font-extrabold text-ivory mt-0.5">
+            Cómo Clasifica este Formulario a tus Clientes en 3 Rutas
+          </h3>
+        </div>
+        <button type="button" onclick="closeModal('modal-criterios')" class="text-ivory/60 hover:text-ivory p-1">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+
+      <p class="text-xs sm:text-sm text-ivory/80 leading-relaxed mb-5">
+        Hemos revisado y perfeccionado tus preguntas originales para que ninguna respuesta quede ambigua en Google Sheets y el sistema clasifique automáticamente a cada cliente antes de tu llamada 1 a 1:
+      </p>
+
+      <!-- Las 3 Rutas -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 mb-6">
+        <div class="p-4 rounded-xl bg-deepGreen/25 border border-neon/40">
+          <span class="text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded bg-neon text-canvas">1–2 Llamadas</span>
+          <h4 class="text-base font-extrabold text-ivory mt-2 mb-1">Ruta Express</h4>
+          <p class="text-xs text-ivory/75 leading-relaxed">
+            SSN o ITIN vigente, crédito personal <strong>&gt; 680</strong> sin colecciones, LLC activa con EIN y cuenta bancaria. Solo necesitan secuencia de lenders y destino de inversión.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-gold/10 border border-gold/40">
+          <span class="text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded bg-gold text-canvas">3–4 Llamadas</span>
+          <h4 class="text-base font-extrabold text-ivory mt-2 mb-1">Ruta Intermedia</h4>
+          <p class="text-xs text-ivory/75 leading-relaxed">
+            Tienen LLC pero crédito personal regular (620–679), les falta activar cuenta bancaria/EIN o el negocio tiene menos de 1 año. Se trabaja reparación/optimización y Movimiento 1.5.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-xl bg-ctaRed/15 border border-ctaRed/50">
+          <span class="text-[11px] font-extrabold uppercase px-2.5 py-0.5 rounded bg-ctaRed text-white">4–6 Llamadas</span>
+          <h4 class="text-base font-extrabold text-ivory mt-2 mb-1">Ruta Desde Cero</h4>
+          <p class="text-xs text-ivory/75 leading-relaxed">
+            No tienen ITIN/SSN, no tienen LLC aún, o el crédito personal está comprometido (&lt; 620 o con colecciones). Primero regularización fiscal, formación de LLC y construcción desde la base.
+          </p>
+        </div>
+      </div>
+
+      <!-- Mejoras aplicadas al cuestionario -->
+      <div class="p-4 rounded-xl bg-white/[0.03] border border-ivory/10 text-xs space-y-2">
+        <h5 class="font-bold uppercase tracking-wider text-neon mb-1">Optimizaciones incluidas en tu formulario:</h5>
+        <p class="text-ivory/80">✓ <strong>Identificación Completa al Inicio:</strong> Nombre completo, Correo electrónico y WhatsApp obligatorios (además soporta pre-llenado automático por link personalizado <code class="text-gold">?nombre=Ana&amp;email=ana@mail.com</code>).</p>
+        <p class="text-ivory/80">✓ <strong>Pregunta de Rango de Puntaje (&gt;680):</strong> Se agregó el selector de rango crediticio en la Sección 2 para que el algoritmo detecte automáticamente si el cliente supera los 680 puntos requeridos por la Ruta Express.</p>
+        <p class="text-ivory/80">✓ <strong>Rangos Monetarios Claros:</strong> En ingresos mensuales ($2,000–$5,000 / $5,000–$10,000) y capital requerido ($10,000–$25,000 / $25,000–$50,000 / $50,000–$100,000) se definieron los intervalos exactos para evitar confusiones al elegir.</p>
+        <p class="text-ivory/80">✓ <strong>Callouts Inteligentes Integrados:</strong> Las recomendaciones de <em>MyFreeScoreNow</em>, <em>Firstcard</em> y <em>SmartCredit</em> aparecen automáticamente como tarjetas de alto valor sin ensuciar las opciones de respuesta.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="relative z-10 border-t border-ivory/10 py-6 text-center text-xs text-ivory/45">
+    <div class="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span>© 2026 <strong>LIFEOFNENA LLC</strong> · Mercedes Ríos · Tu Ruta Financiera</span>
+      <span>7901 4TH St N Ste 300, Saint Petersburg, Florida, US 33702</span>
+    </div>
+  </footer>
+
+  <!-- =====================================================================
+       LÓGICA JAVASCRIPT DE LA APLICACIÓN
+       ===================================================================== -->
+  <script>
+    /**
+     * CONFIGURACIÓN DE GOOGLE APPS SCRIPT
+     * Puedes pegar tu URL directamente en DEFAULT_GOOGLE_SCRIPT_URL o configurarla desde el botón "Apps Script / Sheets" en la barra superior.
+     */
+    const DEFAULT_GOOGLE_SCRIPT_URL = "";
+    const STORAGE_KEY_URL = "mr_ruta90_sheets_webapp_url";
+    const STORAGE_KEY_SUBMISSIONS = "mr_ruta90_local_submissions";
+
+    // Número de WhatsApp del equipo de Mercedes (extraído de las diapositivas oficiales de Tu Ruta Financiera)
+    const MERCEDES_TEAM_WHATSAPP = "573222326898";
+
+    let currentStep = 1;
+    const totalSteps = 6;
+    let isFullPageView = false;
+
+    const stepTitles = {
+      1: "Paso 1 de 6 · Identificación y Situación Fiscal",
+      2: "Paso 2 de 6 · Situación Crediticia Personal Actual",
+      3: "Paso 3 de 6 · Perfil de la Empresa (LLC) y Negocio",
+      4: "Paso 4 de 6 · Objetivo con el Crédito e Inversión",
+      5: "Paso 5 de 6 · Dudas Principales y Expectativas",
+      6: "Paso 6 de 6 · Autorización y Siguiente Paso"
+    };
+
+    // Inicialización al cargar la página
+    window.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      loadSavedScriptUrl();
+      prefillFromUrlParams();
+      updateStepUI();
+      updateLocalCountBadge();
+    });
+
+    // Pre-llenar Nombre, Correo y WhatsApp si vienen en el link (?nombre=...&email=...&whatsapp=...)
+    function prefillFromUrlParams() {
+      const params = new URLSearchParams(window.location.search);
+      const nombre = params.get("nombre") || params.get("name");
+      const email = params.get("email") || params.get("correo");
+      const whatsapp = params.get("whatsapp") || params.get("phone") || params.get("tel");
+
+      if (nombre) document.getElementById("nombreCompleto").value = nombre;
+      if (email) document.getElementById("correoElectronico").value = email;
+      if (whatsapp) document.getElementById("telefonoWhatsapp").value = whatsapp;
+    }
+
+    // Manejo visual de tarjetas Radio
+    function handleRadioChange(inputEl) {
+      const groupName = inputEl.name;
+      const container = document.querySelector(`[data-radio-group="${groupName}"]`);
+      if (!container) return;
+
+      const allCards = container.querySelectorAll(".option-card");
+      allCards.forEach(card => {
+        card.classList.remove("selected");
+        const indicator = card.querySelector(".radio-indicator");
+        if (indicator) {
+          indicator.innerHTML = "";
+          indicator.classList.remove("border-neon", "bg-neon");
+        }
+      });
+
+      const parentCard = inputEl.closest(".option-card");
+      if (parentCard && inputEl.checked) {
+        parentCard.classList.add("selected");
+        const indicator = parentCard.querySelector(".radio-indicator");
+        if (indicator) {
+          indicator.classList.add("border-neon", "bg-neon");
+          indicator.innerHTML = `<span class="w-2 h-2 rounded-full bg-canvas"></span>`;
+        }
+      }
+      hideValidationBanner();
+    }
+
+    // Manejo visual de tarjetas Checkbox (Selección múltiple)
+    function handleCheckboxChange(inputEl) {
+      const parentCard = inputEl.closest(".option-card");
+      if (!parentCard) return;
+
+      const indicator = parentCard.querySelector(".check-indicator");
+      if (inputEl.checked) {
+        parentCard.classList.add("selected");
+        if (indicator) {
+          indicator.classList.add("border-neon", "bg-neon");
+          indicator.innerHTML = `<svg class="w-3.5 h-3.5 text-canvas stroke-[3]" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"></polyline></svg>`;
+        }
+      } else {
+        parentCard.classList.remove("selected");
+        if (indicator) {
+          indicator.classList.remove("border-neon", "bg-neon");
+          indicator.innerHTML = "";
+        }
+      }
+      hideValidationBanner();
+    }
+
+    // Mostrar/Ocultar Callouts inteligentes según respuestas
+    function updateDynamicCallouts() {
+      const estatusFiscal = getRadioValue("estatusFiscal");
+      const calloutItin = document.getElementById("callout-itin");
+
+      if (estatusFiscal === "ITIN vigente" || estatusFiscal === "ITIN en trámite" || estatusFiscal === "No tengo ninguno") {
+        calloutItin.classList.remove("hidden");
+      } else {
+        calloutItin.classList.add("hidden");
+      }
+
+      // Auto-seleccionar "Ya lo tengo" en pregunta 2 si eligió SSN
+      if (estatusFiscal === "SSN") {
+        const radioYaTengo = document.querySelector('input[name="guiaItin"][value="Ya lo tengo"]');
+        if (radioYaTengo && !getRadioValue("guiaItin")) {
+          radioYaTengo.checked = true;
+          handleRadioChange(radioYaTengo);
+        }
+      }
+    }
+
+    // Autocompletar estado LLC sugerido si aún no tiene LLC
+    function handleLLCToggle() {
+      const tieneLLC = getRadioValue("tieneLLC");
+      const estadoInput = document.getElementById("estadoLLC");
+      if (tieneLLC === "No, la quiero formar con tu asesoría" && !estadoInput.value.trim()) {
+        estadoInput.value = "Aún no tengo LLC (Por definir en llamada)";
+      }
+    }
+
+    // Mostrar/Ocultar campo "Otra duda"
+    function toggleOtraDuda() {
+      const chkOtra = document.getElementById("chk-otra-duda");
+      const boxOtra = document.getElementById("box-otra-duda");
+      if (chkOtra && chkOtra.checked) {
+        boxOtra.classList.remove("hidden");
+        document.getElementById("otraDudaTexto").focus();
+      } else {
+        boxOtra.classList.add("hidden");
+      }
+    }
+
+    // Obtener valor de un radio group
+    function getRadioValue(name) {
+      const checked = document.querySelector(`input[name="${name}"]:checked`);
+      return checked ? checked.value : "";
+    }
+
+    // Obtener valores de un grupo de checkboxes
+    function getCheckboxValues(name) {
+      const checkedList = document.querySelectorAll(`input[name="${name}"]:checked`);
+      return Array.from(checkedList).map(el => el.value);
+    }
+
+    // Validación por paso
+    function validateStep(stepNumber) {
+      const missing = [];
+
+      if (stepNumber === 1) {
+        const nombre = document.getElementById("nombreCompleto").value.trim();
+        const correo = document.getElementById("correoElectronico").value.trim();
+        const whatsapp = document.getElementById("telefonoWhatsapp").value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!nombre) missing.push("Nombre completo");
+        if (!correo || !emailRegex.test(correo)) missing.push("Correo electrónico válido");
+        if (!whatsapp) missing.push("Teléfono / WhatsApp");
+        if (!getRadioValue("estatusFiscal")) missing.push("Pregunta 1 (SSN o ITIN)");
+        if (!getRadioValue("guiaItin")) missing.push("Pregunta 2 (Guía ITIN)");
+        if (!getRadioValue("impuestos2Anios")) missing.push("Pregunta 3 (Declaraciones de impuestos)");
+      }
+
+      if (stepNumber === 2) {
+        if (!getRadioValue("conocePuntaje")) missing.push("Pregunta 4 (¿Conoces tu puntaje?)");
+        if (!document.getElementById("rangoPuntaje").value) missing.push("Pregunta 5 (Rango aproximado de puntaje)");
+        if (!getRadioValue("ayudaMonitoreo")) missing.push("Pregunta 6 (Herramienta de monitoreo)");
+        if (!getRadioValue("tarjetasActivas")) missing.push("Pregunta 7 (Tarjetas o préstamos activos)");
+        if (!getRadioValue("historialNegativo")) missing.push("Pregunta 8 (Colecciones o pagos tardíos)");
+      }
+
+      if (stepNumber === 3) {
+        if (!getRadioValue("tieneLLC")) missing.push("Pregunta 9 (¿Ya tienes una LLC?)");
+        if (!document.getElementById("estadoLLC").value.trim()) missing.push("Pregunta 10 (Estado de la LLC)");
+        if (!getRadioValue("tieneEIN")) missing.push("Pregunta 11 (¿La LLC tiene EIN?)");
+        if (!getRadioValue("cuentaBancaria")) missing.push("Pregunta 12 (Cuenta bancaria empresarial)");
+        if (!getRadioValue("presenciaDigital")) missing.push("Pregunta 13 (Página web o presencia digital)");
+        if (!document.getElementById("aniosOperando").value) missing.push("Pregunta 14 (Años operando)");
+        if (!document.getElementById("ingresoMensual").value) missing.push("Pregunta 15 (Ingreso mensual aproximado)");
+      }
+
+      if (stepNumber === 4) {
+        if (getCheckboxValues("objetivosAsesoria").length === 0) missing.push("Pregunta 16 (¿Qué esperas lograr con la asesoría?)");
+        if (getCheckboxValues("destinoInversion").length === 0) missing.push("Pregunta 17 (¿En qué piensas invertir?)");
+        if (!document.getElementById("capitalNecesario").value) missing.push("Pregunta 18 (Capital aproximado necesario)");
+        if (!document.getElementById("urgenciaFinanciamiento").value) missing.push("Pregunta 19 (Urgencia por obtener el financiamiento)");
+      }
+
+      if (stepNumber === 5) {
+        if (getCheckboxValues("dudasPrincipales").length === 0) missing.push("Pregunta 20 (Mayor duda o preocupación)");
+        if (!document.getElementById("comodidadDigital").value) missing.push("Pregunta 21 (Comodidad con trámites en línea)");
+      }
+
+      if (stepNumber === 6) {
+        if (!getRadioValue("autorizaRevision")) missing.push("Pregunta 22 (Autorización para revisar reporte en llamada)");
+        if (!getRadioValue("disponibilidadLlamadas")) missing.push("Pregunta 23 (Disponibilidad de llamadas de seguimiento)");
+      }
+
+      if (missing.length > 0) {
+        showValidationBanner(missing.join(" • "));
+        return false;
+      }
+
+      hideValidationBanner();
+      return true;
+    }
+
+    function showValidationBanner(msg) {
+      const banner = document.getElementById("validation-banner");
+      const text = document.getElementById("validation-message");
+      text.textContent = msg;
+      banner.classList.remove("hidden");
+      banner.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function hideValidationBanner() {
+      document.getElementById("validation-banner").classList.add("hidden");
+    }
+
+    // Navegación entre pasos
+    function nextStep() {
+      if (!validateStep(currentStep)) return;
+      if (currentStep < totalSteps) {
+        currentStep++;
+        updateStepUI();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    function prevStep() {
+      hideValidationBanner();
+      if (currentStep > 1) {
+        currentStep--;
+        updateStepUI();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+
+    function goToStep(targetStep) {
+      if (isFullPageView) {
+        const el = document.getElementById(`step-${targetStep}`);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        return;
+      }
+      // Si intenta avanzar a un paso posterior, validar el actual
+      if (targetStep > currentStep && !validateStep(currentStep)) return;
+      currentStep = targetStep;
+      updateStepUI();
+    }
+
+    // Alternar entre Vista Paso a Paso y Vista Completa en 1 Página
+    function toggleViewMode() {
+      isFullPageView = !isFullPageView;
+      const label = document.getElementById("view-mode-label");
+      label.textContent = isFullPageView ? "Vista: Completa (1 Pág)" : "Vista: Paso a Paso";
+      updateStepUI();
+    }
+
+    function updateStepUI() {
+      const allSteps = document.querySelectorAll(".form-step");
+      const btnPrev = document.getElementById("btn-prev");
+      const btnNext = document.getElementById("btn-next");
+      const btnSubmit = document.getElementById("btn-submit");
+
+      if (isFullPageView) {
+        allSteps.forEach(sec => sec.classList.remove("hidden"));
+        btnPrev.classList.add("hidden");
+        btnNext.classList.add("hidden");
+        btnSubmit.classList.remove("hidden");
+        btnSubmit.classList.add("flex");
+        document.getElementById("progress-step-title").textContent = "Vista Completa · Las 6 Secciones en Pantalla";
+        document.getElementById("progress-percent").textContent = "100%";
+        document.getElementById("progress-bar-fill").style.width = "100%";
+      } else {
+        allSteps.forEach((sec, idx) => {
+          if (idx + 1 === currentStep) {
+            sec.classList.remove("hidden");
+          } else {
+            sec.classList.add("hidden");
+          }
+        });
+
+        btnPrev.classList.toggle("hidden", currentStep === 1);
+        if (currentStep === totalSteps) {
+          btnNext.classList.add("hidden");
+          btnSubmit.classList.remove("hidden");
+          btnSubmit.classList.add("flex");
+        } else {
+          btnNext.classList.remove("hidden");
+          btnSubmit.classList.add("hidden");
+          btnSubmit.classList.remove("flex");
+        }
+
+        const pct = Math.round((currentStep / totalSteps) * 100);
+        document.getElementById("progress-step-title").textContent = stepTitles[currentStep];
+        document.getElementById("progress-percent").textContent = `${pct}%`;
+        document.getElementById("progress-bar-fill").style.width = `${pct}%`;
+      }
+
+      // Actualizar estado activo de las píldoras superiores
+      for (let i = 1; i <= totalSteps; i++) {
+        const pill = document.getElementById(`pill-step-${i}`);
+        if (!pill) continue;
+        if (i === currentStep && !isFullPageView) {
+          pill.className = "step-pill text-[11px] py-1.5 px-2 rounded-lg font-bold border border-neon bg-deepGreen/40 text-neon transition truncate text-center shadow-[0_0_10px_rgba(57,255,96,0.2)]";
+        } else if (i < currentStep || isFullPageView) {
+          pill.className = "step-pill text-[11px] py-1.5 px-2 rounded-lg font-semibold border border-neon/30 bg-deepGreen/15 text-ivory/90 transition truncate text-center";
+        } else {
+          pill.className = "step-pill text-[11px] py-1.5 px-2 rounded-lg font-medium border border-ivory/10 bg-white/[0.02] text-ivory/45 transition truncate text-center";
+        }
+      }
+    }
+
+    /**
+     * MOTOR DE CLASIFICACIÓN AUTOMÁTICA DE LAS 3 RUTAS DE MERCEDES RÍOS
+     * - Ruta Express (1–2 llamadas): SSN/ITIN vigente, crédito personal > 680 sin colecciones, LLC activa con EIN y cuenta bancaria.
+     * - Ruta Desde Cero (4–6 llamadas): No tienen ITIN/SSN, o no tienen LLC, o el crédito personal está comprometido (<620 o con colecciones).
+     * - Ruta Intermedia (3–4 llamadas): Tienen LLC pero crédito regular/desconocido, falta cuenta/EIN o negocio < 1 año.
+     */
+    function calculateClientRoute(formData) {
+      const tieneIdVigente = (formData.estatusFiscal === "SSN" || formData.estatusFiscal === "ITIN vigente");
+      const sinIdFiscal = (formData.estatusFiscal === "No tengo ninguno" || formData.estatusFiscal === "ITIN en trámite");
+
+      const puntajeAlto = (
+        formData.rangoPuntaje.includes("740") ||
+        formData.rangoPuntaje.includes("680")
+      );
+      const puntajeComprometido = (
+        formData.rangoPuntaje.includes("Menos de 620") ||
+        formData.conocePuntaje === "No tengo crédito aún" ||
+        formData.historialNegativo === "Sí"
+      );
+
+      const llcActiva = (formData.tieneLLC === "Sí, activa");
+      const sinLLC = (formData.tieneLLC === "No, la quiero formar con tu asesoría");
+      const einListo = (formData.tieneEIN === "Sí");
+      const cuentaLista = (formData.cuentaBancaria === "Sí");
+
+      // 1. Verificar Ruta Express (1–2 llamadas)
+      if (tieneIdVigente && puntajeAlto && formData.historialNegativo === "No" && llcActiva && einListo && cuentaLista) {
+        return {
+          ruta: "Ruta Express",
+          llamadas: "1–2 llamadas",
+          descripcion: "Cuentas con SSN/ITIN vigente, crédito personal sólido (>680), y una LLC activa con EIN y cuenta bancaria empresarial. En la llamada nos enfocaremos directamente en la estrategia de bancos/lenders (Movimiento 2) y el despliegue de tu portafolio de inversión (Movimiento 3)."
+        };
+      }
+
+      // 2. Verificar Ruta Desde Cero (4–6 llamadas)
+      if (sinIdFiscal || sinLLC || puntajeComprometido) {
+        return {
+          ruta: "Ruta Desde Cero",
+          llamadas: "4–6 llamadas",
+          descripcion: "Tu hoja de ruta comenzará desde los cimientos para asegurar que ningún banco te rechace: regularización fiscal/ITIN o fortalecimiento de tu crédito personal, formación paso a paso de tu LLC con EIN (Movimiento 1), activación bancaria real (Movimiento 1.5) y posterior acceso a líneas de crédito."
+        };
+      }
+
+      // 3. Por defecto: Ruta Intermedia (3–4 llamadas)
+      return {
+        ruta: "Ruta Intermedia",
+        llamadas: "3–4 llamadas",
+        descripcion: "Ya cuentas con base adelantada, pero antes de aplicar a los bancos optimizaremos tu perfil crediticio personal y completaremos la auditoría/activación transaccional de tu LLC (Movimiento 1.5) para maximizar los montos de aprobación."
+      };
+    }
+
+    // Recolectar todos los datos del formulario
+    function collectFormData() {
+      const dudas = getCheckboxValues("dudasPrincipales");
+      const otraTexto = document.getElementById("otraDudaTexto").value.trim();
+      if (dudas.includes("Otra") && otraTexto) {
+        const idx = dudas.indexOf("Otra");
+        dudas[idx] = `Otra: ${otraTexto}`;
+      }
+
+      const estatusFiscal = getRadioValue("estatusFiscal");
+      const herramientas = [];
+      if (estatusFiscal.includes("ITIN") || estatusFiscal === "No tengo ninguno") {
+        herramientas.push("MyFreeScoreNow (3 burós con ITIN)", "Firstcard (Construcción con ITIN)");
+      }
+      herramientas.push("SmartCredit (Reporte 3 burós + Plan 120 días)");
+
+      const payload = {
+        idRegistro: "MR-" + Date.now().toString().slice(-6),
+        fechaISO: new Date().toISOString(),
+        nombreCompleto: document.getElementById("nombreCompleto").value.trim(),
+        correoElectronico: document.getElementById("correoElectronico").value.trim(),
+        telefonoWhatsapp: document.getElementById("telefonoWhatsapp").value.trim(),
+        estatusFiscal: estatusFiscal,
+        guiaItin: getRadioValue("guiaItin"),
+        impuestos2Anios: getRadioValue("impuestos2Anios"),
+        conocePuntaje: getRadioValue("conocePuntaje"),
+        rangoPuntaje: document.getElementById("rangoPuntaje").value,
+        ayudaMonitoreo: getRadioValue("ayudaMonitoreo"),
+        tarjetasActivas: getRadioValue("tarjetasActivas"),
+        historialNegativo: getRadioValue("historialNegativo"),
+        tieneLLC: getRadioValue("tieneLLC"),
+        estadoLLC: document.getElementById("estadoLLC").value.trim(),
+        tieneEIN: getRadioValue("tieneEIN"),
+        cuentaBancaria: getRadioValue("cuentaBancaria"),
+        presenciaDigital: getRadioValue("presenciaDigital"),
+        aniosOperando: document.getElementById("aniosOperando").value,
+        ingresoMensual: document.getElementById("ingresoMensual").value,
+        objetivosAsesoria: getCheckboxValues("objetivosAsesoria"),
+        destinoInversion: getCheckboxValues("destinoInversion"),
+        capitalNecesario: document.getElementById("capitalNecesario").value,
+        urgenciaFinanciamiento: document.getElementById("urgenciaFinanciamiento").value,
+        dudasPrincipales: dudas,
+        comodidadDigital: document.getElementById("comodidadDigital").value,
+        autorizaRevision: getRadioValue("autorizaRevision"),
+        disponibilidadLlamadas: getRadioValue("disponibilidadLlamadas"),
+        notasAdicionales: document.getElementById("notasAdicionales").value.trim(),
+        herramientasRecomendadas: herramientas.join(" + ")
+      };
+
+      const routeInfo = calculateClientRoute(payload);
+      payload.rutaEstimada = `${routeInfo.ruta} (${routeInfo.llamadas})`;
+      payload.llamadasEstimadas = routeInfo.llamadas;
+      payload.rutaDescripcion = routeInfo.descripcion;
+      payload.rutaNombreCorto = routeInfo.ruta;
+
+      return payload;
+    }
+
+    // Envío del Formulario
+    async function handleFormSubmit(event) {
+      event.preventDefault();
+
+      // Validar todos los 6 pasos antes de enviar
+      for (let step = 1; step <= totalSteps; step++) {
+        if (!validateStep(step)) {
+          if (!isFullPageView) {
+            currentStep = step;
+            updateStepUI();
+          }
+          return;
+        }
+      }
+
+      const submitBtn = document.getElementById("btn-submit");
+      const submitBtnText = document.getElementById("submit-btn-text");
+      submitBtn.disabled = true;
+      submitBtnText.textContent = "Procesando y Guardando Diagnóstico...";
+
+      const data = collectFormData();
+
+      // 1. Guardar respaldo en localStorage siempre
+      saveSubmissionLocally(data);
+
+      // 2. Enviar a Google Sheets si hay URL configurada
+      const scriptUrl = getActiveScriptUrl();
+      let sentToSheets = false;
+
+      if (scriptUrl) {
+        try {
+          await fetch(scriptUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify(data)
+          });
+          sentToSheets = true;
+        } catch (err) {
+          console.error("Error al enviar a Google Sheets:", err);
+        }
+      }
+
+      // 3. Mostrar pantalla de éxito y resumen de Ruta
+      renderSuccessScreen(data, sentToSheets);
+      submitBtn.disabled = false;
+      submitBtnText.textContent = "Finalizar y Enviar Diagnóstico";
+    }
+
+    function renderSuccessScreen(data, sentToSheets) {
+      document.getElementById("diagnostic-form").classList.add("hidden");
+      document.getElementById("progress-container").classList.add("hidden");
+      const successScreen = document.getElementById("success-screen");
+      successScreen.classList.remove("hidden");
+
+      document.getElementById("res-nombre").textContent = data.nombreCompleto;
+      document.getElementById("res-ruta-titulo").textContent = data.rutaNombreCorto;
+      document.getElementById("res-llamadas-badge").textContent = `Estimación: ${data.llamadasEstimadas}`;
+      document.getElementById("res-ruta-desc").textContent = data.rutaDescripcion;
+
+      document.getElementById("res-pillar-fiscal").textContent = data.estatusFiscal;
+      document.getElementById("res-pillar-credito").textContent = data.rangoPuntaje.split("(")[0].trim();
+      document.getElementById("res-pillar-llc").textContent = data.tieneLLC;
+      document.getElementById("res-pillar-capital").textContent = data.capitalNecesario;
+
+      const syncText = document.getElementById("sheets-sync-text");
+      if (sentToSheets) {
+        syncText.textContent = "Sincronizado en vivo con Google Sheets de Mercedes Ríos";
+      } else {
+        syncText.textContent = "Diagnóstico registrado (Configura la URL de Sheets en el panel superior para sincronización en la nube)";
+      }
+
+      // Configurar botón de confirmación por WhatsApp con resumen ejecutivo
+      const mensajeWA = [
+        `Hola Mercedes y equipo 👋, acabo de completar mi *Diagnóstico Pre-Llamada 1 a 1*.`,
+        ``,
+        `• *Nombre:* ${data.nombreCompleto}`,
+        `• *Correo:* ${data.correoElectronico}`,
+        `• *ID Fiscal:* ${data.estatusFiscal}`,
+        `• *LLC:* ${data.tieneLLC} (${data.estadoLLC})`,
+        `• *Meta de Capital:* ${data.capitalNecesario}`,
+        `• *Ruta Estimada:* ${data.rutaEstimada}`,
+        ``,
+        `¡Quedo listo(a) para nuestra sesión!`
+      ].join("\n");
+
+      const waUrl = `https://wa.me/${MERCEDES_TEAM_WHATSAPP}?text=${encodeURIComponent(mensajeWA)}`;
+      document.getElementById("btn-whatsapp-confirm").href = waUrl;
+
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      lucide.createIcons();
+    }
+
+    function resetFormForNewClient() {
+      document.getElementById("diagnostic-form").reset();
+      document.querySelectorAll(".option-card").forEach(card => {
+        card.classList.remove("selected");
+        const rInd = card.querySelector(".radio-indicator");
+        if (rInd) { rInd.innerHTML = ""; rInd.classList.remove("border-neon", "bg-neon"); }
+        const cInd = card.querySelector(".check-indicator");
+        if (cInd) { cInd.innerHTML = ""; cInd.classList.remove("border-neon", "bg-neon"); }
+      });
+
+      document.getElementById("callout-itin").classList.add("hidden");
+      document.getElementById("box-otra-duda").classList.add("hidden");
+      document.getElementById("success-screen").classList.add("hidden");
+      document.getElementById("diagnostic-form").classList.remove("hidden");
+      document.getElementById("progress-container").classList.remove("hidden");
+
+      currentStep = 1;
+      updateStepUI();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    // =====================================================================
+    // GESTIÓN DE GOOGLE APPS SCRIPT Y RESPALDO LOCAL
+    // =====================================================================
+    function getActiveScriptUrl() {
+      return localStorage.getItem(STORAGE_KEY_URL) || DEFAULT_GOOGLE_SCRIPT_URL;
+    }
+
+    function loadSavedScriptUrl() {
+      const url = getActiveScriptUrl();
+      const input = document.getElementById("script-url-input");
+      const dot = document.getElementById("sheets-status-dot");
+      if (url) {
+        input.value = url;
+        dot.classList.remove("bg-amber-400");
+        dot.classList.add("bg-neon");
+      }
+    }
+
+    function saveScriptUrl() {
+      const input = document.getElementById("script-url-input");
+      const feedback = document.getElementById("script-url-feedback");
+      const dot = document.getElementById("sheets-status-dot");
+      const val = input.value.trim();
+
+      if (!val) {
+        localStorage.removeItem(STORAGE_KEY_URL);
+        dot.classList.remove("bg-neon");
+        dot.classList.add("bg-amber-400");
+        feedback.textContent = "Se eliminó la URL guardada.";
+        feedback.className = "text-xs text-amber-300 mt-2";
+        return;
+      }
+
+      localStorage.setItem(STORAGE_KEY_URL, val);
+      dot.classList.remove("bg-amber-400");
+      dot.classList.add("bg-neon");
+      feedback.textContent = "✓ URL de Google Apps Script guardada correctamente. Todos los envíos irán a tu Google Sheet.";
+      feedback.className = "text-xs text-neon font-semibold mt-2";
+    }
+
+    async function testGoogleSheetsConnection() {
+      const url = document.getElementById("script-url-input").value.trim() || getActiveScriptUrl();
+      const feedback = document.getElementById("script-url-feedback");
+
+      if (!url) {
+        feedback.textContent = "⚠️ Primero pega la URL de tu Web App de Google Apps Script arriba.";
+        feedback.className = "text-xs text-amber-300 font-semibold mt-2";
+        return;
+      }
+
+      localStorage.setItem(STORAGE_KEY_URL, url);
+      feedback.textContent = "Enviando fila de prueba a tu Google Sheets...";
+      feedback.className = "text-xs text-ivory/80 mt-2";
+
+      const samplePayload = {
+        idRegistro: "TEST-" + Date.now().toString().slice(-4),
+        rutaEstimada: "Ruta Express (1–2 llamadas)",
+        llamadasEstimadas: "1–2 llamadas",
+        nombreCompleto: "Cliente de Prueba (Mercedes Ríos)",
+        correoElectronico: "prueba@turutafinanciera.com",
+        telefonoWhatsapp: "+1 786 555 0199",
+        estatusFiscal: "ITIN vigente",
+        guiaItin: "Ya lo tengo",
+        impuestos2Anios: "Sí",
+        conocePuntaje: "Sí, lo reviso regularmente",
+        rangoPuntaje: "680 – 739 (Bueno - Califica Ruta Express)",
+        ayudaMonitoreo: "No",
+        tarjetasActivas: "Sí",
+        historialNegativo: "No",
+        tieneLLC: "Sí, activa",
+        estadoLLC: "Florida",
+        tieneEIN: "Sí",
+        cuentaBancaria: "Sí",
+        presenciaDigital: "Sí, con ventas",
+        aniosOperando: "1–2 años",
+        ingresoMensual: "$5,000 – $10,000 USD",
+        objetivosAsesoria: ["Abrir línea de crédito empresarial", "Obtener financiamiento para invertir"],
+        destinoInversion: ["Bienes raíces"],
+        capitalNecesario: "$50,000 – $100,000 USD",
+        urgenciaFinanciamiento: "Lo antes posible",
+        dudasPrincipales: ["No sé qué banco o lender aprobará a una LLC nueva"],
+        comodidadDigital: "Muy cómodo",
+        autorizaRevision: "Sí",
+        disponibilidadLlamadas: "Sí",
+        notasAdicionales: "Fila de prueba enviada desde el formulario de diagnóstico.",
+        herramientasRecomendadas: "MyFreeScoreNow + SmartCredit"
+      };
+
+      try {
+        await fetch(url, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(samplePayload)
+        });
+        feedback.textContent = "✅ ¡Fila de prueba enviada! Revisa tu documento de Google Sheets (pestaña 'Diagnosticos_1a1').";
+        feedback.className = "text-xs text-neon font-bold mt-2";
+        loadSavedScriptUrl();
+      } catch (error) {
+        feedback.textContent = "❌ Error de red al conectar con la URL. Verifica que la implementación tenga acceso para 'Cualquier persona'.";
+        feedback.className = "text-xs text-red-400 font-semibold mt-2";
+      }
+    }
+
+    function copyAppsScriptCode() {
+      const codeText = document.getElementById("apps-script-code").innerText;
+      const tempArea = document.createElement("textarea");
+      tempArea.value = codeText;
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(tempArea);
+
+      const label = document.getElementById("copy-code-label");
+      label.textContent = "¡Código Copiado!";
+      setTimeout(() => {
+        label.textContent = "Copiar Código Apps Script";
+      }, 2500);
+    }
+
+    function saveSubmissionLocally(data) {
+      try {
+        const current = JSON.parse(localStorage.getItem(STORAGE_KEY_SUBMISSIONS) || "[]");
+        current.push(data);
+        localStorage.setItem(STORAGE_KEY_SUBMISSIONS, JSON.stringify(current));
+        updateLocalCountBadge();
+      } catch (e) {
+        console.warn("No se pudo guardar en localStorage:", e);
+      }
+    }
+
+    function updateLocalCountBadge() {
+      try {
+        const current = JSON.parse(localStorage.getItem(STORAGE_KEY_SUBMISSIONS) || "[]");
+        const badge = document.getElementById("local-count-badge");
+        if (badge) {
+          badge.textContent = `${current.length} registro(s) guardado(s) en este navegador`;
+        }
+      } catch (e) {}
+    }
+
+    function exportLocalSubmissionsCSV() {
+      const list = JSON.parse(localStorage.getItem(STORAGE_KEY_SUBMISSIONS) || "[]");
+      if (list.length === 0) {
+        const feedback = document.getElementById("script-url-feedback");
+        feedback.textContent = "Aún no hay registros locales para exportar.";
+        feedback.className = "text-xs text-amber-300 mt-2";
+        return;
+      }
+
+      const headers = [
+        "FechaISO", "ID", "RutaEstimada", "LlamadasEstimadas", "NombreCompleto", "CorreoElectronico", "TelefonoWhatsapp",
+        "EstatusFiscal", "GuiaITIN", "Impuestos2Anios", "ConocePuntaje", "RangoPuntaje", "AyudaMonitoreo",
+        "TarjetasActivas", "HistorialNegativo", "TieneLLC", "EstadoLLC", "TieneEIN", "CuentaBancaria",
+        "PresenciaDigital", "AniosOperando", "IngresoMensual", "ObjetivosAsesoria", "DestinoInversion",
+        "CapitalNecesario", "UrgenciaFinanciamiento", "DudasPrincipales", "ComodidadDigital",
+        "AutorizaRevision", "DisponibilidadLlamadas", "NotasAdicionales", "HerramientasRecomendadas"
+      ];
+
+      const csvRows = [headers.join(",")];
+      list.forEach(item => {
+        const row = [
+          item.fechaISO, item.idRegistro, item.rutaEstimada, item.llamadasEstimadas,
+          item.nombreCompleto, item.correoElectronico, item.telefonoWhatsapp,
+          item.estatusFiscal, item.guiaItin, item.impuestos2Anios,
+          item.conocePuntaje, item.rangoPuntaje, item.ayudaMonitoreo,
+          item.tarjetasActivas, item.historialNegativo, item.tieneLLC, item.estadoLLC,
+          item.tieneEIN, item.cuentaBancaria, item.presenciaDigital, item.aniosOperando,
+          item.ingresoMensual,
+          Array.isArray(item.objetivosAsesoria) ? item.objetivosAsesoria.join(" | ") : item.objetivosAsesoria,
+          Array.isArray(item.destinoInversion) ? item.destinoInversion.join(" | ") : item.destinoInversion,
+          item.capitalNecesario, item.urgenciaFinanciamiento,
+          Array.isArray(item.dudasPrincipales) ? item.dudasPrincipales.join(" | ") : item.dudasPrincipales,
+          item.comodidadDigital, item.autorizaRevision, item.disponibilidadLlamadas,
+          item.notasAdicionales, item.herramientasRecomendadas
+        ].map(v => `"${String(v || "").replace(/"/g, '""')}"`);
+        csvRows.push(row.join(","));
+      });
+
+      const blob = new Blob(["\uFEFF" + csvRows.join("\n")], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `Diagnosticos_1a1_MercedesRios_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    // Control de Modales
+    function openModal(id) {
+      const m = document.getElementById(id);
+      if (m) {
+        m.classList.remove("hidden");
+        m.classList.add("flex");
+      }
+    }
+
+    function closeModal(id) {
+      const m = document.getElementById(id);
+      if (m) {
+        m.classList.add("hidden");
+        m.classList.remove("flex");
+      }
+    }
+  </script>
+</body>
+</html>
